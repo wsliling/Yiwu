@@ -1,0 +1,274 @@
+.head{
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	background: #fff;
+	z-index: 9;
+}
+.index_head{
+	padding: 10px 0 0 15px;
+	.seachbox{
+		background: #f3f3f3;
+		border-radius: 100px;
+		width: 100%;
+		padding: 0 10px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		.iconfont{
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			font-size: 13px;
+			color: #999;
+			&::before{
+				font-size: 20px;
+				line-height: 1;
+				margin-right: 8px;
+			}
+		}
+	}
+	.head_r{ 
+		padding: 0 15px; 
+		.scan{
+			line-height: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+}
+.index-swiper-tab{
+	width: 100%;
+	white-space: nowrap;
+	height: 40px;
+	line-height: 40px;
+	background: #fff;
+	&::before{
+		content: "";
+		display: block;
+		width: 100%;
+		height: 1px;
+		background: #eee;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+	}
+	.item{
+		width:20%;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: center;
+		font-size: 14px;
+		&.active{
+			font-size: 16px;
+			color: $primary;
+		}
+	}
+	.bb_line{
+		position: absolute;
+		bottom: 0;
+		transition: all .2s;
+		height: 2px;
+		width:68upx;
+		background-color: $primary
+	}
+}
+.Yi-hd{
+	padding: 20upx 30upx;
+	.title{
+		font-size: 30upx;
+	}
+	.more{
+		font-size: 24upx;
+		color: #999;
+	}
+}
+.Yi-mechanism{
+	width: 100%;
+	white-space: nowrap;
+	height: 220upx;
+	padding: 30upx 0 0 10upx;
+	.item{
+		display: inline-block;
+		text-align: center;
+		width: 160upx;
+		.tx{
+			width: 130upx;
+			height: 130upx;
+			margin: 0 auto 10upx;
+			image{
+				display: block;width: 100%; height: 100%;
+				border-radius: 100%;
+			}
+		}
+		.name{
+			font-size: 26upx;
+		}
+	}
+}
+.Yi-media{
+	padding: 30upx;
+	.media-hd{
+		margin-bottom: 20upx;
+		.author{
+			.tx{
+				width: 80upx;
+				height: 80upx;
+				margin-right: 20upx;
+				image{
+					display: block;width: 100%; height: 100%;
+					border-radius: 100%;
+				}
+			}
+			.name{
+				max-width: 300upx;
+				font-size: 30upx;
+				margin-right: 20upx;
+			}
+			.tochat{ 
+				height: 40upx; width: 40upx;
+				image{
+					display: block;width: 100%; height: 100%;
+				}
+			}
+		}
+		.flow{
+			color: #fff;
+			background: $primary;
+			border: 1px solid $primary;
+			border-radius: 100px;
+			width: 120upx;
+			text-align: center;
+			&.active{
+				color: $primary;
+				background: #fff;
+				border: 1px solid #ddd;
+			}
+		}
+	}
+	.media-bd{
+		.maxpic{
+			border-radius: 12upx;
+			overflow: hidden;
+		}
+	}
+	.media-ft{
+		margin-top: 20upx;
+		.txt_info{
+			font-size: 24upx;
+			color: #999;
+			height: 40upx;
+			line-height: 40upx;
+		}
+		.ft_l .txt_info{
+			margin-right: 40upx;
+		}
+		.like{padding-left: 50upx; background: url(@/static/like.png) left center no-repeat;
+		background-size: 40upx 40upx;}
+		.like.active{ background: url(@/static/like2.png) left center no-repeat;
+		background-size: 40upx 40upx;}
+		.reply{
+			padding-left: 50upx;background: url(@/static/reply.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.share{
+			width: 40upx;
+			height: 40upx;
+			background: url(@/static/share.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.sign{
+			width: 40upx;
+			height: 40upx;
+			background: url(@/static/sign.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.sign.active{
+			background: url(@/static/sign2.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+	}
+	.media-comment{ 
+		margin-top: 20upx;
+		.comment-item{
+			margin-bottom: 10upx;
+			font-size: 26upx;
+			.con{ color: #666;}
+		}
+		.more{font-size: 26upx;}
+	}
+}
+.Yi-recomUser{
+	border-top: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	.Yi-bd{ 
+		padding: 0 0 30upx 30upx;
+		.User-swiper-tab{
+			width: 100%;
+			white-space: nowrap;
+			.item{
+				display: inline-block;
+				text-align: center;
+				width: 290upx;
+				padding: 30upx;
+				border: 1px solid #eee;
+				border-radius: 12upx;
+				margin-right: 20upx;
+				position: relative;
+				.icon-close{
+					font-size: 30upx;
+					color: #999;
+					line-height: 1.2;
+					position: absolute;
+					right: 12upx;
+					top: 10upx;
+				}
+				.tx{
+					width: 156upx;
+					height: 156upx;
+					margin: 0 auto 10upx;
+					image{
+						display: block;width: 100%; height: 100%;
+						border-radius: 100%;
+					}
+				}
+				.name{
+					font-size: 30upx;
+					margin-bottom: 20upx;
+				}
+				.flow{
+					color: #fff;
+					background: $primary;
+					border: 1px solid $primary;
+					border-radius: 100px;
+					width: 100%;
+					margin: 0 auto;
+					text-align: center;
+					&.active{
+						color: $primary;
+						background: #fff;
+						border: 1px solid #ddd;
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

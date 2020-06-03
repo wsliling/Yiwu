@@ -1,0 +1,93 @@
+.myPage{
+	.set{
+		font-size: 48upx;
+		padding: 20upx 0 10upx;
+		line-height: 1;
+	}
+	.memberTop{
+		.info{
+			.name{
+				font-size: 32upx;
+			}
+			.datanum{
+				color: #666;
+				font-size: 26upx;
+				view{
+					margin-right: 20upx;
+				}
+				.num{
+					font-size: 32upx;
+					color: #333;
+					margin-left: 8upx;
+				}
+			}
+		}
+		.tx{
+			height: 116upx; width: 116upx;
+			border-radius: 50%;
+			overflow: hidden;
+		}
+	}
+	.member_section{
+		padding: 20upx 0;
+		.section_hd{
+			font-size: 32upx;padding: 0 0 20upx;
+		}
+		.section_bd{
+			.li_33{
+				display: flex;
+				flex-direction: row;
+				flex-wrap: wrap;
+				.item{
+					width: 33.3%;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					text-align: center;
+					margin-bottom: 20upx;
+					.txt{
+						color: #484848;
+					}
+					.iconImg{
+						width: 80upx;
+						height: 80upx;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+						text-align: center;
+						.iconfont{
+							margin: 0 auto;
+							font-size:56upx;
+							color: #666;
+							line-height: 1.2;
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+							justify-content: center;
+							text-align: center;
+						}
+						.circleNum{
+							position: absolute;
+							height: 12upx;
+							width: 12upx;
+							border-radius: 50%;
+							background: #F0370B;
+							right: 16upx;
+							top: 10upx;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	.ftbtn{
+		height: 88upx;
+		border-radius: 44upx;
+		background: #f5f6f8;
+		color: #666;
+		
+	}
+}
