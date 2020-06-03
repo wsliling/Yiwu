@@ -1024,6 +1024,13 @@ radio-group label, checkbox-group label{
 .index_swiper /deep/ .swiper .uni-swiper-dots-horizontal{
 		bottom: 100upx !important;
 	}
+.swiper .uni-swiper-dot{ background: rgba(255,255,255,.5);}
+.swiper .uni-swiper-dot-active{ background: #fff;}
+uni-swiper .uni-swiper-dot{
+	border-radius:40%;
+	width: 16upx;
+	height: 4upx;
+}
 /* product */
 .uni-product-list {
     display: flex;

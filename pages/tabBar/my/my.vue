@@ -1,132 +1,165 @@
 <template>
-	<view class="myPage uni-bg-white">
-		<view class="pd15">
-			<view class="flex-end">
-				<view class="set iconfont icon-shezhi"></view>
+	<view>
+		<view class="header">
+			<view class="editor ">
+				<image class="img30" src="@/static/tabbar/my/editor.png"></image>
 			</view>
-			<view class="memberTop flex-between">
-				<view class="info">
-					<view class="name uni-ellipsis">心善若水</view>
-					<view class="c_theme">查看并编辑个人资料</view>
-					<view class="datanum flex-start">
-						<view class="flex-start">
-							关注<text class="num">90</text>
-						</view>
-						<view class="flex-start">
-							粉丝<text class="num">490</text>
+			<view class="user">
+				<view class="user-left">
+					<view class="user-img">
+						<view>
+							<image src="@/static/tabbar/my/user.png" mode=""></image>
 						</view>
 					</view>
-				</view>
-				<view class="tx">
-					<image src="/static/default.png" mode="widthFix"></image>
-				</view>
-			</view>
-			<!-- 消息中心 -->
-			<view class="member_section border_bottom">
-				<view class="section_hd">消息中心</view>
-				<view class="section_bd">
-					<view class="li_33">
-						<view class="item">
-							<view class="iconImg p_re">
-								<view class="iconfont icon-xiaoxi"></view>
-								<text class="circleNum"></text>
-							</view>
-							<view class="txt">未读消息</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-youjian"></view>
-							</view>
-							<view class="txt">已读消息</view>
-						</view>
+					<view class="user-name">
+						<view class="name">ladingwu</view>
+						<view class="text">简介：一个热爱拉丁舞的爱好...</view>
 					</view>
 				</view>
-			</view>
-			<!-- 我的圈子 -->
-			<view class="member_section border_bottom">
-				<view class="section_hd">我的圈子</view>
-				<view class="section_bd">
-					<view class="li_33">
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-aixin2"></view>
-							</view>
-							<view class="txt">我的收藏</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-xiangji"></view>
-							</view>
-							<view class="txt">我的发布</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-guanzhu"></view>
-							</view>
-							<view class="txt">我的关注</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-pinglun1"></view>
-							</view>
-							<view class="txt">查看回复</view>
-						</view>
-					</view>
+				<view class="user-right">
+					<image src="@/static/tabbar/my/sign.png" mode=""></image>
 				</view>
 			</view>
-			<!-- 更多服务 -->
-			<view class="member_section">
-				<view class="section_hd">更多服务</view>
-				<view class="section_bd">
-					<view class="li_33">
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-youhuiquan"></view>
-							</view>
-							<view class="txt">优惠券</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-fapiao"></view>
-							</view>
-							<view class="txt">发票中心</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-bianji"></view>
-							</view>
-							<view class="txt">我要评价</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-help"></view>
-							</view>
-							<view class="txt">获取帮助</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-fankui"></view>
-							</view>
-							<view class="txt">意见反馈</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-anquan1"></view>
-							</view>
-							<view class="txt">安全中心</view>
-						</view>
-						<view class="item">
-							<view class="iconImg">
-								<view class="iconfont icon-kefu"></view>
-							</view>
-							<view class="txt">联系客服</view>
-						</view>
-					</view>
+		</view>
+		<view class="info">
+			<view class="item">
+				<view>
+					896. <span>26</span>
+				</view>
+				<span class="text">
+					零钱(元)
+				</span>
+			</view>
+			<view class="item">
+				<view>25</view>
+				<span class="text">粉丝</span>
+			</view>
+			<view class="item">
+				<view>628</view>
+				<span class="text">被赞</span>
+			</view>
+			<view class="item">
+				<view>221</view>
+				<span class="text">关注</span>
+			</view>
+		</view>
+		<view class="info1">
+			<view class="item">
+				<image src="@/static/tabbar/my/icon1.png" mode="aspectFit"></image>
+				<view>我的收入<span>24.6w</span></view>
+				
+			</view>
+			<view class="item">
+				<image src="@/static/tabbar/my/icon2.png" mode="aspectFit"></image>
+				<view>我的积分<span>890</span></view>
+				
+			</view>
+			<view class="item">
+				<image src="@/static/tabbar/my/icon3.png" mode="aspectFit"></image>
+				<view>
+					直播币
+					<span>4567</span>
 				</view>
 			</view>
-			<view class="ftbtn flex-column uni-mb10">
-				我也想要星球客
+			<view class="item">
+				<image src="@/static/tabbar/my/icon4.png" mode="aspectFit"></image>
+				<view>我的订单
+				<span>12</span>
+				</view>
 			</view>
+		</view>
+		<view class="sevice">
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon5.png" mode="aspectFit"></image>
+					<view>购物车</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon6.png" mode="aspectFit"></image>
+					<view>认证中心</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon7.png" mode="aspectFit"></image>
+					<view>我的作品</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon8.png" mode="aspectFit"></image>
+					<view>我上传的舞曲</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon9.png" mode="aspectFit"></image>
+					<view>我的收藏</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon10.png" mode="aspectFit"></image>
+					<view>我购买的课程</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon11.png" mode="aspectFit"></image>
+					<view>加入官方交流</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon12.png" mode="aspectFit"></image>
+					<view>客服服务</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon13.png" mode="aspectFit"></image>
+					<view>关于我们</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			<view class="item">
+				<view class="item-left">
+					<image  src="@/static/tabbar/my/icon14.png" mode="aspectFit"></image>
+					<view>设置</view>
+				</view>
+				<view class="item-right">
+					<image src="@/static/tabbar/my/icon-right.png" mode="aspectFit"></image>
+				</view>
+			</view>
+			
 		</view>
 	</view>
 </template>

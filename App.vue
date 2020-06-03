@@ -22,8 +22,12 @@
 	/* 以下样式用于 hello uni-app 演示所需 */
 	page {
 		background-color: #f8f8f8;
-		height: 100%;
+		// height: 100%;
 		font-size: 28upx;
 		line-height: 1.8;
 	}
+	uni-swiper .uni-swiper-wrapper{
+		border-radius: 10upx;
+	}
+	
 </style>

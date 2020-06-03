@@ -26,13 +26,24 @@
         ,{
             "path" : "pages/tabBar/music/music",
             "style" : {
-				"navigationBarTitleText": "音乐"
+				"navigationBarTitleText": "音乐",
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
 			}
+			
         }
 		,{
 		    "path" : "pages/tabBar/my/my",
 		    "style" : {
-				"navigationBarTitleText": "我的"
+				"navigationBarTitleText": "我的",
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
 			}
 		}
        
