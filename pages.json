@@ -14,7 +14,13 @@
         ,{
             "path" : "pages/tabBar/live/live",
             "style" : {
-				"navigationBarTitleText": "直播"
+				"navigationBarTitleText": "",
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
+				
 			}
         }
 		,{
