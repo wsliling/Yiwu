@@ -38,6 +38,17 @@ a {
   color:$primary;
 }
 
+/*标题*/
+.Yi-hd{
+	padding: 20upx 30upx;
+	.title{
+		font-size: 30upx;
+	}
+	.more{
+		font-size: 24upx;
+		color: #999;
+	}
+}
 .flex {
   display: -webkit-box;
   display: -webkit-flex;

@@ -1,9 +1,9 @@
 <template>
-	<view class="content uni-bg-white">
+	<view class="content">
 		<view class="head">
 			<view class="index_head flex-between">
 				<view class="seachbox">
-					<text class="iconfont icon-sousuo">请输入搜索关键字</text>
+					<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 				</view>
 				<view class="head_r">
 					<view class="scan uni-icon uni-icon-scan"></view>
@@ -151,7 +151,7 @@
 			<view class="Yi-bd">
 				<scroll-view class="User-swiper-tab" scroll-x>
 					<view class="item" v-for="(item,index) in 4" :key="index">
-						<view class="iconfont icon-close"></view>
+						<view class="uni-icon uni-icon-closeempty close"></view>
 						<view class="tx">
 							<image src="@/static/of/1.png" mode="aspectFill"></image>
 						</view>
