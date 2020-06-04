@@ -80,6 +80,7 @@ image{ width: 100%;}
 	height: 40px;
 	line-height: 40px;
 	background: #fff;
+	position: relative;
 }
 .index-swiper-tab::before{
 		content: "";
@@ -103,8 +104,12 @@ image{ width: 100%;}
 	color: #DD196D
 }	
 .index-swiper-tab .bb_line{
+	display: block;
 	position: absolute;
 	bottom: 0;
+	/* #ifdef MP-WEIXIN */
+	bottom: 40upx;
+	/* #endif */
 	transition: all .2s;
 	height: 2px;
 	width:68upx;

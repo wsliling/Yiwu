@@ -1,13 +1,8 @@
-page{
-	background-color: #f9f9f9;
-	padding: 0 20upx;
-}
 .img30{
 	width: 30upx;
 	height: 30upx;
 }
 .header{
-	margin: 0 10upx;
 	margin-top: 30upx;
 	margin-bottom: 50upx;
 	.editor{
@@ -57,9 +52,9 @@ page{
 				}
 				.text{
 					font-size: 22upx;
-					color: #666666;
+					color: #999;
 					border-radius: 40upx;
-					border: 1upx solid #666666;
+					border: 1px solid #ddd;
 					padding: 5upx 10upx;
 					display: inline-block;
 					overflow:hidden;
@@ -90,13 +85,10 @@ page{
 .info{
 	display: flex;
 	height: 145upx;
-	border-radius: 20upx;
+	border-radius: 12upx;
 	background-color: #fff;
-	width: 100%;
-	box-sizing: border-box;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 25upx;
 	view{
 		font-size: 40upx;
 		color:#333;
@@ -115,22 +107,22 @@ page{
 		flex-wrap: wrap;
 		justify-content: center;
 		position:relative;
-		&:before {
-		   content: '';
-		   position: absolute;
-		   // bottom: 25%;
-		   right: 0px;
-		   top: 45%;
-		   width: 1px;
-		   height: 25%;			
-		   border: none;
-		   background-image: linear-gradient(to right, transparent 50%, #dbdbdb 50%);
-		}
-		&:nth-of-type(4)::before{
-			border: none;
-			width:0;
-			height: 0;
-		}
+		// &:before {
+		//    content: '';
+		//    position: absolute;
+		//    // bottom: 25%;
+		//    right: 0px;
+		//    top: 45%;
+		//    width: 1px;
+		//    height: 25%;			
+		//    border: none;
+		//    background-image: linear-gradient(to right, transparent 50%, #dbdbdb 50%);
+		// }
+		// &:nth-of-type(4)::before{
+		// 	border: none;
+		// 	width:0;
+		// 	height: 0;
+		// }
 		span{
 			width: 100%;
 			text-align: center;
@@ -143,14 +135,11 @@ page{
 	
 }
 .info1{
-
 	display: flex;
 	background-color: #FFFFFF;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 25upx;
-	box-sizing: border-box;
-	border-radius: 20upx;
+	border-radius: 12upx;
 	padding: 40upx 0;
 	image{
 		width: 50upx;
@@ -163,12 +152,16 @@ page{
 		flex: 1;
 		text-align: center;
 		// padding: 0 25upx;
-		font-size: 30upx;
-		color: #666;
-		span{
-			display: block;
-			color: #333;
-			box-sizing: border-box;
+		view{
+			margin-top: 10upx;
+			font-size: 24upx;
+			color: #666;
+			span{
+				display: block;
+				color: #333;
+				font-size: 30upx;
+				line-height: 1.1;
+			}
 		}
 		position:relative;
 		&:before {
@@ -180,7 +173,7 @@ page{
 		   width: 1px;
 		   height: 50%;			
 		   border: none;
-		   background-image: linear-gradient(to right, transparent 50%, #dbdbdb 50%);
+		   background-image: linear-gradient(to right, transparent 50%, #eee 50%);
 		}
 		&:nth-of-type(4)::before{
 			border: none;
@@ -194,8 +187,7 @@ page{
 }
 .sevice{
 	background-color: #fff;
-	border-radius: 20upx;
-	margin-bottom: 25upx;
+	border-radius: 12upx;
 	.item{
 		height: 95upx;
 		display: flex;
@@ -214,15 +206,10 @@ page{
 				color: #333;
 			}
 		}
-		.item-right{
-			width: 40upx;
-			height: 40upx;
-			text-align: center;
-			line-height: 40upx;
-			image{
-				height: 23upx;
-				width: 13upx;
-			}
+		.arrowr{
+			color: #ccc;
+			font-size: 36upx;
+			line-height: 1.2;
 		}
 	}
 }

@@ -1,53 +1,63 @@
 <template>
 	<view>
-		<view class="searchbox">
-			<image src="../../../static/tabbar/music/serch.png" mode="aspectFit"></image>
-			<input type="text" placeholder="请输入你想搜索的舞曲">
-		</view>
-		<view class="tab" scroll-x :show-scrollbar="false" style="display: flex;">
+		<view class="head">
+			<view class="search">
+				<view class="seachbox">
+					<text class="uni-icon uni-icon-search">请输入你想搜索的舞曲</text>
+				</view>
+			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
 				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
-		<view class="music-content">
-			<swiper class="swiper" :indicatorDots="true" indicator-active-color="#fff" indicator-color="rgba(255,255,255,0.5)" :autoplay="true" :circular="true">
-				<swiper-item  v-for="(item,index) in 3 " :key="index">
-					<image src="@/static/of/p1.jpg" ></image>
-				</swiper-item>
-				
-			 </swiper>
-			 <view class="music-fl">
-				 <view class="list">
-					 <image src="@/static/tabbar/music/icon15.png" mode="aspectFit"></image>
-					 <view>每日推荐</view>
+		<view style="height: 80px;"></view>
+		<view class="music-content ">
+			<!--轮播图-->
+			<view class="shop_swiper pd15 uni-mt10">
+				<swiper class="swiper" :indicator-dots="false" autoplay :interval="5000" :duration="500" @change="changeSwiper">
+					<swiper-item v-for="(item,index) in 3" :key="index">
+						<view class="swiper-item">
+							<image class="img" src="@/static/of/p1.jpg" mode="aspectFill"></image>
+						</view>
+					</swiper-item>
+				</swiper>
+				<view class="dots">
+					<view v-for="(item,index) in 3" :key="index" :class="['dot',currentSwiper==index?'active':'']"></view>
+				</view>
+			</view>
+			<!-- 快捷导航 -->
+			 <view class="icon-menu">
+				 <view class="item">
+					 <image class="icon" src="@/static/music/icon15.png"></image>
+					 <text class="txt">每日推荐</text>
 				 </view>
-				 <view class="list">
-					 <image src="@/static/tabbar/music/icon16.png" mode="aspectFit"></image>
-					 <view>最新推荐</view>
+				 <view class="item">
+					 <image class="icon" src="@/static/music/icon16.png"></image>
+					 <text class="txt">最新推荐</text>
 				 </view>
-				 <view class="list">
-					 <image src="@/static/tabbar/music/icon17.png" mode="aspectFit"></image>
-					 <view>最热</view>
+				 <view class="item">
+					 <image class="icon" src="@/static/music/icon17.png"></image>
+					 <text class="txt">最热</text>
 				 </view>
-				 <view class="list">
-					 <image src="@/static/tabbar/music/icon18.png" mode="aspectFit"></image>
-					 <view>最近播放</view>
+				 <view class="item">
+					 <image class="icon" src="@/static/music/icon18.png"></image>
+					 <text class="txt">最近播放</text>
 				 </view>
 			 </view>
-			 <view class="music-list">
+			 <view class="music-list pd15">
 				 <view class="item" v-for="(item,index) in 9 " :key="index">
 					 <view class="img">
-						 <image src="@/static/tabbar/music/music-item.png"></image>
+						 <image src="@/static/music/music-item.png"></image>
 						<view class="img-top">
-							<image class="icon" src="@/static/tabbar/music/listen.png" mode=""></image>
+							<image class="icon" src="@/static/music/listen.png" mode=""></image>
 							<span>2367</span>
 						</view>
 						<view class="img-bottom">
-							<image class="play" src="@/static/tabbar/music/play.png" mode=""></image>
+							<image class="play" src="@/static/music/play.png" mode=""></image>
 						</view>
 					 </view>
-					 <view>桑巴舞曲精选</view>
+					 <view class="uni-ellipsis">桑巴舞曲精选</view>
 				 </view>
 				
 				 
@@ -68,6 +78,9 @@
 		},
 		data() {
 			return {
+				userId: "",
+				token: "",
+				currentSwiper :0,
 				scrollLeft: 0,
 				tabIndex:0,
 				tabnav:[
@@ -87,7 +100,8 @@
 			}
 		},
 		onShow() {
-			
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
 		},
 		 computed: {
 		   tabStyle(){
@@ -102,10 +116,16 @@
 					this.tabIndex = index;
 				}
 			},
+			changeSwiper(e){
+				this.currentSwiper=e.detail.current;
+			},
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	@import './style';
+	.index-swiper-tab .item{
+		width: 33.3333%;
+	}
 </style>

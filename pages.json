@@ -32,7 +32,7 @@
         ,{
             "path" : "pages/tabBar/music/music",
             "style" : {
-				"navigationBarTitleText": "音乐",
+				"navigationBarTitleText": "舞曲",
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
