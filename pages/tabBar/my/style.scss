@@ -107,22 +107,22 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		position:relative;
-		// &:before {
-		//    content: '';
-		//    position: absolute;
-		//    // bottom: 25%;
-		//    right: 0px;
-		//    top: 45%;
-		//    width: 1px;
-		//    height: 25%;			
-		//    border: none;
-		//    background-image: linear-gradient(to right, transparent 50%, #dbdbdb 50%);
-		// }
-		// &:nth-of-type(4)::before{
-		// 	border: none;
-		// 	width:0;
-		// 	height: 0;
-		// }
+		&:before {
+		   content: '';
+		   position: absolute;
+		   // bottom: 25%;
+		   right: 0px;
+		   top: 35%;
+		   width: 1px;
+		   height: 30%;			
+		   border: none;
+		   background-image: linear-gradient(to right, transparent 50%, #eee 50%);
+		}
+		&:nth-of-type(4)::before{
+			border: none;
+			width:0;
+			height: 0;
+		}
 		span{
 			width: 100%;
 			text-align: center;
