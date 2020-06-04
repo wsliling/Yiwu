@@ -108,24 +108,7 @@ function getStorageOpenid() {
     return ''
   }
 }
-//定时任务
-function setRegular(targetHour){
-  var timeInterval,nowTime,nowSeconds,targetSeconds 
-  nowTime = new Date()
-  // 计算当前时间的秒数
-  nowSeconds = nowTime.getHours() * 3600 + nowTime.getMinutes() * 60 + nowTime.getSeconds()
-  // 计算目标时间对应的秒数
-  targetSeconds =  targetHour * 3600
-  //  判断是否已超过今日目标小时，若超过，时间间隔设置为距离明天目标小时的距离
-  timeInterval = targetSeconds > nowSeconds ? targetSeconds - nowSeconds: targetSeconds + 24 * 3600 - nowSeconds 
-  setTimeout(getProductFileList,timeInterval * 1000)
-}
-function getProductFileList(){
-  localStorage.removeItem('token');
-  localStorage.removeItem('userId');
-  setTimeout(getProductFileList,24*3600 * 1000)//之后每天调用一次
-}
-//setRegular(4);//每天凌晨4点刷新
+
 // 获取当前地址
 function getCurrentPageUrlWithArgs() {
   const pages = getCurrentPages();
@@ -187,30 +170,6 @@ function valPhone(tel) {
 	return true;
 }
 
-function createTag(tagName,name,content){
-	let tag = document.createElement(tagName);
-	tag.name = name;
-	tag.content = content;
-	return tag;	
-}
-let doctit="";
-function SEOTitle(str){	
-	if(str==""){
-		document.title=doctit;
-	}else{
-		document.title= str+"-"+doctit;
-	}
-}
-// #ifndef MP-WEIXIN  
-// get("System/GetWebConfiguration").then(res => {
-// 	doctit=res.data.SEOTitle;
-// 	uni.setStorageSync("description",res.data.WebDescription);
-// 	document.title=res.data.SEOTitle;
-// 	document.getElementsByTagName("head")[0].appendChild(createTag('meta','description',res.data.WebDescription));
-// 	document.getElementsByTagName("head")[0].appendChild(createTag('meta','keywords',res.data.SEOKeywords));
-// })
-// SEOTitle('');
-// #endif
 function getUrlParam(name) {
 	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
 	var url = window.location.search.substr(1); //.toLowerCase();
@@ -260,9 +219,7 @@ export {
 	getCurrentPageUrlWithArgs,
 	getStorageOpenid,
 	valPhone,
-	SEOTitle,
 	getUrlParam,
-	setRegular,
 	navigate,
 	uncodeUtf16
 }

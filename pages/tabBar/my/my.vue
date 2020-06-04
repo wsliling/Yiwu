@@ -8,7 +8,7 @@
 				<view class="user-left">
 					<view class="user-img">
 						<view>
-							<image src="@/static/my/user.png" mode=""></image>
+							<image src="@/static/my/user.png" mode="" class="noheadimg"></image>
 						</view>
 					</view>
 					<view class="user-name">

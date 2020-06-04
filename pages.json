@@ -65,36 +65,32 @@
 		"selectedColor": "#dd196d",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
+		"iconWidth": "26px",
 		"list": [
 			{
 				"pagePath": "pages/tabBar/index/index",
 				"iconPath": "static/tabbar/ft1.png",
-				"selectedIconPath": "static/tabbar/ft1_in.png",
-				"iconWidth": "26px"
+				"selectedIconPath": "static/tabbar/ft1_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/live/live",
 				"iconPath": "static/tabbar/ft2.png",
-				"selectedIconPath": "static/tabbar/ft2_in.png",
-				"iconWidth": "26px"
+				"selectedIconPath": "static/tabbar/ft2_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/shop/shop",
 				"iconPath": "static/tabbar/ft3.png",
-				"selectedIconPath": "static/tabbar/ft3_in.png",
-				"iconWidth": "26px"
+				"selectedIconPath": "static/tabbar/ft3_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/music/music",
 				"iconPath": "static/tabbar/ft4.png",
-				"selectedIconPath": "static/tabbar/ft4_in.png",
-				"iconWidth": "26px"
+				"selectedIconPath": "static/tabbar/ft4_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/my/my",
 				"iconPath": "static/tabbar/ft5.png",
-				"selectedIconPath": "static/tabbar/ft5_in.png",
-				"iconWidth": "26px"
+				"selectedIconPath": "static/tabbar/ft5_in.png"
 			}
 		]
 	}
