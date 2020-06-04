@@ -56,9 +56,6 @@
 			</view>
 		</view>
 		
-		<!-- #ifndef MP-WEIXIN -->
-		<view style="height: 100upx;"></view>
-		<!-- #endif -->
 	</view>
 </template>
 

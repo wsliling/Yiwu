@@ -14,7 +14,7 @@
 		<view style="height: 80px;"></view>
 		<view class="music-content ">
 			<!--轮播图-->
-			<view class="shop_swiper pd15 uni-mt10">
+			<view class="index_swiper pd15 uni-mt10">
 				<swiper class="swiper" :indicator-dots="false" autoplay :interval="5000" :duration="500" @change="changeSwiper">
 					<swiper-item v-for="(item,index) in 3" :key="index">
 						<view class="swiper-item">
