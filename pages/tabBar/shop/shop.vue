@@ -101,8 +101,8 @@
 					<image src="@/static/of/pro1.jpg" class="item_img" mode="aspectFill"></image>
 					<view class="item_info">
 						<view class="item_title uni-ellipsis">一舞拉丁黑色舞蹈现身材连衣裙</view>
-						<view class="flexAlignEnd flex-between item_total">
-							<view class="flex flexAlignEnd">
+						<view class="flex-between item_total">
+							<view class="flex-start">
 								<span class="item_price">￥79</span>
 								<span class="item_market line-through">￥88</span>
 							</view>
