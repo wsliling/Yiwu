@@ -1,6 +1,7 @@
 .heade{
 	width: 100%;
 	background-color: #FFFFFF;
+	padding: 30upx;
 	.user{
 		padding-bottom: 50upx;
 		display: flex;
@@ -34,7 +35,7 @@
 				padding-right: 50upx;
 				.item{
 					// flex: 1;
-					// text-align: center;
+					text-align: center;
 					view{
 						color: #333;
 						font-size: 34upx;
@@ -49,8 +50,7 @@
 		}
 	}
 	.text{
-		padding-right: 50upx;
-		padding-bottom: 80upx;
+		padding-bottom: 40upx;
 		font-size: 30upx;
 		color: #666;
 	}

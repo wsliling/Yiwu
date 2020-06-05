@@ -23,7 +23,7 @@
 					<view class="Yi-mechanism">
 						<scroll-view class="Daren-swiper-tab" scroll-x>
 							<block v-for="(item,index) in 4" :key="index">
-							<view class="item">
+							<view class="item" @click="tolink('/pages/homepage/homepage')">
 								<view class="tx">
 									<image src="@/static/of/1.png" mode="aspectFill"></image>
 								</view>
@@ -45,10 +45,10 @@
 					<!-- 图文 -->
 					<view class="Yi-media">
 						<view class="media-hd flex-between">
-							<view class="author flex-start">
+							<view class="author flex-start" @click="tolink('/pages/homepage/homepage')">
 								<view class="tx"><image src="@/static/default.png" mode="aspectFill"></image></view>
 								<view class="name uni-ellipsis">kastyle</view>
-								<view class="tochat" @click="tolink('/pages/chat/chat?id=','login')"><image src="@/static/chat.png"></image></view>
+								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id=','login')"><image src="@/static/chat.png"></image></view>
 							</view>
 							<view class="flow">关注</view>
 						</view>
@@ -176,7 +176,7 @@
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-news" scroll-y>
 					<view class="Yi-newslist">
-						<view class="Yi-media" v-for="(item,index) in 5" :key="index">
+						<view class="Yi-media" v-for="(item,index) in 5" :key="index" @click="tolink('/pages/msgDetail/msgDetail')">
 							<view class="media-bd">
 								<view class="desc">
 									一代舞坛传奇人物-Micheal，重温经典，回味依旧！一代舞坛传奇人物-Micheal，重温经典，回味依旧
