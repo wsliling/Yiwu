@@ -53,6 +53,18 @@
 			}
 		}
        
+        ,{
+            "path" : "pages/homepage/homepage",
+            "style" : {
+				"navigationBarTitleText": "主页"
+			}
+        }
+        ,{
+            "path" : "pages/msgDetail/msgDetail",
+            "style" : {
+				"navigationBarTitleText": "资讯详情"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
