@@ -11,7 +11,8 @@
 	}
 .pages-tabBar-cart-cart .uni-page-head-btn,
 .pages-Article-artPost-artPost .uni-page-head-btn{ margin: 0 16upx;}
-.pages-tabBar-cart-cart .uni-page-head{border-bottom: 1px solid #eee;}
+.uni-page-head{border-bottom: 1px solid #eee;}
+.pages-tabBar-shop-shop .uni-page-head,.pages-videoDetails-videoDetails .uni-page-head{border-bottom: none;}
 .pages-tabBar-index-index .uni-page-head-transparent .uni-page-head-btn{
 	justify-content: center;
 }

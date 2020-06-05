@@ -1,0 +1,115 @@
+.videobox{
+	video{ width: 100%;}
+}
+.videoinfo{
+	.title{
+		font-size: 32upx;
+		line-height: 1.6;
+	}
+	.left{
+		text{
+			margin-right: 20upx;
+		}
+	}
+	.price{
+		font-size: 34upx;
+	}
+	.buybtn{
+		color: #fff;
+		background: $primary;
+		border: 1px solid $primary;
+		border-radius: 100px;
+		width: 120upx;
+		text-align: center;
+	}
+}
+.media-ft{
+		margin-top: 30upx;
+		.txt_info{
+			font-size: 24upx;
+			color: #999;
+			height: 40upx;
+			line-height: 40upx;
+		}
+		.ft_l .txt_info{
+			min-width: 120upx;
+			margin-right: 60upx;
+			&:last-child{
+				margin-right: 0;
+				min-width: auto;
+			}
+		}
+		.ft_r .txt_info{
+			margin-left: 90upx;
+		}
+		.like{padding-left: 50upx; background: url(@/static/like.png) left center no-repeat;
+		background-size: 40upx 40upx;}
+		.like.active{ background: url(@/static/like2.png) left center no-repeat;
+		background-size: 40upx 40upx;}
+		.reply{
+			padding-left: 50upx;background: url(@/static/reply.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.share{
+			width: 40upx;
+			height: 40upx;
+			background: url(@/static/share.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.download{
+			width: 40upx;
+			height: 40upx;
+			background: url(@/static/download.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.sign{
+			width: 40upx;
+			height: 40upx;
+			background: url(@/static/sign.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+		.sign.active{
+			background: url(@/static/sign2.png) left center no-repeat;
+			background-size: 40upx 40upx;
+		}
+	}
+.Yi-courselist{
+	padding:0 30upx;
+	.item{
+		width:100%;margin-top:20upx;
+		background: #ffffff;
+		.item_info{
+			padding:10upx 0;
+		}
+		.item_total{
+			width:100%;
+		}
+		.maxpic{
+			width:100%;height:360upx;
+			border-radius: 12upx;
+			overflow: hidden;
+			position: relative;
+			.isplay{
+				width: 100upx;
+				height: 100upx;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin: -50upx 0 0 -50upx;
+				background: url(@/static/play.png) center center no-repeat;
+				background-size: cover;
+				z-index: 2;
+			}
+		}
+		.item_title{
+			font-size:30upx;
+		}
+		.item_price{
+			color:$primary;font-size:30upx;
+		}
+		.item_market{
+			color:#999;font-size:24upx; line-height: 1.4;
+		}
+	}
+	
+}

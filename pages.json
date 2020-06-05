@@ -53,6 +53,29 @@
 			}
 		}
        
+        ,{
+            "path" : "pages/replylist/replylist",
+            "style" : {
+				"navigationBarTitleText": "评论"
+			}
+        }
+        ,{
+            "path" : "pages/chat/chat",
+            "style" : {
+				"navigationBarTitleText": "极速联系"
+			}
+        }
+        ,{
+            "path" : "pages/videoDetails/videoDetails",
+            "style" : {
+				"navigationBarTitleText": "视频详情",
+				"app-plus": {
+					"titleNView": {
+						"type": "transparent"
+					}
+				}
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
