@@ -36,7 +36,12 @@
 .swiper-box{
 	flex: 1;
 	width: 100%;
+	/* #ifdef MP-WEIXIN||APP-PLUS */
 	height: calc(100vh - 80px);
+	/* #endif */
+	/* #ifdef H5 */
+	height: calc(100vh - 130px);
+	/* #endif */
 	.swiper-item{
 		height: 100%;
 		overflow-y: auto;

@@ -368,6 +368,6 @@
 	@import './style';
 	page{
 		background: #fff;
-		height: 100vh;
+		// height: 100vh;
 	}
 </style>
