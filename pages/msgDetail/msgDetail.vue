@@ -1,7 +1,7 @@
 <template>
 	<view class="pd15">
 		<view class="title">一代舞坛传奇人物-Michael,重温经典，回味依旧！</view>
-		<view class="time">一舞资讯	<span>2020.05.31</span></view>
+		<view class="time">壹舞资讯	<span>2020.05.31</span></view>
 	</view>
 </template>
 

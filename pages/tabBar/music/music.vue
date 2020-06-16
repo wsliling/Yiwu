@@ -91,10 +91,6 @@
 					{
 						Id:2,
 						TypeName:"动态"
-					},
-					{
-						Id:3,
-						TypeName:"上传舞曲"
 					}
 				]
 			}
@@ -109,6 +105,12 @@
 		   }
 		  },
 		methods: {
+			//跳转
+			tolink(Url) {
+				uni.navigateTo({
+					url: Url
+				})
+			},
 			tapTab(index,id) { //点击tab-bar
 				if (this.tabIndex === index) {
 					return false;
@@ -126,6 +128,6 @@
 <style lang="scss" scoped>
 	@import './style';
 	.index-swiper-tab .item{
-		width: 33.3333%;
+		width: 50%;
 	}
 </style>

@@ -75,7 +75,7 @@
 				<view class="product">
 					<view class="list" v-for="(item1,index41) in 3" :key="index41">
 						<image src="@/static/of/pro1.jpg" mode="widthFix"></image>
-						<view>一舞拉丁黑色4654646546</view>
+						<view>壹舞拉丁黑色4654646546</view>
 						<span>￥79.99</span>
 					</view>
 				</view>

@@ -3,7 +3,7 @@
 		{
 			"path": "pages/tabBar/index/index",
 			"style": {
-				"navigationBarTitleText": "一舞",
+				"navigationBarTitleText": "壹舞",
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
@@ -52,7 +52,6 @@
 				}
 			}
 		}
-       
         ,{
             "path" : "pages/replylist/replylist",
             "style" : {
@@ -88,10 +87,190 @@
 				"navigationBarTitleText": "资讯详情"
 			}
         }
+		,{
+		    "path" : "pages/cart/cart",
+		    "style" : {
+				"navigationBarTitleText": "购物车"
+			}
+		}
     ],
+	"subPackages":[
+		{
+			"root":"pages/member",
+			"pages":[
+				{
+					"path":"editinfo/editinfo",
+					"style": {
+						"navigationBarTitleText": "编辑资料"
+					}
+				}
+			    ,{
+                    "path" : "editNickName/editNickName",
+                    "style" : {
+						"navigationBarTitleText": "修改昵称"
+					}
+                }
+                ,{
+                    "path" : "editintro/editintro",
+                    "style" : {
+						"navigationBarTitleText": "修改简介"
+					}
+                }
+                ,{
+                    "path" : "openVip/openVip",
+                    "style" : {
+						"navigationBarTitleText":"+V认证"
+					}
+                }
+                ,{
+                    "path" : "regDancer/regDancer",
+                    "style" : {
+						"navigationBarTitleText":"舞者认证"
+					}
+                }
+                ,{
+                    "path" : "regMechanism/regMechanism",
+                    "style" : {
+						"navigationBarTitleText":"机构认证"
+					}
+                }
+                ,{
+                    "path" : "regShop/regShop",
+                    "style" : {
+						"navigationBarTitleText":"店铺认证"
+					}
+                }
+                ,{
+                    "path" : "order/order",
+                    "style" : {
+						"navigationBarTitleText":"我的订单"
+					}
+                }
+                ,{
+                    "path" : "interactionData/interactionData",
+                    "style" : {
+						"navigationStyle":"custom",
+						"app-plus": {
+							"titleNView": false, //首页去除原生导航
+							"bounce": "none",
+							"scrollIndicator": "none" //不显示滚动条
+						}
+					}
+                }
+                ,{
+                    "path" : "wallet/wallet",
+                    "style" : {
+						"navigationBarTitleText":"我的钱包"
+					}
+                }
+                ,{
+                    "path" : "myIncome/myIncome",
+                    "style" : {
+						"navigationBarTitleText":"我的收入"
+					}
+                }
+                ,{
+                    "path" : "myIntegral/myIntegral",
+                    "style" : {
+						"navigationBarTitleText":"我的积分"
+					}
+                }
+                ,{
+                    "path" : "livebi/livebi",
+                    "style" : {
+						"navigationBarTitleText":"直播币"
+					}
+                }
+                ,{
+                    "path" : "recharge/recharge",
+                    "style" : {
+						
+					}
+                }
+                ,{
+                    "path" : "withdraw/withdraw",
+                    "style" : {
+						"navigationBarTitleText":"提现"
+					}
+                }
+                ,{
+                    "path" : "myWorks/myWorks",
+                    "style" : {
+						"navigationBarTitleText":"我的作品",
+						"app-plus": {
+							"titleNView": false
+						}
+					}
+                }
+                ,{
+                    "path" : "collect/collect",
+                    "style" : {
+                    	"navigationBarTitleText":"我的收藏",
+                    	"app-plus": {
+                    		"titleNView": false
+                    	}
+                    }
+                }
+                ,{
+                    "path" : "myBuy/myBuy",
+                    "style" : {
+						"navigationBarTitleText":"我购买的",
+						"app-plus": {
+							"titleNView": false
+						}
+					}
+                }
+                ,{
+                    "path" : "myMusic/myMusic",
+                    "style" : {
+                    	"navigationBarTitleText":"我上传的舞曲",
+                    	"app-plus": {
+                    		"titleNView": false
+                    	}
+                    }
+                }
+				,{
+				    "path" : "myMusic_list/myMusic_list",
+				    "style" : {
+						"navigationBarTitleText":"曲单"
+					}
+				}
+                ,{
+                    "path" : "accountSafe/accountSafe",
+                    "style" : {
+						"navigationBarTitleText":"账户安全"
+					}
+                }
+                ,{
+                    "path" : "set/set",
+                    "style" : {
+						"navigationBarTitleText":"设置"
+					}
+                }
+                ,{
+                    "path" : "changeLoginPwd/changeLoginPwd",
+                    "style" : {
+						"navigationBarTitleText":"修改登录密码"
+					}
+                }
+                ,{
+                    "path" : "setpwd/setpwd",
+                    "style" : {
+						"navigationBarTitleText":"设置支付密码"
+					}
+                }
+                ,{
+                    "path" : "transDetails/transDetails",
+                    "style" : {
+						"navigationBarTitleText":"交易明细"
+					}
+                }
+            ]
+		}
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "一舞",
+		"navigationBarTitleText": "壹舞",
 		"navigationBarBackgroundColor": "#ffffff",
 		"backgroundColor": "#F8F8F8"
 	},

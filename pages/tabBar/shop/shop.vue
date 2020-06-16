@@ -100,7 +100,7 @@
 				<view class="item" v-for="(item,index) in 6" :key="index">
 					<image src="@/static/of/pro1.jpg" class="item_img" mode="aspectFill"></image>
 					<view class="item_info">
-						<view class="item_title uni-ellipsis">一舞拉丁黑色舞蹈现身材连衣裙</view>
+						<view class="item_title uni-ellipsis">壹舞拉丁黑色舞蹈现身材连衣裙</view>
 						<view class="flex-between item_total">
 							<view class="flex-start">
 								<span class="item_price">￥79</span>
