@@ -1,0 +1,98 @@
+<template>
+	<view>
+		<view class="line-list">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/accountSafe/accountSafe')">
+				<view class="line-item-l">
+					<text class="txt">账户和安全</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/changeLoginPwd/changeLoginPwd')">
+				<view class="line-item-l">
+					<text class="txt">修改登录密码</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/setpwd/setpwd')">
+				<view class="line-item-l">
+					<text class="txt">设置支付密码</text>
+				</view>
+			</view>
+			<!-- #ifdef APP-PLUS -->
+			<view class="line-item line-arrow-r">
+				<view class="line-item-l">
+					<text class="txt">软件版本</text>
+				</view>
+				<view class="item-r">
+					<text class="c_999">{{version}}</text>
+				</view>
+			</view>
+			<!-- #endif -->
+		</view>
+		<view style="text-align: center;padding-top: 80px;color: #ccc;">
+			<view class="">Copyright© 2020</view>
+			<view class="">	壹舞有限责任公司 版本所有</view>
+		</view>
+		<view class="fixedbtn" style="background: #f8f8f8;">
+			<view class="btn" @click="logOut">退出登录</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import {host,post,get,toLogin} from '@/common/util.js';
+	export default{
+		data(){
+			return{
+				version:''
+			}
+		},
+		onShow(){
+			// #ifdef APP-PLUS
+			this.version = plus.runtime.version
+			// #endif
+		},
+		methods:{
+			tolink(url){
+				uni.navigateTo({
+					url:url
+				})
+			},
+			// 退出登录
+			logOut() {
+				uni.showModal({
+					title:'退出登录',
+					content:"是否退出登录！",
+					success(res){
+						if(res.confirm){
+							uni.setStorageSync('token', '');
+							uni.setStorageSync('userId', '');
+							uni.setStorageSync('liveUserId', '');//清除商家直播账号
+							uni.setStorageSync('liveToken', '');//清除商家直播账号
+							uni.setStorageSync("unionid", ""); 
+							uni.setStorageSync("openId", ""); 
+							uni.setStorageSync("userInfo", "");
+							uni.switchTab({
+								url: '/pages/tabBar/index/index'
+							});
+						}
+					}
+				})
+			},
+		}
+	}
+</script>
+
+<style lang="scss">
+	.line-arrow-r{
+		.item-r{
+			margin-right: 20upx;
+		}
+	}
+	
+	.btn_fix{
+		background: #ff3333;text-align: center;
+		height:88upx;line-height: 88upx;
+		width:690upx;
+		position: fixed;
+		bottom:100upx;left:30upx;color:#ffffff;border-radius:15upx;
+	}
+</style>

@@ -25,6 +25,7 @@
 		// height: 100%;
 		font-size: 28upx;
 		line-height: 1.8;
+		color: #333;
 	}
 	uni-swiper .uni-swiper-wrapper{
 		border-radius: 10upx;

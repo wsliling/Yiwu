@@ -1,5 +1,5 @@
 {
-    "name" : "一舞",
+    "name" : "壹舞",
     "appid" : "__UNI__A3AF5B9",
     "description" : "",
     "versionName" : "1.0.0",
@@ -76,7 +76,7 @@
         "usingComponents" : true
     },
     "h5" : {
-        "title" : "一舞",
+        "title" : "壹舞",
         "domain" : "yw.wtvxin.com"
     }
 }

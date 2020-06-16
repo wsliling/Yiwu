@@ -38,7 +38,7 @@
 					<view class="isplay"></view>
 				</view>
 				<view class="item_info">
-					<view class="item_title uni-ellipsis">一舞拉丁黑色舞蹈现身材连衣裙</view>
+					<view class="item_title uni-ellipsis">壹舞拉丁黑色舞蹈现身材连衣裙</view>
 					<view class="item_total">
 						<view class="item_market">55人付款</view>
 						<span class="item_price">￥79</span>
