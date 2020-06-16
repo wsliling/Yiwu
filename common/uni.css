@@ -14,6 +14,7 @@
 .uni-page-head{border-bottom: 1px solid #eee;}
 .pages-tabBar-shop-shop .uni-page-head,
 .pages-videoDetails-videoDetails .uni-page-head,
+.pages-video-videoDetails-videoDetails .uni-page-head,
 .pages-member-openVip-openVip .uni-page-head,
 .pages-member-order-order .uni-page-head,
 .pages-member-transDetails-transDetails .uni-page-head{border-bottom: none;}
@@ -1540,17 +1541,17 @@ uni-swiper .uni-swiper-dot{
 .IconsCK {
     display: inline-block;
     position: relative;
-    width: 50upx;
-    height: 50upx;
+    width: 46upx;
+    height: 46upx;
     vertical-align: middle;
-	margin-right: 20upx;
+	margin-right: 16upx;
 }
 .IconsCK:after{
 	position: absolute;
 	top:0;
 	left:0;
 	font-family: uniicons;
-	font-size: 50upx;
+	font-size: 46upx;
 	line-height: 1;
 	color:#bdbdbd;
 }

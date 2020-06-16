@@ -6,7 +6,7 @@
 					<image src="@/static/live.png" class="iconimg"></image>
 				</view>
 				<view class="title">视频</view>
-				<view class="head_r">
+				<view class="head_r" @click="openAttestation">
 					<image src="@/static/video.png" class="iconimg"></image>
 				</view>
 			</view>
@@ -133,7 +133,23 @@
 					this.tabIndex = index;
 				}
 			},
-			
+			openAttestation(){
+				let urlstr="";
+				uni.showActionSheet({
+					itemList: ['拍视频', '上传课程',],
+					success: (e) => {
+						console.log(e.tapIndex);
+						if(e.tapIndex==0){
+							urlstr="/pages/video/videoUpload/videoUpload?type=0";
+						}else if(e.tapIndex==1){
+							urlstr="/pages/video/videoUpload/videoUpload?type=1";
+						}
+						uni.navigateTo({
+							url: urlstr
+						})
+					}
+				})
+			}
 		}
 	}
 </script>

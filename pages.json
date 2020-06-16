@@ -52,6 +52,27 @@
 				}
 			}
 		}
+		,{
+			"path":"pages/login/login",
+			"style":{
+				"navigationBarTitleText":"登录",
+				"app-plus": {
+					"titleNView": false //首页去除原生导航
+				}
+			}
+		}
+		,{
+			"path":"pages/register/register",
+			"style":{
+				"navigationBarTitleText":"注册"
+			}
+		}
+		,{
+		    "path" : "pages/getPassword/getPassword",
+		    "style" : {
+				"navigationBarTitleText": "忘记密码"
+			}
+		}
         ,{
             "path" : "pages/replylist/replylist",
             "style" : {
@@ -65,7 +86,7 @@
 			}
         }
         ,{
-            "path" : "pages/videoDetails/videoDetails",
+            "path" : "pages/video/videoDetails/videoDetails",
             "style" : {
 				"navigationBarTitleText": "视频详情",
 				"app-plus": {
@@ -73,6 +94,12 @@
 						"type": "transparent"
 					}
 				}
+			}
+		}
+		,{
+		    "path" : "pages/video/videoUpload/videoUpload",
+		    "style" : {
+				"navigationBarTitleText": "上传视频"
 			}
 		}
 		,{
