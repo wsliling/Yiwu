@@ -266,45 +266,10 @@
 								}else{
 									uni.navigateBack();
 								}
-								
-								// if(_this.askUrl){
-								//   if(_this.askUrl.indexOf("undefined")>-1){
-								// 	uni.switchTab({
-								// 	  url: "/pages/tabBar/my/my"
-								// 	});
-								//   }
-								//   else if(_this.askUrl.indexOf("cart")>-1){
-								// 	uni.switchTab({
-								// 	  url: "/pages/tabBar/cart/cart"
-								// 	});
-								//   }
-								//   else if(_this.askUrl.indexOf("/my/my")>-1){
-								// 	uni.switchTab({
-								// 	  url: "/pages/tabBar/my/my"
-								// 	});
-								//   }
-								//   else if(_this.askUrl.indexOf("/discover/discover")>-1){
-								// 	uni.switchTab({
-								// 	  url: "/pages/tabBar/discover/discover"
-								// 	});
-								//   }
-								//   else{
-								// 	  uni.redirectTo({
-								// 		url: _this.askUrl
-								// 	  });
-								//   }
-								// }else{
-								//   uni.switchTab({
-								// 	url: "/pages/tabBar/my/my"
-								//   });
-								// }
 							 }, 1800);
 						 }
 					});
 					console.log(result.data);
-// 					uni.switchTab({
-// 						url:"/pages/tabBar/my/my"
-// 					})
 				}else{
 					uni.showToast({
 					  title: result.msg,

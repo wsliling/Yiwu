@@ -7,16 +7,16 @@
 			    <image class="img" :src="Avatar||'/static/default.png'" mode="aspectFill"></image>
 			</view>
 	  	</view>
-		<view class="line-item line-arrow-r" @click="tolink('/pages/member/editNickName/editNickName?text=')">
+		<view class="line-item line-arrow-r" @click="tolink('/pages/member/editNickName/editNickName?text='+info.NickName)">
 			<view class="lab">昵称</view>
 			<view class="item_r">
-			  <input type="text" placeholder="去设置" disabled class="flex1 text_right">
+			  <input type="text" placeholder="去设置" disabled class="flex1 text_right" :value="info.NickName">
 			</view>
 		</view>
-		<view class="line-item line-arrow-r" @click="tolink('/pages/member/editintro/editintro?text=')">
+		<view class="line-item line-arrow-r" @click="tolink('/pages/member/editintro/editintro?text='+info.Introduction)">
 			<view class="lab">简介</view>
-			<view class="item_r">
-			  <input type="text" placeholder="去设置" disabled class="flex1 text_right">
+			<view class="item_r flex1" style="margin-left: 20upx;">
+			  <input type="text" placeholder="去设置" disabled class="flex1 text_right" :value="info.Introduction">
 			</view>
 		</view>
 	  </view>

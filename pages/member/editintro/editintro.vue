@@ -26,10 +26,10 @@ export default {
     //编辑简介
     EditUserNick(){
       if(this.intro){
-        post('User/EditUserNick',{
+        post('User/EditIntroduction',{
           UserId:this.userId,
           Token:this.token,
-          UserNick:this.intro
+          Intro:this.intro
         }).then(res=>{
           uni.showToast({
             title: res.msg,
