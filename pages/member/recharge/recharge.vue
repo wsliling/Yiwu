@@ -453,5 +453,4 @@
 		}
 	}	
 	.pay-hd{ padding: 20upx 0 0; font-size: 32upx; font-weight: 600}
-	.real-ipt{ width: 400upx; margin: 0 auto; font-size: 36upx;border: 1px solid #ddd; padding: .1rem;}
 </style>

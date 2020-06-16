@@ -125,6 +125,12 @@
 			//this.workeslist();
 		},
 		methods: {
+			//跳转
+			tolink(Url) {
+				uni.navigateTo({
+					url: Url
+				})
+			},
 			toback() {
 				uni.switchTab({
 					url: '/pages/tabBar/my/my'

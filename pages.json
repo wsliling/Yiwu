@@ -93,6 +93,12 @@
 				"navigationBarTitleText": "购物车"
 			}
 		}
+        ,{
+            "path" : "pages/pay2/pay2",
+            "style" : {
+				"navigationBarTitleText": "确认支付"
+			}
+        }
     ],
 	"subPackages":[
 		{
@@ -263,6 +269,45 @@
                     "path" : "transDetails/transDetails",
                     "style" : {
 						"navigationBarTitleText":"交易明细"
+					}
+                }
+                ,{
+                    "path" : "incomeDetails/incomeDetails",
+                    "style" : {
+						"navigationBarTitleText":"收入明细"
+					}
+                }
+            ]
+		},
+		{
+			"root":"pages/music",
+			"pages":[
+				{
+				    "path" : "uploadMusic/uploadMusic",
+				    "style" : {
+						"navigationBarTitleText": "上传舞曲"
+					}
+				}
+			    ,{
+                    "path" : "artPost/artPost",
+                    "style" : {
+						"navigationBarTitleText": "发布动态"
+					}
+                }
+                ,{
+                    "path" : "list/list",
+                    "style" : {
+						"app-plus": {
+							"titleNView": {
+								"type": "transparent"
+							}
+						}
+					}
+                }
+                ,{
+                    "path" : "recently/recently",
+                    "style" : {
+						"navigationBarTitleText": "最近播放"
 					}
                 }
             ]

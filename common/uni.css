@@ -6,7 +6,7 @@
 }
 /*通用 */
 .uni-tabbar-border{ background-color: #eee !important;}
-.pages-Article-myCenter-myCenter .uni-page-head-transparent .uni-page-head-btn{
+.pages-music-list-list .uni-page-head-transparent .uni-page-head-btn{
 	background: none !important;
 	}
 .pages-tabBar-cart-cart .uni-page-head-btn,
@@ -16,7 +16,9 @@
 .pages-videoDetails-videoDetails .uni-page-head,
 .pages-member-openVip-openVip .uni-page-head,
 .pages-member-order-order .uni-page-head,
-.pages-member-transDetails-transDetails .uni-page-head{border-bottom: none;}
+.pages-member-transDetails-transDetails .uni-page-head,
+.pages-member-incomeDetails-incomeDetails .uni-page-head,
+.pages-music-list-list .uni-page-head{border-bottom: none;}
 .pages-tabBar-index-index .uni-page-head-transparent .uni-page-head-btn{
 	justify-content: center;
 }

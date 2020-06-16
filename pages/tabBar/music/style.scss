@@ -55,3 +55,31 @@ page{
 		}
 	}
 }
+.uploadbtn{
+	position: fixed;
+	right: 20upx;
+	bottom: 20upx;
+	/* #ifdef H5 */
+	bottom: 120upx;
+	/* #endif */
+	width: 100upx;
+	height: 100upx;
+	line-height:1;
+	color: #fff;
+	font-size: 22upx;
+	background: $primary;
+	border-radius: 50%;
+	box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
+	z-index: 9;
+	.uni-icon{
+		font-weight: bold;
+		font-size: 52upx;
+		line-height: .8;
+	}
+	.icon{
+		display: block;
+		height: 40upx;
+		width: 40upx;
+		margin-bottom: 8upx;
+	}
+}

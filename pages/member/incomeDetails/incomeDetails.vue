@@ -42,7 +42,7 @@
 	export default {
 		data() {
 			return {
-				tabList:[{id:0,name:'全部'},{id:1,name:'消费记录'},{id:2,name:'充值记录'},{id:3,name:'提现记录'}],
+				tabList:[{id:0,name:'直播收入'},{id:1,name:'课程收入'},{id:2,name:'店铺收入'},{id:3,name:'舞曲收入'}],
 				tabIndex:0,
 				showDate: false,
 				minDate: new Date().setFullYear(2019, 0, 1),
@@ -71,7 +71,7 @@
 		   }
 		 },
 		onLoad(e) {
-
+			this.tabIndex =e.type||0
 		},
 		onShow() {
 			//设置当前时间

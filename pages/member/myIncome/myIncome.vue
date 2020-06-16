@@ -8,25 +8,25 @@
 			</view>
 		</view>
 		<view class="line-list">
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=0')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/zb.png" mode="widthFix"></image>
 					<text class="txt">直播收入</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=1')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/kc.png" mode="widthFix"></image>
 					<text class="txt">课程收入</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=2')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/shop.png" mode="widthFix"></image>
 					<text class="txt">店铺收入</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=3')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/wq.png" mode="widthFix"></image>
 					<text class="txt">舞曲收入</text>
@@ -67,11 +67,9 @@
 		},
 		methods:{
 			tolink(url){
-				if(toLogin()){
-					uni.navigateTo({
-						url:url
-					})
-				}
+				uni.navigateTo({
+					url:url
+				})
 			},
 			async getMemberInfo() {
 				let result = await post("User/GetCenterInfo", {
