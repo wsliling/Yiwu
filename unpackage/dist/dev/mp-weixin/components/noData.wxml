@@ -1,0 +1,1 @@
+<block wx:if="{{isShow}}"><view class="emptybox"><view class="iconimg"><view class="iconfont icon-wushuju"></view></view><view class="tips uni-center">暂无数据</view></view></block>
