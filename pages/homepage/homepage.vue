@@ -30,76 +30,89 @@
 			<view :style="'width:'+tabWidth+'%'" v-for="(tab,index) in tab" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.id)">{{tab.taptitle}}</view>
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 		</scroll-view>
-		<view class="profile" v-if="tabIndex==0">
-			<view class="profile-center">
-				<image src="@/static/of/p3.jpg"></image>
-				<view class="profile-txt">
-					<view>机构名称：</view>
-					<span>花儿舞蹈机构</span>
-				</view>
-				<view class="profile-txt">
-					<view>地址：</view>
-					<span>广东省深圳市龙华区</span>
-				</view>
-				<view class="profile-txt">
-					<view>联系方式：</view>
-					<span>1887654321</span>
-				</view>
-			</view>
-			<view class="bottom-box">
-				<view class="box">
-					<view>
-						<image src="@/static/attention.png"></image>
-						<span>关注</span>
+		<swiper :style="'height:'+height+'px'" :indicator-dots="false" :autoplay="false" :current="tabIndex" @change="change">
+			<swiper-item>
+				<view class="profile item-box"  v-if="tabIndex==0">
+					<view class="profile-center">
+						<image src="@/static/of/p3.jpg"></image>
+						<view class="profile-txt">
+							<view>机构名称：</view>
+							<span>花儿舞蹈机构</span>
+						</view>
+						<view class="profile-txt">
+							<view>地址：</view>
+							<span>广东省深圳市龙华区</span>
+						</view>
+						<view class="profile-txt">
+							<view>联系方式：</view>
+							<span>1887654321</span>
+						</view>
 					</view>
-					<view>
-						<image src="@/static/chat1.png"></image>
-						<span>极速联系</span>
-					</view>
-				</view>
-			</view>
-		</view>
-		<view class="play-box" v-if="tabIndex==1">
-			<view class="item" v-for="(item,index1) in 9 " :key="index1">
-				<image src="@/static/music/music-item.png" mode="widthFix"></image>
-			</view>
-		</view>
-		<view class="music-box" v-if="tabIndex==2">
-			<view class="item" v-for="(item,index1) in 9 " :key="index1">
-				<image src="@/static/music/music-item.png" mode="widthFix"></image>
-			</view>
-		</view>
-		<view class="product-box" v-if="tabIndex==4">
-			<view class="item" v-for="(item,index4) in 2" :key="index4">
-				<image class="img" src="@/static/of/banner.jpg"></image>
-				<view class="product">
-					<view class="list" v-for="(item1,index41) in 3" :key="index41">
-						<image src="@/static/of/pro1.jpg" mode="widthFix"></image>
-						<view>壹舞拉丁黑色4654646546</view>
-						<span>￥79.99</span>
+					<view class="bottom-box item-box">
+						<view class="box">
+							<view>
+								<image src="@/static/attention.png"></image>
+								<span>关注</span>
+							</view>
+							<view>
+								<image src="@/static/chat1.png"></image>
+								<span>极速联系</span>
+							</view>
+						</view>
 					</view>
 				</view>
-			</view>
-			<view class="bottom-box">
-				<view class="box">
-					<view>
-						<image src="@/static/attention.png"></image>
-						<span>关注</span>
-					</view>
-					<view>
-						<image src="@/static/chat1.png"></image>
-						<span>极速联系</span>
+			</swiper-item>
+			<swiper-item>
+				<view class="play-box item-box"  v-if="tabIndex==1">
+					<view class="item" v-for="(item,index1) in 9 " :key="index1">
+						<image src="@/static/music/music-item.png" ></image>
 					</view>
 				</view>
-			</view>
-		</view>
-		<view class=""></view>
-		<view class="intro"></view>
+			</swiper-item>
+			<swiper-item>
+				<view class="music-box item-box"  v-if="tabIndex==2">
+					<view class="item" v-for="(item,index1) in 9 " :key="index1">
+						<image src="@/static/music/music-item.png" ></image>
+					</view>
+				</view>
+			</swiper-item>
+			<swiper-item>
+				<view class="pic-box" v-if="tabIndex==3"></view>
+			</swiper-item>
+			<swiper-item>
+				<view class="product-box item-box"  v-if="tabIndex==4">
+					<view class="item" v-for="(item,index4) in 2" :key="index4">
+						<image class="img" src="@/static/of/banner.jpg"></image>
+						<view class="product">
+							<view class="list" v-for="(item1,index41) in 3" :key="index41">
+								<image src="@/static/of/pro1.jpg" mode="widthFix"></image>
+								<view>一舞拉丁黑色4654646546</view>
+								<span>￥79.99</span>
+							</view>
+						</view>
+					</view>
+					<view class="bottom-box">
+						<view class="box">
+							<view>
+								<image src="@/static/attention.png"></image>
+								<span>关注</span>
+							</view>
+							<view>
+								<image src="@/static/chat1.png"></image>
+								<span>极速联系</span>
+							</view>
+						</view>
+					</view>
+				</view>
+			</swiper-item>
+		</swiper>
 	</view>
 </template>
 
 <script>
+
 export default {
+	
 	data() {
 		return {
 			scrollLeft: 0,
@@ -136,14 +149,26 @@ export default {
 		   return (100/this.tab.length)
 	   }
 	 },
+	 onLoad(){
+		 
+	 },
 	 methods:{
 		 tapTab(index,id) { //点击tab-bar
 		 	if (this.tabIndex === index) {
+				
+				
+				
 		 		return false;
 		 	} else {
 		 		this.tabIndex = index;
+				
 		 	}
 		 },
+		 change(e){
+			 this.tabIndex=e.detail.current
+			 
+			 // console.log(this.height)
+		 }
 	 }
 };
 </script>
@@ -153,5 +178,13 @@ export default {
 
 .index-swiper-tab{
 	border-bottom: 1upx solid #ededed;
+}
+swiper{
+	/* #ifdef MP-WEIXIN||APP-PLUS */
+	height: calc(100vh - 80px);
+	/* #endif */
+	/* #ifdef H5 */
+	height: calc(100vh - 130px);
+	/* #endif */
 }
 </style>

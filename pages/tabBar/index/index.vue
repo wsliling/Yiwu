@@ -199,7 +199,7 @@
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-User" scroll-y>
 					<view class="Yi-Userlist">
-						<view class="user-item" v-for="(item,index) in 6" :key="index">
+						<view class="user-item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/homepage/homepage')">
 							<view class="flex-between">
 								<view class="author flex-start">
 									<view class="tx"><image src="@/static/default.png" mode="aspectFill"></image></view>
@@ -221,7 +221,7 @@
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y>
 					<view class="Yi-mechanismlist">
-						<view class="mechanism-item" v-for="(item,index) in 6" :key="index">
+						<view class="mechanism-item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/homepage/homepage')">
 							<view class="flex-between">
 								<view class="author flex-start">
 									<view class="tx"><image src="@/static/of/3.png" mode="aspectFill"></image></view>
