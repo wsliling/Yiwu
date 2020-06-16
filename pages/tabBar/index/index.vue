@@ -243,7 +243,7 @@
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-course" scroll-y>
 					<view class="Yi-courselist flexWrap flex-between">
-						<view class="item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/videoDetails/videoDetails?id=')">
+						<view class="item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id=')">
 							<view class="maxpic">
 								<image src="@/static/of/p1.jpg" mode="widthFix"></image>
 								<view class="isplay"></view>

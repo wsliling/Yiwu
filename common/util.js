@@ -1,7 +1,7 @@
 
 
-// const host = 'http://ddypapi.wtvxin.com/api/';  //测试接口地址
-const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
+const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
+// const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
 
 function formatNumber(n) {
     const str = n.toString()

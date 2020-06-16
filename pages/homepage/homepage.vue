@@ -28,7 +28,7 @@
 		</view>
 		<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
 			<view :style="'width:'+tabWidth+'%'" v-for="(tab,index) in tab" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.id)">{{tab.taptitle}}</view>
-			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
+			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
 		</scroll-view>
 		<swiper :style="'height:'+height+'px'" :indicator-dots="false" :autoplay="false" :current="tabIndex" @change="change">
 			<swiper-item>
@@ -154,13 +154,10 @@ export default {
 	 },
 	 methods:{
 		 tapTab(index,id) { //点击tab-bar
-		 	if (this.tabIndex === index) {
-				
-				
-				
+		 	if (this.tabIndex === id) {
 		 		return false;
 		 	} else {
-		 		this.tabIndex = index;
+		 		this.tabIndex = id;
 				
 		 	}
 		 },
