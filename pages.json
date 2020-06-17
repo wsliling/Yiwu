@@ -355,7 +355,6 @@
 		"selectedColor": "#dd196d",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
-		"iconWidth": "26px",
 		"list": [
 			{
 				"pagePath": "pages/tabBar/index/index",
