@@ -105,6 +105,13 @@
 			overflow: hidden;
 			position: relative;
 			background-color: #e0e0e0;
+			&.maxh{
+				max-height: 400upx;
+			}
+			video{
+				width: 100%;
+				display: block;
+			}
 			.isplay{
 				height: 88upx;
 				width: 88upx;
@@ -291,10 +298,14 @@
 			width:100%;
 		}
 		.maxpic{
-			width:100%;height:180upx;
+			width:100%;height:200upx;
 			border-radius: 12upx;
 			overflow: hidden;
 			position: relative;
+			background-color: #e0e0e0;
+			image{
+				width:100%;height:100%;
+			}
 			.isplay{
 				width: 60upx;
 				height: 60upx;

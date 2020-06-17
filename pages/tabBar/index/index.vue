@@ -10,7 +10,7 @@
 				</view>
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
-				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
+				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index)">{{tab.TypeName}}</view>
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
@@ -18,9 +18,9 @@
 		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
 			<!-- 首页 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-recom" scroll-y  @scrolltolower="loadMore(tabIndex)">
+				<scroll-view class="swiper-item swiper-item-recom" scroll-y @scrolltolower="loadMore(tabIndex)">
 					<!-- 机构 -->
-					<view class="Yi-mechanism">
+					<view class="Yi-mechanism" v-if="Dancerlist.length">
 						<scroll-view class="Daren-swiper-tab" scroll-x>
 							<view class="item" v-for="(item,index) in Dancerlist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 								<view class="tx">
@@ -46,14 +46,14 @@
 										<scroll-view class="User-swiper-tab" scroll-x>
 											<view class="item" v-for="(item,index) in recuserlist" :key="index">
 												<view class="uni-icon uni-icon-closeempty close"></view>
-												<view class="tx">
+												<view class="tx" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 													<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
 												</view>
 												<view class="name uni-ellipsis">
 													{{item.NickName}}
 												</view>
-												<view class="flow">
-													关注
+												<view :class="['flow',item.IsFollow==1?'active':'']" @click="flow(item.Id,index,4)">
+													{{item.IsFollow==1?'已关注':'关注'}}
 												</view>
 											</view>
 										</scroll-view>
@@ -67,24 +67,25 @@
 										<view class="name uni-ellipsis">{{item.NickName}}</view>
 										<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="/static/chat.png"></image></view>
 									</view>
-									<view :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+									<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 								</view>
 								<view class="media-bd">
 									<view class="desc">
 										{{item.Title}}
 									</view>
-									<view class="maxpic" v-if="item.PicImg||item.VideoUrl">
-										<image :src="item.PicImg" mode="widthFix"></image>
-										<view v-if="item.VideoUrl" class="isplay"></view>
+									<view :class="['maxpic',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
+										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
+										<video v-if="item.VideoUrl" :src="item.VideoUrl" controls :show-mute-btn="true"></video>
+										<image v-else :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
-											<view :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
+											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 											<view class="txt_info reply">{{item.CommentNum}}</view>
 											<view class="txt_info share"></view>
 										</view>
 										<view class="ft_r">
-											<view :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+											<view @click="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 										</view>
 									</view>
 								</view>
@@ -112,13 +113,13 @@
 			<!-- 资讯	 -->
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-news" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<view class="Yi-newslist" v-if="hasnews">
+					<view class="Yi-newslist" v-if="hasData">
 						<view class="Yi-media" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
 							<view class="media-bd">
 								<view class="desc">
 									{{item.Title}}
 								</view>
-								<view class="maxpic" v-if="item.Logo">
+								<view class="maxpic maxh" v-if="item.Logo">
 									<image :src="item.Logo" mode="widthFix"></image>
 								</view>
 								<view class="media-ft flex-between">
@@ -130,7 +131,7 @@
 							</view>
 						</view>
 					</view>
-					<view class="uni-tab-bar-loading" v-if="hasnews">
+					<view class="uni-tab-bar-loading" v-if="hasData">
 						<uni-load-more :loadingType="loadingType"></uni-load-more>
 					</view>	
 					<noData :isShow="noDataIsShow"></noData>
@@ -138,66 +139,78 @@
 			</swiper-item>
 			<!-- 名师	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-User" scroll-y>
-					<view class="Yi-Userlist">
-						<view class="user-item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/homepage/homepage')">
+				<scroll-view class="swiper-item swiper-item-User" scroll-y @scrolltolower="loadMore(tabIndex)">
+					<view class="Yi-Userlist" v-if="hasData">
+						<view class="user-item" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 							<view class="flex-between">
 								<view class="author flex-start">
-									<view class="tx"><image src="@/static/default.png" mode="aspectFill"></image></view>
+									<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
 									<view class="info">
-										<view class="name uni-ellipsis">kastyle</view>
-										<view class="fz12 c_999">关注人数：229</view>
+										<view class="name uni-ellipsis">{{item.Name}}</view>
+										<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
 									</view>
 								</view>
-								<view class="flow active">已关注</view>
+								<view v-if="item.IsMy==0" @click.stop="flow(item.UserId,index,2)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 							</view>
 							<view class="introduce uni-mt10 uni-ellipsis2">
-								毕业于广东舞蹈艺术学院毕业于广东舞蹈艺术学院，毕业于广东舞蹈艺术学院，毕业于广东舞蹈艺术学院毕业于广东舞蹈艺术学院
+								{{item.Introduction}}
 							</view>
 						</view>
 					</view>
+					<view class="uni-tab-bar-loading" v-if="hasData">
+						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					</view>
+				    <noData :isShow="noDataIsShow"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 机构	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y>
-					<view class="Yi-mechanismlist">
-						<view class="mechanism-item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/homepage/homepage')">
+				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y @scrolltolower="loadMore(tabIndex)">
+					<view class="Yi-mechanismlist" v-if="hasData">
+						<view class="mechanism-item" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 							<view class="flex-between">
 								<view class="author flex-start">
-									<view class="tx"><image src="@/static/of/3.png" mode="aspectFill"></image></view>
+									<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
 									<view class="info">
-										<view class="name uni-ellipsis">kastyle舞蹈机构</view>
-										<view class="fz12 c_999">关注人数：229</view>
+										<view class="name uni-ellipsis">{{item.Name}}</view>
+										<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
 										<view class="introduce uni-ellipsis">
-											专注舞蹈教育30年机构专注舞蹈教育30年
+											{{item.Introduction}}
 										</view>
 									</view>
 								</view>
-								<view class="flow active">已关注</view>
+								<view v-if="item.IsMy==0" @click.stop="flow(item.Id,index,3)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 							</view>
 						</view>
 					</view>
+					<view class="uni-tab-bar-loading" v-if="hasData">
+						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					</view>
+					<noData :isShow="noDataIsShow"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 课程	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-course" scroll-y>
-					<view class="Yi-courselist flexWrap flex-between">
-						<view class="item" v-for="(item,index) in 6" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id=')">
+				<scroll-view class="swiper-item swiper-item-course" scroll-y @scrolltolower="loadMore(tabIndex)">
+					<view class="Yi-courselist flexWrap flex-between" v-if="hasData">
+						<view class="item" v-for="(item,index) in CourseList" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
 							<view class="maxpic">
-								<image src="@/static/of/p1.jpg" mode="widthFix"></image>
+								<image :src="item.Logo" mode="aspectFill"></image>
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">壹舞拉丁黑色舞蹈现身材连衣裙</view>
+								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_total">
-									<view class="item_market">55人付款</view>
-									<span class="item_price">￥79</span>
+									<view class="item_market">{{item.Is_Charge==0?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
+									<span class="item_price">{{item.Is_Charge==0?'￥'+item.Price:'免费'}}</span>
 								</view>
 							</view>
 						</view>
 					</view>
+					<view class="uni-tab-bar-loading" v-if="hasData">
+						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					</view>
+					<noData :isShow="noDataIsShow"></noData>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -242,16 +255,18 @@
 					}
 				],
 				page:1,
-				pageSize:6,
+				pageSize:8,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,//是否有推荐视频
-				hasnews:false,//是否有资讯
 				noDataIsShow: false,
 				Dancerlist:[],//达人
 				recuserlist:[],//推荐用户
 				datalist:[],//推荐视频
 				NewsList:[],//资讯
+				TeacherList:[],//名师
+				JiGouList:[],//机构
+				CourseList:[],//课程
 			}
 		},
 		onLoad() {
@@ -260,7 +275,6 @@
 			this.GetDancerList();
 			this.IndexRecommend();
 			this.GetReCommendMember();
-			this.YWNewsList();
 		},
 		onShow(){
 			
@@ -285,21 +299,35 @@
 					})
 				}
 			},
-			tapTab(index,id) { //点击tab-bar
+			tapTab(index) { //点击tab-bar
 				if (this.tabIndex === index) {
 					return false;
 				} else {
 					this.page=1;
+					this.hasData=false;
+					this.noDataIsShow=false;
 					this.tabIndex = index;
 					this.setScrollLeft(index)
+					this.fun(index);
+					if(index==0){
+						this.GetDancerList();
+						this.GetReCommendMember();
+					}
 				}
 			},
 			changeTab(e) {
 				this.page=1;
+				this.hasData=false;
+				this.noDataIsShow=false;
 				let index = e.detail.current;
 				let id= this.tabnav[index].Id;
 				this.tabIndex = index;
 				this.setScrollLeft(index);
+				this.fun(index);
+				if(index==0){
+					this.GetDancerList();
+					this.GetReCommendMember();
+				}
 			},
 			setScrollLeft: async function(tabIndex) {
 				let leftWidthSum = 0;
@@ -323,6 +351,8 @@
 			//获取推荐大人
 			async GetDancerList(){
 				let result = await post("User/GetDancerList", {
+					UserId:this.userId,
+					Token:this.token,
 					IsRecommend:1
 				});
 				if(result.code==0){
@@ -331,7 +361,12 @@
 			},
 			//获取推荐大人
 			async GetReCommendMember(){
-				let result = await post("User/GetReCommendMember", {});
+				let result = await post("User/GetReCommendMember", {
+					UserId:this.userId,
+					Token:this.token,
+					page:1,
+					pageSize:8
+				});
 				if(result.code==0){
 					this.recuserlist=result.data;
 				}
@@ -339,6 +374,8 @@
 			//推荐视频
 			async IndexRecommend(){
 				let result = await post("Find/IndexRecommend", {
+					UserId:this.userId,
+					Token:this.token,
 					page:this.page,
 					pageSize:this.pageSize
 				});
@@ -371,17 +408,19 @@
 			//分页获取资讯
 			async YWNewsList(){
 				let result = await post("News/YWNewsList", {
+					UserId:this.userId,
+					Token:this.token,
 					page:this.page,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
 					if (result.data.length > 0) {
-						this.hasnews = true;
+						this.hasData = true;
 						this.noDataIsShow = false;
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;
-						this.hasnews = false;
+						this.hasData = false;
 					}
 					if (this.page === 1) {
 						this.NewsList = result.data;
@@ -400,16 +439,252 @@
 					}
 				}
 			},
+			//分页获取名师
+			async GetTeacher(){
+				let result = await post("User/GetDancerList", {
+					UserId:this.userId,
+					Token:this.token,
+					page:this.page,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.TeacherList = result.data;
+					}
+					if (this.page > 1) {
+						this.TeacherList = this.TeacherList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
+			//分页获取机构
+			async GetJiGouList(){
+				let result = await post("User/GetJiGouList", {
+					UserId:this.userId,
+					Token:this.token,
+					page:this.page,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.JiGouList = result.data;
+					}
+					if (this.page > 1) {
+						this.JiGouList = this.JiGouList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
+			//分页获取课程
+			async GetCourseList(){
+				let result = await post("Course/GetCourseOutlineList", {
+					UserId:this.userId,
+					Token:this.token,
+					page:this.page,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.CourseList = result.data;
+					}
+					if (this.page > 1) {
+						this.CourseList = this.CourseList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
+			fun(index){
+				if(index==0){
+					this.IndexRecommend();
+				}else if(index==1){
+					this.YWNewsList();
+				}else if(index==2){
+					this.GetTeacher();
+				}else if(index==3){
+					this.GetJiGouList();
+				}else if(index==4){
+					this.GetCourseList();
+				}
+			},
 			loadMore(e) {
 				console.log(e)
 				if (this.isLoad) {
 					this.loadingType = 1;
 					this.page++;
-					if(e==0){
-						this.IndexRecommend();
-					}
+					this.fun(e);
 				} else {
 					this.loadingType = 2;
+				}
+			},
+			//关注取消关注 followtype 1推荐视频用户 2名师 3机构 4推荐用户
+			async flow(id,index,followtype){
+				let result = await post("Find/FollowOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"ToMemberId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					uni.showToast({
+						title: result.msg
+					})
+					if(followtype==1){
+						let isf=0;
+						if(this.datalist[index].IsFollow==0){
+							isf=1;
+						}else{
+							isf=0;
+						}
+						_this.datalist.forEach(function(item){
+							if(item.MemberId==id){
+								_this.$set(item,"IsFollow",isf)
+							}
+						})
+					}else if(followtype==2){
+						if(this.TeacherList[index].IsFollow==0){
+							this.$set(this.TeacherList[index],"IsFollow",1)
+						}else{
+							this.$set(this.TeacherList[index],"IsFollow",0)
+						}
+					}else if(followtype==3){
+						if(this.JiGouList[index].IsFollow==0){
+							this.$set(this.JiGouList[index],"IsFollow",1)
+						}else{
+							this.$set(this.JiGouList[index],"IsFollow",0)
+						}
+					}else if(followtype==4){
+						if(this.recuserlist[index].IsFollow==0){
+							this.$set(this.recuserlist[index],"IsFollow",1)
+						}else{
+							this.$set(this.recuserlist[index],"IsFollow",0)
+						}
+					}
+					
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+			//发现收藏和取消收藏
+			async CollectBtn(id,index){
+				let result = await post("Find/CollectOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					uni.showToast({
+						title: result.msg
+					})
+					if(this.datalist[index].IsCollect==0){
+						this.$set(this.datalist[index],"IsCollect",1)
+					}else{
+						this.$set(this.datalist[index],"IsCollect",0)
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+			//发现点赞
+			async likeBtn(id,index){
+				let result = await post("Find/FindlikeOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					let num=0;
+					uni.showToast({
+						title: result.msg
+					})
+					if(this.datalist[index].IsLike==0){
+						this.$set(this.datalist[index],"IsLike",1)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum++)
+					}else{
+						this.$set(this.datalist[index],"IsLike",0)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum--)
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
 				}
 			},
 		}
