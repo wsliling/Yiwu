@@ -5,15 +5,16 @@
 				<image class="img30" src="@/static/my/editor.png"></image>
 			</view>
 			<view class="user">
-				<view class="user-left">
+				<view class="user-left" @click="tolink('/pages/member/editinfo/editinfo')">
 					<view class="user-img">
 						<view>
-							<image src="@/static/my/user.png" mode="widthFix"></image>
+							<image v-if="memberInfo.Avatar" :src="memberInfo.Avatar" mode="aspectFill"></image>
+							<image v-else src="@/static/my/user.png" mode="widthFix"></image>
 						</view>
 					</view>
 					<view class="user-name">
-						<view class="name">ladingwu</view>
-						<view class="text">简介：一个热爱拉丁舞的爱好...</view>
+						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}</view>
+						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 					</view>
 				</view>
 				<view class="user-right" @click="tolink('/pages/member/openVip/openVip')">
@@ -24,47 +25,47 @@
 		<view class="info uni-mb10">
 			<view class="item" @click="tolink('/pages/member/wallet/wallet')">
 				<view>
-					896. <span>26</span>
+					{{wallet[0]}}. <span>{{wallet[1]}}</span>
 				</view>
 				<span class="text">
 					零钱(元)
 				</span>
 			</view>
 			<view class="item" @click="tolink('/pages/member/interactionData/interactionData?type=0')">
-				<view>25</view>
+				<view>{{memberInfo.FansNum||0}}</view>
 				<span class="text">粉丝</span>
 			</view>
 			<view class="item" @click="tolink('/pages/member/interactionData/interactionData?type=1')">
-				<view>628</view>
+				<view>{{memberInfo.LikeNum||0}}</view>
 				<span class="text">被赞</span>
 			</view>
 			<view class="item" @click="tolink('/pages/member/interactionData/interactionData?type=2')">
-				<view>221</view>
+				<view>{{memberInfo.FollowNum||0}}</view>
 				<span class="text">关注</span>
 			</view>
 		</view>
 		<view class="info1 uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
 				<image src="@/static/my/icon1.png" mode="aspectFit"></image>
-				<view>我的收入<span>24.6w</span></view>
+				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
 				<image src="@/static/my/icon2.png" mode="aspectFit"></image>
-				<view>我的积分<span>890</span></view>
+				<view>我的积分<span>{{memberInfo.Score||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/livebi/livebi')">
 				<image src="@/static/my/icon3.png" mode="aspectFit"></image>
 				<view>
 					直播币
-					<span>4567</span>
+					<span>{{memberInfo.LiveStreamMoney||0}}</span>
 				</view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/order/order')">
 				<image src="@/static/my/icon4.png" mode="aspectFit"></image>
 				<view>我的订单
-				<span>12</span>
+				<span>{{memberInfo.orderNum||0}}</span>
 				</view>
 			</view>
 		</view>
@@ -172,16 +173,46 @@
 			return {
 				userId: "",
 				token: "",
+				memberInfo:{},//用户信息
+				wallet:[],
 			}
 		},
 		onLoad() {
-			this.userId = uni.getStorageSync("userId");
-			this.token = uni.getStorageSync("token");
-		},
-		onShow(){
 			
 		},
+		onShow(){
+			this.getMemberInfo();
+		},
 		methods: {
+			async getMemberInfo() {
+				let result = await post("User/GetCenterInfo", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				})
+				if (result.code === 0) {
+					this.memberInfo = result.data;
+					result.data.Wallet=result.data.Wallet.toFixed(2);
+					this.wallet=result.data.Wallet.split('.')
+					this.$store.commit("update", {
+					  Wallet:result.data.Wallet
+					});  
+				} else if (result.code === 2) {
+					let _this = this;
+					// #ifndef MP-WEIXIN
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+					// #endif
+				}
+			},
 			//跳转
 			tolink(Url) {
 				//if(toLogin()){
