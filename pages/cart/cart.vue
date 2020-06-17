@@ -1,9 +1,10 @@
 <template>
 	<view class="content">
 		<!--  #ifndef  MP-WEIXIN -->
-		<view class="carthead"  :style="{'padding-top':barHeight+'px'}">
-			<text>购物车</text>
-			<text @click="ManageCart">{{isEdittxt}}</text>
+		<view class="carthead flex-between"  :style="{'padding-top':barHeight+'px'}">
+			<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
+			<text class="title">购物车</text>
+			<text class="head_r" @click="ManageCart">{{isEdittxt}}</text>
 		</view>
 		<!--  #endif -->
 		<!--  #ifdef  MP-WEIXIN -->
@@ -24,16 +25,14 @@
 						</view>
 						<view class="btn_receive" @click="showCoupon(item.ShopId)">领券</view>
 					</view>
-					<view class="column levelPanel">
-						<view class="item" v-for="(item2,index2) in item.ProData" :key="index2">
-							<view class="outside">
-								<view class="IconsCK IconsCK-radio" :class="{'disabled':item2.disBuy,'checked':item2.select}" @click="selectStyle(index,index2,item2.select,item2.disBuy,$event)"></view>
+					<view class="column bg_fff">
+						<view class="item flex-between" v-for="(item2,index2) in item.ProData" :key="index2">
+							<view class="IconsCK IconsCK-radio" :class="{'disabled':item2.disBuy,'checked':item2.select}" @click="selectStyle(index,index2,item2.select,item2.disBuy,$event)"></view>
+							<view class="outside flex1 flex-start">
 								<view class="pictrueAll" @click="gotoDetail(item2.ProductId,item2.Isinvalid)">
-									<view class="pictrue">
-										<image :src="item2.PicNo" mode="aspectFill"></image>
-									</view>
+									<image :src="item2.PicNo" mode="aspectFill"></image>
 								</view>
-								<view class="txtBox">
+								<view class="txtBox flex1">
 									<view class="title text-line2" @click="gotoDetail(item2.ProductId,item2.Isinvalid)">{{item2.Name}}</view>
 									<view class="flex skuBox">
 										<view class="flex-item flex1" v-if="item2.SpecText" @click="showSku(item2.ProductId,item2.Id,item2.Number,0)">
@@ -202,6 +201,11 @@
 				uni.navigateTo({
 					url:url
 				})
+			},
+			toback() {
+				uni.switchTab({
+					url: '/pages/tabBar/my/my'
+				});
 			},
 			// 跳转商品详情页
 			gotoDetail(pid,Isinvalid){
@@ -706,7 +710,5 @@
 </script>
 
 <style lang="scss" scoped>
-	@import './style';
-	// @import '../../../common/dd_style.css';
-	
+	@import './style';	
 </style>

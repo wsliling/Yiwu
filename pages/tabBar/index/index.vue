@@ -18,181 +18,122 @@
 		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
 			<!-- 首页 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-recom" scroll-y>
+				<scroll-view class="swiper-item swiper-item-recom" scroll-y  @scrolltolower="loadMore(tabIndex)">
 					<!-- 机构 -->
 					<view class="Yi-mechanism">
 						<scroll-view class="Daren-swiper-tab" scroll-x>
-							<block v-for="(item,index) in 4" :key="index">
-							<view class="item" @click="tolink('/pages/homepage/homepage')">
+							<view class="item" v-for="(item,index) in Dancerlist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 								<view class="tx">
-									<image src="@/static/of/1.png" mode="aspectFill"></image>
+									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
 								</view>
 								<view class="name uni-ellipsis">
-									cammile
+									{{item.Name}}
 								</view>
 							</view>
-							<view class="item">
-								<view class="tx">
-									<image src="@/static/of/2.png" mode="aspectFill"></image>
-								</view>
-								<view class="name uni-ellipsis">
-									拉丁舞社
-								</view>
-							</view>
-							</block>
 						</scroll-view>
 					</view>
 					<!-- 图文 -->
-					<view class="Yi-media">
-						<view class="media-hd flex-between">
-							<view class="author flex-start" @click="tolink('/pages/homepage/homepage')">
-								<view class="tx"><image src="@/static/default.png" mode="aspectFill"></image></view>
-								<view class="name uni-ellipsis">kastyle</view>
-								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id=','login')"><image src="@/static/chat.png"></image></view>
-							</view>
-							<view class="flow">关注</view>
-						</view>
-						<view class="media-bd">
-							<view class="desc">
-								Michael Malitowski &Joanna Leunis，Rumba WSSDF 2016
-							</view>
-							<view class="maxpic">
-								<image src="@/static/of/p1.jpg" mode="widthFix"></image>
-								<view class="isplay"></view>
-							</view>
-							<view class="media-ft flex-between">
-								<view class="ft_l flex-start">
-									<view class="txt_info like active">124</view>
-									<view class="txt_info reply">678</view>
-									<view class="txt_info share"></view>
-								</view>
-								<view class="ft_r">
-									<view class="txt_info sign active"></view>
-								</view>
-							</view>
-						</view>
-						<view class="media-comment">
-							<view class="comment-item">
-								<text class="name">不开心的小屋：</text>
-								<text class="con">
-									跳的真的太棒了，我喜欢，你们喜欢吗
-								</text>
-							</view>
-							<view class="comment-item">
-								<text class="name">lampopo：</text>
-								<text class="con">
-									nice
-								</text>
-							</view>
-							<view class="comment-item">
-								<text class="name">不开心的小屋：</text>
-								<text class="con">
-									跳的真的太棒了，我喜欢，你们喜欢吗
-								</text>
-							</view>
-							<view class="more c_999" @click="tolink('/pages/replylist/replylist?id=')">
-								查看全部评论
-							</view>
-						</view>
-					</view>
-					<view class="Yi-media">
-						<view class="media-hd flex-between">
-							<view class="author flex-start">
-								<view class="tx"><image src="@/static/default.png" mode="aspectFill"></image></view>
-								<view class="name uni-ellipsis">kastyle</view>
-								<view class="tochat"><image src="@/static/chat.png"></image></view>
-							</view>
-							<view class="flow active">已关注</view>
-						</view>
-						<view class="media-bd">
-							<view class="desc">
-								Michael Malitowski &Joanna Leunis，Rumba WSSDF 2016
-							</view>
-							<view class="maxpic">
-								<image src="@/static/of/p1.jpg" mode="widthFix"></image>
-							</view>
-							<view class="media-ft flex-between">
-								<view class="ft_l flex-start">
-									<view class="txt_info like">124</view>
-									<view class="txt_info reply">678</view>
-									<view class="txt_info share"></view>
-								</view>
-								<view class="ft_r">
-									<view class="txt_info sign"></view>
-								</view>
-							</view>
-						</view>
-						<view class="media-comment">
-							<view class="comment-item">
-								<text class="name">不开心的小屋：</text>
-								<text class="con">
-									跳的真的太棒了，我喜欢，你们喜欢吗
-								</text>
-							</view>
-							<view class="comment-item">
-								<text class="name">lampopo：</text>
-								<text class="con">
-									nice
-								</text>
-							</view>
-							<view class="comment-item">
-								<text class="name">不开心的小屋：</text>
-								<text class="con">
-									跳的真的太棒了，我喜欢，你们喜欢吗跳的真的太棒了，我喜欢，
-								</text>
-							</view>
-							<view class="more c_999">
-								查看全部评论
-							</view>
-						</view>
-					</view>
-					<!-- 推荐用户 -->
-					<view class="Yi-recomUser uni-mb10">
-						<view class="Yi-hd flex-between">
-							<view class="title">推荐用户</view>
-							<view class="more">查看全部</view>
-						</view>
-						<view class="Yi-bd">
-							<scroll-view class="User-swiper-tab" scroll-x>
-								<view class="item" v-for="(item,index) in 4" :key="index">
-									<view class="uni-icon uni-icon-closeempty close"></view>
-									<view class="tx">
-										<image src="@/static/of/1.png" mode="aspectFill"></image>
+					<block v-if="hasData">
+						<block v-for="(item,index) in datalist" :key="index">
+							<block v-if="index==3&&recuserlist.length>0">
+								<!-- 推荐用户 -->
+								<view class="Yi-recomUser uni-mb10">
+									<view class="Yi-hd flex-between">
+										<view class="title">推荐用户</view>
+										<view class="more">查看全部</view>
 									</view>
-									<view class="name uni-ellipsis">
-										cammile
-									</view>
-									<view class="flow">
-										关注
+									<view class="Yi-bd">
+										<scroll-view class="User-swiper-tab" scroll-x>
+											<view class="item" v-for="(item,index) in recuserlist" :key="index">
+												<view class="uni-icon uni-icon-closeempty close"></view>
+												<view class="tx">
+													<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
+												</view>
+												<view class="name uni-ellipsis">
+													{{item.NickName}}
+												</view>
+												<view class="flow">
+													关注
+												</view>
+											</view>
+										</scroll-view>
 									</view>
 								</view>
-							</scroll-view>
-						</view>
-					</view>
+							</block>
+							<view class="Yi-media">
+								<view class="media-hd flex-between">
+									<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
+										<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+										<view class="name uni-ellipsis">{{item.NickName}}</view>
+										<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="/static/chat.png"></image></view>
+									</view>
+									<view :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+								</view>
+								<view class="media-bd">
+									<view class="desc">
+										{{item.Title}}
+									</view>
+									<view class="maxpic" v-if="item.PicImg||item.VideoUrl">
+										<image :src="item.PicImg" mode="widthFix"></image>
+										<view v-if="item.VideoUrl" class="isplay"></view>
+									</view>
+									<view class="media-ft flex-between">
+										<view class="ft_l flex-start">
+											<view :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
+											<view class="txt_info reply">{{item.CommentNum}}</view>
+											<view class="txt_info share"></view>
+										</view>
+										<view class="ft_r">
+											<view :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+										</view>
+									</view>
+								</view>
+								<view class="media-comment" v-if="item.CommentNum>0">
+									<view class="comment-item" v-if="e<4" v-for="(i,e) in item.EvaluateList" :key="e">
+										<text class="name">{{i.MemberName||'匿名用户'}}：</text>
+										<text class="con">
+											{{i.Comment}}
+										</text>
+									</view>
+									<view class="more c_999" v-if="item.CommentNum>4" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+										查看全部评论
+									</view>
+								</view>
+							</view>
+						</block>
+						<view class="uni-tab-bar-loading">
+							<uni-load-more :loadingType="loadingType"></uni-load-more>
+						</view>	
+					</block>
+					<noData :isShow="noDataIsShow"></noData>
 					
 				</scroll-view>
 			</swiper-item>
 			<!-- 资讯	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-news" scroll-y>
-					<view class="Yi-newslist">
-						<view class="Yi-media" v-for="(item,index) in 5" :key="index" @click="tolink('/pages/msgDetail/msgDetail')">
+				<scroll-view class="swiper-item swiper-item-news" scroll-y @scrolltolower="loadMore(tabIndex)">
+					<view class="Yi-newslist" v-if="hasnews">
+						<view class="Yi-media" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
 							<view class="media-bd">
 								<view class="desc">
-									一代舞坛传奇人物-Micheal，重温经典，回味依旧！一代舞坛传奇人物-Micheal，重温经典，回味依旧
+									{{item.Title}}
 								</view>
-								<view class="maxpic">
-									<image src="@/static/of/p1.jpg" mode="widthFix"></image>
+								<view class="maxpic" v-if="item.Logo">
+									<image :src="item.Logo" mode="widthFix"></image>
 								</view>
 								<view class="media-ft flex-between">
 									<view class="ft_l flex-start">
-										<view class="txt_info">壹舞</view>
-										<view class="txt_info">2020-05-03</view>
+										<view class="txt_info">{{item.Source}}</view>
+										<view class="txt_info">{{item.AddTime}}</view>
 									</view>
 								</view>
 							</view>
 						</view>
 					</view>
+					<view class="uni-tab-bar-loading" v-if="hasnews">
+						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					</view>	
+					<noData :isShow="noDataIsShow"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 名师	 -->
@@ -265,7 +206,13 @@
 
 <script>
 	import {post,get,toLogin} from '@/common/util.js';
+	import noData from '@/components/noData.vue'; //暂无数据
+	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {
+		components: {
+			noData,
+			uniLoadMore
+		},
 		data() {
 			return {
 				userId: "",
@@ -293,16 +240,27 @@
 						Id:5,
 						TypeName:"课程"
 					}
-				]
+				],
+				page:1,
+				pageSize:6,
+				loadingType: 0, //0加载前，1加载中，2没有更多了
+				isLoad: false,
+				hasData: false,//是否有推荐视频
+				hasnews:false,//是否有资讯
+				noDataIsShow: false,
+				Dancerlist:[],//达人
+				recuserlist:[],//推荐用户
+				datalist:[],//推荐视频
+				NewsList:[],//资讯
 			}
-		},
-		components: {
-			
 		},
 		onLoad() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			
+			this.GetDancerList();
+			this.IndexRecommend();
+			this.GetReCommendMember();
+			this.YWNewsList();
 		},
 		onShow(){
 			
@@ -331,11 +289,13 @@
 				if (this.tabIndex === index) {
 					return false;
 				} else {
+					this.page=1;
 					this.tabIndex = index;
 					this.setScrollLeft(index)
 				}
 			},
 			changeTab(e) {
+				this.page=1;
 				let index = e.detail.current;
 				let id= this.tabnav[index].Id;
 				this.tabIndex = index;
@@ -359,6 +319,98 @@
 						res(data);
 					}).exec();
 				});
+			},
+			//获取推荐大人
+			async GetDancerList(){
+				let result = await post("User/GetDancerList", {
+					IsRecommend:1
+				});
+				if(result.code==0){
+					this.Dancerlist=result.data;
+				}
+			},
+			//获取推荐大人
+			async GetReCommendMember(){
+				let result = await post("User/GetReCommendMember", {});
+				if(result.code==0){
+					this.recuserlist=result.data;
+				}
+			},
+			//推荐视频
+			async IndexRecommend(){
+				let result = await post("Find/IndexRecommend", {
+					page:this.page,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.datalist = result.data;
+					}
+					if (this.page > 1) {
+						this.datalist = this.datalist.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
+			//分页获取资讯
+			async YWNewsList(){
+				let result = await post("News/YWNewsList", {
+					page:this.page,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasnews = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasnews = false;
+					}
+					if (this.page === 1) {
+						this.NewsList = result.data;
+					}
+					if (this.page > 1) {
+						this.NewsList = this.NewsList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
+			loadMore(e) {
+				console.log(e)
+				if (this.isLoad) {
+					this.loadingType = 1;
+					this.page++;
+					if(e==0){
+						this.IndexRecommend();
+					}
+				} else {
+					this.loadingType = 2;
+				}
 			},
 		}
 	}

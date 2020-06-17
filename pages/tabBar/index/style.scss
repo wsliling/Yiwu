@@ -103,6 +103,18 @@
 			margin-top: 20upx;
 			border-radius: 12upx;
 			overflow: hidden;
+			position: relative;
+			background-color: #e0e0e0;
+			.isplay{
+				height: 88upx;
+				width: 88upx;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin: -44upx 0 0 -44upx;
+				background: url(/static/play.png);
+				background-size: cover;
+			}
 		}
 	}
 	.media-ft{

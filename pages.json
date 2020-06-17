@@ -117,7 +117,11 @@
 		,{
 		    "path" : "pages/cart/cart",
 		    "style" : {
-				"navigationBarTitleText": "购物车"
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
 			}
 		}
         ,{

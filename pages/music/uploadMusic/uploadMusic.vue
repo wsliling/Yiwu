@@ -9,8 +9,11 @@
 			</view>
 			<view class="line-item">
 				<view class="lab">价格</view>
-				<view class="item_r flex1">
+				<view class="item_r flex1 flex-between">
 				  <input type="text" placeholder="请输入价格" class="flex1">
+				  <label class="flex-end" @click="hascheck=!hascheck">
+				  	<radio class="radio" :color="hascheck?'#de1b6e':'#999'" checked="true"></radio><text>免费</text>
+				  </label>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="ShowSelect(0)">
@@ -72,6 +75,7 @@
 				musicmenu:"",
 				musictype:"",
 				selectTab:0,//0弹出曲单，,1弹出类型
+				hascheck:false,//是否选中免费
 			}
 		},
 		components: {
