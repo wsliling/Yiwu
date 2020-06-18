@@ -90,7 +90,9 @@
 		},
 		computed: {
 			imgArr() {
-				return this.dataitem.ImgList.split(",");
+				if(this.dataitem.ImgList){
+					return this.dataitem.ImgList.split(",");
+				}
 			}
 		},
 		onLoad(){
