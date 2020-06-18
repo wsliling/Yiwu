@@ -335,6 +335,12 @@
 						}
 					}
                 }
+				,{
+				    "path" : "classify_list/classify_list",
+				    "style" : {
+				    	"navigationBarTitleText":"曲单"
+				    }
+				}
                 ,{
                     "path" : "recently/recently",
                     "style" : {

@@ -46,7 +46,7 @@
 				 </view>
 			 </view>
 			 <view class="music-list pd15" v-if="hasData">
-				 <view class="item" v-for="(item,index) in 9 " :key="index">
+				 <view class="item" v-for="(item,index) in classifylist " :key="index" @click="tolink('/pages/music/classify_list/classify_list?id='+item.Id+'&Logo='+item.Logo+'&Name='+item.Name)">
 					 <view class="img">
 						 <image src="@/static/music/music-item.png"></image>
 						<view class="img-top">
@@ -57,10 +57,8 @@
 							<image class="play" src="@/static/music/play.png" mode=""></image>
 						</view>
 					 </view>
-					 <view class="uni-ellipsis">桑巴舞曲精选</view>
+					 <view class="uni-ellipsis">{{item.Name}}</view>
 				 </view>
-				
-				 
 			 </view>
 		</view>
 		<view class="list" v-if="tabIndex==1&&hasData">
@@ -68,7 +66,7 @@
 				<media-list :datajson="item" Grid="2" @click="goDetail" @previewImg="previewImg"></media-list>
 			</block>
 		</view>
-		<view class="uni-tab-bar-loading" v-if="hasData">
+		<view class="uni-tab-bar-loading" v-if="hasData&&tabIndex==1">
 			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
@@ -92,6 +90,7 @@
 			return {
 				userId: "",
 				token: "",
+				classifylist:[],//舞曲分类列表
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
@@ -165,6 +164,9 @@
 				]
 			}
 		},
+		onLoad() {
+			this.getclassifyList()
+		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
@@ -176,6 +178,13 @@
 		   }
 		  },
 		methods: {
+			getclassifyList(){
+				post('DanceMusic/DanceMusicClassList',{}).then(res=>{
+					if(res.code===0){
+						this.classifylist=res.data
+					}
+				})
+			},
 			//跳转
 			tolink(Url) {
 				uni.navigateTo({
@@ -212,6 +221,15 @@
 					indicator:obj.imgurls.length
 				});
 			},
+		},
+		onReachBottom(){
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				// this.getList();
+			} else {
+				this.loadingType = 2;
+			}
 		}
 	}
 </script>
