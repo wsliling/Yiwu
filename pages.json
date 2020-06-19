@@ -4,6 +4,7 @@
 			"path": "pages/tabBar/index/index",
 			"style": {
 				"navigationBarTitleText": "壹舞",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
