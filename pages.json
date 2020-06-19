@@ -354,7 +354,28 @@
 					}
                 }
             ]
+		},
+		{	//商城内页
+			"root":"pages/shopSon",
+			"pages":[
+				{
+				    "path" : "mywu/wu",
+				    "style" : {
+						"navigationBarTitleText": "舞衣"
+					}
+				},
+				{
+				    "path" : "product/productDetails",
+				    "style" : {
+						"navigationBarTitleText": "产品详情"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				}
+		    ]
 		}
+		
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
