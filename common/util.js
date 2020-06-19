@@ -206,6 +206,17 @@ function uncodeUtf16(str){
   　　});
   　　return result;
  }
+// position--类='.class'id='#id'
+// function scrollPosition(position){
+// 	uni.createSelectorQuery().select(position).boundingClientRect(data=>{//目标节点
+// 		　　uni.createSelectorQuery().select(position).boundingClientRect((res)=>{//最外层盒子节点 　　　　
+// 		　　　　uni.pageScrollTo({ 　　　　　　
+// 		　　　　　　duration: 0,//过渡时间必须为0，否则运行到手机会报错
+// 		　　　　　　scrollTop: 位置 //滚动到实际距离是元素距离顶部的距离减去最外层盒子的滚动距离（如res.top - data.top）
+// 		　　　　})
+// 		　　}).exec()
+// 		}).exec()
+//  }
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
