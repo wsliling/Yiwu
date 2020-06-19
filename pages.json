@@ -308,6 +308,12 @@
 						"navigationBarTitleText":"收入明细"
 					}
                 }
+				,{
+				    "path" : "interflow/interflow",
+				    "style" : {
+						"navigationBarTitleText":"加入官方交流"
+					}
+				}
             ]
 		},
 		{

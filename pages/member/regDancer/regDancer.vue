@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="line-list">
+		<view class="line-list" style="margin-top: 20upx;">
 			<view class="line-item">
 				<view class="lab">真实姓名</view>
 				<view class="item_r flex1">
@@ -30,7 +30,7 @@
 			<text class="red">*</text>全部为必填信息，务必认真填写
 		</view>
 		<view style="height: 110upx;"></view>
-		<view class="fixedbtn" style="background: #fff;">
+		<view class="fixedbtn">
 			<view class="btn">提交</view>
 		</view>
 	</view>
@@ -91,7 +91,7 @@
 
 <style lang="scss">
 	page{ 
-		background: #fff;
+		// background: #fff;
 	}
 	.lab{
 		width: 160upx;

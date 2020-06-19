@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="line-list">
+		<view class="line-list" style="margin-top: 20upx;">
 			<view class="line-item">
 				<view class="lab">机构名称</view>
 				<view class="item_r flex1">
@@ -19,10 +19,10 @@
 				  <input type="text" placeholder="请输入街道门牌等信息" class="flex1">
 				</view>
 			</view>
-			<view class="line-item">
-				<view class="lab">机构简介</view>
-				<view class="item_r flex1">
-				  <input type="text" placeholder="请输入机构相关说明" class="flex1">
+			<view class="line-item" style="flex-wrap: wrap;">
+				<view class="lab" style="width: 100%;">机构简介</view>
+				<view class="item_r" style="width: 100%;">
+				  <textarea value="" maxlength="300" placeholder="请输入机购相关说明" />
 				</view>
 			</view>
 			<view class="line-item">
@@ -36,7 +36,7 @@
 			<text class="red">*</text>全部为必填信息，务必认真填写
 		</view>
 		<view style="height: 110upx;"></view>
-		<view class="fixedbtn" style="background: #fff;">
+		<view class="fixedbtn" style="background: #f8f8f8;">
 			<view class="btn">提交</view>
 		</view>
 	</view>
@@ -87,7 +87,7 @@
 
 <style lang="scss">
 	page{ 
-		background: #fff;
+		// background: #fff;
 	}
 	.lab{
 		width: 160upx;
