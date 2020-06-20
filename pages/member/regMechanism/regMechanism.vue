@@ -4,25 +4,25 @@
 			<view class="line-item">
 				<view class="lab">机构名称</view>
 				<view class="item_r flex1">
-				  <input type="text" placeholder="请输入机构名称" class="flex1">
+				  <input type="text" placeholder="请输入机构名称" v-model="name" class="flex1">
 				</view>
 			</view>
 			<view class="line-item">
 				<view class="lab">联系方式</view>
 				<view class="item_r flex1">
-				  <input type="text" placeholder="请输入联系方式" class="flex1">
+				  <input type="text" placeholder="请输入联系方式" v-model="phone" class="flex1">
 				</view>
 			</view>
 			<view class="line-item">
 				<view class="lab">地址</view>
 				<view class="item_r flex1">
-				  <input type="text" placeholder="请输入街道门牌等信息" class="flex1">
+				  <input type="text" placeholder="请输入街道门牌等信息" v-model="address" class="flex1">
 				</view>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
 				<view class="lab" style="width: 100%;">机构简介</view>
 				<view class="item_r" style="width: 100%;">
-				  <textarea value="" maxlength="300" placeholder="请输入机购相关说明" />
+				  <textarea value="" maxlength="300" v-model="explain" placeholder="请输入机购相关说明" />
 				</view>
 			</view>
 			<view class="line-item">
@@ -36,31 +36,56 @@
 			<text class="red">*</text>全部为必填信息，务必认真填写
 		</view>
 		<view style="height: 110upx;"></view>
-		<view class="fixedbtn" style="background: #f8f8f8;">
+		<view class="fixedbtn" style="background: #f8f8f8;" @click="submit" v-if="showBtn">
 			<view class="btn">提交</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {post} from '@/common/util'
+	import {post,toast,valPhone,navigateBack} from '@/common/util'
 	import { pathToBase64} from '@/common/image-tools.js';
 	export default {
 		data() {
 			return {
-				userId:"",
-				token:"",
-				picStr:""
+				picStr:"",
+				name:'',
+				phone:'',
+				address:'',
+				explain:'',//说明
+				showBtn:false,
 			}
 		},
 		onLoad(){
-		  this.userId = uni.getStorageSync("userId")
-		  this.token = uni.getStorageSync("token")
+			this.getData();
 		},
 		onShow(){
 
 		},
 		methods: {
+			async getData(){
+				// "AuditStatus": //审核状态 0-审核通过1-待审核2-审核失败-1未提交过
+				const res = await post('User/GetJiGouInfo',{
+					UserId:uni.getStorageSync("userId"),
+					Token:uni.getStorageSync("token"),
+				})
+				const data= res.data;
+				this.name = data.Name;
+				this.phone = data.Mobile;
+				this.address = data.Address;
+				this.explain = data.Remark;
+				this.showBtn = (data.AuditStatus==2||data.AuditStatus==-1)?true:false;
+				this.picStr = data.PicImg;
+				// 跨域的下载图片
+				// const that = this;
+				// uni.downloadFile({
+				// 	url:data.PicImg,
+				// 	success(e){
+				// 		that.picStr = e.tempFilePath;
+				// 		console.log(e,'download')
+				// 	}
+				// })
+			},	
 			//上传
 			uplLoadImg(){
 				uni.chooseImage({
@@ -70,17 +95,43 @@
 					success: (res) =>{
 						// tempFilePath可以作为img标签的src属性显示图片
 						this.picStr=res.tempFilePaths[0];
-						this.UploadPhoto()
 					} 
 				})
 			},
-			async base64Img(arr) {
-				const res = await pathToBase64(arr);
-				return res;
+			async submit(){
+				let tips = this.verify()
+				if(tips){
+					toast(tips);return;
+				}
+				let img = await pathToBase64(this.picStr)
+				const res = await post('User/JGAuthentication',{
+					UserId:uni.getStorageSync("userId"),
+					Token:uni.getStorageSync("token"),
+					Mobile:this.phone,
+					Name:this.name,
+					Address:this.address,
+					Remark:this.explain,
+					PicImg:img
+				})
+				toast('提交成功！等待管理员审核');
+				navigateBack();
 			},
-			async UploadPhoto(){
-				let picStrbase64=await this.base64Img(this.picStr);console.log(this.picStr)
-			},
+			verify(){
+				if(!this.name){
+					return '请输入姓名'
+				}
+				if(!valPhone(this.phone))return;
+				if(!this.address){
+					return '请输入地址'
+				}
+				if(!this.explain){
+					return '请输入机构简介'
+				}
+				if(!this.picStr){
+					return '请上传营业执照或舞蹈室门头照'
+				}
+				return false;
+			}
 		}
 	}
 </script>

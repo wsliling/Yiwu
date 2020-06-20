@@ -177,20 +177,6 @@ function getUrlParam(name) {
 	if(r != null) return unescape(r[2]);
 	return null;
 }
-// 普通跳转
-function navigate(url,params={}){
-	let p ='';
-	let arr = Object.keys(params);//键数组
-	arr.map(item=>{
-		p+=`${item}=${params[item]}`;
-		if(arr[arr.length-1]!==item){
-			p+='&';
-		}
-	})
-	uni.navigateTo({
-		url:'/pages/'+url+(p&&('?'+p))
-	})
-}
 function uncodeUtf16(str){
   　　var reg = /\&#.*?;/g;
   　　var result = str.replace(reg,function(char){
@@ -217,6 +203,7 @@ function uncodeUtf16(str){
 // 		　　}).exec()
 // 		}).exec()
 //  }
+import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
@@ -231,6 +218,13 @@ export {
 	getStorageOpenid,
 	valPhone,
 	getUrlParam,
+	uncodeUtf16,
+
+	toast,
+	debounce,
+	throttle,
 	navigate,
-	uncodeUtf16
+	switchTab,
+	redirect,
+	navigateBack,
 }

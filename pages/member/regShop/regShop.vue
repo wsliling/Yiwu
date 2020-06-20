@@ -28,7 +28,7 @@
 			<view class="line-item">
 				<view class="lab">品牌</view>
 				<view class="item_r flex1">
-				  <input type="text"v-model="brand" placeholder="请输入品牌,可不填" class="flex1" placeholder-style="color: #666;">
+				  <input type="text" v-model="brand" placeholder="请输入品牌,可不填" class="flex1" placeholder-style="color: #666;">
 				</view>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
