@@ -20,23 +20,23 @@
 		</view>
 		<!-- 快捷导航 -->
 		<view class="icon-menu">
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=0')">
 				<image class="icon" src="@/static/fenlei1.png"></image>
 				<text class="txt">舞衣</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=1')">
 				<image class="icon" src="@/static/fenlei2.png"></image>
 				<text class="txt">舞裙</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=2')">
 				<image class="icon" src="@/static/fenlei3.png"></image>
 				<text class="txt">舞裤</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=3')">
 				<image class="icon" src="@/static/fenlei4.png"></image>
 				<text class="txt">舞鞋</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=4')">
 				<image class="icon" src="@/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
 			</view>
@@ -97,7 +97,7 @@
 				</view>
 			</view>
 			<view class="live-item">
-				<view class="live-box">
+				<view class="live-box" @click="tolink('/pages/shopSon/product/productDetails')">
 					<image src="../../../static/music/music-item.png" mode=""></image>
 					<view class="live-day">今日爆款</view>
 					<view class="live-int">
@@ -105,7 +105,6 @@
 						<view class="live-ef">自营</view>
 						<view class="live-price"><span>￥</span>79.99</view>
 					</view>
-					
 				</view>
 				<view class="live-box">
 					<image src="../../../static/music/music-item.png" mode=""></image>
@@ -232,6 +231,11 @@
 			tapTab(index) {
 				this.indexs = index;
 			},
+			tolink(Url){
+				uni.navigateTo({
+					url: Url
+				})
+			}
 		}
 	}
 </script>
