@@ -19,10 +19,10 @@
 			<!-- 首页 -->
 			<swiper-item>
 				<scroll-view class="swiper-item swiper-item-recom" scroll-y @scrolltolower="loadMore('datalist')">
-					<!-- 机构 -->
-					<view class="Yi-mechanism" v-if="datalist.length">
+					<!-- 达人 -->
+					<view class="Yi-mechanism" v-if="TeacherUserList.length">
 						<scroll-view class="Daren-swiper-tab" scroll-x>
-							<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
+							<view class="item" v-for="(item,index) in TeacherUserList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 								<view class="tx">
 									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
 								</view>
@@ -257,8 +257,9 @@
 				page:1,
 				pageSize:8,
 				noDataIsShow: false,
-				recuserlist:[],//推荐用户
 
+				recuserlist:[],//推荐用户
+				TeacherUserList:[],//推荐的名师
 				datalist:[],////推荐视频
 				datalistPage:1,
 				datalistLoadingType:0,//0加载前，1加载中，2没有更多了
@@ -292,6 +293,9 @@
 		 },
 		methods: {
 			init(){
+				this.recuserlist=[],//推荐用户
+				this.TeacherUserList=[],//推荐的名师
+				this.datalist=[],////推荐视频
 				this.datalistPage=1,
 				this.datalistLoadingType=0,//0加载前，1加载中，2没有更多了
 				this.NewsList=[],//资讯
@@ -307,6 +311,8 @@
 				this.CourseListPage=1,
 				this.CourseListLoadingType=0;
 				this.IndexRecommend();
+				this.GetReCommendMember();
+				this.getRecommendUser();
 				this.YWNewsList();
 				this.GetTeacher();
 				this.GetJiGouList();
@@ -373,7 +379,13 @@
 					}).exec();
 				});
 			},
-
+			//获取推荐名师
+			async getRecommendUser(){
+				let res = await post("User/GetDancerList", {
+					IsRecommend:1
+				});
+				this.TeacherUserList=res.data;
+			},
 			//获取推荐大人
 			async GetReCommendMember(){
 				let result = await post("User/GetReCommendMember", {
