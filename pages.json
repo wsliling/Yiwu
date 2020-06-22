@@ -4,6 +4,7 @@
 			"path": "pages/tabBar/index/index",
 			"style": {
 				"navigationBarTitleText": "壹舞",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
@@ -129,6 +130,12 @@
             "style" : {
 				"navigationBarTitleText": "确认支付"
 			}
+        }
+        ,{
+            "path" : "pages/uploadFile/uploadFile",
+            "style" : {
+            	"navigationBarTitleText": "上传文件"
+            }
         }
     ],
 	"subPackages":[
@@ -260,7 +267,7 @@
                 ,{
                     "path" : "myMusic/myMusic",
                     "style" : {
-                    	"navigationBarTitleText":"我上传的舞曲",
+                    	"navigationBarTitleText":"我的舞曲",
                     	"app-plus": {
                     		"titleNView": false
                     	}
@@ -308,6 +315,12 @@
 						"navigationBarTitleText":"收入明细"
 					}
                 }
+				,{
+				    "path" : "interflow/interflow",
+				    "style" : {
+						"navigationBarTitleText":"加入官方交流"
+					}
+				}
             ]
 		},
 		{
@@ -335,6 +348,12 @@
 						}
 					}
                 }
+				,{
+				    "path" : "classify_list/classify_list",
+				    "style" : {
+				    	"navigationBarTitleText":"曲单"
+				    }
+				}
                 ,{
                     "path" : "recently/recently",
                     "style" : {
@@ -342,7 +361,28 @@
 					}
                 }
             ]
+		},
+		{	//商城内页
+			"root":"pages/shopSon",
+			"pages":[
+				{
+				    "path" : "mywu/wu",
+				    "style" : {
+						"navigationBarTitleText": "舞衣"
+					}
+				},
+				{
+				    "path" : "product/productDetails",
+				    "style" : {
+						"navigationBarTitleText": "产品详情"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				}
+		    ]
 		}
+		
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

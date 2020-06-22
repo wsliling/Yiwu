@@ -2,24 +2,27 @@
 	<view>
 		<view class="menulist">
 			<view class="item flex-between">
-				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
+				<view class="imgbox">
+					<image v-if="Logo" :src="Logo" mode="aspectFill"></image>
+					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
+				</view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">{{datalist.Name}}</view>
-					<view class="fz12 c_999 uni-mt10">{{datalist.Num}}</view>
+					<view class="name uni-ellipsis">{{Name||舞曲列表}}</view>
+					<view class="fz12 c_999 uni-mt10">{{count}}首</view>
 				</view>
 			</view>
 		</view>
 		<view class="musiclist pd15">
-			<view class="item flex-between" v-for="(item,index) in datalist.DanceMusicList" :key="index">
+			<view class="item flex-between" v-for="(item,index) in datalist" :key="index">
 				<view class="imgbox">
-					<image v-if="item.Cover_pic" :src="item.Cover_pic" mode="aspectFill"></image>
+					<image v-if="item.PicImg" :src="item.PicImg" mode="aspectFill"></image>
 					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
 					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
 						<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
+						<view class="icon" @click="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
 			</view>
@@ -29,9 +32,9 @@
 			<view class="uni-modal-music Operation__modal">
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item">
+						<view class="line-item" v-if="price>0">
 							<view class="line-item-l text_left">
-								<text class="txt c_theme">￥34</text>
+								<text class="txt c_theme">￥{{price}}</text>
 							</view>
 							<view class="item-r">
 								<view class="btnbuy">购买</view>
@@ -71,9 +74,9 @@
 				<view class="uni-modal__hd pd15">选择曲单</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in 12" :key="index">
+						<view class="line-item" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
 							<view class="line-item-l text_left">
-								<text class="txt">默认曲单</text>
+								<text class="txt">{{item.Name}}</text>
 							</view>
 						</view>
 					</view>
@@ -83,6 +86,9 @@
 				</view>
 			</view>
 		</uni-popup>
+		<view class="uni-tab-bar-loading" v-if="hasData">
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
+		</view>
 	</view>
 </template>
 
@@ -97,18 +103,24 @@
 				barHeight:0,
 				userId: '',
 				token: '',
-				Id:0,//曲单id
 				page:1,
-				pageSize:6,
+				pageSize:12,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
 				noDataIsShow: false,
-				datalist: {}, //列表
+				datalist: [], //列表
+				DancePlayList:[],//曲单列表
+				count:0,//列表总数
+				Logo:"",
+				Name:"",
+				ClassId:0,//类型id
 				isShowOperation:false,
 				isShowSelect:false,
 				isCollect:false,//是否收藏
 				playIndex:0,//当前播放
+				MusicId:0,//选择更多操作的id
+				price:0,//选择更多操作的价格
 			}
 		},
 		components: {
@@ -126,8 +138,11 @@
 			// #endif
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			this.Id=e.id
+			this.ClassId=e.id;
+			this.Logo=e.Logo;
+			this.Name=e.Name;
 			this.workeslist();
+			this.getDancePlayList();
 		},
 		methods: {
 			//跳转
@@ -146,8 +161,15 @@
 				this.playIndex=index
 			},
 			//弹出更多操作
-			ShowOperation(index){
+			ShowOperation(item){
 				this.isShowOperation=true;
+				this.MusicId=item.Id;
+				this.price=item.Price;
+				if(item.IsCollect==0){
+					this.isCollect=false;
+				}else{
+					this.isCollect=true;
+				}
 			},
 			//弹出选择歌单
 			ShowSelect(){
@@ -160,20 +182,32 @@
 				this.isShowSelect=false;
 			},
 			//收藏
-			Collect(){
+			async Collect(){
 				this.isCollect=!this.isCollect;
+				let result = await post('DanceMusic/CollectOperation', {
+					UserId: this.userId,
+					Token: this.token,
+					FindId: this.MusicId,
+				});
+				uni.showToast({
+					title:result.msg,
+					icon:"none"
+				})
+				this.workeslist();//刷新状态
+				this.hidePopup()
 			},
 			/*获取列表*/
 			async workeslist() {
-				let result = await post('DanceMusic/GetMusicListByPId', {
+				let result = await post('DanceMusic/DanceMusicList', {
 					UserId: this.userId,
 					Token: this.token,
-					PlayId:this.Id,
 					page: this.page,
-					pageSize: this.pageSize
+					pageSize: this.pageSize,
+					ClassId:this.ClassId
 				});
 				if (result.code === 0) {
 					let _this=this;
+					this.count=result.count;
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
@@ -198,6 +232,39 @@
 						this.loadingType = 0
 					}
 				}
+			},
+			/*获取列表*/
+			async getDancePlayList() {
+				let result = await post('DanceMusic/DancePlayList', {
+					UserId: this.userId,
+					Token: this.token,
+					page: 1,
+					pageSize: 99
+				});
+				if (result.code === 0) {
+					let _this=this;
+					this.DancePlayList=result.data
+				}
+			},
+			//加入曲单
+			async joinList(id){
+				let result = await post('DanceMusic/AddPlayList', {
+					UserId: this.userId,
+					Token: this.token,
+					MusicId: this.MusicId,
+					PlayId: id
+				});
+				if(result.code==0){
+					uni.showToast({
+						title:"添加成功"
+					})
+				}else{
+					uni.showToast({
+						title:result.msg,
+						icon:"none"
+					})
+				}
+				this.hidePopup()
 			},
 		},
 		// 上拉加载

@@ -14,10 +14,13 @@
 				<text>播放全部</text>
 			</view>
 			<view class="musiclist pd15">
-				<view class="item flex-between" v-for="(item,index) in 5" :key="index">
-					<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
+				<view class="item flex-between" v-for="(item,index) in datalist" :key="index">
+					<view class="imgbox">
+						<image v-if="item.ImgList||item.PicImg" :src="pageType==0?item.ImgList:item.PicImg" mode="aspectFill"></image>
+						<image v-else src="/static/default_music.png" mode="aspectFill"></image>
+					</view>
 					<view class="info flex1 flex-between">
-						<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">曲名芭蕾舞曲</view>
+						<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
 							<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 							<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
@@ -25,66 +28,70 @@
 					</view>
 				</view>
 			</view>
+			<view class="uni-tab-bar-loading" v-if="hasData">
+				<uni-load-more :loadingType="loadingType"></uni-load-more>
+			</view>
+			<noData :isShow="noDataIsShow"></noData>
 		</view>
 		<!-- 更多操作	 -->
-			<uni-popup mode="fixed" :show="isShowOperation" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-				<view class="uni-modal-music Operation__modal">
-					<view class="uni-modal__bd">
-						<view class="line-list">
-							<view class="line-item">
-								<view class="line-item-l text_left">
-									<text class="txt c_theme">￥34</text>
-								</view>
-								<view class="item-r">
-									<view class="btnbuy" @click="tolink('/pages/pay2/pay2?type=1')">购买</view>
-								</view>
+		<uni-popup mode="fixed" :show="isShowOperation" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-music Operation__modal">
+				<view class="uni-modal__bd">
+					<view class="line-list">
+						<view class="line-item">
+							<view class="line-item-l text_left">
+								<text class="txt c_theme">￥34</text>
 							</view>
-							<view class="line-item">
-								<view class="line-item-l flex-start">
-									<image class="iconimg" src="/static/play_next.png" mode="widthFix"></image>
-									<text class="txt">播放下一首</text>
-								</view>
+							<view class="item-r">
+								<view class="btnbuy" @click="tolink('/pages/pay2/pay2?type=1')">购买</view>
 							</view>
-							<view class="line-item" @click="ShowSelect">
-								<view class="line-item-l flex-start">
-									<image class="iconimg" src="/static/add.png" mode="widthFix"></image>
-									<text class="txt">添加到歌单</text>
-								</view>
+						</view>
+						<view class="line-item">
+							<view class="line-item-l flex-start">
+								<image class="iconimg" src="/static/play_next.png" mode="widthFix"></image>
+								<text class="txt">播放下一首</text>
 							</view>
-							<view class="line-item">
-								<view class="line-item-l flex-start">
-									<image class="iconimg" src="/static/share.png" mode="widthFix"></image>
-									<text class="txt">分享</text>
-								</view>
+						</view>
+						<view class="line-item" @click="ShowSelect">
+							<view class="line-item-l flex-start">
+								<image class="iconimg" src="/static/add.png" mode="widthFix"></image>
+								<text class="txt">添加到歌单</text>
 							</view>
-							<view class="line-item" @click="Collect">
-								<view class="line-item-l flex-start">
-									<image class="iconimg" :src="isCollect?'/static/collect2.png':'/static/collect.png'" mode="widthFix"></image>
-									<text class="txt">收藏</text>
-								</view>
+						</view>
+						<view class="line-item">
+							<view class="line-item-l flex-start">
+								<image class="iconimg" src="/static/share.png" mode="widthFix"></image>
+								<text class="txt">分享</text>
+							</view>
+						</view>
+						<view class="line-item" @click="Collect">
+							<view class="line-item-l flex-start">
+								<image class="iconimg" :src="isCollect?'/static/collect2.png':'/static/collect.png'" mode="widthFix"></image>
+								<text class="txt">收藏</text>
 							</view>
 						</view>
 					</view>
 				</view>
-			</uni-popup>
-			<!-- 选择曲单	 -->
-			<uni-popup mode="fixed" :show="isShowSelect" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-				<view class="uni-modal-music Menulist__modal">
-					<view class="uni-modal__hd pd15">选择曲单</view>
-					<view class="uni-modal__bd">
-						<view class="line-list">
-							<view class="line-item" v-for="(item,index) in 12" :key="index">
-								<view class="line-item-l text_left">
-									<text class="txt">默认曲单</text>
-								</view>
+			</view>
+		</uni-popup>
+		<!-- 选择曲单	 -->
+		<uni-popup mode="fixed" :show="isShowSelect" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-music Menulist__modal">
+				<view class="uni-modal__hd pd15">选择曲单</view>
+				<view class="uni-modal__bd">
+					<view class="line-list">
+						<view class="line-item" v-for="(item,index) in 12" :key="index">
+							<view class="line-item-l text_left">
+								<text class="txt">默认曲单</text>
 							</view>
 						</view>
-						<view class="btns flex-between">
-							<view class="btn c_theme"  @click="hidePopup">关闭</view>
-						</view>
+					</view>
+					<view class="btns flex-between">
+						<view class="btn c_theme"  @click="hidePopup">关闭</view>
 					</view>
 				</view>
-			</uni-popup>
+			</view>
+		</uni-popup>
 		
 	</view>
 </template>
@@ -120,10 +127,17 @@
 				
 			}
 		},
+		onLoad(e) {
+			// #ifdef APP-PLUS
+			this.pageType=e.type;
+			// #endif
+		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			// #ifndef APP-PLUS
 			this.pageType=this.$mp.query.type;
+			// #endif
 			if(this.pageType==0){
 				this.pageTitle="每日推荐";
 			}else if(this.pageType==1){
@@ -134,8 +148,63 @@
 			uni.setNavigationBarTitle({
 				title: this.pageTitle
 			})
+			this.workeslist()
 		},
 		methods: {
+			/*获取列表*/
+			async workeslist() {
+				var url=""
+				var param={}
+				if(this.pageType==0){
+					url="DanceMusic/EverydayRecommend";
+					param={}
+				}else if(this.pageType==1){
+					url="DanceMusic/DanceMusicList";
+					param={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize,
+						IsRecommend:1
+					}
+				}else{
+					url="DanceMusic/DanceMusicList";
+					param={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize,
+						IsHot:1
+					}
+				}
+				let result = await post(url, param);
+				if (result.code === 0) {
+					let _this=this;
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.datalist = result.data;
+					}
+					if (this.page > 1) {
+						this.datalist = this.datalist.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
+			},
 			//跳转
 			tolink(Url) {
 				uni.navigateTo({

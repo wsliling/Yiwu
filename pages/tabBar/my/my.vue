@@ -94,7 +94,7 @@
 			<view class="item" @click="tolink('/pages/member/myMusic/myMusic')">
 				<view class="item-left">
 					<image  src="@/static/my/icon8.png" mode="aspectFit"></image>
-					<view>我上传的舞曲</view>
+					<view>我的舞曲</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
@@ -133,7 +133,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/interflow/interflow')">
 				<view class="item-left">
 					<image  src="@/static/my/icon11.png" mode="aspectFit"></image>
 					<view>加入官方交流</view>

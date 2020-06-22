@@ -1,12 +1,12 @@
 <template>
-	<view>
+	<view class="bg">
 		<view class="search">
 			<view class="seachbox">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 			</view>
 		</view>
 		<!--轮播图-->
-		<view class="index_swiper">
+		<view class="index_swiper ptb20">
 			<swiper class="swiper" :indicator-dots="false" autoplay :interval="5000" :duration="500" @change="changeSwiper">
 				<swiper-item v-for="(item,index) in 3" :key="index">
 					<view class="swiper-item pd15">
@@ -14,37 +14,123 @@
 					</view>
 				</swiper-item>
 			</swiper>
-			<view class="dots">
+			<view class="dots" style="bottom: 18px;">
 				<view v-for="(item,index) in 3" :key="index" :class="['dot',currentSwiper==index?'active':'']"></view>
 			</view>
 		</view>
 		<!-- 快捷导航 -->
 		<view class="icon-menu">
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=0')">
 				<image class="icon" src="@/static/fenlei1.png"></image>
 				<text class="txt">舞衣</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=1')">
 				<image class="icon" src="@/static/fenlei2.png"></image>
 				<text class="txt">舞裙</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=2')">
 				<image class="icon" src="@/static/fenlei3.png"></image>
 				<text class="txt">舞裤</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=3')">
 				<image class="icon" src="@/static/fenlei4.png"></image>
 				<text class="txt">舞鞋</text>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=4')">
 				<image class="icon" src="@/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
 			</view>
 		</view>
+		<!-- 品牌 -->
+		<view class="brand">
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop1.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop2.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop3.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop4.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop5.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop6.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop7.png"></image>
+			</view>
+			<view class="brand-img">
+				<image class="icon" src="@/static/shop/shop8.png"></image>
+			</view>
+		</view>
+		<!-- 热卖推荐 -->
+		<view class="best">
+			<view class="letter active">
+				<view class="txt30">热卖推荐</view>
+				<view class="txt22">本周销量top</view>
+				<view class="pole"></view>
+			</view>
+			<view class="letter">
+				<view class="txt30">猜你喜欢</view>
+				<view class="txt22">最懂你的</view>
+				<view class="pole1"></view>
+			</view>
+			<view class="letter">
+				<view class="txt30">便宜好货</view>
+				<view class="txt22">好货不贵</view>
+			</view>
+		</view>
+		<!-- 正在直播 -->
+		<view class="live" v-for="(val,key) in 3" :key="key">
+			<view class="live-img">
+				<image src="../../../static/of/p3.jpg" mode=""></image>
+				<view class="islive">
+					<view class="line line1"></view>
+					<view class="line line2"></view>
+					<view class="line line3"></view>
+					<view class="txt">正在直播</view>
+				</view>
+			</view>
+			<view class="live-item">
+				<view class="live-box" @click="tolink('/pages/shopSon/product/productDetails')">
+					<image src="../../../static/music/music-item.png" mode=""></image>
+					<view class="live-day">今日爆款</view>
+					<view class="live-int">
+						<view class="live-tit">一舞拉丁白色舞 蹈显身材紧身蹈显身蹈显身材紧身蹈显身材紧身蹈显身材紧身材紧身蹈显身材紧身...</view>
+						<view class="live-ef">自营</view>
+						<view class="live-price"><span>￥</span>79.99</view>
+					</view>
+				</view>
+				<view class="live-box">
+					<image src="../../../static/music/music-item.png" mode=""></image>
+					<view class="live-day">今日新品</view>
+					<view class="live-int">
+						<view class="live-tit">一舞拉丁蓝色舞 蹈显身材</view>
+						<view class="live-ef">超级好物</view>
+						<view class="live-price"><span>￥</span>29.99</view>
+					</view>
+					
+				</view>
+				<view class="live-box">
+					<image src="../../../static/music/music-item.png" mode=""></image>
+					<view class="live-int">
+						<view class="live-tit">一舞拉丁紫色舞 蹈</view>
+						<view class="live-ef">推荐好物</view>
+						<view class="live-price"><span>￥</span>88.89</view>
+					</view>
+				</view>
+			</view>
+			
+		</view>
 		<!-- 定制 -->
-		<image class="gg_dz" src="@/static/gg_1.png" mode="widthFix"></image>
+		<!-- <image class="gg_dz" src="@/static/gg_1.png" mode="widthFix"></image> -->
 		<!-- 营销 -->
-		<view class="Yi-marketing pd15 flex">
+	<!-- 	<view class="Yi-marketing pd15 flex">
 			<view class="item flex-between">
 				<view class="item_l">
 					<view class="txt_1">畅销榜</view>
@@ -63,9 +149,9 @@
 					<image src="@/static/z2.png"></image>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		<!-- 每日分享 -->
-		<view class="Yi-Day uni-mb10">
+		<!-- <view class="Yi-Day uni-mb10">
 			<view class="Yi-hd flex-between">
 				<view class="title">每日分享</view>
 			</view>
@@ -86,9 +172,9 @@
 					</view>
 				</scroll-view>
 			</view>
-		</view>
+		</view> -->
 		<!-- 商品列表 -->
-		<view class="goods">
+	<!-- 	<view class="goods">
 			<view class="menu_nav flex-between">
 				<view class="menu_item flex flexAlignCenter flexColumn" 
 				v-for="(item,index) in navlist" :key="index" :class="{'active':index==indexs}" @click="tapTab(index)">
@@ -111,7 +197,7 @@
 					</view>
 				</view>
 			</view>
-		</view>
+		</view> -->
 		
 	</view>
 </template>
@@ -145,6 +231,11 @@
 			tapTab(index) {
 				this.indexs = index;
 			},
+			tolink(Url){
+				uni.navigateTo({
+					url: Url
+				})
+			}
 		}
 	}
 </script>

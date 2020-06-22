@@ -7,10 +7,10 @@ page{
 .music-list{
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	margin-bottom: 60upx;
 	flex-wrap: wrap;
 	.item{
-		// height: 265upx;
+		margin-right: 15upx;
 		width: 220upx;
 		image{
 			width: 100%;
@@ -53,6 +53,9 @@ page{
 			color: #333;
 			text-align: center;
 		}
+	}
+	.item:nth-child(3n){
+		margin-right: 0;
 	}
 }
 .uploadbtn{
