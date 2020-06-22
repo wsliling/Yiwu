@@ -133,7 +133,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/interflow/interflow')">
 				<view class="item-left">
 					<image  src="@/static/my/icon11.png" mode="aspectFit"></image>
 					<view>加入官方交流</view>

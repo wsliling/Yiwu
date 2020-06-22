@@ -18,11 +18,11 @@
 		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
 			<!-- 首页 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-recom" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<!-- 机构 -->
-					<view class="Yi-mechanism" v-if="Dancerlist.length">
+				<scroll-view class="swiper-item swiper-item-recom" scroll-y @scrolltolower="loadMore('datalist')">
+					<!-- 达人 -->
+					<view class="Yi-mechanism" v-if="TeacherUserList.length">
 						<scroll-view class="Daren-swiper-tab" scroll-x>
-							<view class="item" v-for="(item,index) in Dancerlist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
+							<view class="item" v-for="(item,index) in TeacherUserList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 								<view class="tx">
 									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
 								</view>
@@ -33,7 +33,7 @@
 						</scroll-view>
 					</view>
 					<!-- 图文 -->
-					<block v-if="hasData">
+					<block v-if="datalist.length">
 						<block v-for="(item,index) in datalist" :key="index">
 							<block v-if="index==3&&recuserlist.length>0">
 								<!-- 推荐用户 -->
@@ -102,18 +102,18 @@
 								</view>
 							</view>
 						</block>
-						<view class="uni-tab-bar-loading">
-							<uni-load-more :loadingType="loadingType"></uni-load-more>
+						<view class="uni-tab-bar-loading" v-if="datalist.length">
+							<uni-load-more :loadingType="datalistLoadingType"></uni-load-more>
 						</view>	
 					</block>
-					<noData :isShow="noDataIsShow"></noData>
+					<noData :isShow="!datalist.length"></noData>
 					
 				</scroll-view>
 			</swiper-item>
 			<!-- 资讯	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-news" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<view class="Yi-newslist" v-if="hasData">
+				<scroll-view class="swiper-item swiper-item-news" scroll-y @scrolltolower="loadMore('NewsList')">
+					<view class="Yi-newslist" >
 						<view class="Yi-media" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
 							<view class="media-bd">
 								<view class="desc">
@@ -131,16 +131,16 @@
 							</view>
 						</view>
 					</view>
-					<view class="uni-tab-bar-loading" v-if="hasData">
-						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					<view class="uni-tab-bar-loading" v-if="NewsList.length">
+						<uni-load-more :loadingType="NewsListLoadingType"></uni-load-more>
 					</view>	
-					<noData :isShow="noDataIsShow"></noData>
+					<noData :isShow="!NewsList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 名师	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-User" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<view class="Yi-Userlist" v-if="hasData">
+				<scroll-view class="swiper-item swiper-item-User" scroll-y @scrolltolower="loadMore('TeacherList')">
+					<view class="Yi-Userlist">
 						<view class="user-item" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 							<view class="flex-between">
 								<view class="author flex-start">
@@ -157,16 +157,16 @@
 							</view>
 						</view>
 					</view>
-					<view class="uni-tab-bar-loading" v-if="hasData">
-						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					<view class="uni-tab-bar-loading" v-if="TeacherList.length">
+						<uni-load-more :loadingType="TeacherListLoadingType"></uni-load-more>
 					</view>
-				    <noData :isShow="noDataIsShow"></noData>
+				    <noData :isShow="!TeacherList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 机构	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<view class="Yi-mechanismlist" v-if="hasData">
+				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y @scrolltolower="loadMore('JiGouList')">
+					<view class="Yi-mechanismlist">
 						<view class="mechanism-item" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 							<view class="flex-between">
 								<view class="author flex-start">
@@ -183,16 +183,16 @@
 							</view>
 						</view>
 					</view>
-					<view class="uni-tab-bar-loading" v-if="hasData">
-						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					<view class="uni-tab-bar-loading" v-if="JiGouList.length">
+						<uni-load-more :loadingType="JiGouListLoadingType"></uni-load-more>
 					</view>
-					<noData :isShow="noDataIsShow"></noData>
+					<noData :isShow="!JiGouList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 课程	 -->
 			<swiper-item>
-				<scroll-view class="swiper-item swiper-item-course" scroll-y @scrolltolower="loadMore(tabIndex)">
-					<view class="Yi-courselist flexWrap flex-between" v-if="hasData">
+				<scroll-view class="swiper-item swiper-item-course" scroll-y @scrolltolower="loadMore('CourseList')">
+					<view class="Yi-courselist flexWrap flex-between">
 						<view class="item" v-for="(item,index) in CourseList" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
 							<view class="maxpic">
 								<image :src="item.Logo" mode="aspectFill"></image>
@@ -207,10 +207,10 @@
 							</view>
 						</view>
 					</view>
-					<view class="uni-tab-bar-loading" v-if="hasData">
-						<uni-load-more :loadingType="loadingType"></uni-load-more>
+					<view class="uni-tab-bar-loading" v-if="CourseList.length">
+						<uni-load-more :loadingType="CourseListLoadingType"></uni-load-more>
 					</view>
-					<noData :isShow="noDataIsShow"></noData>
+					<noData :isShow="!CourseList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -256,28 +256,35 @@
 				],
 				page:1,
 				pageSize:8,
-				loadingType: 0, //0加载前，1加载中，2没有更多了
-				isLoad: false,
-				hasData: false,//是否有推荐视频
 				noDataIsShow: false,
-				Dancerlist:[],//达人
+
 				recuserlist:[],//推荐用户
-				datalist:[],//推荐视频
+				TeacherUserList:[],//推荐的名师
+				datalist:[],////推荐视频
+				datalistPage:1,
+				datalistLoadingType:0,//0加载前，1加载中，2没有更多了
 				NewsList:[],//资讯
+				NewsListPage:1,
+				NewsListLoadingType:0,//0加载前，1加载中，2没有更多了
 				TeacherList:[],//名师
+				TeacherListPage:1,
+				TeacherListLoadingType:0,
 				JiGouList:[],//机构
+				JiGouListPage:1,
+				JiGouListLoadingType:0,
 				CourseList:[],//课程
+				CourseListPage:1,
+				CourseListLoadingType:0,
 			}
 		},
 		onLoad() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			this.GetDancerList();
-			this.IndexRecommend();
-			this.GetReCommendMember();
+			this.init();
 		},
 		onShow(){
-			
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
 		},
 		computed: {
 		   tabStyle(){
@@ -285,6 +292,32 @@
 		   }
 		 },
 		methods: {
+			init(){
+				this.recuserlist=[],//推荐用户
+				this.TeacherUserList=[],//推荐的名师
+				this.datalist=[],////推荐视频
+				this.datalistPage=1,
+				this.datalistLoadingType=0,//0加载前，1加载中，2没有更多了
+				this.NewsList=[],//资讯
+				this.NewsListPage=1,
+				this.NewsListLoadingType=0,//0加载前，1加载中，2没有更多了
+				this.TeacherList=[],//名师
+				this.TeacherListPage=1,
+				this.TeacherListLoadingType=0,
+				this.JiGouList=[],//机构
+				this.JiGouListPage=1,
+				this.JiGouListLoadingType=0,
+				this.CourseList=[],//课程
+				this.CourseListPage=1,
+				this.CourseListLoadingType=0;
+				this.IndexRecommend();
+				this.GetReCommendMember();
+				this.getRecommendUser();
+				this.YWNewsList();
+				this.GetTeacher();
+				this.GetJiGouList();
+				this.GetCourseList();
+			},
 			//跳转
 			tolink(Url,islogin) {
 				if(islogin=="login"){
@@ -303,31 +336,29 @@
 				if (this.tabIndex === index) {
 					return false;
 				} else {
-					this.page=1;
-					this.hasData=false;
-					this.noDataIsShow=false;
+					// this.page=1;
+					// this.noDataIsShow=false;
 					this.tabIndex = index;
 					this.setScrollLeft(index)
-					this.fun(index);
-					if(index==0){
-						this.GetDancerList();
-						this.GetReCommendMember();
-					}
+					// this.fun(index);
+					// if(index==0){
+					// 	this.GetDancerList();
+					// 	this.GetReCommendMember();
+					// }
 				}
 			},
 			changeTab(e) {
-				this.page=1;
-				this.hasData=false;
-				this.noDataIsShow=false;
+				// this.page=1;
+				// this.noDataIsShow=false;
 				let index = e.detail.current;
 				let id= this.tabnav[index].Id;
 				this.tabIndex = index;
 				this.setScrollLeft(index);
-				this.fun(index);
-				if(index==0){
-					this.GetDancerList();
-					this.GetReCommendMember();
-				}
+				// this.fun(index);
+				// if(index==0){
+				// 	this.GetDancerList();
+				// 	this.GetReCommendMember();
+				// }
 			},
 			setScrollLeft: async function(tabIndex) {
 				let leftWidthSum = 0;
@@ -348,16 +379,12 @@
 					}).exec();
 				});
 			},
-			//获取推荐大人
-			async GetDancerList(){
-				let result = await post("User/GetDancerList", {
-					UserId:this.userId,
-					Token:this.token,
+			//获取推荐名师
+			async getRecommendUser(){
+				let res = await post("User/GetDancerList", {
 					IsRecommend:1
 				});
-				if(result.code==0){
-					this.Dancerlist=result.data;
-				}
+				this.TeacherUserList=res.data;
 			},
 			//获取推荐大人
 			async GetReCommendMember(){
@@ -376,32 +403,22 @@
 				let result = await post("Find/IndexRecommend", {
 					UserId:this.userId,
 					Token:this.token,
-					page:this.page,
+					page:this.datalistPage,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
-					if (result.data.length > 0) {
-						this.hasData = true;
-						this.noDataIsShow = false;
-					}
-					if (result.data.length == 0 && this.page == 1) {
-						this.noDataIsShow = true;
-						this.hasData = false;
-					}
-					if (this.page === 1) {
+					if (this.datalistPage === 1) {
 						this.datalist = result.data;
 					}
-					if (this.page > 1) {
+					if (this.datalistPage > 1) {
 						this.datalist = this.datalist.concat(
 							result.data
 						);
 					}
 					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
+						this.datalistLoadingType = 2;
 					} else {
-						this.isLoad = true;
-						this.loadingType = 0
+						this.datalistLoadingType = 0
 					}
 				}
 			},
@@ -410,32 +427,22 @@
 				let result = await post("News/YWNewsList", {
 					UserId:this.userId,
 					Token:this.token,
-					page:this.page,
+					page:this.NewsListPage,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
-					if (result.data.length > 0) {
-						this.hasData = true;
-						this.noDataIsShow = false;
-					}
-					if (result.data.length == 0 && this.page == 1) {
-						this.noDataIsShow = true;
-						this.hasData = false;
-					}
-					if (this.page === 1) {
+					if (this.NewsListPage === 1) {
 						this.NewsList = result.data;
 					}
-					if (this.page > 1) {
+					if (this.NewsListPage > 1) {
 						this.NewsList = this.NewsList.concat(
 							result.data
 						);
 					}
 					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
+						this.NewsListLoadingType = 2;
 					} else {
-						this.isLoad = true;
-						this.loadingType = 0
+						this.NewsListLoadingType = 0
 					}
 				}
 			},
@@ -444,32 +451,22 @@
 				let result = await post("User/GetDancerList", {
 					UserId:this.userId,
 					Token:this.token,
-					page:this.page,
+					page:this.TeacherListPage,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
-					if (result.data.length > 0) {
-						this.hasData = true;
-						this.noDataIsShow = false;
-					}
-					if (result.data.length == 0 && this.page == 1) {
-						this.noDataIsShow = true;
-						this.hasData = false;
-					}
-					if (this.page === 1) {
+					if (this.TeacherListPage === 1) {
 						this.TeacherList = result.data;
 					}
-					if (this.page > 1) {
+					if (this.TeacherListPage > 1) {
 						this.TeacherList = this.TeacherList.concat(
 							result.data
 						);
 					}
 					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
+						this.TeacherListLoadingType = 2;
 					} else {
-						this.isLoad = true;
-						this.loadingType = 0
+						this.TeacherListLoadingType = 0
 					}
 				}
 			},
@@ -478,32 +475,22 @@
 				let result = await post("User/GetJiGouList", {
 					UserId:this.userId,
 					Token:this.token,
-					page:this.page,
+					page:this.JiGouListPage,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
-					if (result.data.length > 0) {
-						this.hasData = true;
-						this.noDataIsShow = false;
-					}
-					if (result.data.length == 0 && this.page == 1) {
-						this.noDataIsShow = true;
-						this.hasData = false;
-					}
-					if (this.page === 1) {
+					if (this.JiGouListPage === 1) {
 						this.JiGouList = result.data;
 					}
-					if (this.page > 1) {
+					if (this.JiGouListPage > 1) {
 						this.JiGouList = this.JiGouList.concat(
 							result.data
 						);
 					}
 					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
+						this.JiGouListLoadingType = 2;
 					} else {
-						this.isLoad = true;
-						this.loadingType = 0
+						this.JiGouListLoadingType = 0
 					}
 				}
 			},
@@ -512,32 +499,22 @@
 				let result = await post("Course/GetCourseOutlineList", {
 					UserId:this.userId,
 					Token:this.token,
-					page:this.page,
+					page:this.CourseListPage,
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
-					if (result.data.length > 0) {
-						this.hasData = true;
-						this.noDataIsShow = false;
-					}
-					if (result.data.length == 0 && this.page == 1) {
-						this.noDataIsShow = true;
-						this.hasData = false;
-					}
-					if (this.page === 1) {
+					if (this.CourseListPage === 1) {
 						this.CourseList = result.data;
 					}
-					if (this.page > 1) {
+					if (this.CourseListPage > 1) {
 						this.CourseList = this.CourseList.concat(
 							result.data
 						);
 					}
 					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
+						this.CourseListLoadingType = 2;
 					} else {
-						this.isLoad = true;
-						this.loadingType = 0
+						this.CourseListLoadingType = 0
 					}
 				}
 			},
@@ -554,15 +531,11 @@
 					this.GetCourseList();
 				}
 			},
-			loadMore(e) {
-				console.log(e)
-				if (this.isLoad) {
-					this.loadingType = 1;
-					this.page++;
-					this.fun(e);
-				} else {
-					this.loadingType = 2;
-				}
+			loadMore(key) {
+				console.log(key)
+				if(this[key+'LoadingType']===2)return;
+				this[key+'Page']++;
+				this.fun(this.tabIndex);
 			},
 			//关注取消关注 followtype 1推荐视频用户 2名师 3机构 4推荐用户
 			async flow(id,index,followtype){
@@ -687,6 +660,11 @@
 					});
 				}
 			},
+		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			this.init();
+			uni.stopPullDownRefresh();
 		}
 	}
 </script>

@@ -4,6 +4,7 @@
 			"path": "pages/tabBar/index/index",
 			"style": {
 				"navigationBarTitleText": "壹舞",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
@@ -314,6 +315,12 @@
 						"navigationBarTitleText":"收入明细"
 					}
                 }
+				,{
+				    "path" : "interflow/interflow",
+				    "style" : {
+						"navigationBarTitleText":"加入官方交流"
+					}
+				}
             ]
 		},
 		{
@@ -354,7 +361,28 @@
 					}
                 }
             ]
+		},
+		{	//商城内页
+			"root":"pages/shopSon",
+			"pages":[
+				{
+				    "path" : "mywu/wu",
+				    "style" : {
+						"navigationBarTitleText": "舞衣"
+					}
+				},
+				{
+				    "path" : "product/productDetails",
+				    "style" : {
+						"navigationBarTitleText": "产品详情"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				}
+		    ]
 		}
+		
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
