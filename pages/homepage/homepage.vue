@@ -31,7 +31,7 @@
 			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
 		</scroll-view>
 		<view class="tabCon">
-			<view class="profile item-box"  v-if="tabId==0">
+			<view class="profile item-box"  v-if="tabId==0&&PersonInfo.IsJiGou==1">
 				<view class="profile-center">
 					<image v-if="PersonInfo.JiGou.PicImg" :src="PersonInfo.JiGou.PicImg"></image>
 					<view class="remark uni-mb10">
@@ -51,33 +51,38 @@
 					</view>
 				</view>
 			</view>
-			<view class="play-box item-box"  v-if="tabId==1">
-				<view class="item" v-for="(item,index1) in 9 " :key="index1">
-					<image src="@/static/music/music-item.png" ></image>
+			<view class="play-box item-box"  v-if="tabId==1&&hasData">
+				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
+					<image :src="item.Logo"></image>
+					<view class="playbtn"></view>
 				</view>
 			</view>
-			<view class="music-box item-box"  v-if="tabId==2">
-				<view class="item" v-for="(item,index1) in 9 " :key="index1">
-					<image src="@/static/music/music-item.png" ></image>
+			<view class="music-box item-box"  v-if="tabId==2&&hasData">
+				<view class="item" v-for="(item,index) in datalist" :key="index">
+					<image :src="item.Cover_pic||'/static/default_music.png'"></image>
 				</view>
 			</view>
-			<view class="pic-box" v-if="tabId==3">
-				<block v-for="(item,index) in PersonInfo.PicList" :key="index">
-					
-				</block>
+			<view class="play-box" v-if="tabId==3&&hasData">
+				<view class="item" v-for="(item,index) in datalist" :key="index">
+					<image :src="item.Logo" @click="previewImg(index)"></image>
+				</view>
 			</view>
-			<view class="product-box item-box"  v-if="tabId==4">
-				<view class="item" v-for="(item,index4) in 2" :key="index4">
+			<view class="product-box item-box"  v-if="tabId==4&&hasData">
+				<view class="item">
 					<image class="img" src="@/static/of/banner.jpg"></image>
 					<view class="product">
-						<view class="list" v-for="(item1,index41) in 3" :key="index41">
-							<image src="@/static/of/pro1.jpg" mode="widthFix"></image>
-							<view>一舞拉丁黑色4654646546</view>
-							<span>￥79.99</span>
+						<view class="list" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/shopSon/product/productDetails?id='+item.Id)">
+							<image :src="item.PicImg" mode="widthFix"></image>
+							<view>{{item.Name}}</view>
+							<span>￥{{item.Price}}</span>
 						</view>
 					</view>
 				</view>
 			</view>
+			<view class="uni-tab-bar-loading" v-if="hasData">
+				<uni-load-more :loadingType="loadingType"></uni-load-more>
+			</view>
+			<noData :isShow="noDataIsShow"></noData>
 		</view>
 		<view style="height: 100upx;"></view>
 		<view class="bottom-box" v-if="PersonInfo.IsMy==0">
@@ -115,6 +120,14 @@ export default {
 			PersonInfo:{},
 			tabWidth:0,
 			tabStyle:0,
+			page:1,
+			pageSize:12,
+			noDataIsShow: false,
+			loadingType: 0, //0加载前，1加载中，2没有更多了
+			isLoad: false,
+			hasData: false,
+			datalist:[],
+			imgurls:[],
 			tab: [
 				{
 					id: 0,
@@ -143,7 +156,7 @@ export default {
 		 this.userId = uni.getStorageSync("userId");
 		 this.token = uni.getStorageSync("token");
 		 this.tabWidth=(100/this.tab.length);
-		 this.leftscoll();
+		 this.leftscoll(); 
 	 },
 	 onShow() {
 	 	this.memberId=this.$mp.query.id;
@@ -151,7 +164,7 @@ export default {
 	 },
 	 methods:{
 		 //跳转
-		 tolink(Url,islogin) {
+		tolink(Url,islogin) {
 		 	if(islogin=="login"){
 		 		if(toLogin()){
 		 			uni.navigateTo({
@@ -163,19 +176,25 @@ export default {
 		 			url: Url
 		 		})
 		 	}
-		 },
-		 tapTab(id,index) { //点击tab-bar
+		},
+		tapTab(id,index) { //点击tab-bar
 		 	if (this.tabId === id) {
 		 		return false;
 		 	} else {
 		 		this.tabIndex = index;
 				this.tabId=id;
+				this.hasData=false;
+				this.noDataIsShow=false;
+				this.page=1;
 				this.leftscoll();
+				if(this.tabId!=0){
+					this.GetUserData();
+				}
 		 	}
-		 },
-		 leftscoll(){
+		},
+		leftscoll(){
 			this.tabStyle=((750/this.tab.length)*this.tabIndex)+(((750/this.tab.length)-68)/2); 
-		 },
+		},
 		 //获取个人主页
 		 async GetPersonInfo(){
 			 let result = await post("User/GetPersonInfo", {
@@ -185,14 +204,17 @@ export default {
 			 });
 			 if(result.code==0){
 			 	this.PersonInfo=result.data;
-				if(!result.data.JiGou){
+				uni.setNavigationBarTitle({
+					title: result.data.IsMy==1?'我的主页':'TA的主页'
+				})
+				if(!result.data.IsJiGou==1){
 					this.tab.map((item,i)=>{
 						if(item.id==0){
 							this.tab.splice(i,1)
 						}
 					})
 				}
-				if(result.data.ProductList.length==0){
+				if(result.data.IsShop==1){
 					this.tab.map((item,i)=>{
 						if(item.id==4){
 							this.tab.splice(i,1)
@@ -201,10 +223,15 @@ export default {
 				}
 				this.tabWidth=(100/this.tab.length);
 				this.leftscoll();
+				this.tabId=this.tab[0].id;
+				if(this.tabId!=0){
+					this.GetUserData();
+				}
+				
 			 }
 		 },
 		 //关注取消关注 
-		 async flow(){
+		async flow(){
 		 	let result = await post("Find/FollowOperation", {
 		 		"UserId": this.userId,
 		 		"Token": this.token,
@@ -233,27 +260,78 @@ export default {
 		 			}
 		 		});
 		 	}
+		},
+		 //获取用户关联数据
+		 async GetUserData(){
+			 let url="";
+			 if(this.tabId==1){
+				url= "User/GetUserVideo";
+			 }else if(this.tabId==2){
+				url= "User/GetUserDancermusic";
+			 }else if(this.tabId==3){
+				url= "User/GetUserPic"; 
+			 }else if(this.tabId==4){
+				url= "User/GetUserProduct";  
+			 }
+			 let result =await post(url,{
+				 "UserId": this.userId,
+				 "Token": this.token,
+				 "MemberId":this.memberId,
+				 "page": this.page,
+				 "pageSize": this.pageSize
+			 });
+			 if(result.code==0){
+				if (result.data.length > 0) {
+					this.hasData = true;
+					this.noDataIsShow = false;
+					if(this.tabId==3){
+						let picArr=[];
+						result.data.forEach(function(item){
+							picArr.push(item.Logo)
+						})
+						this.imgurls=picArr;
+					}
+				}
+				if (result.data.length == 0 && this.page == 1) {
+					this.noDataIsShow = true;
+					this.hasData = false;
+				}
+				if (this.page === 1) {
+					this.datalist = result.data;
+				}
+				if (this.page > 1) {
+					this.datalist = this.datalist.concat(
+						result.data
+					);
+				}
+				if (result.data.length <this.pageSize) {
+					this.isLoad = false;
+					this.loadingType = 2;
+				} else {
+					this.isLoad = true;
+					this.loadingType = 0
+				} 
+			 }
 		 },
-		 //链接详情页
-		 goDetail(e) {
-		 	if(e.artType==0){//用户发布详情
-		 		// uni.navigateTo({
-		 		// 	url: '/pages/Article/artDetail/artDetail?id='+e.id
-		 		// })
-		 	}else{//资讯详情、店铺
-		 		// uni.navigateTo({
-		 		// 	url: '/pages/Article/NewsDetail/NewsDetail?id='+e.id
-		 		// })
-		 	}
-		 },
-		 //预览图片
-		 previewImg(obj){
+		//预览图片
+		previewImg(index){
+			let _this=this;
 		 	uni.previewImage({
-		 		current:obj.imgurls[obj.index],
-		 		urls: obj.imgurls,
-		 		indicator:obj.imgurls.length
+		 		current:_this.imgurls[index],
+		 		urls: _this.imgurls,
+		 		indicator:_this.imgurls.length
 		 	});
-		 },
+		},
+	 },
+	 // 上拉加载
+	 onReachBottom: function() {
+	 	if (this.isLoad) {
+	 		this.loadingType = 1;
+	 		this.page++;
+	 		this.GetUserData();
+	 	} else {
+	 		this.loadingType = 2;
+	 	}
 	 }
 };
 </script>

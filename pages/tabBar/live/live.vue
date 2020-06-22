@@ -21,48 +21,55 @@
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 			</view>
 		</view>
-		<view class="videolist">
-			<view class="Yi-media" v-for="(item,index) in 5" :key="index">
+		<view class="videolist" v-if="hasData">
+			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view class="maxpic p_re">
-						<image src="@/static/of/p1.jpg" mode="widthFix"></image>
-						<view class="isplay"></view>
+					<view :class="['maxpic p_re',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
+						<video v-if="item.VideoUrl" :src="item.VideoUrl" controls :show-mute-btn="true"></video>
+						<image v-else :src="item.PicImg" mode="widthFix"></image>
 						<view class="desc">
-							Michael Malitowski &Joanna Leunis，Rumba WSSDF 2016
+							{{item.Title}}
 						</view>
 					</view>
 					<view class="media-ft flex-between">
 						<view class="ft_l flex-start">
 							<view class="author flex-start">
 								<view class="tx">
-									<image src="@/static/default.png" mode="aspectFill"></image>
-									<view class="islive">
+									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
+									<view class="islive" style="display: none;">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
 										<view class="line line3"></view>
 										<view class="txt">直播</view>
 									</view>
 								</view>
-								<view class="name uni-ellipsis">kastyle</view>
+								<view class="name uni-ellipsis">{{item.NickName}}</view>
 							</view>
 						</view>
 						<view class="ft_r flex-end">
-							<view class="txt_info like active">124</view>
-							<view class="txt_info reply">678</view>
+							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
+							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
 							<view class="txt_info share"></view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
-		
+		<view class="uni-tab-bar-loading" v-if="hasData">
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
+		</view>
+		<noData :isShow="noDataIsShow"></noData>
 	</view>
 </template>
 
 <script>
 	import {post,get,toLogin} from '@/common/util.js';
+	import noData from '@/components/noData.vue'; //暂无数据
+	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {
 		components: {
+			noData,
+			uniLoadMore
 		},
 		data() {
 			return {
@@ -72,36 +79,44 @@
 				tabIndex:0,
 				tabnav:[
 					{
-						Id:1,
+						Id:0,
 						TypeName:"推荐"
 					},
 					{
-						Id:2,
+						Id:0,
 						TypeName:"最新"
 					},
 					{
-						Id:3,
+						Id:1,
 						TypeName:"教学"
 					},
 					{
-						Id:4,
+						Id:2,
 						TypeName:"比赛"
 					},
 					{
-						Id:5,
+						Id:3,
 						TypeName:"练习"
 					},
 					{
-						Id:6,
+						Id:0,
 						TypeName:"全部"
 					}
-				]
+				],
+				ClassId:0,
+				page:1,
+				pageSize:6,
+				noDataIsShow: false,
+				loadingType: 0, //0加载前，1加载中，2没有更多了
+				isLoad: false,
+				hasData: false,
+				datalist:[],
 			}
 		},
 		onLoad() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			
+			this.VideoList();
 		},
 		onShow(){
 			
@@ -131,6 +146,7 @@
 					return false;
 				} else {
 					this.tabIndex = index;
+					this.VideoList();
 				}
 			},
 			openAttestation(){
@@ -149,6 +165,117 @@
 						})
 					}
 				})
+			},
+			//视频列表
+			async VideoList(){
+				uni.showLoading({
+				  title: '加载中' //数据请求前loading
+				})
+				var json={};
+				if(this.tabIndex==0){
+					json={
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						"IsRecommend":1,
+					}
+				}else if(this.tabIndex==1){
+					json={
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						"IsNews":1,
+					}
+				}else if(this.tabIndex==2||this.tabIndex==3||this.tabIndex==4){
+					json={
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						"ClassId":this.tabnav[this.tabIndex].Id,
+					}
+				}else if(this.tabIndex==5){
+					json={
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						"IsALL":1,
+					}
+				}	
+				let result =await post("Find/VideoList",json);
+				if(result.code==0){
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.datalist = result.data;
+					}
+					if (this.page > 1) {
+						this.datalist = this.datalist.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					} 
+				}
+				uni.hideLoading();
+			},
+			//发现点赞
+			async likeBtn(id,index){
+				let result = await post("Find/FindlikeOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					let num=0;
+					uni.showToast({
+						title: result.msg
+					})
+					if(this.datalist[index].IsLike==0){
+						this.$set(this.datalist[index],"IsLike",1)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum++)
+					}else{
+						this.$set(this.datalist[index],"IsLike",0)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum--)
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+		},
+		// 上拉加载
+		onReachBottom: function() {
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				this.VideoList();
+			} else {
+				this.loadingType = 2;
 			}
 		}
 	}
