@@ -65,12 +65,13 @@
 		methods: {
 			async getData(){
 				// "AuditStatus": //审核状态 0-审核通过1-待审核2-审核失败-1未提交过
-				const res = await post('User/GetJiGouInfo',{
+				const res = await post('User/GetJiGouAuthInfo',{
 					UserId:uni.getStorageSync("userId"),
 					Token:uni.getStorageSync("token"),
 				})
+				if(res.code!==0)return;
 				const data= res.data;
-				this.name = data.Name;
+				this.name = data.JiGouName;
 				this.phone = data.Mobile;
 				this.address = data.Address;
 				this.explain = data.Remark;
@@ -100,7 +101,7 @@
 			},
 			async submit(){
 				let tips = this.verify()
-				if(tips){
+				if(tips&&tips!==Boolean){
 					toast(tips);return;
 				}
 				let img = await pathToBase64(this.picStr)
@@ -113,6 +114,7 @@
 					Remark:this.explain,
 					PicImg:img
 				})
+				if(res.code!==0)return;
 				toast('提交成功！等待管理员审核');
 				navigateBack();
 			},
@@ -120,7 +122,7 @@
 				if(!this.name){
 					return '请输入姓名'
 				}
-				if(!valPhone(this.phone))return;
+				if(!valPhone(this.phone))return true;
 				if(!this.address){
 					return '请输入地址'
 				}
