@@ -335,9 +335,15 @@
 			    ,{
                     "path" : "artPost/artPost",
                     "style" : {
-						"navigationBarTitleText": "发布动态"
+						"navigationBarTitleText": "发布动态artDetail"
 					}
                 }
+				,{
+				    "path" : "artDetail/artDetail",
+				    "style" : {
+						"navigationBarTitleText": "动态详情"
+					}
+				}
                 ,{
                     "path" : "list/list",
                     "style" : {

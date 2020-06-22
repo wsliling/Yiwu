@@ -42,7 +42,6 @@
 			var userId=getQuery("userId");
 			var token=getQuery("token");
 			var type=getQuery("type");
-			var videotype=getQuery("videotype");
 			console.log(userId+"参数"+type+"参数"+ token);
 			//取url中的参数值
 			function getQuery(id) {
@@ -80,7 +79,6 @@
 					formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
 					formdata.append("UserId", userId);
 					formdata.append("Token", token);
-					formdata.append("Type", videoType);//0-视频1-课程
 					url="http://ywapi.wtvxin.com/api/Find/UploadVideo"
 				}
 				$.ajax({
@@ -96,8 +94,12 @@
 						console.log(JSON.stringify(res))
 						if(res.code==1){
 							let fileName=localStorage.getItem("fileAddress");
-							localStorage.setItem("fileName", fileName);//上传成功的文件名缓存
-							localStorage.setItem("filePath", res,data.path);//上传成功返回的服务器地址
+							if(type==0){
+								localStorage.setItem("fileName", fileName);//上传成功的文件名缓存
+							}else{
+								localStorage.setItem("fileName", res.data.imgUrl);//上传成功的返回的视频封面图片地址显示出来
+							}
+							localStorage.setItem("filePath", res.data.path);//上传成功返回的服务器地址
 						}
 					},
 					error: function(err) {

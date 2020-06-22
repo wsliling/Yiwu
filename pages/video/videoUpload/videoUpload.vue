@@ -3,7 +3,7 @@
 		<view class="upbox">
 			<textarea placeholder="请填写视频/课程的标题" v-model="Title"/>
 			<view class="videobox" @click="choosevideo">
-				<video :src="videofile"  v-if="videofile"></video>
+				<image class="img" v-if="videofile" :src="(webUrl+videoImg)" mode="aspectFill"></image>
 				<image src="/static/videoUp.png" v-else></image>
 			</view>
 		</view>
@@ -19,47 +19,41 @@
 </template>
 
 <script>
+	import {post,webUrl,host} from '@/common/util'
 	export default {
 		data() {
 			return {
+				webUrl:webUrl,
 				type:0,//0：拍视频 1：课程
 				hascheck:false,//是否选中免费
 				videofile:"",//视频文件
-				videosrc:"",//视频地址
+				fileName:"",//视频地址
 				Title:"",
 				Price:"",
 				videoImg:"",
 			};
 		},
 		onLoad(e){
-			this.type=e.type
+			this.type=e.type;
+			if(this.type==0){
+				this.hascheck=true;
+			}
+		},
+		onShow() {
+			this.userId = uni.getStorageSync("userId")
+			this.token = uni.getStorageSync("token")
+			this.videoImg = uni.getStorageSync("fileName")
+			this.videofile = uni.getStorageSync("filePath")
 		},
 		methods: {
 			choosevideo(){
-				var that =this;
-				uni.chooseVideo({
-					count: 1,
-					sourceType: ['camera', 'album'],
-					success: function (res) {
-						that.videofile = res.tempFilePath;
-					}
+				uni.navigateTo({
+					url:"/pages/uploadFile/uploadFile?type=1"
 				})
-			},
-			//上传视频
-			async uplLoadVideo(){
-				let res = await post("Find/UploadVideo", {
-					UserId: this.userId,
-					Token: this.token,
-					Type: this.type,
-					Video:this.videofile
-				});
-				if(res.code==0){
-					
-				}
 			},
 			//发布视频
 			async pushVideo(){
-				if(hascheck){
+				if(this.hascheck){
 					var IsCharge=0
 				}else{
 					var IsCharge=1
@@ -68,19 +62,28 @@
 					UserId: this.userId,
 					Token: this.token,
 					Type: this.type,
-					Video:this.videosrc,
+					Video:this.videofile,
 					Logo: this.videoImg,
 					Title:this.videoTitle,
 					IsCharge:IsCharge,
 					Price:this.Price
 				});
 				if(res.code==0){
-					
+					uni.showToast({
+						title:"发布成功"
+					})
+					uni.setStorageSync("fileName","");//清空缓存
+					uni.setStorageSync("filePath","")
+				}else{
+					uni.showToast({
+						title:res.msg,
+						icon:"none"
+					})
 				}
 			},
 			uplLoadBtn(){
 				if(this.yanzheng()){
-					
+					this.pushVideo()
 				}
 			},
 			yanzheng(){
