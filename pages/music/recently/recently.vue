@@ -3,7 +3,7 @@
 		<view class="musiclist pd15 uni-bg-white">
 			<view class="item flex-between" v-for="(item,index) in datalist" :key="index">
 				<view class="imgbox">
-					<image v-if="item.PicImg" src="/static/default_music.png" mode="aspectFill"></image>
+					<image v-if="item.PicImg" :src="item.PicImg" mode="aspectFill"></image>
 					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">

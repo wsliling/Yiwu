@@ -130,6 +130,12 @@
 				"navigationBarTitleText": "确认支付"
 			}
         }
+        ,{
+            "path" : "pages/uploadFile/uploadFile",
+            "style" : {
+            	"navigationBarTitleText": "上传文件"
+            }
+        }
     ],
 	"subPackages":[
 		{
@@ -260,7 +266,7 @@
                 ,{
                     "path" : "myMusic/myMusic",
                     "style" : {
-                    	"navigationBarTitleText":"我上传的舞曲",
+                    	"navigationBarTitleText":"我的舞曲",
                     	"app-plus": {
                     		"titleNView": false
                     	}

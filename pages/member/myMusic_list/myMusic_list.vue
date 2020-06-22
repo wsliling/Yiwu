@@ -4,16 +4,19 @@
 			<view class="item flex-between">
 				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">恰恰舞曲</view>
-					<view class="fz12 c_999 uni-mt10">5首</view>
+					<view class="name uni-ellipsis">{{datalist.Name}}</view>
+					<view class="fz12 c_999 uni-mt10">{{datalist.Num}}</view>
 				</view>
 			</view>
 		</view>
 		<view class="musiclist pd15">
-			<view class="item flex-between" v-for="(item,index) in 5" :key="index">
-				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
+			<view class="item flex-between" v-for="(item,index) in datalist.DanceMusicList" :key="index">
+				<view class="imgbox">
+					<image v-if="item.Cover_pic" :src="item.Cover_pic" mode="aspectFill"></image>
+					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
+				</view>
 				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">曲名芭蕾舞曲</view>
+					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
 						<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
@@ -94,6 +97,7 @@
 				barHeight:0,
 				userId: '',
 				token: '',
+				Id:0,//曲单id
 				page:1,
 				pageSize:6,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
@@ -112,7 +116,7 @@
 			uniLoadMore,
 			noData
 		},
-		onLoad() {
+		onLoad(e) {
 			// #ifdef APP-PLUS
 			var height = plus.navigator.getStatusbarHeight();
 			this.barHeight = height;
@@ -122,7 +126,8 @@
 			// #endif
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			//this.workeslist();
+			this.Id=e.id
+			this.workeslist();
 		},
 		methods: {
 			//跳转
@@ -160,9 +165,10 @@
 			},
 			/*获取列表*/
 			async workeslist() {
-				let result = await post('User/Memberdatalist', {
+				let result = await post('DanceMusic/GetMusicListByPId', {
 					UserId: this.userId,
 					Token: this.token,
+					PlayId:this.Id,
 					page: this.page,
 					pageSize: this.pageSize
 				});
