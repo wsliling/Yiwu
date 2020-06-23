@@ -27,7 +27,8 @@
 		,{
 		    "path" : "pages/tabBar/shop/shop",
 		    "style" : {
-				"navigationBarTitleText": "商城"
+				"navigationBarTitleText": "商城",
+				"enablePullDownRefresh" : true
 			}
 		}
         ,{
@@ -369,6 +370,17 @@
 				    "path" : "product/productDetails",
 				    "style" : {
 						"navigationBarTitleText": "产品详情"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "productList/productList",
+				    "style" : {
+						"navigationBarTitleText": "产品列表",
+						"enablePullDownRefresh" : true,
+						"navigationStyle":"custom"
 						// "app-plus": {
 							// "titleNView": false
 						// }

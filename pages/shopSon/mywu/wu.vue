@@ -6,66 +6,166 @@
 				<text class="uni-icon uni-icon-search">请输入你想搜索的产品</text>
 			</view>
 		</view>
+		<div class="sort">
+			<div class="item" :class="[{'active':sort==0},{'top':sortMode==1}]" @click="onSort(0)">
+				默认
+			</div>
+			<div class="item" :class="[{'active':sort==1},{'top':sortMode==1}]" @click="onSort(1)">
+				人气
+			</div>
+			<div class="item" :class="[{'active':sort==2},{'top':sortMode==1}]" @click="onSort(2)">
+				价格
+			</div>
+		</div>
 		<view class="wu-box">
-			<image v-if="type == 4" class="wu-img" src="../../../static/of/p3.jpg" mode=""></image>
-			<view class="wu-item" v-for="(val,key) in 6" :key="key">
-				<image src="../../../static/shop/shop9.png" mode=""></image>
+			<!-- <image v-if="type == 4" class="wu-img" src="../../../static/of/p3.jpg" mode=""></image> -->
+			<view class="wu-item" v-for="(val,key) in list" :key="key">
+				<image :src="val.PicNo" mode="aspectFill"></image>
 				<view class="wu-tet">
-					<view class=""><span>自营</span>一舞拉丁黑色舞蹈一舞拉丁黑色舞蹈显身显身...</view>
-					<view class="wu-price">￥79.99</view>
+					<view class="wu-name"><span v-if="val.IsPlatform">自营</span>{{val.Name}}</view>
+					<view class="wu-price">￥{{val.Price}}</view>
 				</view>
 			</view>
 		</view>
+		<uni-load-more :loadingType="loadingType" v-if="list.length"></uni-load-more>
+		<notData v-else></notData>
 	</view>
 </template>
 
 <script>
-	export default{
+	import {post,toast} from '@/common/util.js';
+	import uniLoadMore from '@/components/uni-load-more.vue';
+	import notData from '@/components/notData.vue';
+	export default {
+		components: {
+			uniLoadMore,notData
+		},
 		data(){
 			return{
-				type:0
+				userId:'',
+				token:'',
+				page:1,
+				pageSize:12,
+				loadingType:0,//0-loading前；1-loading中；2-没有更多了
+				brandId:0,//品牌id
+				list:[],
+				sort:0,//0-默认,1-人气,2-价格
+				sortMode:0,//2- 升序（从小到大） 1-降序（从大到小）
+
 			}
 		},
 		onLoad(e) {
-			this.type = e.type
-			if(e.type == 1){
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
+			this.title = e.title
+			e.brandId&&(this.brandId = e.brandId);
+			if(e.title){
 				uni.setNavigationBarTitle({
-					title: '舞裙'
+					title: e.title
 				});
 			}
-			if(e.type == 2){
-				uni.setNavigationBarTitle({
-					title: '舞裤'
+			this.getData();
+		},
+		onShow() {
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
+		},
+		methods:{
+			async getData(){
+				this.loadingType =1;
+				if(this.page===1){
+					this.list=[];
+				}
+				const res = await post('Goods/GoodsList',{
+					UserId:this.userId,
+					Token:this.token,
+					Page:this.page,
+					PageSize:this.pageSize,
+					BrandId:this.brandId,
+					Sort:this.sort,
+					Order:this.sortMode,
 				});
+				if(res.code)return;
+				const data = res.data;
+				this.list.push(...data);
+
+				this.loadingType = 0;
+				if(data.length<this.pageSize){
+					this.loadingType=2;
+				}
+			},
+			onSort(sort){
+				if(this.sort == sort){
+					this.sortMode = this.sortMode===1?2:1;
+				}else{
+					this.sortMode =0;
+				}
+				this.sort = sort;
+				this.page = 1
+				this.getData();
 			}
-			if(e.type == 3){
-				uni.setNavigationBarTitle({
-					title: '舞鞋'
-				});
-			}
-			if(e.type == 4){
-				uni.setNavigationBarTitle({
-					title: '产品列表'
-				});
-			}
-		}
+		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			this.page = 1
+			this.getData();
+			// 停止下拉动画
+			uni.stopPullDownRefresh()
+		},
+		// 上拉加载更多
+		onReachBottom(){
+			if(this.loadMore===2)return;
+			this.page+=1;
+			this.getData()
+		},
 	}
 </script>
 
 <style lang="scss" scoped>
 	.search {
-		padding: 20upx 30upx 20upx;
+		padding: 20upx 30upx 0;
 		background: #fff !important;
 	}
 	.index_swiper .swiper,
 	.index_swiper .swiper .img {
 		height: 380upx;
 	}
+	.sort{
+		display:flex;
+		justify-content:space-between;
+		align-items:center;
+		padding:0 30upx;
+		line-height:3;
+		background: #fff;
+		.item{
+			font-size:24upx;
+			display:flex;
+			align-items:center;
+			&::after{
+				content:'';
+				display:block;
+				border-right:8upx solid #fff;
+				border-left:8upx solid #fff;
+				border-bottom:15upx solid #666;
+				border-top:1upx solid #fff;
+				margin-left:8upx;
+			}
+			&.active{
+				color:$primary;
+				&.top{
+					&::after{
+						border-top:15upx solid #666;
+						border-bottom:0upx solid #fff;
+					}
+				}
+			}
+		}
+	}
 	.wu-box{
 		display: flex;
-		justify-content: space-around;
+		justify-content: space-between;
 		flex-wrap: wrap;
-		padding: 0 16upx;
+		padding: 0 20upx;
 		.wu-img{
 			margin-top: 30upx;
 			width:702upx;
@@ -73,10 +173,11 @@
 			border-radius:6upx;
 		}
 		.wu-item{
-			width: 48.5%;
-			padding: 30upx 0;
+			width:350upx;
+			margin-top: 30upx;
+			background:#fff;
 			image{
-				width:348upx;
+				width:100%;
 				height:440upx;
 				border-radius:6upx;
 			}
@@ -86,7 +187,7 @@
 				white-space: nowrap;
 				text-overflow: ellipsis;
 				overflow: hidden;
-				padding-top: 10upx;
+				padding:20upx 10upx;
 				span{
 					height:31upx;
 					background:linear-gradient(90deg,rgba(222,26,110,1),rgba(233,56,132,1));
@@ -96,6 +197,15 @@
 					color:rgba(255,255,255,1);
 					line-height:31upx;
 					padding: 0 10upx;
+					margin-right:10upx;
+				}
+				.wu-name{
+					white-space:nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;//可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 
+					text-overflow: -o-ellipsis-lastline;
+					width: 100%;
+
 				}
 			}
 			.wu-price{
