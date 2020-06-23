@@ -2,6 +2,7 @@
 
 const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
+const webUrl = 'http://yw.wtvxin.com';  //后台地址
 
 function formatNumber(n) {
     const str = n.toString()
@@ -210,6 +211,7 @@ export {
 	formatLocation,
 	dateUtils,
 	host,
+	webUrl,
 	get,
 	post,
 	requestHideLoading,

@@ -132,6 +132,12 @@
 				"navigationBarTitleText": "确认支付"
 			}
         }
+        ,{
+            "path" : "pages/uploadFile/uploadFile",
+            "style" : {
+            	"navigationBarTitleText": "上传文件"
+            }
+        }
     ],
 	"subPackages":[
 		{
@@ -262,7 +268,7 @@
                 ,{
                     "path" : "myMusic/myMusic",
                     "style" : {
-                    	"navigationBarTitleText":"我上传的舞曲",
+                    	"navigationBarTitleText":"我的舞曲",
                     	"app-plus": {
                     		"titleNView": false
                     	}
@@ -316,6 +322,30 @@
 						"navigationBarTitleText":"加入官方交流"
 					}
 				}
+				,{
+				    "path" : "interflow/interflow",
+				    "style" : {
+						"navigationBarTitleText":"加入官方交流"
+					}
+				}
+				,{
+				    "path" : "bankAdd/bankAdd",
+				    "style" : {
+						"navigationBarTitleText":"绑定银行卡"
+					}
+				}
+				,{
+				    "path" : "bankCard/bankCard",
+				    "style" : {
+						"navigationBarTitleText":"我的银行卡"
+					}
+				}
+				,{
+				    "path" : "bankChoose/bankChoose",
+				    "style" : {
+						"navigationBarTitleText":"选择银行"
+					}
+				}
             ]
 		},
 		{
@@ -330,9 +360,15 @@
 			    ,{
                     "path" : "artPost/artPost",
                     "style" : {
-						"navigationBarTitleText": "发布动态"
+						"navigationBarTitleText": "发布动态artDetail"
 					}
                 }
+				,{
+				    "path" : "artDetail/artDetail",
+				    "style" : {
+						"navigationBarTitleText": "动态详情"
+					}
+				}
                 ,{
                     "path" : "list/list",
                     "style" : {

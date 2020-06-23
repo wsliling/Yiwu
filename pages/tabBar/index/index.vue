@@ -50,7 +50,7 @@
 													<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
 												</view>
 												<view class="name uni-ellipsis">
-													{{item.NickName}}
+													{{item.NickName||'壹舞用户'}}
 												</view>
 												<view :class="['flow',item.IsFollow==1?'active':'']" @click="flow(item.Id,index,4)">
 													{{item.IsFollow==1?'已关注':'关注'}}
@@ -81,7 +81,7 @@
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-											<view class="txt_info reply">{{item.CommentNum}}</view>
+											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
 											<view class="txt_info share"></view>
 										</view>
 										<view class="ft_r">

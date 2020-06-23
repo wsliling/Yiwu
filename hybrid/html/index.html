@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>上传文件</title>
+	<style>
+		*{margin: 0;padding: 0;}
+		.head-btn{text-align: center;margin-top: 50px;}
+		.file {position: relative;display: inline-block;background: #D0EEFF;border: 1px solid #99D3F5;border-radius: 8px;width: 200px;overflow: hidden;color: #1E88C7;text-decoration: none;text-indent: 0;line-height: 40px;font-size: 14px;}
+		.file input {position: absolute;font-size: 200px;right: 0;top: 0;opacity: 0;}
+		.file:hover {background: #AADFFD;border-color: #78C3F3;color: #004974;text-decoration: none;}
+		.determine{color: #FFFFFF;background-color: #007AFF;display: inline-block;font-size: 20px;border-radius: 5px;padding: 8px 24px;}
+		.showFileName{display: inline-block;height: 30px;min-width: 300px;margin-top: 20px;margin-bottom: 20px;}
+		.btn {display: block;margin: 20px auto;padding: 5px;background-color: #007aff;border: 0;color: #ffffff;height: 40px;width: 200px;border-radius: 5px;}
+		.btn1 {display: block;margin: 20px auto;padding: 5px;background-color: #007aff;border: 0;color: #ffffff;height: 40px;width: 200px;border-radius: 5px;}
+		.btn-red {background-color: #dd524d;}
+		.btn-yellow {background-color: #f0ad4e;}
+		.desc {padding: 10px;color: #999999;}
+		.body{background-color: #f7f7f7;}
+	</style>
+	</head>
+	<body class="body">
+		<div class="head-btn">
+			<form action="" method="post">
+				<a href="javascript:;" class="file">选择文件
+					<input type="file" name="uploadFile" id="uploadFile">
+				</a>
+			</form>
+			<p class="showFileName"></p>
+
+		</div>
+		<div>
+			<button class="btn" type="button" data-action="redirectTo">确定</button>
+			<button class="btn1" type="button" data-action="navigateBack">取消上传</button>
+		</div>
+
+		<script src="./js/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+		<script>
+			var userId=getQuery("userId");
+			var token=getQuery("token");
+			var type=getQuery("type");
+			console.log(userId+"参数"+type+"参数"+ token);
+			//取url中的参数值
+			function getQuery(id) {
+				// 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
+				let reg = new RegExp("(^|&)" + id + "=([^&]*)(&|$)");
+				let r = window.location.search.substr(1).match(reg);
+				//console.log("r="+r);
+				if (r != null) {
+					// 对参数值进行解码
+					return decodeURIComponent(r[2]);
+				}
+				return null;
+			}
+
+			$(".file").on("change", "input[type='file']", function() {
+				let filePath = $(this).val();
+				localStorage.setItem("fileAddress", filePath);//选择的文件名缓存
+				let lastname = localStorage.getItem("fileAddress");
+				if (lastname != "") {
+					$(".showFileName").html(lastname);
+				} else {
+					$(".showFileName").html("");
+				}
+			});
+			$('.btn').click(function(evt) {
+				var fileUrl;
+				var formdata = new FormData(); // 创建一个form类型的数据
+				var url=""
+				if(type==0){// 上传舞曲
+					formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+					formdata.append("UserId", userId);
+					formdata.append("Token", token);
+					url="http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
+				}else{// 上传视频
+					formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+					formdata.append("UserId", userId);
+					formdata.append("Token", token);
+					url="http://ywapi.wtvxin.com/api/Find/UploadVideo"
+				}
+				$.ajax({
+					url: url,
+					type: "POST",
+					async: false,
+					processData: false,
+					contentType: false,
+					data: formdata,
+					dataType: "json",
+					success: function(res) {
+						//更新数据库添入附件的url"upload/music/u-music/2020061919322404828.mp3"
+						console.log(JSON.stringify(res))
+						if(res.code==1){
+							let fileName=localStorage.getItem("fileAddress");
+							if(type==0){
+								localStorage.setItem("fileName", fileName);//上传成功的文件名缓存
+							}else{
+								localStorage.setItem("fileName", res.data.imgUrl);//上传成功的返回的视频封面图片地址显示出来
+							}
+							localStorage.setItem("filePath", res.data.path);//上传成功返回的服务器地址
+						}
+					},
+					error: function(err) {
+						console.log("这是请求失败的");
+					}
+				});
+				console.log("end")
+				var target = evt.target;
+				if (target.tagName === 'BUTTON') {
+					var action = target.getAttribute('data-action');
+					if (action == 'redirectTo') {
+						uni.navigateBack({delta: 1});
+					}
+				}
+			});
+
+			//传输数据
+			document.addEventListener('UniAppJSBridgeReady', function() {
+				uni.postMessage({
+					data: {
+						action: '123456'
+					}
+				});
+				uni.getEnv(function(res) {
+					console.log('当前环境：' + JSON.stringify(res));
+				});
+				//取消文件上传
+				$('.btn1').click(function(evt) {
+					var target = evt.target;
+					if (target.tagName === 'BUTTON') {
+						var action = target.getAttribute('data-action');
+						if (action == 'navigateBack') {
+							uni.navigateBack({delta: 1});
+						}
+					}
+				});
+			});
+
+		</script>
+	</body>
+</html>

@@ -48,7 +48,8 @@
 			 <view class="music-list pd15" v-if="hasData">
 				 <view class="item" v-for="(item,index) in classifylist " :key="index" @click="tolink('/pages/music/classify_list/classify_list?id='+item.Id+'&Logo='+item.Logo+'&Name='+item.Name)">
 					 <view class="img">
-						 <image src="@/static/music/music-item.png"></image>
+						 <image v-if="item.Logo" :src="item.Logo"></image>
+						 <image v-else src="/static/music/music-item.png"></image>
 						<view class="img-top">
 							<image class="icon" src="@/static/music/listen.png" mode=""></image>
 							<span>2367</span>
@@ -100,16 +101,7 @@
 				currentSwiper :0,
 				scrollLeft: 0,
 				tabIndex:0,
-				tabnav:[
-					{
-						Id:1,
-						TypeName:"舞曲分类"
-					},
-					{
-						Id:2,
-						TypeName:"动态"
-					}
-				],
+				tabnav:[{Id:1,TypeName:"舞曲分类"},{Id:2,TypeName:"动态"}],
 				findlist:[
 					{
 						Addtime: "2020-05-27 18:08:24",
@@ -171,6 +163,7 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.hasData=true;
+			this.workeslist()
 		},
 		 computed: {
 		   tabStyle(){
@@ -184,6 +177,44 @@
 						this.classifylist=res.data
 					}
 				})
+			},
+			/*获取动态列表*/
+			async workeslist() {
+				let result = await post("Find/FindList", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"page": this.page,
+					"pageSize": this.pageSize,
+					"myType": 4,
+					// "MemberId": "",
+					// "SearchKey": ""
+				});
+				if (result.code === 0) {
+					let _this=this;
+					if (result.data.length > 0) {
+						this.hasData = true;
+						this.noDataIsShow = false;
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.findlist = result.data;
+					}
+					if (this.page > 1) {
+						this.findlist = this.findlist.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}
 			},
 			//跳转
 			tolink(Url) {
@@ -204,14 +235,15 @@
 			//链接详情页
 			goDetail(e) {
 				if(e.artType==0){//用户发布详情
-					// uni.navigateTo({
-					// 	url: '/pages/Article/artDetail/artDetail?id='+e.id
-					// })
-				}else{//资讯详情、店铺
-					// uni.navigateTo({
-					// 	url: '/pages/Article/NewsDetail/NewsDetail?id='+e.id
-					// })
+					uni.navigateTo({
+						url: '/pages/music/artDetail/artDetail?id='+e.id
+					})
 				}
+				// else{//资讯详情、店铺
+				// 	uni.navigateTo({
+				// 		url: '/pages/Article/NewsDetail/NewsDetail?id='+e.id
+				// 	})
+				// }
 			},
 			//预览图片
 			previewImg(obj){
@@ -223,12 +255,14 @@
 			},
 		},
 		onReachBottom(){
-			if (this.isLoad) {
-				this.loadingType = 1;
-				this.page++;
-				// this.getList();
-			} else {
-				this.loadingType = 2;
+			if(this.tabIndex==1){
+				if (this.isLoad) {
+					this.loadingType = 1;
+					this.page++;
+					this.workeslist();
+				} else {
+					this.loadingType = 2;
+				}
 			}
 		}
 	}

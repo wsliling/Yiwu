@@ -7,7 +7,7 @@
 					<text class="uni-icon uni-icon-arrowleft"></text>
 				</view>
 				<view class="tabList flex p_re">
-					<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':item.id==tabIndex}"  @click="cliTab(item.id)">{{item.name}}</view>
+					<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':index==tabIndex}"  @click="cliTab(index,item.id)">{{item.name}}</view>
 					<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 				</view>
 				<view class="head_r"> </view>
@@ -15,16 +15,19 @@
 		</view>
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-Userlist bg_fff" v-if="hasData">
-			<view class="user-item" v-for="(item,index) in 10" :key="index">
+			<view class="user-item" v-for="(item,index) in datalist" :key="index">
 				<view class="flex-between">
 					<view class="author flex-start">
-						<view class="tx"><image src="/static/default.png" mode="aspectFill"></image></view>
+						<view class="tx">
+							<image v-if="item.Avatar" :src="item.Avatar" mode="aspectFill"></image>
+							<image v-else src="/static/default.png" mode="aspectFill"></image>
+						</view>
 						<view class="info">
-							<view class="name uni-ellipsis">会飞的象</view>
-							<view class="fz12 c_999">慈悲如月，温暖如阳</view>
+							<view class="name uni-ellipsis">{{item.Name}}</view>
+							<view class="fz12 c_999 uni-ellipsis">{{item.Intro}}</view>
 						</view>
 					</view>
-					<view class="flow active">已关注</view>
+					<view class="flow" :class="{'active':item.IsFollow}">{{item.IsFollow?"已关注":"关注"}}</view>
 				</view>
 			</view>
 		</view>
@@ -49,8 +52,10 @@
 				userId: "",
 				token: "",
 				barHeight:0,
-				tabList:[{id:0,name:'粉丝'},{id:1,name:'被赞'},{id:2,name:'关注'}],
+				tabList:[{id:0,name:'粉丝'},{id:2,name:'被赞'},{id:1,name:'关注'}],
+				datalist:[],
 				tabIndex:0,
+				myType:0,//0-我的粉丝，1-我的关注，2-被赞
 				page:1,
 				pageSize:12,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
@@ -73,9 +78,65 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.tabIndex = this.$mp.query.type;
-			
+			this.myType=this.tabList[this.tabIndex].id
+			this.getList(this.myType)
 		},
 		methods: {
+			/*获取列表*/
+			async getList(type) {//type: 0-我的粉丝，1-我的关注，2-被赞
+				let result=""
+				if(type==2){
+					result = await post("User/MyBepraisedList", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+					});
+				}else{
+					result = await post("Find/UserFollowList", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						"myType": type//0我的粉丝
+					});
+				}
+				if (result.code === 0) {
+					if (result.data.length > 0) {
+						this.hasData = true;
+					}
+					this.count = result.count;
+					if (this.count == 0) {
+						this.noDataIsShow = true;
+					}
+					if (parseInt(this.count) % this.pageSize === 0) {
+						this.allPage = this.count / this.pageSize;
+					} else {
+						this.allPage = parseInt(this.count / this.pageSize) + 1;
+					}
+					if (this.page === 1) {
+						this.datalist = result.data;
+					}
+					if (this.page > 1) {
+						this.datalist = this.datalist.concat(
+							result.data
+						);
+					}
+					if (this.allPage <= this.page) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					}
+				}else {
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 2000
+					});
+				}
+			},
 			backUrl(){
 				uni.navigateBack()
 			},
@@ -85,8 +146,10 @@
 					url: Url
 				})
 			},
-			cliTab(index){
+			cliTab(index,id){
 			  this.tabIndex = index
+			  this.myType=id
+			  this.getList(id)
 			},
 		}
 	}

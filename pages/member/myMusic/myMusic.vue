@@ -3,7 +3,7 @@
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<!-- #ifndef MP-WEIXIN -->
 			<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
-			<view class="mine">我上传的舞曲</view>
+			<view class="mine">我的舞曲</view>
 			<!-- #endif -->
 			<!-- #ifdef MP-WEIXIN -->
 			<view></view>
@@ -16,26 +16,14 @@
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-hd flex-between">
 			<view class="title">创建曲单</view>
-			<view class="uni-icon uni-icon-plusempty" @click="ShowCreatMenu"></view>
+			<view class="uni-icon uni-icon-plusempty" @click="isShowCreatMenu=true"></view>
 		</view>
 		<view class="menulist">
-			<view class="item flex-between" v-for="(item,index) in 3" :key="index" @click="tolink('/pages/member/myMusic_list/myMusic_list?id=')">
+			<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/member/myMusic_list/myMusic_list?id='+item.Id)">
 				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">默认曲单</view>
-					<view class="fz12 c_999 uni-mt10">4首</view>
-				</view>
-			</view>
-		</view>
-		<view class="musiclist pd15">
-			<view class="item flex-between" v-for="(item,index) in 5" :key="index">
-				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
-				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">曲名芭蕾舞曲</view>
-					<view class="icons flex-end">
-						<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
-					</view>
+					<view class="name uni-ellipsis">{{item.Name}}</view>
+					<view class="fz12 c_999 uni-mt10">{{item.Num}}</view>
 				</view>
 			</view>
 		</view>
@@ -44,69 +32,10 @@
 			<view class="uni-modal-music creatMenu__modal">
 				<view class="uni-modal__hd pd15">新建曲单</view>
 				<view class="uni-modal__bd">
-					<input class="inputBox" type="text" value="" placeholder="请输入名称" autofocus="autofocus" />
+					<input class="inputBox" type="text" v-model="Title" placeholder="请输入名称" autofocus="autofocus" />
 					<view class="btns flex-between">
 						<view class="btn" @click="hidePopup">取消</view>
 						<view class="btn active" @click="surePop">完成</view>
-					</view>
-				</view>
-			</view>
-		</uni-popup>
-		<!-- 更多操作	 -->
-		<uni-popup mode="fixed" :show="isShowOperation" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-music Operation__modal">
-				<view class="uni-modal__bd">
-					<view class="line-list">
-						<view class="line-item">
-							<view class="line-item-l text_left">
-								<text class="txt c_theme">￥34</text>
-							</view>
-							<view class="item-r">
-								<view class="btnbuy">购买</view>
-							</view>
-						</view>
-						<view class="line-item">
-							<view class="line-item-l flex-start">
-								<image class="iconimg" src="/static/play_next.png" mode="widthFix"></image>
-								<text class="txt">播放下一首</text>
-							</view>
-						</view>
-						<view class="line-item" @click="ShowSelect">
-							<view class="line-item-l flex-start">
-								<image class="iconimg" src="/static/add.png" mode="widthFix"></image>
-								<text class="txt">添加到歌单</text>
-							</view>
-						</view>
-						<view class="line-item">
-							<view class="line-item-l flex-start">
-								<image class="iconimg" src="/static/share.png" mode="widthFix"></image>
-								<text class="txt">分享</text>
-							</view>
-						</view>
-						<view class="line-item" @click="Collect">
-							<view class="line-item-l flex-start">
-								<image class="iconimg" :src="isCollect?'/static/collect2.png':'/static/collect.png'" mode="widthFix"></image>
-								<text class="txt">收藏</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-		</uni-popup>
-		<!-- 选择曲单	 -->
-		<uni-popup mode="fixed" :show="isShowSelect" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-music Menulist__modal">
-				<view class="uni-modal__hd pd15">选择曲单</view>
-				<view class="uni-modal__bd">
-					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in 12" :key="index">
-							<view class="line-item-l text_left">
-								<text class="txt">默认曲单</text>
-							</view>
-						</view>
-					</view>
-					<view class="btns flex-between">
-						<view class="btn c_theme"  @click="hidePopup">关闭</view>
 					</view>
 				</view>
 			</view>
@@ -133,10 +62,7 @@
 				noDataIsShow: false,
 				datalist: {}, //列表
 				isShowCreatMenu:false,
-				isShowOperation:false,
-				isShowSelect:false,
-				isCollect:false,//是否收藏
-				playIndex:0,//当前播放
+				Title:"",//新建曲单名称
 			}
 		},
 		components: {
@@ -154,7 +80,7 @@
 			// #endif
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			//this.workeslist();
+			this.workeslist();
 		},
 		methods: {
 			//跳转
@@ -169,40 +95,44 @@
 					url: '/pages/tabBar/my/my'
 				});
 			},
-			//播放
-			playMusic(index){
-				this.playIndex=index
-			},
-			//弹出创建曲单
-			ShowCreatMenu(){
-				this.isShowCreatMenu=true;
-			},
 			//创建曲单
 			surePop(){
-				this.isShowCreatMenu=false;
-			},
-			//弹出更多操作
-			ShowOperation(index){
-				this.isShowOperation=true;
-			},
-			//弹出选择歌单
-			ShowSelect(){
-				this.isShowOperation=false;
-				this.isShowSelect=true;
+				if(this.Title==""){
+					uni.showToast({
+						title:"请输入曲单名称！",
+						icon:"none"
+					})
+				}else{
+					this.EditPlayList()
+					this.isShowCreatMenu=false;
+				}
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
 				this.isShowCreatMenu=false;
-				this.isShowOperation=false;
-				this.isShowSelect=false;
 			},
-			//收藏
-			Collect(){
-				this.isCollect=!this.isCollect;
+			//创建曲单
+			async EditPlayList(){
+				let res = await post("DanceMusic/EditPlayList", {
+					UserId: this.userId,
+					Token: this.token,
+					PlayId: 0,
+					PlayListName:this.Title,
+				});
+				if(res.code==0){
+					uni.showToast({
+						title:"创建成功"
+					})
+				}else{
+					uni.showToast({
+						title:res.msg,
+						icon:"none"
+					})
+				}
 			},
 			/*获取列表*/
 			async workeslist() {
-				let result = await post('User/Memberdatalist', {
+				let result = await post('DanceMusic/DancePlayList', {
 					UserId: this.userId,
 					Token: this.token,
 					page: this.page,

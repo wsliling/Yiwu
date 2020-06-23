@@ -4,29 +4,28 @@
 			<view class="line-item">
 				<view class="lab">曲名</view>
 				<view class="item_r flex1">
-				  <input type="text" placeholder="请输入曲名" class="flex1">
+				  <input type="text" placeholder="请输入曲名" v-model="Title" class="flex1">
 				</view>
 			</view>
 			<view class="line-item">
 				<view class="lab">价格</view>
 				<view class="item_r flex1 flex-between">
-				  <input type="text" placeholder="请输入价格" class="flex1">
+				  <input type="text" placeholder="请输入价格" v-model="Price" :disabled="hascheck" class="flex1">
 				  <label class="flex-end" @click="hascheck=!hascheck">
 				  	<radio class="radio" :color="hascheck?'#de1b6e':'#999'" checked="true"></radio><text>免费</text>
 				  </label>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r" @click="ShowSelect(0)">
-				<view class="lab">关联曲单</view>
-				<view class="item_r flex1">
-				  <input type="text" placeholder="请选择" class="flex1" v-model="musicmenu">
-				</view>
-			</view>
-			<view class="line-item line-arrow-r" @click="ShowSelect(1)">
+			<view class="line-item line-arrow-r" @click="isShowSelect=true">
 				<view class="lab">类型选择</view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请选择" class="flex1" v-model="musictype">
 				</view>
+			</view>
+			<view class="line-item" @click="chooseMusic">
+				<view class="filebtn">{{musicFile?"已选择":"请选择舞曲"}}</view>
+				<view class="" v-if="musicFile">{{fileName}}</view>
+				<view class="" v-else>未选择</view>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
 				<view class="lab" style="width: 100%;">请选择封面</view>
@@ -37,18 +36,18 @@
 			</view>
 		</view>
 		<view style="height: 110upx;"></view>
-		<view class="fixedbtn" style="background: #fff;">
+		<view class="fixedbtn" style="background: #fff;" @click="uplLoadBtn">
 			<view class="btn">确定</view>
 		</view>
 		<!-- 选择曲单	 -->
 		<uni-popup mode="fixed" :show="isShowSelect" :h5Top="true" position="bottom" @hidePopup="hidePopup">
 			<view class="uni-modal-music Menulist__modal">
-				<view class="uni-modal__hd pd15">{{selectTab==0?'选择曲单':'选择类型'}}</view>
+				<view class="uni-modal__hd pd15">选择类型</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in 12" :key="index" @click="SelectMenu(index,'默认曲单')">
+						<view class="line-item" v-for="(item,index) in classifylist" :key="index" @click="SelectMenu(item.Id,item.Name)">
 							<view class="line-item-l text_left">
-								<text class="txt">默认曲单</text>
+								<text class="txt">{{item.Name}}</text>
 							</view>
 						</view>
 					</view>
@@ -70,12 +69,17 @@
 			return {
 				userId:"",
 				token:"",
+				Title:"",
+				Price:"",
 				picStr:"",
+				picStrbase64:"",
 				isShowSelect:false,
-				musicmenu:"",
 				musictype:"",
-				selectTab:0,//0弹出曲单，,1弹出类型
 				hascheck:false,//是否选中免费
+				musicFile:"",//音频文件
+				fileName:"",
+				classifylist:[],
+				ClassId:"",//类型Id
 			}
 		},
 		components: {
@@ -84,27 +88,64 @@
 		onLoad(){
 		  this.userId = uni.getStorageSync("userId")
 		  this.token = uni.getStorageSync("token")
+		  this.getclassifyList()
 		},
 		onShow(){
-		
+			this.fileName = uni.getStorageSync("fileName")
+			this.musicFile = uni.getStorageSync("filePath")
 		},
 		methods: {
-			//弹出选择歌单
-			ShowSelect(index){
-				this.isShowSelect=true;
-				this.selectTab=index;
-			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
 				this.isShowSelect=false;
 			},
-			SelectMenu(index,txt){
-				if(this.selectTab==0){
-					this.musicmenu=txt;
-				}else{
-					this.musictype=txt;
-				}
+			SelectMenu(id,txt){
+				this.musictype=txt;
+				this.ClassId=id;
 				this.isShowSelect=false;
+			},
+			//获取类型
+			getclassifyList(){
+				post('DanceMusic/DanceMusicClassList',{}).then(res=>{
+					if(res.code===0){
+						this.classifylist=res.data
+					}
+				})
+			},
+			chooseMusic(){
+				uni.navigateTo({
+					url:"/pages/uploadFile/uploadFile?type=0"
+				})
+			},
+			//发布舞曲
+			async uplLoadMusic(){
+				if(this.hascheck){
+					var IsCharge=0
+				}else{
+					var IsCharge=1
+				}
+				let res = await post("DanceMusic/UploadDanceMusic", {
+					UserId: this.userId,
+					Token: this.token,
+					ClassId: this.ClassId,
+					Audio:this.musicFile,
+					CoverPic: this.picStrbase64,
+					Name:this.Title,
+					IsCharge:IsCharge,
+					Price:this.Price
+				});
+				if(res.code==0){
+					uni.showToast({
+						title:"发布成功"
+					})
+					uni.setStorageSync("fileName","");//清空缓存
+					uni.setStorageSync("filePath","")
+				}else{
+					uni.showToast({
+						title:res.msg,
+						icon:"none"
+					})
+				}
 			},
 			//上传
 			uplLoadImg(){
@@ -124,8 +165,36 @@
 				return res;
 			},
 			async UploadPhoto(){
-				let picStrbase64=await this.base64Img(this.picStr);console.log(this.picStr)
+				this.picStrbase64=await this.base64Img(this.picStr);console.log(this.picStr)
 			},
+			uplLoadBtn(){
+				if(this.yanzheng()){
+					this.uplLoadMusic()
+				}
+			},
+			yanzheng(){
+				if(this.Title==""){
+					uni.showToast({title:"请输入舞曲名称！",icon:"none"})
+					return false
+				}
+				if(!this.hascheck&&(this.Price==0||this.Price=="")){
+					uni.showToast({title:"请输入价格！",icon:"none"})
+					return false
+				}
+				if(this.ClassId==""){
+					uni.showToast({title:"请选择舞曲类型！",icon:"none"})
+					return false
+				}
+				if(this.picStr==""){
+					uni.showToast({title:"请选择舞曲封面！",icon:"none"})
+					return false
+				}
+				if(this.musicFile==""){
+					uni.showToast({title:"请选择要上传的舞曲！",icon:"none"})
+					return false
+				}
+				return true
+			}
 		}
 	}
 </script>
@@ -155,5 +224,14 @@
 	}
 	.line-item textarea{ 
 		width: 100%;
+	}
+	.filebtn{
+		background-color: #de1b6e;
+		color: #fff;
+		padding: 4upx 18upx;
+		border-radius: 4upx;
+	}
+	.radio{
+		transform:scale(0.76)
 	}
 </style>
