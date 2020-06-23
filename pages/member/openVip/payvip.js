@@ -1,4 +1,4 @@
-import {post} from '@/common/util'
+import {post,toast,navigateBack} from '@/common/util'
 let disable = false;
 let payType=null;//支付类型0--微信支付，1--余额支付，2--支付宝
 let params={}; //参数
@@ -240,9 +240,12 @@ async function balancePay(){
         UserId: uni.getStorageSync('userId'),
         Token: uni.getStorageSync('token'),
         RecordNo: params.orderNo,
-        Password:params.payPassword
+        PayPassword:params.payPassword
     })
     disable = false;
+    if(res.code) return;
+    toast('购买成功！',{icon:true})
+    navigateBack();
 }
 
 
