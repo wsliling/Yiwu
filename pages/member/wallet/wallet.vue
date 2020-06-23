@@ -14,7 +14,7 @@
 					<text class="txt">交易明细</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/bankCard/bankCard')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/yhk.png" mode="widthFix"></image>
 					<text class="txt">银行卡管理</text>
