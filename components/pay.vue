@@ -121,7 +121,7 @@ export default {
       showPayStatus:1, //支付密码状态 1--支付；2--选择支付方式；3--填写支付密码
       payType: 0,// 0--微信支付.1--余额支付,2--支付宝
       password:'',
-      forgetPasswordUrl:'/pages/mine/setPwd/main',//忘记密码跳转url
+      forgetPasswordUrl:'/pages/member/setpwd/setpwd',//忘记密码跳转url
     };
   },
   computed:{
@@ -194,13 +194,13 @@ export default {
    //  设置支付密码跳转页面
     forgetPassword() {
       const that =this;
-      wx.showModal({
+      uni.showModal({
         title: "设置密码",
-        content: "订单已创建，请前往我的订单进行支付！",
-        confirmColor: "#3172f5",
+        content: "是否跳转设置支付密码页面！",
+        confirmColor: "#dd196d",
         success(res) {
           if (res.confirm) {
-            wx.navigateTo({ url: that.forgetPasswordUrl });
+            uni.navigateTo({ url: that.forgetPasswordUrl });
           } else if (res.cancel) {
           }
         }
@@ -342,7 +342,7 @@ export default {
 .payPasswordComponent {
   background: rgba(0, 0, 0, 0.4);
   position: fixed;
-  top: 0;
+  top: -350px;
   left: 0;
   z-index: 102;
   height: 100vh;

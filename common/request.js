@@ -29,8 +29,8 @@ function request(url, method, data) {
 		 else if(ret.code==2){
 			//  localStorage.removeItem('token');
       //  localStorage.removeItem('userId');
-       uni.setStorageSync("userId",'')
-       uni.setStorageSync("token",'')
+      //  uni.setStorageSync("userId",'')
+      //  uni.setStorageSync("token",'')
 			 uni.showToast({
 			     title:"您未登录，请重新登录！",
 			     icon:'none'

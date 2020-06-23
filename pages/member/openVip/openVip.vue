@@ -32,7 +32,7 @@
 			</view>
 		</view>
 		<view class="mainbox">
-			<view class="pricelist flex-center">
+			<view class="pricelist flex-center" v-if="data.length">
 				<view class="item flex-column" :class="{'active':setmeal==item.Id}" 
 					v-for="(item,index) in data" :key="index"
 					@click="setmeal = item.Id"
@@ -67,6 +67,7 @@
 <script>
 	import {post,get,toLogin} from '@/common/util.js';
 	import pay from '@/components/pay.vue';
+	import {payFn} from './payvip';
 	export default {
 		components: {
 			pay
@@ -96,6 +97,7 @@
 					UserId:this.userId,
 					Token:this.token
 				})
+				if(res.code)return;
 				this.setmeal = res.data[0].Id;
 				this.data = res.data;
 			},
@@ -110,12 +112,6 @@
 			},
 			//打开支付窗口
 			async VipOrder(){
-				const res = await post('User/PlusBuyOrder',{
-					UserId:this.userId,
-					Token:this.token,
-					PlusId:this.setmeal
-				})
-				this.orderNo = res.data.plusNo;
 				this.data.map(item=>{
 					if(item.Id===this.setmeal){
 						this.totalprice = item.PlusPrice;
@@ -130,15 +126,27 @@
 				this.showgetout = false;
 			},
 			//确认支付
-			paySuccess(e){
+			async paySuccess(e,payPassword){
 				// 0--微信支付.1--余额支付,2--支付宝
-				if(e.payType==0){
+				const res = await post('User/PlusBuyOrder',{
+					UserId:this.userId,
+					Token:this.token,
+					PlusId:this.setmeal
+				})
+				const data= res.data;
+				this.orderNo =data.plusNo;
+				payFn(e,{
+					orderNo:data.plusNo,
+					TotalPrice:this.totalprice,
+					payPassword
+				})
+				// if(e.payType==0){
 					
-				}else if(e.payType==2){
+				// }else if(e.payType==2){
 					
-				}else if(e.payType==1){//余额
-					const password = e.password;
-				}
+				// }else if(e.payType==1){//余额
+				// 	const password = e.password;
+				// }
 			}
 			
 		}
