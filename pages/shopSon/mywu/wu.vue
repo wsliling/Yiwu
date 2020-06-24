@@ -4,7 +4,10 @@
 		<view class="search">
 			<view class="seachbox">
 				<!-- <text class="uni-icon uni-icon-search">请输入你想搜索的产品</text> -->
-				<ans-input placeholder="请输入你想搜索的产品"></ans-input>
+				
+				<uni-icons color="#ccc" class="my-close" size="20" type="search" />
+				<ans-input placeholder="请输入你想搜索的产品" @onConfirm="searchConfirm"
+				:value="searchText"></ans-input>
 			</view>
 		</view>
 		<div class="sort">
@@ -20,7 +23,7 @@
 		</div>
 		<view class="wu-box">
 			<!-- <image v-if="type == 4" class="wu-img" src="../../../static/of/p3.jpg" mode=""></image> -->
-			<view class="wu-item" v-for="(val,key) in list" :key="key">
+			<view class="wu-item" v-for="(val,key) in list" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
 				<image :src="val.PicNo" mode="aspectFill"></image>
 				<view class="wu-tet">
 					<view class="wu-name"><span v-if="val.IsPlatform">自营</span>{{val.Name}}</view>
@@ -34,7 +37,7 @@
 </template>
 
 <script>
-	import {post,toast} from '@/common/util.js';
+	import {post,toast,navigate} from '@/common/util.js';
 	import uniLoadMore from '@/components/uni-load-more.vue';
 	import notData from '@/components/notData.vue';
 	import ansInput from '@/components/ans-input/ans-input.vue';
@@ -44,22 +47,26 @@
 		},
 		data(){
 			return{
+				navigate,
 				userId:'',
 				token:'',
 				page:1,
 				pageSize:12,
 				loadingType:0,//0-loading前；1-loading中；2-没有更多了
+				classId:0,//分类id
 				brandId:0,//品牌id
 				list:[],
 				sort:0,//0-默认,1-人气,2-价格
 				sortMode:0,//0- 升序（从小到大） 1-降序（从大到小）
+				searchText:'',
 
 			}
 		},
 		onLoad(e) {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			this.title = e.title
+			this.title = e.title;
+			e.classId&&(this.classId = e.classId);
 			e.brandId&&(this.brandId = e.brandId);
 			if(e.title){
 				uni.setNavigationBarTitle({
@@ -83,9 +90,11 @@
 					Token:this.token,
 					Page:this.page,
 					PageSize:this.pageSize,
+					TypeId:this.classId,
 					BrandId:this.brandId,
 					Sort:this.sort,
 					Order:this.sortMode,
+					Keywords:this.searchText
 				});
 				if(res.code)return;
 				const data = res.data;
@@ -105,11 +114,22 @@
 				this.sort = sort;
 				this.page = 1
 				this.getData();
+			},
+			// 搜索
+			searchConfirm(searchText){
+				this.searchText = searchText;
+				this.sort=0;
+				this.sortMode=0;
+				this.page = 1;
+				this.getData();
 			}
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
-			this.page = 1
+			this.sort=0;
+			this.sortMode=0;
+			this.searchText = '';
+			this.page = 1;
 			this.getData();
 			// 停止下拉动画
 			uni.stopPullDownRefresh()
@@ -127,6 +147,10 @@
 	.search {
 		padding: 20upx 30upx 0;
 		background: #fff !important;
+		.seachbox{
+			display:flex;
+			align-items:center;
+		}
 	}
 	.index_swiper .swiper,
 	.index_swiper .swiper .img {

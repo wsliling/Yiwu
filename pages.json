@@ -399,7 +399,8 @@
 				{
 				    "path" : "mywu/wu",
 				    "style" : {
-						"navigationBarTitleText": "舞衣"
+						"navigationBarTitleText": "舞衣",
+						"enablePullDownRefresh":true
 					}
 				},
 				{
@@ -412,11 +413,10 @@
 					}
 				},
 				{
-				    "path" : "productList/productList",
+				    "path" : "shopHome/shopHome",
 				    "style" : {
-						"navigationBarTitleText": "产品列表",
-						"enablePullDownRefresh" : true,
-						"navigationStyle":"custom"
+						"navigationBarTitleText": "店铺主页",
+						"enablePullDownRefresh" : true
 						// "app-plus": {
 							// "titleNView": false
 						// }
