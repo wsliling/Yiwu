@@ -321,6 +321,30 @@
 						"navigationBarTitleText":"加入官方交流"
 					}
 				}
+				,{
+				    "path" : "interflow/interflow",
+				    "style" : {
+						"navigationBarTitleText":"加入官方交流"
+					}
+				}
+				,{
+				    "path" : "bankAdd/bankAdd",
+				    "style" : {
+						"navigationBarTitleText":"绑定银行卡"
+					}
+				}
+				,{
+				    "path" : "bankCard/bankCard",
+				    "style" : {
+						"navigationBarTitleText":"我的银行卡"
+					}
+				}
+				,{
+				    "path" : "bankChoose/bankChoose",
+				    "style" : {
+						"navigationBarTitleText":"选择银行"
+					}
+				}
             ]
 		},
 		{
