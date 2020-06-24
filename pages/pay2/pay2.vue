@@ -3,20 +3,20 @@
 		<view class="uni-bg-white">
 			<view class="proInfo flex pp3" v-if="proType==0">
 				<view class="imgbox">
-					<image src="/static/music/music-item.png" mode="widthFix"></image>
+					<image :src="Info.PicImg" mode="aspectFill"></image>
 				</view>
 				<view class="txtbox flex1">
 					<view class="name uni-ellipsis2">
-						拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞
+						{{Info.name}}
 					</view>
 					<view class="price c_theme">
-						<text class="fz12">￥</text>16.80(需要1680积分)
+						<text class="fz12">￥</text>{{Info.price}}(需要1680积分)
 					</view>
 				</view>
 			</view>
 			<view class="proInfo1 flex-between pp3" v-if="proType==1">
 				<view class="imgbox">
-					<image src="/static/default_music.png" mode="widthFix"></image>
+					<image src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="txtbox flex1 flex-between">
 					<view class="name uni-ellipsis flex1">
@@ -47,20 +47,27 @@
 		</view>
 		<view style="height: 110upx;"></view>
 		<view class="fixedbtn" style="background: #f8f8f8;">
-			<view class="btn">确认支付</view>
+			<view class="btn" @click="surePop">确认支付</view>
 		</view>
+		<pay v-on:hidePay="hidePay" v-on:getPassword="getPassword" v-if="showPay" :allprice="Info.price"></pay>
 	</view>
 </template>
 
 <script>
 	import { post, get } from '@/common/util.js';
+	import pay from '@/components/pay.vue';
 	export default {
+		components: {
+			pay
+		},
 		data() {
 			return {
 				userId: "",
 				token: "",
+				proID:"",//产品id
 				proType:0,//0课程，1舞曲
 				payType:0, //0微信支付
+				showPay:false,//支付密码弹框
 				payway:[
 				// #ifdef APP-PLUS||H5	
 				{
@@ -83,19 +90,79 @@
 					Id:3,
 					iconimg:'/static/pay_jf.png',
 					name:"积分"
+				},
+				{
+					Id:4,
+					iconimg:'/static/pay_jf.png',
+					name:"返佣"
 				}],
+				Info:{},
+				IsPayWallet:0,
+				IsPayScore:0,
+				IsPayAmountScor:0,
 			}
 		},
 		onLoad() {
 			
 		},
 		onShow() {
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
+			this.Info=uni.getStorageSync("buyInfo")
 			this.proType=this.$mp.query.type;
+			this.proID=this.$mp.query.id;
 		},
 		methods: {
 			tabBtn(index){
 				this.payType=index;
 			},
+			//接收支付密码
+			getPassword(Password){
+				this.CourseBuy(Password);
+			},
+			//关闭支付密码弹窗
+			hidePay(e){
+				this.showPay=false;
+			},
+			//课程订单提交
+			async CourseBuy(Password){
+				let result = await post("Course/CourseBuy", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"OutlineId":this.proID,
+					"IsPayWallet":this.IsPayWallet,
+					"IsPayScore":this.IsPayScore,
+					"IsPayAmountScor":this.IsPayAmountScor,
+					"Password":Password
+				});
+				if(result.code==0){
+					
+				}
+			},
+			//确认支付
+			surePop(){
+				if(this.payType==0){
+					
+				}else if(this.payType==1){
+					
+				}else if(this.payType==2){//余额
+					this.showPay=true;
+					this.IsPayWallet=1;
+					this.IsPayScore=0;
+					this.IsPayAmountScor=0;
+				}else if(this.payType==3){//积分
+				    this.showPay=true;
+					this.IsPayScore=1;
+					this.IsPayWallet=0;
+					this.IsPayAmountScor=0;
+				}else if(this.payType==4){//返佣积分
+				    this.showPay=true;
+					this.IsPayAmountScor=1;
+					this.IsPayScore=0;
+					this.IsPayWallet=0;
+				}
+			}
+			
 		}
 	}
 </script>
@@ -108,6 +175,10 @@
 			border-radius: 12upx;
 			overflow: hidden;
 			margin-right: 20upx;
+			image{
+				width: 100%;
+				height: 100%;
+			}
 		}
 		.txtbox{
 			justify-content: space-between;

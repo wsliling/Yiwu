@@ -89,7 +89,7 @@
         ,{
             "path" : "pages/video/videoDetails/videoDetails",
             "style" : {
-				"navigationBarTitleText": "视频详情",
+				"navigationBarTitleText": "课程详情",
 				"app-plus": {
 					"titleNView": {
 						"type": "transparent"

@@ -195,7 +195,7 @@
 					<view class="Yi-courselist flexWrap flex-between">
 						<view class="item" v-for="(item,index) in CourseList" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
 							<view class="maxpic">
-								<image :src="item.Logo" mode="aspectFill"></image>
+								<image :src="item.PicImg" mode="aspectFill"></image>
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">
