@@ -40,7 +40,7 @@
 				token: "",
 				Findid:"",
 				page:1,
-				pageSize:4,
+				pageSize:10,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
@@ -84,46 +84,48 @@
 					"pageSize": this.pageSize,
 					"FkId": this.Findid
 				});
-				if (result.data.length > 0) {
-					let _this=this;
-					this.hasData = true;
-					this.noDataIsShow = false;
-					result.data.forEach(function(item) {
-						item.AddTime=dateUtils.format(item.AddTime);
-						_this.$set(item, "imgArr",item.ImgList.split(","));
-						_this.$set(item, "isSHOW",false);
-						item.MyCommnetList.forEach(function(item2) {
-							item2.AddTime=dateUtils.format(item2.AddTime);
-							let txt =item2.Comment.split("#$#");
-							if(txt.length==2){
-								_this.$set(item2, "Comment",txt[1]);
-								_this.$set(item2, "pname",txt[0]);
-							}else{
-								_this.$set(item2, "Comment",txt[0]);
-								_this.$set(item2, "pname","");
-							}
+				if(result.code==0){
+					if (result.data.length > 0) {
+						let _this=this;
+						this.hasData = true;
+						this.noDataIsShow = false;
+						result.data.forEach(function(item) {
+							item.AddTime=dateUtils.format(item.AddTime);
+							_this.$set(item, "imgArr",item.ImgList.split(","));
+							_this.$set(item, "isSHOW",false);
+							item.MyCommnetList.forEach(function(item2) {
+								item2.AddTime=dateUtils.format(item2.AddTime);
+								let txt =item2.Comment.split("#$#");
+								if(txt.length==2){
+									_this.$set(item2, "Comment",txt[1]);
+									_this.$set(item2, "pname",txt[0]);
+								}else{
+									_this.$set(item2, "Comment",txt[0]);
+									_this.$set(item2, "pname","");
+								}
+							})
 						})
-					})
+					}
+					if (result.data.length == 0 && this.page == 1) {
+						this.noDataIsShow = true;
+						this.hasData = false;
+					}
+					if (this.page === 1) {
+						this.datalist = result.data;
+					}
+					if (this.page > 1) {
+						this.datalist = this.datalist.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.isLoad = false;
+						this.loadingType = 2;
+					} else {
+						this.isLoad = true;
+						this.loadingType = 0
+					} 
 				}
-				if (result.data.length == 0 && this.page == 1) {
-					this.noDataIsShow = true;
-					this.hasData = false;
-				}
-				if (this.page === 1) {
-					this.datalist = result.data;
-				}
-				if (this.page > 1) {
-					this.datalist = this.datalist.concat(
-						result.data
-					);
-				}
-				if (result.data.length <this.pageSize) {
-					this.isLoad = false;
-					this.loadingType = 2;
-				} else {
-					this.isLoad = true;
-					this.loadingType = 0
-				} 
 			},
 			// 发表评论
 			async CommentOperation(){
