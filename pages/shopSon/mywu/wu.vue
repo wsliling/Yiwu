@@ -3,7 +3,8 @@
 	<view class="">
 		<view class="search">
 			<view class="seachbox">
-				<text class="uni-icon uni-icon-search">请输入你想搜索的产品</text>
+				<!-- <text class="uni-icon uni-icon-search">请输入你想搜索的产品</text> -->
+				<ans-input placeholder="请输入你想搜索的产品"></ans-input>
 			</view>
 		</view>
 		<div class="sort">
@@ -36,9 +37,10 @@
 	import {post,toast} from '@/common/util.js';
 	import uniLoadMore from '@/components/uni-load-more.vue';
 	import notData from '@/components/notData.vue';
+	import ansInput from '@/components/ans-input/ans-input.vue';
 	export default {
 		components: {
-			uniLoadMore,notData
+			uniLoadMore,notData,ansInput
 		},
 		data(){
 			return{
@@ -50,7 +52,7 @@
 				brandId:0,//品牌id
 				list:[],
 				sort:0,//0-默认,1-人气,2-价格
-				sortMode:0,//2- 升序（从小到大） 1-降序（从大到小）
+				sortMode:0,//0- 升序（从小到大） 1-降序（从大到小）
 
 			}
 		},
@@ -96,7 +98,7 @@
 			},
 			onSort(sort){
 				if(this.sort == sort){
-					this.sortMode = this.sortMode===1?2:1;
+					this.sortMode = this.sortMode===1?0:1;
 				}else{
 					this.sortMode =0;
 				}
