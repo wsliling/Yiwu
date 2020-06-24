@@ -171,15 +171,17 @@
 				}
 			},
 			tobuy(){
-				let buyInfo={
-					PicImg:this.CourseInfo.PicImg,
-					name:this.CourseInfo.Name,
-					price:this.CourseInfo.Price
+				if(toLogin()){
+					let buyInfo={
+						PicImg:this.CourseInfo.PicImg,
+						name:this.CourseInfo.Name,
+						price:this.CourseInfo.Price
+					}
+					uni.setStorageSync('buyInfo', buyInfo);
+					uni.navigateTo({
+						url:'/pages/pay2/pay2?type=0&id='+this.Courseid
+					})
 				}
-				uni.setStorageSync('buyInfo', buyInfo);
-				uni.navigateTo({
-					url:'/pages/pay2/pay2?type=0&id='+this.Courseid
-				})
 			},
 			//其他课程
 			async GetUserOtherCourse(){
