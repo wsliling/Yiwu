@@ -24,7 +24,7 @@
 							{{val.LikeNum}}人点赞
 						</view>
 						<view class="correct">
-							<block v-if="val.Is_Charge==1">
+							<block v-if="val.Is_Charge==0">
 								免费
 							</block>
 							<block v-else><span class="spanl">¥</span>{{ val.Price}}</block>
@@ -57,7 +57,7 @@ export default {
 			userId: '',
 			token: '',
 			page:1,
-			pageSize:10,
+			pageSize:8,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
 			isLoad: false,
 			hasData: false,
@@ -214,7 +214,7 @@ export default {
 				for (let j = 0; j < _this.Ids.length; j++) {
 					for (let i = 0; i < _this.datalength; i++) {
 						if (_this.datalist[i]) {
-							if (_this.Ids[j] == _this.datalist[i].Id) {
+							if (_this.Ids[j].Id == _this.datalist[i].Id) {
 								_this.datalist.splice(i, 1);
 							}
 						}
