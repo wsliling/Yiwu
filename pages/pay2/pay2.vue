@@ -45,6 +45,9 @@
 				</block>
 			</view>
 		</view>
+		<view class="pp3 c_theme fz12">
+			普通积分：1积分=1元；返佣积分：100积分=1元
+		</view>
 		<view style="height: 110upx;"></view>
 		<view class="fixedbtn" style="background: #f8f8f8;">
 			<view class="btn" @click="surePop">确认支付</view>
@@ -89,12 +92,12 @@
 				{
 					Id:3,
 					iconimg:'/static/pay_jf.png',
-					name:"积分"
+					name:"普通积分"
 				},
 				{
 					Id:4,
 					iconimg:'/static/pay_jf.png',
-					name:"返佣"
+					name:"返佣积分"
 				}],
 				Info:{},
 				IsPayWallet:0,
@@ -124,8 +127,9 @@
 			hidePay(e){
 				this.showPay=false;
 			},
-			//课程订单提交
+			//课程订单提交（余额积分提交订单并支付）
 			async CourseBuy(Password){
+				uni.showLoading();
 				let result = await post("Course/CourseBuy", {
 					"UserId": this.userId,
 					"Token": this.token,
@@ -136,7 +140,13 @@
 					"Password":Password
 				});
 				if(result.code==0){
-					
+					uni.hideLoading();
+					uni.showToast({
+						title: "支付成功"
+					})
+					setTimeout(function(){
+						uni.navigateBack()
+					},1500)
 				}
 			},
 			//确认支付

@@ -102,7 +102,6 @@
 				],
 				CourseInfo:{},
 				otherlist:[],//其他课程
-				DownloadUrl:"",//下载路径
 				page:1,
 				pageSize:10,
 				hasData:false,
@@ -281,10 +280,35 @@
 						"CourseId":this.Courseid
 					});
 					if(result.code==0){
-						this.DownloadUrl=result.data;
+						const downloadTask = uni.downloadFile({
+							url: result.data, 
+							success: (res) => {
+								console.log(res)
+								if (res.statusCode === 200) {
+									uni.showToast({
+										title: "下载成功"
+									})
+								}
+								let that = this;
+								uni.saveFile({
+									tempFilePath: res.tempFilePath,
+										success: function(red) {
+											that.luj = red.savedFilePath
+											console.log(red)
+										}
+									});
+								}
+							});
+				
+						downloadTask.onProgressUpdate((res) => {
+							console.log('下载进度' + res.progress);
+							console.log('已经下载的数据长度' + res.totalBytesWritten);
+							console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+						});
 					}
 				}
 			},
+			
 			//显示评论按钮
 			showReplyBox(){
 				this.IsShowReplyBox=true;
@@ -301,7 +325,8 @@
 					"Token": this.token,
 					"page": this.page,
 					"pageSize": this.pageSize,
-					"FkId": this.Courseid
+					"FkId": this.Courseid,
+					"TypeInt":2
 				});
 				if(result.code==0){
 					if (result.data.length > 0) {
