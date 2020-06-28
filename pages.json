@@ -390,6 +390,14 @@
 						"navigationBarTitleText": "最近播放"
 					}
                 }
+                ,{
+                    "path" : "playMusic/playMusic",
+                    "style" : {
+                    	"navigationBarTitleText": "",
+						"navigationBarTextStyle": "white",
+						"navigationBarBackgroundColor":"#252b2f"
+                    }
+                }
             ]
 		},
 		{	//商城内页

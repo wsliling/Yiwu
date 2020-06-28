@@ -7,9 +7,9 @@
 					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
+					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,playMusic} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -101,12 +101,12 @@
 				hasData: false,
 				noDataIsShow: false,
 				page: 1,
-				pageSize: 5,
+				pageSize: 12,
 				datalist:[],
 				isShowOperation:false,
 				isShowSelect:false,
 				isCollect:false,//是否收藏
-				playIndex:0,//当前播放
+				playID:"",//当前播放
 				
 			}
 		},
@@ -152,8 +152,14 @@
 				}
 			},
 			//播放
-			playMusic(index){
-				this.playIndex=index
+			playBtn(index,id){
+				uni.setStorageSync("musicList",this.datalist)
+				if(this.playID==id){
+					this.playID="";
+				}else{
+					this.playID=id;
+				}
+				playMusic(index,id)
 			},
 			//弹出更多操作
 			ShowOperation(index){
