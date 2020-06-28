@@ -138,3 +138,40 @@
 	}
 	
 }
+.uni-modal-Down{
+	background: #fff;
+	border-radius: 20upx 20upx 0 0;
+	overflow: hidden;
+	.uni-modal__hd{
+		font-size: 32upx;
+	}
+	.btns{
+		border-top: 1px solid #eee;
+		.btn{
+			width: 50%;
+			&.active{
+				color: $primary;
+				border-left: 1px solid #eee;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

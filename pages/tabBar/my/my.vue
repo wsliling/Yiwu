@@ -191,8 +191,7 @@
 				})
 				if (result.code === 0) {
 					this.memberInfo = result.data;
-					result.data.Wallet=result.data.Wallet.toFixed(2);
-					this.wallet=result.data.Wallet.split('.')
+					this.wallet=result.data.Wallet.split('.');
 					this.$store.commit("update", {
 					  Wallet:result.data.Wallet
 					});  

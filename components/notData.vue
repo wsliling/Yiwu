@@ -2,7 +2,7 @@
 	<view class="emptybox">
 		<view class="iconimg">
 			<view class="iconfont icon-wushuju" v-if="mode==='icon'"></view>
-			<image class="img" v-if="mode==='img'" :src="notDataImg" mode="widthFix"></image>
+			<image class="img" v-if="mode==='img'&&notDataImg" :src="notDataImg" mode="widthFix"></image>
 		</view>
 		<view class="tips uni-center">{{tipsTitle}}</view>
 		<div class="tips-min" v-if="tipsText">{{tipsText}}</div>
@@ -39,7 +39,8 @@
 <style scoped>
 .emptybox{
     padding-bottom: 50upx;
-    padding-top:100upx;
+	padding-top:100upx;
+	width:100%;
     margin-top:0 !important;text-align:center;
   }
   .iconimg{

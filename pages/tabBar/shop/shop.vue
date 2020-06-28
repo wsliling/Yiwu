@@ -20,7 +20,7 @@
 		</view>
 		<!-- 快捷导航 -->
 		<view class="icon-menu">
-			<view class="item" @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})"
+			<view class="item" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
 				v-for="(item,index) in classify" :key="index">
 				<image class="icon" :src="item.Pic"></image>
 				<text class="txt">{{item.Name}}</text>
@@ -37,14 +37,15 @@
 				<image class="icon" src="@/static/fenlei4.png"></image>
 				<text class="txt">舞鞋</text>
 			</view>-->
-			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=4')">
+			<view class="item" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<image class="icon" src="@/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
 			</view> 
 		</view>
 		<!-- 品牌 -->
 		<view class="brand">
-			<view class="brand-img" v-for="(item,index) in shopList" :key="index">
+			<view class="brand-img" v-for="(item,index) in shopList" :key="index" 
+				 @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})">
 				<image class="icon" :src="item.Logo" mode="aspectFill"></image>
 			</view>
 		</view>
@@ -61,7 +62,7 @@
 		<!-- 正在直播 -->
 		<view class="live" v-for="(val,key) in proList" :key="key">
 			<view class="live-img">
-				<image :src="val.BannerPicNo" mode=""></image>
+				<image :src="val.BannerPicNo" mode="" @click="navigate('shopSon/shopHome/shopHome',{shopId:val.ShopId})"></image>
 				<view class="islive">
 					<view class="line line1"></view>
 					<view class="line line2"></view>
@@ -71,7 +72,7 @@
 			</view>
 			<view class="live-item">
 				<view class="live-box"  v-for="(item,index) in val.ProductList" :key="index"
-					@click="tolink('/pages/shopSon/product/productDetails')">
+					 @click="navigate('shopSon/product/productDetails',{proId:item.Id})">
 					<image :src="item.PicNo" mode=""></image>
 					<view class="live-day" v-if="item.IsExplosive||item.IsRecommend||item.IsNewProduct">
 						{{item.IsExplosive?'今日爆款':item.IsRecommend?'推荐':item.IsNewProduct?'新品':''}}

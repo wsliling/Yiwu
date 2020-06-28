@@ -1,8 +1,9 @@
 <template>
 	<div class="box">
-		<input :type="type" v-model="content"
+		<input type="text" v-model="content"
         	@input="$emit('input', content)" :placeholder="placeholder" 
-			confirm-type="search" @confirm="confirm" :style="'text-align:'+align"
+			confirm-type="search" @confirm="onConfirm" :style="'text-align:'+align"
+			class="input"
 		>
 		<div class="clear" @click="content=''" v-if="content">
 			<uni-icons color="#ccc" class="my-close" size="20" type="clear" />
@@ -52,7 +53,7 @@
 				console.log(str)
 				return str.replace(/(^\s*)|(\s*$)/g,"");
 			},
-			confirm(){	
+			onConfirm(){	
 				// #ifndef APP-PLUS
 				uni.hideKeyboard();
 				// #endif
@@ -62,7 +63,7 @@
 				if(this.isNull(this.content)) {
 					console.log('我是空')
 				}
-				this.$emit("confirm",this.content)
+				this.$emit("onConfirm",this.content)
 			}
 		}
 	}
@@ -80,13 +81,19 @@
 		line-height:100%;
 		position:relative;
 	}
-	input{
+	.input{
 		line-height:1em;
 		font-size:100%;
 		color:#333;
 		width:95%;
 		height:100%;
 		line-height:100%;
+		margin: 0;
+		font-family: inherit;
+		-webkit-appearance: none;
+		border:none;
+		background-color:transparent;
+		&:focus{outline:none;}
 	}
 	.clear{
 		position:absolute;
