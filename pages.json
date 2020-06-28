@@ -27,7 +27,8 @@
 		,{
 		    "path" : "pages/tabBar/shop/shop",
 		    "style" : {
-				"navigationBarTitleText": "商城"
+				"navigationBarTitleText": "商城",
+				"enablePullDownRefresh" : true
 			}
 		}
         ,{
@@ -89,7 +90,7 @@
         ,{
             "path" : "pages/video/videoDetails/videoDetails",
             "style" : {
-				"navigationBarTitleText": "视频详情",
+				"navigationBarTitleText": "课程详情",
 				"app-plus": {
 					"titleNView": {
 						"type": "transparent"
@@ -322,12 +323,6 @@
 					}
 				}
 				,{
-				    "path" : "interflow/interflow",
-				    "style" : {
-						"navigationBarTitleText":"加入官方交流"
-					}
-				}
-				,{
 				    "path" : "bankAdd/bankAdd",
 				    "style" : {
 						"navigationBarTitleText":"绑定银行卡"
@@ -359,7 +354,7 @@
 			    ,{
                     "path" : "artPost/artPost",
                     "style" : {
-						"navigationBarTitleText": "发布动态artDetail"
+						"navigationBarTitleText": "发布动态"
 					}
                 }
 				,{
@@ -406,13 +401,42 @@
 				{
 				    "path" : "mywu/wu",
 				    "style" : {
-						"navigationBarTitleText": "舞衣"
+						"navigationBarTitleText": "舞衣",
+						"enablePullDownRefresh":true
 					}
 				},
 				{
 				    "path" : "product/productDetails",
 				    "style" : {
 						"navigationBarTitleText": "产品详情"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "product/productProblem",
+				    "style" : {
+						"navigationBarTitleText": "问大家"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "product/productProblemDetail",
+				    "style" : {
+						"navigationBarTitleText": "问大家"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "shopHome/shopHome",
+				    "style" : {
+						"navigationBarTitleText": "店铺主页",
+						"enablePullDownRefresh" : true
 						// "app-plus": {
 							// "titleNView": false
 						// }

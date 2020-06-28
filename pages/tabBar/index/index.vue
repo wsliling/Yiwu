@@ -75,13 +75,13 @@
 									</view>
 									<view :class="['maxpic',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.VideoUrl" :src="item.VideoUrl" controls :show-mute-btn="true"></video>
-										<image v-else :src="item.PicImg" mode="widthFix"></image>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
+											<view class="txt_info reply"@click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
 											<view class="txt_info share"></view>
 										</view>
 										<view class="ft_r">
@@ -201,8 +201,8 @@
 							<view class="item_info">
 								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_total">
-									<view class="item_market">{{item.Is_Charge==0?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
-									<span class="item_price">{{item.Is_Charge==0?'￥'+item.Price:'免费'}}</span>
+									<view class="item_market">{{item.Is_Charge==1?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
+									<span class="item_price">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
 								</view>
 							</view>
 						</view>

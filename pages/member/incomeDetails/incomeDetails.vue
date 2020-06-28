@@ -1,4 +1,5 @@
 <template>
+	<!-- （店铺收入）（直播收入）（课程收入）（舞曲收入） -->
 	<view>
 		<view class="bg_fff tabList flex p_re">
 			<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':item.id==tabIndex}"  @click="cliTab(item.id)">{{item.name}}</view>
@@ -11,7 +12,7 @@
 			</view>
 			<view class="time_r">
 				<span>最近交易</span>
-				￥{{RechargeNumber}}
+				￥{{count}}
 			</view>
 		</view>
 		<view class="uni-bg-white pd15" v-if="hasData">
@@ -42,13 +43,14 @@
 	export default {
 		data() {
 			return {
-				tabList:[{id:0,name:'直播收入'},{id:1,name:'课程收入'},{id:2,name:'店铺收入'},{id:3,name:'舞曲收入'}],
+				tabList:[{id:0,name:'店铺收入'},{id:1,name:'直播收入'},{id:2,name:'课程收入'},{id:3,name:'舞曲收入'}],
 				tabIndex:0,
+				
 				showDate: false,
 				minDate: new Date().setFullYear(2019, 0, 1),
 				currentDate: new Date().getTime(),
 				setUpDate: "", //时间
-				RechargeNumber: 0, //总数
+				count: 0, //总数
 				userId: "",
 				token: "",
 				hasData: false,
@@ -86,7 +88,6 @@
 				this.datalist = [];
 				this.setDate() //重置月份
 				this.queryRecord()
-				// console.log(this.tabIndex)
 			},
 			choseTime() {
 				this.showDate = true
@@ -100,16 +101,22 @@
 			},
 			//查询充值提现
 			queryRecord() {
-				post('Recharge/GetRechargeList', {
+				let url = ''
+				if(this.tabIndex == 0){
+					url = "Recharge/GetShopIncomeDetail"
+				}else{
+					url = "Recharge/GetRechargeList"
+				}
+				post(url, {
 					UserId: this.userId,
 					Token: this.token,
 					Date: this.setUpDate,
 					Page: this.page,
 					PageSize: this.pageSize,
-					Type: this.tabIndex
+					Type: this.tabIndex == 3 ? 4 : this.tabIndex
 				}).then(res => {
 					if (res.code == 0) {
-						this.RechargeNumber = res.data.AmountMon_hz;
+						this.count = res.count;
 						let _this = this;
 						let len = res.data.list.length;
 						if (len > 0) {
@@ -139,27 +146,24 @@
 				})
 			},
 			success(value) {
+				console.log(value,'value')
 				this.setUpDate = value
 				this.datalist = []
 				this.page = 1;
 				this.queryRecord()
 			},
 		},
+		// 上拉加载
 		onReachBottom: function() {
 			if (this.isLoad) {
 				this.loadingType = 1;
-				this.isOved = false;
 				this.page++;
 				this.queryRecord();
 			} else {
 				this.loadingType = 2;
-				if (this.page > 1) {
-					this.isOved = true;
-				} else {
-					this.isOved = false;
-				}
 			}
 		}
+			
 	}
 </script>
 

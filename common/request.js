@@ -29,14 +29,16 @@ function request(url, method, data) {
 		 else if(ret.code==2){
 			//  localStorage.removeItem('token');
       //  localStorage.removeItem('userId');
-       uni.setStorageSync("userId",'')
-       uni.setStorageSync("token",'')
+      //  uni.setStorageSync("userId",'')
+      //  uni.setStorageSync("token",'')
 			 uni.showToast({
 			     title:"您未登录，请重新登录！",
 			     icon:'none'
 			 });
 			 resolve(ret)
-         }else if(ret.code==201){//微信支付的返回code地址
+     }else if(ret.code==201){//微信支付的返回code地址
+			 resolve(ret)
+		 }else if(ret.code==3){//微信支付的返回code地址
 			 resolve(ret)
 		 }else{
 			uni.showToast({

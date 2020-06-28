@@ -1,10 +1,32 @@
 .videobox{
-	video{ width: 100%;}
+	video{ width: 100%; display: block;}
+	min-height: 450upx;
+	background: #999;
+	.tipbox{
+		height: 450upx;
+		background: #999;
+		position: relative;
+		overflow: hidden;
+		image{width: 100%; height: 100%;}
+		.txt{
+			width: 100%; height: 100%;
+			 background: rgba(0,0,0,.5);
+			position: absolute;
+			left: 0; top: 0;
+			z-index: 2;
+			color: #fff;
+			padding: 0 100upx;
+			text-align: center;
+		}
+	}
 }
 .videoinfo{
 	.title{
 		font-size: 32upx;
 		line-height: 1.6;
+	}
+	.desc{
+		color: #999;
 	}
 	.left{
 		text{
@@ -61,6 +83,9 @@
 			height: 40upx;
 			background: url(@/static/download.png) left center no-repeat;
 			background-size: 40upx 40upx;
+			&.dis{
+				opacity: .5;
+			}
 		}
 		.sign{
 			width: 40upx;
@@ -113,3 +138,40 @@
 	}
 	
 }
+.uni-modal-Down{
+	background: #fff;
+	border-radius: 20upx 20upx 0 0;
+	overflow: hidden;
+	.uni-modal__hd{
+		font-size: 32upx;
+	}
+	.btns{
+		border-top: 1px solid #eee;
+		.btn{
+			width: 50%;
+			&.active{
+				color: $primary;
+				border-left: 1px solid #eee;
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

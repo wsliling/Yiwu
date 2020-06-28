@@ -17,7 +17,7 @@
 						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 					</view>
 				</view>
-				<view class="user-right" @click="tolink('/pages/member/openVip/openVip')">
+				<view class="user-right" @click="tolink('/pages/member/openVip/openVip')" v-if="memberInfo.IsShowV">
 					<image src="@/static/my/sign.png" mode=""></image>
 				</view>
 			</view>
@@ -191,8 +191,7 @@
 				})
 				if (result.code === 0) {
 					this.memberInfo = result.data;
-					result.data.Wallet=result.data.Wallet.toFixed(2);
-					this.wallet=result.data.Wallet.split('.')
+					this.wallet=result.data.Wallet.split('.');
 					this.$store.commit("update", {
 					  Wallet:result.data.Wallet
 					});  

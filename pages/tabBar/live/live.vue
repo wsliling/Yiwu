@@ -24,18 +24,17 @@
 		<view class="videolist" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view :class="['maxpic p_re',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
-						<video v-if="item.VideoUrl" :src="item.VideoUrl" controls :show-mute-btn="true"></video>
-						<image v-else :src="item.PicImg" mode="widthFix"></image>
-						<view class="desc">
-							{{item.Title}}
-						</view>
+					<view class="maxpic" v-if="item.VideoUrl">
+						<video :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+					</view>
+					<view class="desc uni-ellipsis2">
+						{{item.Title}}
 					</view>
 					<view class="media-ft flex-between">
 						<view class="ft_l flex-start">
 							<view class="author flex-start">
 								<view class="tx">
-									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
+									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
 									<view class="islive" style="display: none;">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
@@ -43,7 +42,7 @@
 										<view class="txt">直播</view>
 									</view>
 								</view>
-								<view class="name uni-ellipsis">{{item.NickName}}</view>
+								<view class="name uni-ellipsis" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">{{item.NickName}}</view>
 							</view>
 						</view>
 						<view class="ft_r flex-end">

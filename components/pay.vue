@@ -1,190 +1,467 @@
 <template>
-		<view class="common-part">
-        <view class="common-dialog pay-dialog">
-            <view class="dialog-title">请输入支付密码</view>
-            <view class="pay-money">￥{{allprice}}</view>
-            <view class="pay-password">
-				<input type="number" maxlength="6" class="real-ipt" v-model="Password">
-                <view class="surface-ipts">
-                    <view class="surface-ipt">
-                        <input type="password" disabled=true v-model="PasswordArr[0]">
-                        <input type="password" disabled=true v-model="PasswordArr[1]">
-                        <input type="password" disabled=true v-model="PasswordArr[2]">
-                        <input type="password" disabled=true v-model="PasswordArr[3]">
-                        <input type="password" disabled=true v-model="PasswordArr[4]">
-                        <input type="password" disabled=true v-model="PasswordArr[5]">
-                    </view>
-                </view>
-            </view>
-            <view class="btns">
-                <button class="cancel-btn" @click="hide">取消</button>
-                <button class="confirm-btn" @click="paybtn">付款</button>
-            </view>
-        </view>
-    </view>
+  <div >
+    <!--遮罩层-->
+    <!-- <div class="mask-modal" @click="onClose"></div> -->
+    <!--确认付款-->
+    <div v-if="showPayStatus===1||showPayStatus===3" class="paywindows">
+      <div class="paytile flex-center-between">
+        <span @click="forgetPassword">忘记支付密码？</span>
+        <text>确认付款</text>
+        <img src="http://jrwd.wtvxin.com/upload/images/icons/close.png" class="close" @click="onClose" />
+      </div>
+      <div class="maskprice">￥{{total}}</div>
+      <div class="flex-between maskitem" v-if="orderNumber">
+        <div class="fontclolr">订单号</div>
+        <div>{{orderNumber}}</div>
+      </div>
+      <div class="flex-between maskitem" @click="showPayStatus=2">
+        <div class="fontclolr">付款方式</div>
+        <div>
+          <text class="wx">{{payText}}</text>
+          <img src="http://jrwd.wtvxin.com/upload/images/icons/right.png" class="right" />
+        </div>
+      </div>
+      <div class="paybtn" @click="pay">确认付款</div>
+    </div>
+    <!--选择付款方式-->
+    <div v-if="showPayStatus===2" class="paymask">
+      <div class="paytile">
+        <img
+          src="http://jrwd.wtvxin.com/upload/images/icons/leftarrow.png"
+          class="leftarrow leftposi"
+          @click="showPayStatus = 1"
+        />
+        <text>选择支付方式</text>
+      </div>
+      <div>
+        <!-- <radio-group @change="changes"> -->
+        <radio-group>
+          <label class="flex-between payitem" v-if="payMode==='wx'||payMode==='none'" @click="changes(0)">
+            <div class="flex-center">
+              <img src="/static/pay_weixin.png" class="payimg" />
+              微信
+            </div>
+            <radio name="payType" :checked="payType==0" value="0" color="#dd196d"/>
+          </label>
+          <label class="flex-between payitem" v-if="payMode==='none'" @click="changes(2)">
+            <div class="flex-center">
+              <img src="/static/pay_alipay.png" class="payimg" />
+              支付宝
+            </div>
+            <radio name="payType" :checked="payType==2" value="2" color="#dd196d"/>
+          </label>
+          <label class="flex-between payitem"  v-if="payMode==='balance'||payMode==='none'" @click="changes(1)">
+            <div class="flex-center">
+              <img src="/static/pay_yue.png" class="payimg" />
+              余额
+            </div>
+            <radio name="payType" :checked="payType==1" value="1" color="#dd196d"/>
+          </label>
+        </radio-group>
+      </div>
+    </div>
+    <!-- 支付密码组件 -->
+    <div class="payPasswordComponent flex-content" v-if="showPayStatus===3" @click.self="closePasswordInput">
+      <input
+        type="number"
+        password
+        v-model="password"
+        @input="editPaw"
+        :focus="focusflag"
+        maxlength="6"
+      />
+      <div class="box">
+        <div class="header">
+          请输入支付密码
+          <div class="close" @click.stop="closePasswordInput">×</div>
+        </div>
+
+        <div class="bodys flex-content" @click="onFocusflag">
+          <div class="boxItem flex-content" v-for="i in 6" :key="i">
+            <div class="item" v-if="i<password.length+1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
-
 <script>
-	export default {
-		props:{
-			allprice:{
-				type: String,
-				default: "0.00"
-			}
-		},
-		data() {
-			return {
-				Password:"",//密码
-				PasswordArr:[],//密码数组
-			};
-		},
-		watch: {
-			Password(newVal) {
-				this.PasswordArr=newVal.split("");
-			},
-			allprice(newVal) {
-				console.log(newVal)
-			},
-		},
-		methods:{
-			hide(){
-				this.$emit('hidePay',1);//关闭弹窗
-			},
-			paybtn(){
-				if(this.PasswordArr.length===6){
-					this.$emit('hidePay',0);
-					this.$emit('getPassword',this.Password);
-				}else{
-					uni.showToast({
-						title: "请输入支付密码！",
-						icon: "none",
-						duration: 1500
-					});
-				}
-			}
-		}
-	}
+//##  参数：
+// total--支付价格（确认与后台支付金额一致)
+// orderNumber -- 订单编号
+// payMode -- 支付模式，none--默认全部可选；wx --微信支付；balance -- 余额。
+
+// ## event: 动作事件
+// onClose --关闭弹窗
+// success -- 点击支付或者输入支付密码后。
+// -------接收：
+//            payType---  Number支付类型；0--微信支付.1--余额支付,2--支付宝
+//            password--- string支付密码
+
+
+import { post } from "@/common/util";
+export default {
+  props: {
+    total: {
+      type: [Number,String],
+      default: 0
+    },
+    orderNumber: {
+      type: String,
+      default: ""
+    },
+    payMode:{
+      type:String,
+      default:'none'
+    }
+  },
+  data() {
+    return {
+      focusflag: true, //支付密码获取焦点
+      showPayStatus:1, //支付密码状态 1--支付；2--选择支付方式；3--填写支付密码
+      payType: 0,// 0--微信支付.1--余额支付,2--支付宝
+      password:'',
+      forgetPasswordUrl:'/pages/member/setpwd/setpwd',//忘记密码跳转url
+    };
+  },
+  computed:{
+    payText(){
+        if(this.payType==0){
+            return '微信'
+        }else if(this.payType==1){
+            return '余额'
+        }else if(this.payType==2){
+            return '支付宝'
+        }
+    }
+  },
+  onLoad() {
+    this.showPayStatus = 1;
+    console.log(this.showPayStatus,'showpay')
+    if(this.payMode==='balance'){
+      this.payType=1
+    }else{
+      this.payType=0
+    }
+  },
+  methods: {
+    // 获取焦点
+    onFocusflag() {
+      this.focusflag = false;
+      this.focusflag = true;
+    },
+    changes(e) {
+      this.payType = e;
+      this.showPayStatus = 1;
+      console.log(e);
+    },
+    // 确认付款
+    pay() {
+      if (this.payType * 1) {
+         // 如果是余额支付弹出输入支付密码框，并获取焦点
+        this.showPayStatus=3;
+        this.focusflag = true;
+      } else {
+         // 否则直接完成
+         this.success();
+      }
+    },
+    // 关闭支付弹窗
+    onClose(){
+        console.log('onClose--关闭了弹窗')
+        this.$emit("onClose");
+    },
+    // 完成支付
+    success(){
+      console.log('password',this.password)
+        this.$emit('success',this.payType,this.password);
+    },
+    // 输入密码
+    editPaw(e) {
+      if (this.password.length === 6) {
+        this.success();
+        this.focusflag = false;
+        setTimeout(()=>{
+            this.password = "";
+            this.showPayStatus =1;
+        },1000)
+      }
+    },
+    // 关闭密码输入框
+    closePasswordInput() {
+        this.showPayStatus=1;
+    },
+   //  设置支付密码跳转页面
+    forgetPassword() {
+      const that =this;
+      uni.showModal({
+        title: "设置密码",
+        content: "是否跳转设置支付密码页面！",
+        confirmColor: "#dd196d",
+        success(res) {
+          if (res.confirm) {
+            uni.navigateTo({ url: that.forgetPasswordUrl });
+          } else if (res.cancel) {
+          }
+        }
+      });
+    }
+  }
+};
 </script>
-
-<style lang="scss">
-.common-part{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-	z-index: 18;
-    background: rgba(0,0,0,0.4);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.common-dialog{
-    width: 680upx;
-    text-align: center;
-    background: #ffffff;
-    border-radius: 12upx;
-    border: 1px solid #f2f2f2;
-}
-.dialog-title{
-    height: 120upx;
-    line-height: 100upx;
-    color: #333333;
-    font-size: 40upx;
-    border-bottom: 1px solid #f2f2f2;
-}
-.pay-money{
-    color: #333333;
-    font-size: 50upx;
-    margin: 40upx 0;
-    font-weight: bold;
-}
-.pay-password{
-    width: 600upx;
-    height: 102upx;
-    border: 1upx solid #999999;
-		border-right: none;
-    margin: 0 auto;
-    position: relative;
-}
-
-.pay-password .real-ipt{
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 150%;
-    height: 100upx;
-    opacity: 0;
-    z-index: 3;
-	background-color: rgba(0,0,0,0);
-	box-sizing: border-box;
-	font-size: 1upx;
-	color: transparent;
-	text-align: left;
-}
-.pay-password /deep/ .real-ipt input{ color: transparent;}
-.pay-password .surface-ipts{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100upx;
-    z-index: 1;
-	opacity: 1;
-    overflow: hidden;
-}
-.pay-password .surface-ipts .surface-ipt{
-    height: 100upx;
-    line-height: 100upx;
-    display: flex;
-    justify-content: space-between;
-}
-.pay-password .surface-ipts .surface-ipt input{
-    width: 100upx;
-    height: 100upx;
-    line-height: 100upx;
-    border: 0;
-    border-right: 1upx solid #999999;
-    color: #333333;
-    font-size: 80upx;
-    text-align: center;
-    padding: 0;
-}
-/* #ifdef MP-WEIXIN */
-.pay-password .surface-ipts .surface-ipt input{
-    width: 100upx;
-    height: 100upx;
-    line-height: 100upx;
-    border: 0;
-    border-right: 1upx solid #999999;
-    color: #333333;
-    font-size: 40upx;
-    text-align: center;
-    padding: 0;
-}
-/* #endif */
-.btns{
-	margin-top: 60upx;
-	margin-bottom: 80upx;
+<style scoped lang="scss">
+.flex-center-between {
   display: flex;
-	justify-content: space-around;
-	align-items: center;
+  justify-content: space-between;
+  align-items: center;
 }
-.cancel-btn{
-    width: 240upx;
-    height: 100upx;
-    line-height: 100upx;
-    color: $primary;
-    font-size: 40upx;
-    /* border: #2AA8E1 1upx solid; */
-		border: #fff;
+.mask-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.4);
 }
-.confirm-btn{
-    width: 240upx;
-    height: 100upx;
-    line-height: 100upx;
-    background-size: 100%;
-    color: #ffffff;
-    font-size: 40upx;
-		background-color: $primary;
+.paywindows {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   z-index: 101;
+  background: #fff;
+//   height: 680rpx;
+  width: 100%;
+  padding-bottom:40upx;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+.flex-center img {
+  margin-right: 20rpx;
+}
+.payPassword {
+  text-align: right;
+}
+.paytile span {
+  padding-top: 20rpx;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.paytile {
+  position: relative;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #eee;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+.paytile .close {
+  width: 28rpx;
+  height: 28rpx;
+  margin-left: 102rpx;
+}
+.maskprice {
+  font-weight: bold;
+  font-size: 68rpx;
+  text-align: center;
+  padding: 30rpx 0;
+}
+.maskitem {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.fontclolr {
+  color: #999;
+}
+.wx {
+  margin-right: 20rpx;
+}
+.leftposi {
+  position: absolute;
+  top: 50%;
+  left: 20rpx;
+  margin-top: -11rpx;
+}
+.payimg {
+  width: 56rpx;
+  height: 56rpx;
+}
+.payitem {
+  padding: 40rpx 20rpx;
+  border-bottom: 1rpx solid #ececec;
+}
+/*立即下单的按钮样式*/
+.paybtn {
+  width: 660rpx;
+  height: 90rpx;
+  margin: 40upx auto 0;
+  background: $primary;
+  border-radius: 10rpx;
+  line-height: 90rpx;
+  font-size: 30rpx;
+  color: #fff;
+  text-align: center;
+}
+/*右侧箭头*/
+.right {
+  width: 12rpx;
+  height: 22rpx;
+}
+/*左侧箭头*/
+.leftarrow {
+  width: 16rpx;
+  height: 30rpx;
+  vertical-align: middle;
+}
+.plr30 {
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+}
+/* 选择支付方式 */
+
+.paymask {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 101;
+  width: 100%;
+  box-sizing: border-box;
+  /* padding-bottom:60rpx; */
+  background: #fff;
+}
+/* ----------------------------支付密码--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+.flex-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.payPasswordComponent {
+  background: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: -350px;
+  left: 0;
+  z-index: 102;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+.payPasswordComponent input {
+  position: absolute;
+  z-index: -99999;
+  top: 0;
+  left: -800rpx;
+}
+
+.payPasswordComponent .box {
+  width: 85%;
+  background: #fff;
+  border-radius: 10rpx;
+}
+
+.payPasswordComponent .header {
+  font-size: 35rpx;
+  font-weight: 600;
+  line-height: 100rpx;
+  text-align: center;
+  position: relative;
+  border-bottom: 1rpx #e8e8e8 solid;
+}
+.payPasswordComponent .header .close {
+  position: absolute;
+  font-weight: 400;
+  right: 10rpx;
+  top: -20rpx;
+  font-size: 50rpx;
+  color: #999;
+}
+.bodys {
+  height: 200rpx;
+  position: relative;
+}
+.bodys .boxItem {
+  width: 80rpx;
+  height: 80rpx;
+  border-left: 1rpx #c8c8c8 solid;
+  border-top: 1rpx #999 solid;
+  border-bottom: 1rpx #999 solid;
+}
+.bodys .boxItem:first-child {
+  border-left: 1rpx #999 solid;
+}
+.bodys .boxItem:last-child {
+  border-right: 1rpx #999 solid;
+}
+.bodys .boxItem .item {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  background: #000;
+}
+/* ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
+/*复选框清除默认样式*/
+.checkbox-cart .wx-checkbox-input {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50% !important;
+}
+.checkbox-cart .wx-checkbox-input.wx-checkbox-input-checked {
+  background: #3172f5;
+  border-radius: 50% !important;
+  border: 0 !important;
+  width: 45rpx;
+  height: 45rpx;
+}
+.checkbox-cart .wx-checkbox-input.wx-checkbox-input-checked::before {
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50% !important;
+  line-height: 42rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #ffffff;
+  background: transparent;
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+}
+/*单选按钮清除默认样式*/
+radio .wx-radio-input {
+  /* 自定义样式.... */
+  height: 40rpx;
+  width: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid #999;
+  background: transparent;
+}
+
+/* 选中后的 背景样式 （红色背景 无边框 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked {
+  border: none;
+  background: #3172f5;
+}
+/* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
+radio .wx-radio-input.wx-radio-input-checked::before {
+  border-radius: 50%; /* 圆角 */
+  width: 45rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  height: 45rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  line-height: 45rpx;
+  text-align: center;
+  font-size: 30rpx; /* 对勾大小 30rpx */
+  color: #fff; /* 对勾颜色 白色 */
+  background: #3172f5;
+  transform: translate(-50%, -50%) scale(1);
+  -webkit-transform: translate(-50%, -50%) scale(1);
+}
+/*清除input默认样式*/
+input[type="text"] {
+  outline: none;
+  border: 0;
+  font-size: 25rpx;
 }
 </style>
+
+

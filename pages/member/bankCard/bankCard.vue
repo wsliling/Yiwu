@@ -196,7 +196,7 @@ export default {
 	background: #ffffff;
 	width:750upx;
 	height:100upx;
-	background: #ff3333;
+	background: #dd196d;
 	line-height: 100upx;
 	color:#ffffff;
 	text-align: center;
