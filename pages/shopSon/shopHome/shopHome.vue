@@ -1,6 +1,6 @@
 <template>
   <div class="shop">
-    <div class="heads">
+    <div class="heads" v-if="data.BannerPicNo">
       <img mode='aspectFill' :src="data.BannerPicNo" alt />
       <div class="content">
         <div class="top flex-center-between">

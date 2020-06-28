@@ -43,7 +43,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="pick" v-if="data.ServiceInfo.length">
+			<view class="pick" v-if="data.ServiceInfo&&data.ServiceInfo.length">
 				<view class="shipmentsbox">
 					<view class="flex">
 						<view class="">服务</view>
@@ -65,21 +65,17 @@
 		<!-- 商品评价 -->
 		<view class="merchandise">
 			<view class="evaluate">
-				<view class="quiz">问大家<span>(3)</span>
+				<view class="quiz">问大家<span>({{problemCount}})</span>
 				</view>
-				<view class="flex" >
+				<view class="flex" @click="navigate('shopSon/product/productProblem',{proId})">
 					<view class="">查看全部</view>
 					<image class="arrows" src="http://shop.dadanyipin.com/static/hpicons/arrows.svg" mode=""></image>
 				</view>
 			</view>
 			<view class="">
-				<view class="question">
-					<view class="dot"><span>问</span>衣服质量怎么样</view>
-					<view class="">3个回答</view>
-				</view>
-				<view class="question">
-					<view class="dot"><span>问</span>衣服质量怎么样</view>
-					<view class="">3个回答</view>
+				<view class="question" v-for="(item,index) in problemList" :key="index">
+					<view class="dot ellipsis"><span>问</span>{{item.Content}}</view>
+					<view class="">{{item.row}}个回答</view>
 				</view>
 			</view>
 		</view>
@@ -130,19 +126,29 @@
 				<p :class="['flex1 flexc']" @click="showSku(2)">立即购买</p>
 			</div>
 		</div>
+		<sku :sku="sku" :skuAll="skuAll"></sku>
 	</view>
 </template>
 
 <script>
 import {post,get,toLogin,navigate} from '@/common/util.js';
+import sku from '@/components/sku/popsku.vue'
 export default {
+	components:{
+		sku
+	},
 	data() {
 		return {
 			navigate,
 			userId: "",
 			token: "",
 			proId:'',
-			data:{}
+			data:{},
+			problemList:[],
+			problemCount:0,
+
+			sku:{},
+			skuAll:[],
 		};
 	},
 	onLoad(e) {
@@ -150,6 +156,7 @@ export default {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
 		this.getData();
+		this.getProblemList();
 	},
 	onShow() {
 		this.userId = uni.getStorageSync("userId");
@@ -162,12 +169,53 @@ export default {
 					Token:this.token,
 					Id:this.proId
 			})
+			if(res.code!=0) return;
 			const data = res.data;
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
+
+			// 初始化sku数据
+			let skuAll = [];
+			data.Sku.map(item => {
+				skuAll.push({
+					img: item.SpecImage, //sku图片
+					num: item.ProStock, //sku数量
+					price: item.Price, //sku价格
+					text: item.SpecText, //sku组合，下划线分隔
+					value: JSON.parse(item.SpecValue) //sku的key和值
+				});
+			});
+			this.skuAll = skuAll;
+			let sku = {};
+			const SpecificationValue = JSON.parse(data.SpecificationValue);
+			Object.keys(SpecificationValue).map((item, index) => {
+				const arrr = SpecificationValue[item];
+				sku[item] = [];
+				arrr.map(arrItem => {
+					sku[item].push({
+						selectStatus: false, //选中状态
+						status: true, //可选状态
+						val: arrItem.name
+					});
+				});
+			});
+			this.sku = sku;
+			console.log(this.sku,this.skuAll,'sku')
+
 			this.data = data;
 		},
-		
+        async getProblemList(){
+            const res = await post('Goods/QuestionsdList',{
+				UserId:this.userId,
+				Token:this.token,
+				ProductId:this.proId,
+				Page:1,
+				PageSize:2
+			})
+			if(res.code!=0) return;
+			this.problemCount = res.count;
+            this.problemList= res.data;
+        },
 		//添加取消收藏
 		async collect() {
 			let res = await post('User/AddCollections', {
@@ -329,6 +377,7 @@ export default {
 			.dot{
 				font-size: 29upx;
 				color: #343434;
+				width:82%;
 				span{
 					height:26upx;
 					background:rgba(222,28,110,1);

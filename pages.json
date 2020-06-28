@@ -413,6 +413,24 @@
 					}
 				},
 				{
+				    "path" : "product/productProblem",
+				    "style" : {
+						"navigationBarTitleText": "问大家"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "product/productProblemDetail",
+				    "style" : {
+						"navigationBarTitleText": "问大家"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
 				    "path" : "shopHome/shopHome",
 				    "style" : {
 						"navigationBarTitleText": "店铺主页",

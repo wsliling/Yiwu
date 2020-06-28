@@ -136,7 +136,7 @@
 		},
 		// 上拉加载更多
 		onReachBottom(){
-			if(this.loadMore===2)return;
+			if(this.loadingType===2)return;
 			this.page+=1;
 			this.getData()
 		},
