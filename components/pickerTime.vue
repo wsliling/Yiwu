@@ -2,7 +2,7 @@
   <div class="picker" v-if="show">
     <div class="mask" @click="cancel"></div>
     <div class="pickerBox">
-        <div class="head">
+        <div class="heads">
             <div class="cancel" @click="cancel">取消</div>
             <div class="ca">请选择时间</div>
             <div class="confirm" @click="success">确认</div>
@@ -101,7 +101,7 @@ export default {
   z-index: 101;
   background: #fff;
 }
-.head {
+.heads {
   background: #fff;
   display: flex;
   justify-content: space-between;
@@ -111,7 +111,7 @@ export default {
   font-size: 30rpx;
   /* border-bottom:1rpx #eee solid; */
 }
-.head div {
+.heads div {
   padding: 0 15rpx;
 }
 .confirm {

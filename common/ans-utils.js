@@ -104,3 +104,15 @@ export function redirect(url,params,isLogin){
     url:`/pages/${url}?${p}`
   })
 }
+// 复制电话
+export function call(phone){
+  uni.makePhoneCall({
+    phoneNumber:phone+'',
+    success(res){
+
+    },
+    fail(){
+      toast('呼叫失败，请重试！')
+    }
+  })
+}

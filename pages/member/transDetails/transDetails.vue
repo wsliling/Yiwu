@@ -71,7 +71,9 @@
 		   }
 		 },
 		onLoad(e) {
-
+			if(e.type){
+				this.tabIndex = e.type;
+			}
 		},
 		onShow() {
 			//设置当前时间
