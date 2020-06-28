@@ -323,12 +323,6 @@
 					}
 				}
 				,{
-				    "path" : "interflow/interflow",
-				    "style" : {
-						"navigationBarTitleText":"加入官方交流"
-					}
-				}
-				,{
 				    "path" : "bankAdd/bankAdd",
 				    "style" : {
 						"navigationBarTitleText":"绑定银行卡"

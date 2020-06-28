@@ -126,7 +126,7 @@
 				<p :class="['flex1 flexc']" @click="showSku(2)">立即购买</p>
 			</div>
 		</div>
-		<sku :sku="sku" :skuAll="skuAll"></sku>
+		<sku :sku="sku" :skuAll="skuAll" :product="product"></sku>
 	</view>
 </template>
 
@@ -149,6 +149,12 @@ export default {
 
 			sku:{},
 			skuAll:[],
+			product:{
+				img:'',
+				Name:'name',
+				num:12,
+				price:123
+			},
 		};
 	},
 	onLoad(e) {
@@ -194,12 +200,13 @@ export default {
 				arrr.map(arrItem => {
 					sku[item].push({
 						selectStatus: false, //选中状态
-						status: true, //可选状态
+						status: false, //可选状态
 						val: arrItem.name
 					});
 				});
 			});
 			this.sku = sku;
+			// this.product = data;
 			console.log(this.sku,this.skuAll,'sku')
 
 			this.data = data;

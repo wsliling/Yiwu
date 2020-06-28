@@ -1,22 +1,21 @@
 <template>
   <div class="mengban">
-      <div  @click="hidePopup" class="mengban" v-if="showPop"></div>
+      <!-- <div  @click="hidePopup" class="mengban"></div> -->
         <!-- content -->
-        <div class="main" id="main" v-if="showPop">
+        <div class="main" id="main">
+            <div @click="hidePopup" class="close">+</div>
             <div class="top-box">
-                <div class="one jus-b">
-                    <div class="img-box jus-c ali-c">
+                <div class="proinfo">
+                    <div class="img-box">
                         <img :src="selectSku.img||product.img" alt="">
                     </div>
-                    <div class="right jus-b">
+                    <div class="right">
                         <div>
-                            <p class="tit">{{proInfo.Name}}</p>
-                            <span v-if="isLimint">{{selectSku.price||product.price}}</span>
-                            <span v-else><span class="fuhao">￥</span>{{selectSku.price||product.price}}</span>
+                            <p class="tit">{{product.Name}}</p>
+                            <span><span class="fuhao">￥</span>{{selectSku.price||product.price}}</span>
                             <p class="font_four">库存：{{selectSku.num||product.num}}</p>
                                 <!-- :SpecInfo.PunitPrice -->
                         </div>
-                        <span @click="hidePopup" class="chacha">+</span>
                     </div>
                 </div>
                 <!-- <div class="guige" v-for="(item, index) in specList" :key="index">
@@ -25,46 +24,54 @@
                         <span :class="{'active':ite.name==SpecValue[index]}" @click="cliTag(index,ite.name)" class="ali-c jus-c" v-for="(ite, ind) in item" :key="ind">{{ite.name}}</span>
                     </div>
                 </div> -->
-                <div class="sku" v-for="(sku,skuIndex) in sku" :key="skuIndex">
-                  <div class="spcestitle">{{sku.title}}</div>
+                <!-- <div class="sku" v-for="(sku,skuIndex) in sku" :key="skuIndex">
+                  <div class="spcestitle">{{sku}}</div>
                   <div class="specs">
                     <div
                       class="spec"
                       :class="{'specactive':item.selectStatus}"
                       :style="item.status?'color:#999;':''"
-                      v-for="(item,index) in sku.list"
+                      v-for="(item,index) in sku"
                       :key="index"
                       @click="clickSelectSku(skuIndex,index,item)"
                     >
-                      <!-- @click="onSelectSku(val,index)" -->
                       <text>{{item.val}}{{item.selectStatus}}</text>
+                    </div>
+                  </div>
+                </div> -->
+                
+                <div class="sku" v-for="(skus,val) in sku" :key="val">
+                  <div class="spcestitle">{{val}}</div>
+                  <div class="specs">
+                    <div
+                      class="spec"
+                      :class="{'specactive':item.selectStatus}"
+                      :style="item.status?'color:#999;':''"
+                      v-for="(item,index) in skus"
+                      :key="index"
+                      @click="onSelectSku(val,index)"
+                    >
+                      <text>{{item.val}}</text>
                     </div>
                   </div>
                 </div>
 
-                <div class="two jus-b ali-c">
+                <div class="buyNum">
                     <span>购买数量</span>
-                    <div class="ali-c">
-                        <span @click="suan(1)">-</span>
+                    <div class="numBox">
+                        <span @click="suan(1)" class="last">-</span>
                         <input type="number" v-model="goodsNum" disabled>
-                        <span @click="suan(2)">+</span>
+                        <span @click="suan(2)" class="add">+</span>
                     </div>
                 </div>
             </div>
-            <div class="flex bot">
+            <div class="footerBtn">
               <!-- <p v-if="isLimint==1&&starTimetype==0" class="flex1 jus-c ali-c">即将开始 敬请期待</p>
               <p v-else-if="isLimint==1&&starTimetype==2" class="flex1 jus-c ali-c btn_ccc">秒杀已结束</p> -->
               <!-- <block v-else> -->
-              <block>
-                <block v-if="reStock>0">
-                  <block v-if="showbtntype==0">
-                    <p class="flex1 jus-c ali-c" @click="addcart">加入购物车</p>
-                    <p class="flex1 jus-c ali-c btn_red" @click="buy">立即购买</p>
-                  </block>
-                  <p v-else class="flex1 jus-c ali-c btn_red" @click="confirmBtn">确定</p>
-                </block>
-                <p v-else class="flex1 jus-c ali-c">商家补货中</p>
-              </block>
+                
+              <p class="addcard" @click="addcart">加入购物车</p>
+              <p class="nowbuy btn_red" @click="buy">立即购买</p>
             </div>
         </div>
       
@@ -112,7 +119,7 @@
 export default {
   props: {
     sku: {
-      type: Array,
+      type: Object,
       dafault() {
         return [];
       }
@@ -153,6 +160,7 @@ export default {
       },
       datas:{},
       reStock:0,//库存
+      goodsNum:1,
       maxbuy:0,//最大购买量
       minbuy:1, //最小购买量
     };
@@ -192,6 +200,7 @@ export default {
     },
     // 选择sku
     onSelectSku(val, index) {
+      // 判断是否为不可选状态
       if (this.sku[val][index].status) {
         return false;
       }
@@ -326,84 +335,118 @@ export default {
         }
       });
       return status;
-    }
+    },
+    // 更改数量
+		suan(tip) {
+			if (tip == 1) {
+				if (this.goodsNum > 1) {
+					if (this.goodsNum > this.minbuy) {
+						this.goodsNum--;
+					} else {
+						this.goodsNum = this.minbuy;
+						uni.showToast({
+							title: this.minbuy + '件起购',
+							icon: 'none',
+							duration: 1500
+						});
+					}
+				}
+			} else if (tip == 2) {
+				if (this.maxbuy == 0) {
+					if (this.goodsNum >= this.reStock) {
+						this.goodsNum = this.reStock;
+						uni.showToast({
+							title: '库存不足！',
+							icon: 'none',
+							duration: 1500
+						});
+					} else {
+						this.goodsNum++;
+					}
+				} else {
+					if (this.reStock >= this.goodsNum) {
+						if (this.goodsNum < this.maxbuy) {
+							this.goodsNum++;
+						} else {
+							this.goodsNum = this.maxbuy;
+							uni.showToast({
+								title: '限购' + this.maxbuy + '件',
+								icon: 'none',
+								duration: 1500
+							});
+						}
+					} else {
+						this.goodsNum = this.reStock;
+					}
+				}
+			}
+		},
+		
   }
 };
 </script>
 <style scoped lang="scss">
 .mengban{
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    position: fixed;
-    top: 0;
-    z-index: 98;
+    // width: 100vw;
+    // height: 100vh;
+    // background-color: rgba(0, 0, 0, 0.5);
+    // position: fixed;
+    // top: 0;
+
+    // z-index: 98;
     .main{
         position: fixed;
-        // bottom: -100vh;
         bottom: 0;
         left:0;
-        transition: all 0.3s;
         width: 100vw;
-        // height: 900rpx;
         z-index: 99;
         background-color: #fff;
         border-radius: 20rpx;
-        .guige{
-            p{
-                font-size: 28rpx;
-                color: #333;
-                line-height: 80rpx;
-            }
-            span{
-                background-color: #f5f5f5;
-                color: #666;
-                font-size: 24rpx;
-                padding: 10rpx 20rpx;
-                border-radius: 10rpx;
-                margin: 0 20rpx 20rpx 0;
-                border: 1rpx solid #f5f5f5;
-            }
-            .active{
-              background-color:#f9eeec;
-              color: #f0370b;
-              border: 1rpx solid #f0370b;
-            }
+        .close{
+          font-size: 55rpx;
+          transform: rotate(45deg);
+          width: 30rpx;
+          height: 30rpx;
+          position: absolute;
+          top: 0;
+          right: 10upx;
+          line-height:1;
         }
+        // .guige{
+        //     p{
+        //         font-size: 28rpx;
+        //         color: #333;
+        //         line-height: 80rpx;
+        //     }
+        //     span{
+        //         background-color: #f5f5f5;
+        //         color: #666;
+        //         font-size: 24rpx;
+        //         padding: 10rpx 20rpx;
+        //         border-radius: 10rpx;
+        //         margin: 0 20rpx 20rpx 0;
+        //         border: 1rpx solid #f5f5f5;
+        //     }
+        //     .active{
+        //       background-color:#f9eeec;
+        //       color: #f0370b;
+        //       border: 1rpx solid #f0370b;
+        //     }
+        // }
         .top-box{
-            padding: 30rpx 30rpx 130rpx;
-            .two{
-                height: 100rpx;
-                font-size: 28rpx;
-                color: #999;
-                .ali-c{
-                    width: 200rpx;
-                    span{
-                        font-size: 40rpx;
-                        font-weight: 900;
-                        color: #333
-                    }
-                    input{
-                      width: 80rpx;
-                        height: 44rpx;
-                        background-color: #eeeeee;
-                        border-radius: 8rpx; 
-                        margin: 0 30rpx;
-                        text-align: center;
-                        position: relative;
-                        top: 5rpx
-                    }
-                }
-            }
-            .one{
+            padding: 0 30rpx 130rpx;
+            .proinfo{
                 border-bottom: 1rpx solid #ededed;
+                padding-bottom:20upx;
+                display:flex;
+                align-items:flex-end;
+                justify-content:space-between;
                 .img-box{
                     width: 200rpx;
                     height: 200rpx;
                     border-radius: 10rpx;
                     border:1rpx solid #ededed;
-                    position: relative;
-                    top: -50rpx;
+                    margin-top:-70upx;
                     background-color: #fff
                 }
                 img{
@@ -412,21 +455,12 @@ export default {
                 }
                 .right{
                     width: 475rpx;
-                    .chacha{
-                        font-size: 50rpx;
-                        transform: rotate(45deg);
-                        width: 30rpx;
-                        height: 30rpx;
-                        position: relative;
-                        top: -20rpx;
-                        left: 20rpx;
-                    }
                     div{
-                        width: 410rpx;
-                        p{
+                        width: 450rpx;
+                        .tit{
                             font-size: 28rpx;
+                            line-height:2;
                             color: #333;
-                            margin-bottom: 30rpx
                         }
                         span{
                             color: #f0370b;
@@ -435,19 +469,61 @@ export default {
                                 font-size: 22rpx
                             }
                         }
+                        .font_four{
+                          font-size:24upx;
+                          color:#999;
+                        }
+                    }
+                }
+            }
+            .buyNum{
+                height: 100rpx;
+                font-size: 28rpx;
+                color: #999;
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                .numBox{
+                    width: 200rpx;
+                    display:flex;
+                    align-items:center;
+                    span{
+                        font-size: 50rpx;
+                        color: #333
+                    }
+                    .last{
+                      padding-right:30upx;
+                    }
+                    .add{
+                      padding-left:30upx;
+                    }
+                    input{
+                      width: 80rpx;
+                        height: 44rpx;
+                        background-color: #eeeeee;
+                        border-radius: 8rpx; 
+                        text-align: center;
+                        position: relative;
+                        top: 5rpx
                     }
                 }
             }
         }
-        .bot{
+        .footerBtn{
             position: absolute;
             bottom: 0;
+            left:0;
             width: 100%;
             height: 98rpx;
             color: #fff;
             font-size: 28rpx;
+            display:flex;
+            align-items:center;
             p{
                 background-color: #fda33a;
+                width:50%;
+                line-height: 98rpx;
+                text-align:center;
             }
             p.btn_red{
                 background-color: #ff6f00;
