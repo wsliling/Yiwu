@@ -360,7 +360,7 @@
 			    ,{
                     "path" : "artPost/artPost",
                     "style" : {
-						"navigationBarTitleText": "发布动态artDetail"
+						"navigationBarTitleText": "发布动态"
 					}
                 }
 				,{

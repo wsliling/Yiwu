@@ -16,14 +16,13 @@
 			<view class="musiclist pd15">
 				<view class="item flex-between" v-for="(item,index) in datalist" :key="index">
 					<view class="imgbox">
-						<image v-if="item.ImgList||item.PicImg" :src="pageType==0?item.ImgList:item.PicImg" mode="aspectFill"></image>
-						<image v-else src="/static/default_music.png" mode="aspectFill"></image>
+						<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<view class="info flex1 flex-between">
 						<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
 							<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-							<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
+							<view class="icon" @click="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
 				</view>
@@ -38,12 +37,12 @@
 			<view class="uni-modal-music Operation__modal">
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item">
+						<view class="line-item" v-if="itemdata.IsShowBuy==1">
 							<view class="line-item-l text_left">
-								<text class="txt c_theme">￥34</text>
+								<text class="txt c_theme">￥{{price}}</text>
 							</view>
 							<view class="item-r">
-								<view class="btnbuy" @click="tolink('/pages/pay2/pay2?type=1')">购买</view>
+								<view class="btnbuy" @click="tobuy">购买</view>
 							</view>
 						</view>
 						<view class="line-item">
@@ -118,13 +117,15 @@
 				hasData: false,
 				noDataIsShow: false,
 				page: 1,
-				pageSize: 5,
+				pageSize: 10,
 				datalist:[],
 				isShowOperation:false,
 				isShowSelect:false,
 				isCollect:false,//是否收藏
 				playIndex:0,//当前播放
-				
+				MusicId:0,//选择更多操作的id
+				price:0,//选择更多操作的价格
+				itemdata:{}
 			}
 		},
 		onLoad(e) {
@@ -157,7 +158,12 @@
 				var param={}
 				if(this.pageType==0){
 					url="DanceMusic/EverydayRecommend";
-					param={}
+					param={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize
+					}
 				}else if(this.pageType==1){
 					url="DanceMusic/DanceMusicList";
 					param={
@@ -216,8 +222,16 @@
 				this.playIndex=index
 			},
 			//弹出更多操作
-			ShowOperation(index){
+			ShowOperation(item){
 				this.isShowOperation=true;
+				this.MusicId=item.Id;
+				this.price=item.Price;
+				this.itemdata=item;
+				if(item.IsCollect==0){
+					this.isCollect=false;
+				}else{
+					this.isCollect=true;
+				}
 			},
 			//弹出选择歌单
 			ShowSelect(){
@@ -230,9 +244,43 @@
 				this.isShowSelect=false;
 			},
 			//收藏
-			Collect(){
+			async Collect(){
 				this.isCollect=!this.isCollect;
+				let result = await post('DanceMusic/CollectOperation', {
+					UserId: this.userId,
+					Token: this.token,
+					FindId: this.MusicId,
+				});
+				uni.showToast({
+					title:result.msg,
+					icon:"none"
+				})
+				this.workeslist();//刷新状态
+				this.hidePopup()
 			},
+			//购买
+			tobuy(){
+				if(toLogin()){
+					let buyInfo={
+						PicImg:this.itemdata.PicImg,
+						name:this.itemdata.Name,
+						price:this.itemdata.Price
+					}
+					uni.setStorageSync('buyInfo', buyInfo);
+					uni.navigateTo({
+						url:'/pages/pay2/pay2?type=1&id='+this.MusicId
+					})
+				}
+			},
+		},
+		onReachBottom(){
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				this.workeslist();
+			} else {
+				this.loadingType = 2;
+			}
 		}
 	}
 </script>
