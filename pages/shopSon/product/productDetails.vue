@@ -48,10 +48,12 @@
 					<view class="flex">
 						<view class="">服务</view>
 					</view>
-					<view class="flex" v-for="(item,index) in data.ServiceInfo" :key="index">
-						<image class="drawimg" src="http://shop.dadanyipin.com/static/hpicons/draw.svg" mode=""></image>
-						<view class="">{{item.Name}}</view>
-					</view>
+					<block v-for="(item,index) in data.ServiceInfo" :key="index">
+						<view class="flex" v-if="index<3">
+							<image class="drawimg" src="http://shop.dadanyipin.com/static/hpicons/draw.svg" mode=""></image>
+							<view class="">{{item.Name}}</view>
+						</view>
+					</block>
 					<!-- <view class="flex">
 						<image class="drawimg" src="http://shop.dadanyipin.com/static/hpicons/draw.svg" mode=""></image>
 						<view class="">及时发货</view>

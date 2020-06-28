@@ -204,7 +204,7 @@ function uncodeUtf16(str){
 // 		　　}).exec()
 // 		}).exec()
 //  }
-import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect} from './ans-utils'
+import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
@@ -229,4 +229,5 @@ export {
 	switchTab,
 	redirect,
 	navigateBack,
+	call
 }

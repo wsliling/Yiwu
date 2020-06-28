@@ -62,7 +62,7 @@
 		<!-- 正在直播 -->
 		<view class="live" v-for="(val,key) in proList" :key="key">
 			<view class="live-img">
-				<image :src="val.BannerPicNo" mode=""></image>
+				<image :src="val.BannerPicNo" mode="" @click="navigate('shopSon/shopHome/shopHome',{shopId:val.ShopId})"></image>
 				<view class="islive">
 					<view class="line line1"></view>
 					<view class="line line2"></view>

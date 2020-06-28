@@ -1,24 +1,36 @@
 <template>
   <div class="shop">
-    <div class="head">
+    <div class="heads">
       <img mode='aspectFill' :src="data.BannerPicNo" alt />
       <div class="content">
         <div class="top flex-center-between">
           <img :src="data.Logo" alt />
           <div class="title">
             <div class="name flex-center-start">
-              <h4>{{data.PhysicalStoreName}}</h4>
+              <h4>{{data.ShopNick}}</h4>
               <!-- <img src="http://hxjp.wtvxin.com/static/images/map.png" alt /> -->
               <!-- <p>14km</p> -->
             </div>
-            <div class="address">{{data.AllAddress}}</div>
+            <div class="address">{{data.Address}}</div>
           </div>
-          <div class="phone flex-column-center" @click="call(data.PhoneNumber)">
-            <img src="http://hxjp.wtvxin.com/static/images/o2o/phone.png" alt />
+          <div class="phone" @click="call(data.Phone)">
+              <div class="phone-icon">
+                    <img src="http://hxjp.wtvxin.com/static/images/o2o/phone.png" alt />
+              </div>
             <p>联系卖家</p>
           </div>
         </div>
       </div>
+    </div>
+    <div class="nav">
+        <scroll-view class="nav-scroll" scroll-x>
+            <div class="list">
+                <div class="item" v-for="(val,key) in classifyList" :key="key"
+                 :class="{active:val.Id==classId}" @click="tabClassify(val.Id)">
+                    {{val.Name}}
+                </div>
+            </div>
+        </scroll-view>
     </div>
     <div class="sort">
         <div class="item" :class="[{'active':sort==0},{'top':sortMode==1}]" @click="onSort(0)">
@@ -40,30 +52,35 @@
                 <view class="wu-price">￥{{val.Price}}</view>
             </view>
         </view>
+		<uni-load-more :loadingType="loadingType" v-if="list.length"></uni-load-more>
+		<notData v-else></notData>
     </view>
   
   </div>
 </template>
 <script>
-import {post,get,toLogin,navigate} from '@/common/util.js';
+import {post,get,toLogin,navigate,call} from '@/common/util.js';
 import uniLoadMore from '@/components/uni-load-more.vue';
+import notData from '@/components/notData.vue';
 export default {
     components: {
-        uniLoadMore
+        uniLoadMore,notData
     },
     data(){
         return {
             navigate,
+            call,
             userId: "",
             token: "",
             page:1,
-            pageSize:5,
+            pageSize:10,
             loadingType:0,//0-loading前；1-loading中；2-没有更多了
             classId:0,//分类id
             brandId:0,//品牌id
             sort:0,//0-默认,1-人气,2-价格
             sortMode:0,//0- 升序（从小到大） 1-降序（从大到小）
             shopId:'',
+            classifyList:[{Id:0,Name:'全部'}],
             list:[],
             data:{}
         }
@@ -73,6 +90,7 @@ export default {
         this.userId = uni.getStorageSync("userId");
         this.token = uni.getStorageSync("token");
         this.getShopData();
+        this.getClassify();
         this.getData();
     },
     onShow() {
@@ -86,6 +104,21 @@ export default {
                 Token:this.token,
                 ShopId:this.shopId
             })
+            this.data = res.data;
+        },
+        async getClassify(){
+            const res = await post('Goods/TypeList',{
+                Type: 0,
+            })
+            this.classifyList.push(...res.data);
+        },
+        // 切换分类
+        tabClassify(id){
+            this.classId = id;
+            this.sort=0;
+            this.sortMode=0;
+            this.page=1;
+            this.getData();
         },
         async getData(){
             this.loadingType =1;
@@ -98,7 +131,7 @@ export default {
                 BrandId:this.brandId,
                 Sort:this.sort,
                 Order:this.sortMode,
-                Keywords:this.searchText
+                ShopId:this.shopId,
                 });
             if(res.code)return;
             const data = res.data;
@@ -147,65 +180,99 @@ export default {
 
 <style lang="scss" scoped>
 .shop{background:#f5f5f5;min-height:100vh;}
-.head{
+.heads{
     
     &>img{
         width:100%;
-        height:390rpx;
+        height:390upx;
     }
     .content{
         position:relative;
-        margin:-80rpx 30rpx 0 30rpx;
+        margin:-80upx 30upx 0 30upx;
         background:#fff;
-        padding:20rpx 20rpx 30rpx;
-        border-radius: 10rpx;
-        box-shadow: 0 3rpx 8rpx 8rpx rgba(0, 0, 0, 0.1);
+        padding:20upx 20upx 30upx;
+        border-radius: 10upx;
+        box-shadow: 0 3upx 8upx 8upx rgba(0, 0, 0, 0.1);
         .top{
+            display:Flex;
+            align-items:center;
+            justify-content: space-between;
             &>img{
-                width:80rpx;
-                height:80rpx;
-                margin-right:10rpx;
-                border-radius:8rpx;
+                width:80upx;
+                height:80upx;
+                margin-right:10upx;
+                border-radius:8upx;
             }
             .title{
                 .name{
                     font-size: 28px; 
-                    margin-bottom:10rpx;
-                    width:460rpx; 
+                    margin-bottom:10upx;
+                    width:460upx; 
                     h4{
-                        font-size:28rpx;
+                        font-size:28upx;
                     }
                     &>img{
-                        width:21rpx;
-                        height:25rpx;
-                        margin-right:8rpx;
-                        margin-left:30rpx;
-                        margin-top:3rpx;
+                        width:21upx;
+                        height:25upx;
+                        margin-right:8upx;
+                        margin-left:30upx;
+                        margin-top:3upx;
                     }
                     p{
-                        font-size:22rpx;
+                        font-size:22upx;
                         
                     }
                 }
                 .address{
-                    font-size:22rpx;
+                    font-size:22upx;
                     color:#999;
                 }
             }
             .phone{
-                &>img{
-                    width:31rpx;
-                    height:31rpx;
-                    padding:15rpx;
+                display:Flex;
+                align-items:center;
+                flex-flow:column wrap;
+                font-size:0;
+                width:100upx;
+                flex:0 0 auto;
+                .phone-icon{
+                    width:60upx;
+                    height:60upx;
+                    padding:15upx;
                     background:#f5f5f5;
                     border-radius:50%;
-                    margin-bottom:10rpx;
+                    // margin-bottom:10upx;
+                     img{
+                        width:30upx;
+                        height:30upx;
+                     }
                 }
                 p{
-                   font-size:22rpx;
+                   font-size:22upx;
                    color:#999; 
                 }
 
+            }
+        }
+    }
+}
+.nav{
+    background:#fff;
+    margin-top:20upx;
+    .nav-scroll{
+        height:80upx;
+        width:100%;
+        .list{
+            display:flex;
+            align-items:center;
+            .item{
+                padding:0 40upx;
+                line-height:80upx;
+                flex:0 0 auto;
+                &.active{
+                    font-size:1.2em;
+                    color:$primary;
+                }
             }
         }
     }
