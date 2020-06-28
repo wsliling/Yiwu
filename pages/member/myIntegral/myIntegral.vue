@@ -6,11 +6,11 @@
 				<view class="jf">我的积分（8386）</view>
 				<view class="flex-between">
 					<view class="item flex-column">
-						<view class="symbol">426</view>
+						<view class="symbol">{{integralList.Score}}</view>
 						<view class="balance">普通积分</view>
 					</view>
 					<view class="item flex-column">
-						<view class="symbol">7860</view>
+						<view class="symbol">{{integralList.Amount}}</view>
 						<view class="balance">返佣积分</view>
 					</view>
 				</view>
@@ -23,44 +23,51 @@
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 		</view>
 		<view class="line-list">
-			<block v-for="(item,index) in 5" :key="index">
+			<block v-for="(item,index) in integralList.list" :key="index">
 			<view class="line-item">
 				<view class="line-item-l">
-					<view class="txt">直播兑换礼物</view>
-					<view class="c_999 fz12">2020-05-31 15:22</view>
+					<view class="txt">{{item.Title}}</view>
+					<view class="c_999 fz12">{{item.AddTime}}</view>
 				</view>
 				<view class="item_r">
-					-1000
-				</view>
-			</view>
-			<view class="line-item">
-				<view class="line-item-l">
-					<view class="txt">登录获得积分</view>
-					<view class="c_999 fz12">2020-05-26 15:22</view>
-				</view>
-				<view class="item_r" style="color: #ff9638;">
-					+1000
+					{{item.Change}}
 				</view>
 			</view>
 			</block>
 		</view>
-		
+		<noData :isShow="noDataIsShow"></noData>
+		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType" v-if="noDataIsShow == false"></uni-load-more></view>
 	</view>
 </template>
 
 <script>
 	import {host,post,get,toLogin} from '@/common/util.js';
+	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
+	import noData from '@/components/noData.vue'; //暂无数据
 	export default {
 		data(){
 			return{
-				userId: "",
-				token: "",
+				UserId: "",
+				Token: "",
 				tabIndex:0,
+				Page:1,
+				PageSize:8,
+				Type:5,  //5:普通积分 6:返佣积分
+				integralList:{},
+				loadingType: 0, //0加载前，1加载中，2没有更多了
+				isLoad: false,
+				hasData: false,
+				noDataIsShow: false,
 			}
 		},
+		components: {
+			uniLoadMore,
+			noData
+		},
 		onShow() {
-			this.userId = uni.getStorageSync("userId");
-			this.token = uni.getStorageSync("token");
+			this.UserId = uni.getStorageSync("userId");
+			this.Token = uni.getStorageSync("token");
+			this.getIntegral()
 
 		},
 		computed: {
@@ -78,7 +85,56 @@
 			},
 			cliTab(index){
 			  this.tabIndex = index
+			  if(index == 1) {
+				  this.Type = 6
+			  }else{
+				  this.Type = 5
+				  this.noDataIsShow = false;
+			  }
+			  this.getIntegral()
 			},
+			// 普通积分、返佣积分
+			getIntegral(){
+				post("Recharge/GetIncomeScoreDetail",{
+					UserId: this.UserId,
+					Token: this.Token,
+					Page: this.Page,
+					PageSize: this.PageSize,
+					Type: this.Type,
+				}).then( result =>{
+					if (result.code === 0) {
+						if (result.data.list.length == 0 && this.Page == 1) {
+							this.noDataIsShow = true;
+							this.hasData = false;
+						}
+						if (this.Page === 1) {
+							this.integralList = result.data;
+						}
+						if (this.Page > 1) {
+							this.integralList = this.integralList.concat(
+								result.data
+							);
+						}
+						if (result.data.list.length <this.PageSize) {
+							this.isLoad = false;
+							this.loadingType = 2;
+						} else {
+							this.isLoad = true;
+							this.loadingType = 0
+						}
+					}
+				})
+			},
+		},
+		// 上拉加载
+		onReachBottom: function() {
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				this.getIntegral();
+			} else {
+				this.loadingType = 2;
+			}
 		}
 	
 	}

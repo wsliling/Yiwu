@@ -311,12 +311,12 @@ export default {
 
 .btnCode {
     border-left: 1px solid #ddd;
-    color: #ff3333;
+    color: #dd196d;
     padding-left: 20upx;
     margin-left: 20upx;
 }
 .btn{
-  color:#ffffff;background: #ff3333;
+  color:#ffffff;background: #dd196d;
   margin:80upx auto 0upx;
   width: 690upx;
   height: 88upx;

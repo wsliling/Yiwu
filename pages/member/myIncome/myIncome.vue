@@ -10,20 +10,21 @@
 		<view class="line-list">
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=0')">
 				<view class="line-item-l flex-start">
+					<image class="iconimg" src="/static/my/shop.png" mode="widthFix"></image>
+					<text class="txt">店铺收入</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=1')">
+				
+				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/zb.png" mode="widthFix"></image>
 					<text class="txt">直播收入</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=1')">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=2')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/kc.png" mode="widthFix"></image>
 					<text class="txt">课程收入</text>
-				</view>
-			</view>
-			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=2')">
-				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/shop.png" mode="widthFix"></image>
-					<text class="txt">店铺收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=3')">
@@ -32,7 +33,7 @@
 					<text class="txt">舞曲收入</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/transDetails/transDetails?type=3')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/mx.png" mode="widthFix"></image>
 					<text class="txt">提现记录</text>
@@ -62,7 +63,7 @@
 			this.wallet=this.$store.state.Wallet;
 			// this.wallet=this.wallet.toFixed(2)
 			this.getMemberInfo()
-			this.wallet=Math.round(this.wallet*Math.pow(10, 2))/Math.pow(10, 2);
+			// this.wallet=Math.round(this.wallet*Math.pow(10, 2))/Math.pow(10, 2);
 			// this.wallet=Number(this.wallet).toFixed(2)
 		},
 		methods:{
