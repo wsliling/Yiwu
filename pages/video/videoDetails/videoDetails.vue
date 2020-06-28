@@ -72,6 +72,23 @@
 				</view>
 			</view>
 		</view>
+		<uni-popup mode="fixed" :show="isShowDowninfo" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-Down">
+				<view class="uni-modal__hd pd15">下载</view>
+				<view class="uni-modal__bd text_left pd15">
+					<view class="name">
+						文件名：
+					</view>
+					<view class="name">
+						大小：{{dsize}}kb
+					</view>
+				</view>
+				<view class="btns flex-between">
+					<view class="btn" @click="hidePopup">取消</view>
+					<view class="btn active" @click="Downloadfun">确定</view>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
@@ -79,10 +96,12 @@
 	import {post,get,dateUtils,toLogin} from '@/common/util.js';
 	import replyItem from '@/components/reply-item.vue'; //评论组件
 	import noData from '@/components/noData.vue'; //暂无数据
+	import uniPopup from '@/components/uni-popup.vue';
 	export default {
 		components: {
 			replyItem,
-			noData
+			noData,
+			uniPopup
 		},
 		data() {
 			return {
@@ -112,6 +131,10 @@
 				PCommentId:0,//上级评论id
 				Comment:"",//评论内容
 				PCommentname:"",//上级评论名
+				isShowDowninfo:false,
+				luj:"",//保存的路径
+				dsize:"",//下载文件大小
+				durl:"",//下载的路径
 			}
 		},
 		onLoad(e) {
@@ -171,15 +194,17 @@
 				}
 			},
 			tobuy(){
-				let buyInfo={
-					PicImg:this.CourseInfo.PicImg,
-					name:this.CourseInfo.Name,
-					price:this.CourseInfo.Price
+				if(toLogin()){
+					let buyInfo={
+						PicImg:this.CourseInfo.PicImg,
+						name:this.CourseInfo.Name,
+						price:this.CourseInfo.Price
+					}
+					uni.setStorageSync('buyInfo', buyInfo);
+					uni.navigateTo({
+						url:'/pages/pay2/pay2?type=0&id='+this.Courseid
+					})
 				}
-				uni.setStorageSync('buyInfo', buyInfo);
-				uni.navigateTo({
-					url:'/pages/pay2/pay2?type=0&id='+this.Courseid
-				})
 			},
 			//其他课程
 			async GetUserOtherCourse(){
@@ -265,7 +290,11 @@
 					});
 				}
 			},
-			//下载
+			//取消（统一关闭弹窗）
+			hidePopup(){
+				this.isShowDowninfo=false;
+			},
+			//获取下载路径
 			async DownloadCourse(type){
 				if(type==1){
 					uni.showToast({
@@ -280,35 +309,50 @@
 						"CourseId":this.Courseid
 					});
 					if(result.code==0){
-						const downloadTask = uni.downloadFile({
-							url: result.data, 
-							success: (res) => {
-								console.log(res)
-								if (res.statusCode === 200) {
-									uni.showToast({
-										title: "下载成功"
-									})
-								}
-								let that = this;
-								uni.saveFile({
-									tempFilePath: res.tempFilePath,
-										success: function(red) {
-											that.luj = red.savedFilePath
-											console.log(red)
-										}
-									});
-								}
-							});
-				
-						downloadTask.onProgressUpdate((res) => {
-							console.log('下载进度' + res.progress);
-							console.log('已经下载的数据长度' + res.totalBytesWritten);
-							console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
-						});
+						this.durl=result.data;
+						this.isShowDowninfo=true;
 					}
 				}
 			},
-			
+			// 下载
+			Downloadfun(){
+				let that = this;
+				const downloadTask = uni.downloadFile({
+					url: that.durl, 
+					success: (res) => {
+						console.log(res)
+						if (res.statusCode === 200) {
+							uni.showToast({
+								title: "下载成功"
+							})
+							that.AddDownloadRecord();
+						}
+						uni.saveFile({
+							tempFilePath: res.tempFilePath,
+								success: function(red) {
+									that.luj = red.savedFilePath
+									console.log(red)
+								}
+							});
+						}
+					});
+								
+				downloadTask.onProgressUpdate((res) => {
+					this.dsize=res.totalBytesExpectedToWrite;
+					console.log('下载进度' + res.progress);
+					console.log('已经下载的数据长度' + res.totalBytesWritten);
+					console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+				});
+			},	
+			//添加下载记录
+			async AddDownloadRecord(){
+				let result = await post("User/AddDownloadRecord", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"TypeInt":1,
+					"VoiceId":this.Courseid,
+				});
+			},
 			//显示评论按钮
 			showReplyBox(){
 				this.IsShowReplyBox=true;

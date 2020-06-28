@@ -17,17 +17,17 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class=""><image class="imgs" :src="val.PicFrist" mode=""></image></view>
+					<view class=""><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
-						<view class="being uni-ellipsis2">{{ val.ProName }}</view>
+						<view class="being uni-ellipsis2">{{ val.Name }}</view>
 						<view class="fz12 c_999">
-							{{val.zan}}
+							{{val.LikeNum}}人点赞
 						</view>
 						<view class="correct">
-							<block v-if="val.Price==0">
+							<block v-if="val.Is_Charge==0">
 								免费
 							</block>
-							<block v-else><span class="spanl">¥</span>{{ val.Price }}</block>
+							<block v-else><span class="spanl">¥</span>{{ val.Price}}</block>
 						</view>
 					</view>
 				</view>
@@ -57,7 +57,7 @@ export default {
 			userId: '',
 			token: '',
 			page:1,
-			pageSize:4,
+			pageSize:8,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
 			isLoad: false,
 			hasData: false,
@@ -132,39 +132,12 @@ export default {
 		},
 		/*获取列表*/
 		async workeslist() {
-			// let result = await post('User/Memberdatalist', {
-			// 	UserId: this.userId,
-			// 	Token: this.token,
-			// 	page: this.page,
-			// 	pageSize: this.pageSize
-			// });
-			let result={
-				code:0,
-				data:[
-					{
-						Id:1,
-						Price:16.8,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					},
-					{
-						Id:2,
-						Price:0,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					},
-					{
-						Id:3,
-						Price:16.8,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					}
-				]
-			}
-			
+			let result = await post('User/GetMyWorksList', {
+				UserId: this.userId,
+				Token: this.token,
+				page: this.page,
+				pageSize: this.pageSize
+			});
 			if (result.code === 0) {
 				let _this=this;
 				if (result.data.length > 0) {
@@ -201,8 +174,11 @@ export default {
 		btnDel() {
 			let _this = this;
 			this.datalist.forEach(function(item) {
+				let itemjson={};
 				if (item.checked == true) {
-					_this.Ids.push(item.Id);
+					itemjson["Id"]=item.Id;
+					itemjson["Type"]=item.Type;
+					_this.Ids.push(itemjson);
 				}
 				console.log(_this.Ids, '_this.Ids');
 			});
@@ -212,7 +188,7 @@ export default {
 				  confirmColor:"#df2271",
 				  success: function(res) {
 					if (res.confirm) {
-						  _this.DeleteMyFootprint();
+						  _this.DelMyWorks();
 						} else if (res.cancel) {
 						
 						}
@@ -227,18 +203,18 @@ export default {
 				});
 			}
 		},
-		async DeleteMyFootprint() {
-			let result = await post('User/DeleteMyFootprint', {
+		async DelMyWorks() {
+			let result = await post('User/DelMyWorks', {
 				UserId: this.userId,
 				Token: this.token,
-				Id: this.Ids.join(',')
+				IdArr: JSON.stringify(this.Ids)
 			});
 			if (result.code === 0) {
 				let _this = this;
 				for (let j = 0; j < _this.Ids.length; j++) {
 					for (let i = 0; i < _this.datalength; i++) {
 						if (_this.datalist[i]) {
-							if (_this.Ids[j] == _this.datalist[i].Id) {
+							if (_this.Ids[j].Id == _this.datalist[i].Id) {
 								_this.datalist.splice(i, 1);
 							}
 						}

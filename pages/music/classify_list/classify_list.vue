@@ -32,12 +32,12 @@
 			<view class="uni-modal-music Operation__modal">
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-if="price>0">
+						<view class="line-item" v-if="itemdata.IsShowBuy==1">
 							<view class="line-item-l text_left">
 								<text class="txt c_theme">￥{{price}}</text>
 							</view>
 							<view class="item-r">
-								<view class="btnbuy">购买</view>
+								<view class="btnbuy" @click="tobuy">购买</view>
 							</view>
 						</view>
 						<view class="line-item">
@@ -121,6 +121,7 @@
 				playIndex:0,//当前播放
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
+				itemdata:{}
 			}
 		},
 		components: {
@@ -165,6 +166,7 @@
 				this.isShowOperation=true;
 				this.MusicId=item.Id;
 				this.price=item.Price;
+				this.itemdata=item;
 				if(item.IsCollect==0){
 					this.isCollect=false;
 				}else{
@@ -265,6 +267,20 @@
 					})
 				}
 				this.hidePopup()
+			},
+			//购买
+			tobuy(){
+				if(toLogin()){
+					let buyInfo={
+						PicImg:this.itemdata.PicImg,
+						name:this.itemdata.Name,
+						price:this.itemdata.Price
+					}
+					uni.setStorageSync('buyInfo', buyInfo);
+					uni.navigateTo({
+						url:'/pages/pay2/pay2?type=1&id='+this.MusicId
+					})
+				}
 			},
 		},
 		// 上拉加载

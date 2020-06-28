@@ -10,7 +10,7 @@
 				<span>{{setUpDate}}</span>
 			</view>
 			<view class="time_r">
-				<span>最近交易</span>
+				<span>可用余额</span>
 				￥{{RechargeNumber}}
 			</view>
 		</view>

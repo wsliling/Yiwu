@@ -2,7 +2,8 @@
 		<view class="common-part">
         <view class="common-dialog pay-dialog">
             <view class="dialog-title">请输入支付密码</view>
-            <view class="pay-money">￥{{allprice}}</view>
+			<view class="pay-money" v-if="isJifen">{{allprice}}<text class="fz12">积分</text></view>
+            <view class="pay-money" v-else>￥{{allprice}}</view>
             <view class="pay-password">
 				<input type="number" maxlength="6" class="real-ipt" v-model="Password">
                 <view class="surface-ipts">
@@ -30,6 +31,10 @@
 			allprice:{
 				type: String,
 				default: "0.00"
+			},
+			isJifen:{
+				type:Boolean,
+				default:false
 			}
 		},
 		data() {
