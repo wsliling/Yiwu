@@ -60,7 +60,7 @@
 				pageSize:12,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
-				hasData: true,
+				hasData: false,
 				noDataIsShow: false,
 			}
 		},
@@ -104,15 +104,11 @@
 				if (result.code === 0) {
 					if (result.data.length > 0) {
 						this.hasData = true;
+						this.noDataIsShow = false;
 					}
-					this.count = result.count;
-					if (this.count == 0) {
+					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;
-					}
-					if (parseInt(this.count) % this.pageSize === 0) {
-						this.allPage = this.count / this.pageSize;
-					} else {
-						this.allPage = parseInt(this.count / this.pageSize) + 1;
+						this.hasData = false;
 					}
 					if (this.page === 1) {
 						this.datalist = result.data;
@@ -122,7 +118,7 @@
 							result.data
 						);
 					}
-					if (this.allPage <= this.page) {
+					if (result.data.length <this.pageSize) {
 						this.isLoad = false;
 						this.loadingType = 2;
 					} else {

@@ -40,7 +40,7 @@
                   </div>
                 </div> -->
                 
-                <div class="sku" v-for="(skus,val) in sku" :key="val">
+                <div class="sku" v-for="(skus,val) in thisSku" :key="val">
                   <div class="spcestitle">{{val}}</div>
                   <div class="specs">
                     <div
@@ -142,7 +142,9 @@ export default {
   watch:{
     sku:{
       handler(e){
-        console.log(e,'e')
+        // 赋值为组件内data声明变量，兼容小程序组件
+        this.thisSku = JSON.parse(JSON.stringify(this.sku));
+        this.isUseSku();
       },
       deep:true
     }
@@ -159,14 +161,19 @@ export default {
         text: "" //sku组合用下划线分隔_
       },
       datas:{},
-      reStock:0,//库存
+      restock:0,//库存
       goodsNum:1,
       maxbuy:0,//最大购买量
       minbuy:1, //最小购买量
+      thisSku:{},
     };
   },
+  // mounted小程序只会执行一遍，h5每次打开都会执行
   mounted() {
-    console.log(this.skuAll,this.sku,'data-sku')
+    console.log(123)
+
+    // 赋值为组件内data声明变量，兼容小程序组件
+    this.thisSku = JSON.parse(JSON.stringify(this.sku));
     this.isUseSku();
   },
   methods: {
@@ -186,33 +193,33 @@ export default {
     hidePopup(){
       this.showPop =false;
     },
-    clickSelectSku(skuIndex,index,item){
-      // let obj = item;
-      // obj.selectStatus = !obj.selectStatus;
-      // this.sku[skuIndex].list[index] = obj;
-      let list = this.sku[skuIndex].list;
-      list[index].selectStatus = !item.selectStatus;
-      console.log(list,'list')
-      this.$set(this.sku[skuIndex],'title','123');
-      console.log(this.sku,'this.sku')
+    // clickSelectSku(skuIndex,index,item){
+    //   // let obj = item;
+    //   // obj.selectStatus = !obj.selectStatus;
+    //   // this.sku[skuIndex].list[index] = obj;
+    //   let list = this.sku[skuIndex].list;
+    //   list[index].selectStatus = !item.selectStatus;
+    //   console.log(list,'list')
+    //   this.$set(this.sku[skuIndex],'title','123');
+    //   console.log(this.sku,'this.sku')
 
-      // console.log(item,'item')
-    },
+    //   // console.log(item,'item')
+    // },
     // 选择sku
     onSelectSku(val, index) {
       // 判断是否为不可选状态
-      if (this.sku[val][index].status) {
+      if (this.thisSku[val][index].status) {
         return false;
       }
       // 更改选择sku的状态
-      this.sku[val].map((oeb, i) => {
-        this.$set(this.sku[val][i], "selectStatus", false);
+      this.thisSku[val].map((oeb, i) => {
+        this.$set(this.thisSku[val][i], "selectStatus", false);
       });
-      let sku = JSON.parse(JSON.stringify(this.sku[val]));
+      let sku = JSON.parse(JSON.stringify(this.thisSku[val]));
       sku[index].selectStatus = true;
-      this.$set(this.sku, val, sku);
+      this.$set(this.thisSku, val, sku);
 
-      this.selectSku.value[val] = this.sku[val][index].val;
+      this.selectSku.value[val] = this.thisSku[val][index].val;
       // return false;
       // 是否选择完sku属性
       this.checkedSku();
@@ -232,7 +239,7 @@ export default {
       });
       // 判断sku选择的数量是否全部选择
       let skuAttrNum = 0;
-      Object.keys(this.sku).map(() => {
+      Object.keys(this.thisSku).map(() => {
         skuAttrNum += 1;
       });
       // 全部选择完sku属性
@@ -270,10 +277,10 @@ export default {
     // 判断可使用的sku
     isUseSku() {
       // 创建一个对象,用于进行添加值判断
-      Object.keys(this.sku).map(skuItem => {
+      Object.keys(this.thisSku).map(skuItem => {
         // 遍历渲染的sku值，只有跟选中的key值不相同的情况。再把值添加到obj
         let obj = JSON.parse(JSON.stringify(this.selectSku.value));
-        this.sku[skuItem].map((skuItemValue, skuItemIndex) => {
+        this.thisSku[skuItem].map((skuItemValue, skuItemIndex) => {
           // 选择sku的数量
           let selectSkuNum = 0;
           Object.keys(this.selectSku.value).map(() => {
@@ -281,17 +288,17 @@ export default {
           });
           // 判断sku选择的数量是否全部选择
           let skuAttrNum = 0;
-          Object.keys(this.sku).map(() => {
+          Object.keys(this.thisSku).map(() => {
             skuAttrNum += 1;
           });
           if (selectSkuNum === skuAttrNum) {
             obj[skuItem] = skuItemValue.val;
             const status = this.isUseSku2(obj);
-            this.sku[skuItem][skuItemIndex].status = status;
+            this.thisSku[skuItem][skuItemIndex].status = status;
           } else if (!this.selectSku.value[skuItem]) {
             obj[skuItem] = skuItemValue.val;
             const status = this.isUseSku2(obj);
-            this.sku[skuItem][skuItemIndex].status = status;
+            this.thisSku[skuItem][skuItemIndex].status = status;
           }
         });
       });
@@ -353,8 +360,8 @@ export default {
 				}
 			} else if (tip == 2) {
 				if (this.maxbuy == 0) {
-					if (this.goodsNum >= this.reStock) {
-						this.goodsNum = this.reStock;
+					if (this.goodsNum >= this.restock) {
+						this.goodsNum = this.restock;
 						uni.showToast({
 							title: '库存不足！',
 							icon: 'none',
@@ -364,7 +371,7 @@ export default {
 						this.goodsNum++;
 					}
 				} else {
-					if (this.reStock >= this.goodsNum) {
+					if (this.restock >= this.goodsNum) {
 						if (this.goodsNum < this.maxbuy) {
 							this.goodsNum++;
 						} else {
@@ -376,7 +383,7 @@ export default {
 							});
 						}
 					} else {
-						this.goodsNum = this.reStock;
+						this.goodsNum = this.restock;
 					}
 				}
 			}
@@ -395,11 +402,11 @@ export default {
 
     // z-index: 98;
     .main{
-        position: fixed;
-        bottom: 0;
-        left:0;
+        // position: fixed;
+        // bottom: 0;
+        // left:0;
+        // z-index: 99;
         width: 100vw;
-        z-index: 99;
         background-color: #fff;
         border-radius: 20rpx;
         .close{
@@ -558,8 +565,9 @@ export default {
 }
 .specactive {
   border: 1rpx solid #ff6325;
+  color:#ff6325;
   border-radius: 10rpx;
-  background: #fff7f4;
+  background: #fcf9f7!important;
 }
 </style>
 

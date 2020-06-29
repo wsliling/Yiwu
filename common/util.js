@@ -4,6 +4,7 @@ const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
 const webUrl = 'http://yw.wtvxin.com';  //后台地址
 
+
 function formatNumber(n) {
     const str = n.toString()
     return str[1] ? str : `0${str}`
@@ -204,6 +205,53 @@ function uncodeUtf16(str){
 // 		　　}).exec()
 // 		}).exec()
 //  }
+
+//播放音频
+const audio = uni.createInnerAudioContext(); //创建音频
+var playID="" //当前播放的舞曲id
+var hasplay=true  //是否播放过
+export function playMusic(index,id){//index:当前列表的索引，舞曲id
+	var musicList=uni.getStorageSync("musicList")//音乐列表
+	playID=uni.getStorageSync("playID");
+	console.log(playID)
+    if(playID!=""&&playID!="undefined"){
+		if(playID==id){//暂停
+			if(hasplay){
+				audio.pause()
+				hasplay=false
+			}else{
+				audio.play()
+				hasplay=true
+			}
+		}else{
+			playID=id
+			uni.setStorageSync("playID",playID)
+			audio.src = musicList[index].Audio;
+			audio.play()
+			MemberPaly(id)
+		}
+	}else{
+		playID=id
+		uni.setStorageSync("playID",playID)
+		audio.src = musicList[index].Audio;
+		audio.play()
+		MemberPaly(id)
+	}
+}
+//发布舞曲
+function MemberPaly(id){
+	const userId = uni.getStorageSync('userId');
+	const token = uni.getStorageSync('token');
+	if (userId && token){
+		post("DanceMusic/PlayMusic", {
+			UserId: userId,
+			Token: token,
+			MusicId: id,
+		}).then(res=>{
+			
+		});
+	}
+}
 import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
@@ -221,6 +269,7 @@ export {
 	valPhone,
 	getUrlParam,
 	uncodeUtf16,
+	audio,
 
 	toast,
 	debounce,

@@ -259,10 +259,7 @@
                 ,{
                     "path" : "myBuy/myBuy",
                     "style" : {
-						"navigationBarTitleText":"我购买的",
-						"app-plus": {
-							"titleNView": false
-						}
+						"navigationBarTitleText":"我购买的"
 					}
                 }
                 ,{
@@ -385,6 +382,14 @@
 						"navigationBarTitleText": "最近播放"
 					}
                 }
+                ,{
+                    "path" : "playMusic/playMusic",
+                    "style" : {
+                    	"navigationBarTitleText": "",
+						"navigationBarTextStyle": "white",
+						"navigationBarBackgroundColor":"#252b2f"
+                    }
+                }
             ]
 		},
 		{	//商城内页
@@ -435,6 +440,27 @@
 					}
 				}
 		    ]
+		},
+		{
+			"root":"pages/message",
+			"pages":[
+				{
+                    "path" : "messageClass/messageClass",
+                    "style" : {
+						"navigationBarTitleText": "我的消息"
+					}
+                }
+				,{
+					"path" : "messageList/messageList",
+					"style" : {}
+				}
+				,{
+					"path" : "msgDetail/msgDetail",
+					"style" : {
+						"navigationBarTitleText": "详情"
+					}
+				}
+            ]
 		}
 		
 	],

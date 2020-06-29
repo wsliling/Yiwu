@@ -118,9 +118,7 @@
 						duration: 2000,
 						success: function() {
 							setTimeout(function() {
-								uni.switchTab({
-									url: "/pages/tabBar/my/my"
-								})
+								uni.navigateBack();
 							}, 2000);
 						}
 					});

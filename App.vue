@@ -5,6 +5,7 @@
 		},
 		onShow: function() {
 			console.log('App Show')
+			uni.setStorageSync("playID","")
 		},
 		onHide: function() {
 			console.log('App Hide')
