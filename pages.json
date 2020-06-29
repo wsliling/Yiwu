@@ -349,6 +349,15 @@
 						"navigationBarTitleText":"新增地址"
 					}
 				}
+                ,{
+                    "path" : "myDownload/myDownload",
+                    "style" : {
+						"navigationBarTitleText":"我的下载",
+						"app-plus": {
+							"titleNView": false
+						}
+					}
+                }
             ]
 		},
 		{
@@ -446,6 +455,15 @@
 				    "style" : {
 						"navigationBarTitleText": "店铺主页",
 						"enablePullDownRefresh" : true
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "submitOrder/submitOrder",
+				    "style" : {
+						"navigationBarTitleText": "确认订单"
 						// "app-plus": {
 							// "titleNView": false
 						// }

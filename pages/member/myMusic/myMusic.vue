@@ -15,7 +15,7 @@
 		</view> 
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-hd flex-between">
-			<view class="title">创建曲单</view>
+			<view class="title">我的曲单</view>
 			<view class="uni-icon uni-icon-plusempty" @click="isShowCreatMenu=true"></view>
 		</view>
 		<view class="menulist">

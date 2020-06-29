@@ -73,7 +73,7 @@
 									<view class="desc">
 										{{item.Title}}
 									</view>
-									<view :class="['maxpic',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
+									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
 										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" poster="item.PicImg"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
@@ -195,7 +195,7 @@
 					<view class="Yi-courselist flexWrap flex-between">
 						<view class="item" v-for="(item,index) in CourseList" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
 							<view class="maxpic">
-								<image :src="item.Logo" mode="aspectFill"></image>
+								<image :src="item.PicImg" mode="aspectFill"></image>
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">

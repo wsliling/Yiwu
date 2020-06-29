@@ -2,17 +2,23 @@
 	<!-- 我的作品 -->
 	<view>
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
-			<!-- #ifndef MP-WEIXIN -->
-			<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
-			<view class="mine">我的作品</view>
-			<!-- #endif -->
-			<!-- #ifdef MP-WEIXIN -->
-			<view></view>
-			<view></view>
-			<!-- #endif --> 
-			<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
+			<view class="tab_head flex-between">
+				<!-- #ifndef MP-WEIXIN -->
+				<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
+				<view class="mine">我的作品</view>
+				<!-- #endif -->
+				<!-- #ifdef MP-WEIXIN -->
+				<view></view>
+				<view></view>
+				<!-- #endif --> 
+				<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
+			</view>
+			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x>
+				<view style="width: 33.33%;" v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
+				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
+			</scroll-view>
 		</view> 
-		<view :style="{height:(44+barHeight)+'px'}"></view>
+		<view :style="{height:(84+barHeight)+'px'}"></view>
 		
 		<view class="bb_pt uni-bg-white" v-if="hasData">
 			<view class="listbox" v-for="(val, index) in datalist" :key="index" @click="godetail(val.Id,val.Type,index)">
@@ -64,6 +70,21 @@ export default {
 			isShowDel: false, //编辑完成
 			userId: '',
 			token: '',
+			tabIndex:0,
+			tabnav:[
+				{
+					Id:0,
+					TypeName:"审核通过"
+				},
+				{
+					Id:1,
+					TypeName:"审核中"
+				},
+				{
+					Id:2,
+					TypeName:"审核失败"
+				}
+			],
 			page:1,
 			pageSize:8,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
@@ -76,13 +97,19 @@ export default {
 			checked: false,
 			isShowvideo:false,
 			videoSrc:"",
-			videoPoster:''
+			videoPoster:'',
+			Type:0,
 		};
 	},
 	components: {
 		uniLoadMore,
 		noData
 	},
+	computed: {
+	  tabStyle(){
+	    return ((750/this.tabnav.length)*this.tabIndex)+(((750/this.tabnav.length)-68)/2)
+	  }
+	 },
 	onLoad() {
 		// #ifdef APP-PLUS
 		var height = plus.navigator.getStatusbarHeight();
@@ -108,12 +135,12 @@ export default {
 			});
 		},
 		godetail(id,type,index){
-			if(type==1&&!this.isShowDel){
+			if(type==1&&!this.isShowDel&&this.Type==0){
 				uni.navigateTo({
 					url:'/pages/video/videoDetails/videoDetails?id='+id
 				})
 			}
-			if(type==0){
+			if(type==0&&!this.isShowDel){
 				this.isShowvideo=true;
 				this.videoSrc=this.datalist[index].Video;
 				this.videoPoster=this.datalist[index].PicImg;
@@ -128,6 +155,17 @@ export default {
 		//点击编辑 完成
 		ShowDel() {
 			this.isShowDel = !this.isShowDel;
+		},
+		//点击tab-bar
+		tapTab(index,id) {
+			if (this.tabIndex === index) {
+				return false;
+			} else {
+				this.tabIndex = index;
+				this.Type = id
+				this.page = 1
+				this.workeslist()
+			}
 		},
 		// 全选
 		cancelDel() {
@@ -165,7 +203,8 @@ export default {
 				UserId: this.userId,
 				Token: this.token,
 				page: this.page,
-				pageSize: this.pageSize
+				pageSize: this.pageSize,
+				Type: this.Type
 			});
 			if (result.code === 0) {
 				let _this=this;
@@ -280,14 +319,12 @@ export default {
 
 <style scoped lang="scss">	
 .head {
-	height: 44px;
-	border-bottom: 1px solid #eee;
+	.tab_head{
+		height: 44px;
+	}
 	.head_l{
 		.uni-icon{ font-size: 26px; margin: 0 5px;}
 	}
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	.mine {
 		font-size: 16px;
 		font-family: PingFang;
