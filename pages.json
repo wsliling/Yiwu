@@ -337,6 +337,18 @@
 						"navigationBarTitleText":"选择银行"
 					}
 				}
+				,{
+				    "path" : "address/address",
+				    "style" : {
+						"navigationBarTitleText":"收货地址"
+					}
+				}
+				,{
+				    "path" : "addsite/addsite",
+				    "style" : {
+						"navigationBarTitleText":"新增地址"
+					}
+				}
             ]
 		},
 		{

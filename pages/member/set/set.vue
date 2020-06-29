@@ -16,6 +16,11 @@
 					<text class="txt">设置支付密码</text>
 				</view>
 			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/address/address')">
+				<view class="line-item-l">
+					<text class="txt">收货地址</text>
+				</view>
+			</view>
 			<!-- #ifdef APP-PLUS -->
 			<view class="line-item line-arrow-r">
 				<view class="line-item-l">

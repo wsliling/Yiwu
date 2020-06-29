@@ -27,7 +27,7 @@
 							<view class="fz12 c_999 uni-ellipsis">{{item.Intro}}</view>
 						</view>
 					</view>
-					<view class="flow" :class="{'active':item.IsFollow}">{{item.IsFollow?"已关注":"关注"}}</view>
+					<view class="flow" :class="{'active':item.IsFollow}" @click="getFollowOperation(item.UserId)">{{item.IsFollow?"已关注":"关注"}}</view>
 				</view>
 			</view>
 		</view>
@@ -147,6 +147,23 @@
 			  this.myType=id
 			  this.getList(id)
 			},
+			// 关注或取消关注
+			getFollowOperation(id){
+				post('Find/FollowOperation',{
+					"UserId": this.userId,
+					"Token": this.token,
+					"ToMemberId": id,
+				}).then( res=> {
+					if(res.code === 0){
+						uni.showToast({
+							title: res.msg,
+							icon: "none",
+							duration: 2000
+						});
+						this.getList(this.myType)
+					}
+				})
+			}
 		}
 	}
 </script>
