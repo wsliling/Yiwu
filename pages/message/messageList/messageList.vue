@@ -1,11 +1,22 @@
 <template>
 	<view>
 		<view class="Messagelist" v-if="hasData">
-			<view class="list-item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/message/msgDetail/msgDetail?id='+item.id)">
+			<view class="list-item" v-for="(item,index) in datalist" :key="index">
 				<view class="center uni-mb10">
 					<text class="time">{{item.PubTime}}</text>
 				</view>
-				<view v-if="Msgtype==6" class="txtbox">
+				<view v-if="Msgtype==0" class="txtbox p_re">
+					<view class="dian" v-if="item.Islook==0"></view>
+					<view class="title">
+						{{item.title}}
+					</view>
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="tolink('/pages/message/msgDetail/msgDetail?id='+item.id)">
+						<view class="desc text-line2">
+							<uParse :content="item.Memo" />
+						</view>
+					</view>
+				</view>
+				<view v-else class="txtbox">
 					<view class="title">
 						{{item.title}}
 					</view>
@@ -15,17 +26,6 @@
 						</view>
 					</view>
 				</view>
-				<view v-else class="txtbox">
-					<view class="title">
-						{{item.title}}
-					</view>
-					<view class="uni-list-cell-navigate uni-navigate-right">
-						<view class="desc text-line2">
-							<uParse :content="item.Memo" />
-						</view>
-					</view>
-				</view>
-				
 			</view>
 			<view class="uni-tab-bar-loading">
 				<uni-load-more :loadingType="loadingType"></uni-load-more>
@@ -94,12 +94,14 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
-						result.data.forEach(function(item) {
-							item.PubTime=dateUtils.format(item.PubTime);
-							if(item.Islook==0){
-								_this.ReadNoticeInfo(item.id);
-							}
-						})
+						if(this.Msgtype!=0){
+							result.data.forEach(function(item) {
+								item.PubTime=dateUtils.format(item.PubTime);
+								if(item.Islook==0){
+									_this.ReadNoticeInfo(item.id);
+								}
+							})
+						}
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;
@@ -171,4 +173,10 @@
 		-webkit-line-clamp: 2;
 	}
 	.list-item .time{ color: #fff; background: #e2e2e2; font-size: 24upx; border-radius: 4px; padding: 4upx 10upx;}
+	.dian{ height: 10upx; width: 10upx;
+	border-radius: 50%; 
+	background: #ff0000;
+	position: absolute;
+	right: 20upx;
+	top: 30upx;}
 </style>

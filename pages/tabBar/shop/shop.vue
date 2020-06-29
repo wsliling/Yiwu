@@ -20,23 +20,11 @@
 		</view>
 		<!-- 快捷导航 -->
 		<view class="icon-menu">
-			<view class="item" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
+			<view class="item" v-if="index<4" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
 				v-for="(item,index) in classify" :key="index">
 				<image class="icon" :src="item.Pic"></image>
 				<text class="txt">{{item.Name}}</text>
 			</view>
-			<!-- <view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=1')">
-				<image class="icon" src="@/static/fenlei2.png"></image>
-				<text class="txt">舞裙</text>
-			</view>
-			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=2')">
-				<image class="icon" src="@/static/fenlei3.png"></image>
-				<text class="txt">舞裤</text>
-			</view>
-			<view class="item" @click="tolink('/pages/shopSon/mywu/wu?type=3')">
-				<image class="icon" src="@/static/fenlei4.png"></image>
-				<text class="txt">舞鞋</text>
-			</view>-->
 			<view class="item" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<image class="icon" src="@/static/fenlei5.png"></image>
 				<text class="txt">全部</text>

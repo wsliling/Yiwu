@@ -2,32 +2,40 @@
 	<!-- 我的作品 -->
 	<view>
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
-			<!-- #ifndef MP-WEIXIN -->
-			<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
-			<view class="mine">我的作品</view>
-			<!-- #endif -->
-			<!-- #ifdef MP-WEIXIN -->
-			<view></view>
-			<view></view>
-			<!-- #endif --> 
-			<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
+			<view class="tab_head flex-between">
+				<!-- #ifndef MP-WEIXIN -->
+				<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
+				<view class="mine">我的作品</view>
+				<!-- #endif -->
+				<!-- #ifdef MP-WEIXIN -->
+				<view></view>
+				<view></view>
+				<!-- #endif --> 
+				<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
+			</view>
+			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x>
+				<view style="width: 33.33%;" v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
+				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
+			</scroll-view>
 		</view> 
-		<view :style="{height:(44+barHeight)+'px'}"></view>
+		<view :style="{height:(84+barHeight)+'px'}"></view>
 		
 		<view class="bb_pt uni-bg-white" v-if="hasData">
-			<view class="listbox" v-for="(val, index) in datalist" :key="index">
+			<view class="listbox" v-for="(val, index) in datalist" :key="index" @click="godetail(val.Id,val.Type,index)">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
-					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
+					<view><image class="imgs" :src="val.PicImg" mode=""></view>
 					<view class="brace">
 						<view class="being uni-ellipsis2">{{ val.Name }}</view>
 						<view class="fz12 c_999">
 							{{val.LikeNum}}人点赞
 						</view>
 						<view class="correct">
-							<block v-if="val.Is_Charge==0">
+							<block v-if="val.Is_Charge==0&&val.Type == 1">
 								免费
+							</block>
+							<block v-else-if="val.Type == 0">
+								短视频
 							</block>
 							<block v-else><span class="spanl">¥</span>{{ val.Price}}</block>
 						</view>
@@ -43,6 +51,10 @@
 			</view>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
+		<view class="videobox" v-if="isShowvideo">
+			<view class="uni-icon uni-icon-close" @click="closevideo"></view>
+			<video :src="videoSrc" controls :poster="videoPoster"></video>
+		</view>
 		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType" v-if="noDataIsShow == false"></uni-load-more></view>
 	</view>
 </template>
@@ -58,6 +70,21 @@ export default {
 			isShowDel: false, //编辑完成
 			userId: '',
 			token: '',
+			tabIndex:0,
+			tabnav:[
+				{
+					Id:0,
+					TypeName:"审核通过"
+				},
+				{
+					Id:1,
+					TypeName:"审核中"
+				},
+				{
+					Id:2,
+					TypeName:"审核失败"
+				}
+			],
 			page:1,
 			pageSize:8,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
@@ -67,13 +94,22 @@ export default {
 			datalist: {}, //列表
 			datalength: 0,
 			Ids: [], //保存要删除数据
-			checked: false
+			checked: false,
+			isShowvideo:false,
+			videoSrc:"",
+			videoPoster:'',
+			Type:0,
 		};
 	},
 	components: {
 		uniLoadMore,
 		noData
 	},
+	computed: {
+	  tabStyle(){
+	    return ((750/this.tabnav.length)*this.tabIndex)+(((750/this.tabnav.length)-68)/2)
+	  }
+	 },
 	onLoad() {
 		// #ifdef APP-PLUS
 		var height = plus.navigator.getStatusbarHeight();
@@ -98,9 +134,38 @@ export default {
 				url: '/pages/tabBar/my/my'
 			});
 		},
+		godetail(id,type,index){
+			if(type==1&&!this.isShowDel&&this.Type==0){
+				uni.navigateTo({
+					url:'/pages/video/videoDetails/videoDetails?id='+id
+				})
+			}
+			if(type==0&&!this.isShowDel){
+				this.isShowvideo=true;
+				this.videoSrc=this.datalist[index].Video;
+				this.videoPoster=this.datalist[index].PicImg;
+			}
+		},
+		//关闭视频
+		closevideo(){
+			this.isShowvideo=false;
+			this.videoSrc="";
+			this.videoPoster="";
+		},
 		//点击编辑 完成
 		ShowDel() {
 			this.isShowDel = !this.isShowDel;
+		},
+		//点击tab-bar
+		tapTab(index,id) {
+			if (this.tabIndex === index) {
+				return false;
+			} else {
+				this.tabIndex = index;
+				this.Type = id
+				this.page = 1
+				this.workeslist()
+			}
 		},
 		// 全选
 		cancelDel() {
@@ -137,8 +202,9 @@ export default {
 			let result = await post('User/GetMyWorksList', {
 				UserId: this.userId,
 				Token: this.token,
-				// page: this.page,
-				// pageSize: this.pageSize
+				page: this.page,
+				pageSize: this.pageSize,
+				Type: this.Type
 			});
 			if (result.code === 0) {
 				let _this=this;
@@ -253,14 +319,12 @@ export default {
 
 <style scoped lang="scss">	
 .head {
-	height: 44px;
-	border-bottom: 1px solid #eee;
+	.tab_head{
+		height: 44px;
+	}
 	.head_l{
 		.uni-icon{ font-size: 26px; margin: 0 5px;}
 	}
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	.mine {
 		font-size: 16px;
 		font-family: PingFang;
@@ -355,5 +419,29 @@ export default {
 		}
 	}
 }
-
+.videobox{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.6);
+	left: 0;
+	top: 0;
+	z-index: 99;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	.uni-icon{
+		position: absolute;
+		right: 20upx;
+		top: 20upx;
+		color: #FFF;
+		font-size: 72upx;
+		line-height: 1;
+		z-index: 9999;
+	}
+	video{
+		width: 100%;
+	}
+}
 </style>
