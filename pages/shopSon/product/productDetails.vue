@@ -126,7 +126,9 @@
 				<p :class="['flex1 flexc']" @click="showSku(2)">立即购买</p>
 			</div>
 		</div>
-		<sku :sku="sku" :skuAll="skuAll" :product="product"></sku>
+		<uni-popup ref="skuWin" type="bottom">
+			<sku :sku="sku" :skuAll="skuAll" :product="product"></sku>
+		</uni-popup>
 	</view>
 </template>
 
@@ -248,6 +250,9 @@ export default {
 					this.data.IsCollection = true;
 				}
 			}
+		},
+		showSku(){
+			this.$refs.skuWin.open();
 		},
 		toindex() {
 			uni.navigateBack({
