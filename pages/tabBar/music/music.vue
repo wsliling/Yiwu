@@ -52,7 +52,7 @@
 						 <image v-else src="/static/music/music-item.png"></image>
 						<view class="img-top">
 							<image class="icon" src="@/static/music/listen.png" mode=""></image>
-							<span>2367</span>
+							<span>{{item.PlayNum}}</span>
 						</view>
 						<view class="img-bottom">
 							<image class="play" src="@/static/music/play.png" mode=""></image>

@@ -22,7 +22,7 @@
 						<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
 							<view class="icon" @click.stop="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-							<view class="icon" @click.stop="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
 				</view>
@@ -228,7 +228,7 @@
 				playMusic(index,id)
 			},
 			//弹出更多操作
-			ShowOperation(item){
+			ShowOperation(item){console.log(item)
 				this.isShowOperation=true;
 				this.MusicId=item.Id;
 				this.price=item.Price;
