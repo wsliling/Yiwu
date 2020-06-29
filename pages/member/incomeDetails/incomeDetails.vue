@@ -103,9 +103,9 @@
 			queryRecord() {
 				let url = ''
 				if(this.tabIndex == 0){
-					url = "Recharge/GetShopIncomeDetail"
+					url = "Recharge/GetShopIncomeDetail"  //店铺收入
 				}else{
-					url = "Recharge/GetRechargeList"
+					url = "Recharge/GetIncomeScoreDetail"  //1.直播收入、2、课程收入、4。舞曲收入、5、普通积分明细、6、返佣积分明细
 				}
 				post(url, {
 					UserId: this.userId,
