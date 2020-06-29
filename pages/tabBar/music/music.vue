@@ -16,9 +16,9 @@
 			<!--轮播图-->
 			<view class="index_swiper uni-mt10">
 				<swiper class="swiper" :indicator-dots="false" autoplay :interval="5000" :duration="500" @change="changeSwiper">
-					<swiper-item v-for="(item,index) in 3" :key="index">
+					<swiper-item v-for="(item,index) in banner" :key="index">
 						<view class="swiper-item pd15">
-							<image class="img" src="@/static/of/p1.jpg" mode="aspectFill"></image>
+							<image class="img" :src="item.Pic" mode="aspectFill"></image>
 						</view>
 					</swiper-item>
 				</swiper>
@@ -102,62 +102,13 @@
 				scrollLeft: 0,
 				tabIndex:0,
 				tabnav:[{Id:1,TypeName:"舞曲分类"},{Id:2,TypeName:"动态"}],
-				findlist:[
-					{
-						Addtime: "2020-05-27 18:08:24",
-						Avatar: "http://mall.sc-mall.net/upload/avatar/20200429/2020042916434333883.jpg",
-						BrowseNum: 1,
-						CommentNum: 0,
-						ContentAbstract: "",
-						ContentDetails: "",
-						ExternalLink: "",
-						FindType: 0,
-						Id: 124,
-						ImgList: "http://mall.sc-mall.net/upload/UFind/2020052718082329615506.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082337462762.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082343720215.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082351531051.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082357744717.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082365550816.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082373301282.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082381223454.jpg,http://mall.sc-mall.net/upload/UFind/2020052718082384351617.jpg",
-						InnerLink: "",
-						IsFollow: 1,
-						IsLike: 1,
-						IsMy: 0,
-						LikeNum: 256,
-						Location: "",
-						MemberId: "2B953DA7C2CC7087",
-						NickName: "悠游白书",
-						PicImg: "http://mall.sc-mall.net/upload/UFind/2020052718082329615506.jpg",
-						PicNo: "20052910083028376",
-						ShopId: "36F2EACC4C78A301",
-						Sort: 0,
-						Title: "舞曲文学，品舞曲就是品生活，品生活就是陶冶情操，陶冶情操有利于人的身心健康。",
-					},
-					{
-						Addtime: "2020-05-18 15:21:05",
-						Avatar: "http://mall.sc-mall.net/upload/admin/2020-04-27/2020042711401879998.png",
-						BrowseNum: 4,
-						CommentNum: 0,
-						ContentAbstract: "",
-						ContentDetails: "",
-						ExternalLink: "",
-						FindType: 0,
-						Id: 123,
-						ImgList: "http://mall.sc-mall.net/upload/20200518/2020051815210560107.jpg",
-						InnerLink: "",
-						IsFollow: 0,
-						IsLike: 0,
-						IsMy: 0,
-						LikeNum: 0,
-						Location: "",
-						MemberId: "16EBFAA2B42D58E4",
-						NickName: "qckuh394",
-						PicImg: "http://mall.sc-mall.net/upload/20200518/2020051815210560107.jpg",
-						PicNo: "20051815210516910",
-						ShopId: "36F2EACC4C78A301",
-						Sort: 0,
-						Title: "测试测试",
-					}
-				]
+				findlist:[],
+				banner:[],
 			}
 		},
 		onLoad() {
-			this.getclassifyList()
+			this.getclassifyList();
+			this.getBanner();
 		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
@@ -177,6 +128,11 @@
 						this.classifylist=res.data
 					}
 				})
+			},
+			async getBanner(){
+				const res = await post('Banner/BannerList',{Cid:2})
+				if(res.code)return;
+				this.banner = res.data;
 			},
 			/*获取动态列表*/
 			async workeslist() {

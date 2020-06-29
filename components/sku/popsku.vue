@@ -7,13 +7,14 @@
             <div class="top-box">
                 <div class="proinfo">
                     <div class="img-box">
-                        <img :src="selectSku.img||product.img" alt="">
+                        <img :src="selectSku.img||productInfo.img" alt="">
                     </div>
                     <div class="right">
                         <div>
-                            <p class="tit">{{product.Name}}</p>
-                            <span><span class="fuhao">￥</span>{{selectSku.price||product.price}}</span>
-                            <p class="font_four">库存：{{selectSku.num||product.num}}</p>
+                            <!-- <p class="tit">{{productInfo.name}}</p> -->
+                            <span><span class="fuhao">￥</span>{{selectSku.price||productInfo.price}}</span>
+                            <p class="font_four">库存：{{selectSku.num||productInfo.stock}}</p>
+                            <p>{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</p>
                                 <!-- :SpecInfo.PunitPrice -->
                         </div>
                     </div>
@@ -130,14 +131,19 @@ export default {
         return [];
       }
     },
-    product:{
+    productInfo:{
       type:Object,
       default(){
         return {
-          img:''
+          img:'',//默认产品图片
+          maxbuy:0,//最大购买量
+          minbuy:1, //最小购买量
+          stock:0,
+          price:0,
+          name:'',
         };
       }
-    }
+    },
   },
   watch:{
     sku:{
@@ -145,9 +151,10 @@ export default {
         // 赋值为组件内data声明变量，兼容小程序组件
         this.thisSku = JSON.parse(JSON.stringify(this.sku));
         this.isUseSku();
+        this.setSelectSkuItem();
       },
       deep:true
-    }
+    },
   },
   data() {
     return {
@@ -161,14 +168,13 @@ export default {
         text: "" //sku组合用下划线分隔_
       },
       datas:{},
-      restock:0,//库存
+      // restock:0,//库存
       goodsNum:1,
-      maxbuy:0,//最大购买量
-      minbuy:1, //最小购买量
       thisSku:{},
+      hasSku:true,//是否需要选择sku
     };
   },
-  // mounted小程序只会执行一遍，h5每次打开都会执行
+  // mounted小程序--只会执行一遍，h5--每次打开都会执行
   mounted() {
     console.log(123)
 
@@ -179,10 +185,25 @@ export default {
   methods: {
     // 加入购物车
     addcart(){
-
+      if(this.hasSku){ 
+        uni.showToast({
+          title:"请选择商品规格",
+          icon:'none'
+        })
+        return
+      };
+      this.$emit('addcart',this.selectSku)
     },
     // 立即购买
     buy(){
+      if(this.hasSku){ 
+        uni.showToast({
+          title:"请选择商品规格",
+          icon:'none'
+        })
+        return
+      };
+      this.$emit('buy',this.selectSku)
 
     },
     // 确定
@@ -244,6 +265,7 @@ export default {
       });
       // 全部选择完sku属性
       if (skuAttrNum === selectSkuNum) {
+        this.hasSku = false;
         this.skuAll.map(skuAllItem => {
           // 遍历全部数组的对象，如果存在相同的属性则数量+1
           let skuAllNum = 0;
@@ -269,9 +291,13 @@ export default {
               text: skuAllItem.text,
               value
             };
-            this.$emit("getSkuData", skuAllItem);
+            this.productInfo.stock = skuAllItem.num;
+            this.goodsNum=1;
+            this.$emit("getSkuData", skuAllItem);//更新了sku
           }
         });
+      }else{
+        this.hasSku = true;
       }
     },
     // 判断可使用的sku
@@ -281,7 +307,7 @@ export default {
         // 遍历渲染的sku值，只有跟选中的key值不相同的情况。再把值添加到obj
         let obj = JSON.parse(JSON.stringify(this.selectSku.value));
         this.thisSku[skuItem].map((skuItemValue, skuItemIndex) => {
-          // 选择sku的数量
+          // 选择sku的数量 
           let selectSkuNum = 0;
           Object.keys(this.selectSku.value).map(() => {
             selectSkuNum += 1;
@@ -345,23 +371,26 @@ export default {
     },
     // 更改数量
 		suan(tip) {
+      const minbuy = this.productInfo.minbuy;
+      const maxbuy = this.productInfo.maxbuy;
+      const stock = this.productInfo.stock;
 			if (tip == 1) {
 				if (this.goodsNum > 1) {
-					if (this.goodsNum > this.minbuy) {
+					if (this.goodsNum > minbuy) {
 						this.goodsNum--;
 					} else {
-						this.goodsNum = this.minbuy;
+						this.goodsNum = minbuy;
 						uni.showToast({
-							title: this.minbuy + '件起购',
+							title: minbuy + '件起购',
 							icon: 'none',
 							duration: 1500
 						});
 					}
 				}
 			} else if (tip == 2) {
-				if (this.maxbuy == 0) {
-					if (this.goodsNum >= this.restock) {
-						this.goodsNum = this.restock;
+				if (maxbuy == 0) {
+					if (this.goodsNum >= stock) {
+						this.goodsNum = stock;
 						uni.showToast({
 							title: '库存不足！',
 							icon: 'none',
@@ -371,23 +400,29 @@ export default {
 						this.goodsNum++;
 					}
 				} else {
-					if (this.restock >= this.goodsNum) {
-						if (this.goodsNum < this.maxbuy) {
+					if (stock > this.goodsNum) {
+						if (this.goodsNum < maxbuy) {
 							this.goodsNum++;
 						} else {
-							this.goodsNum = this.maxbuy;
+							this.goodsNum = maxbuy;
 							uni.showToast({
-								title: '限购' + this.maxbuy + '件',
+								title: '限购' + maxbuy + '件',
 								icon: 'none',
 								duration: 1500
 							});
 						}
 					} else {
-						this.goodsNum = this.restock;
+						this.goodsNum = stock;
 					}
 				}
 			}
-		},
+    },
+    // 设置已选择的sku
+    setSelectSkuItem(){
+        Object.keys(this.thisSku).map(skuItem=>{
+          
+        })
+    }
 		
   }
 };
@@ -454,11 +489,12 @@ export default {
                     border-radius: 10rpx;
                     border:1rpx solid #ededed;
                     margin-top:-70upx;
-                    background-color: #fff
-                }
-                img{
-                    width: 180rpx;
-                    height: 180rpx;
+                    background-color: #fff;
+                    overflow:hidden;
+                  img{
+                      width: 100%;
+                      height: 100%;
+                  }
                 }
                 .right{
                     width: 475rpx;
@@ -471,9 +507,11 @@ export default {
                         }
                         span{
                             color: #f0370b;
-                            font-size: 32rpx;
+                            font-size: 36rpx;
+                            font-weight:bold;
                             .fuhao{
-                                font-size: 22rpx
+                                font-size: 22rpx;
+                                font-weight:100;
                             }
                         }
                         .font_four{

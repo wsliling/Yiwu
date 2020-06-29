@@ -5,7 +5,7 @@
 			<view class="tab_head flex-between">
 				<!-- #ifndef MP-WEIXIN -->
 				<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
-				<view class="mine">我的收藏</view>
+				<view class="mine">我的下载</view>
 				<!-- #endif -->
 				<!-- #ifdef MP-WEIXIN -->
 				<view></view>
@@ -14,7 +14,7 @@
 				<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x>
-				<view style="width: 33.33%;" v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
+				<view style="width: 50%;" v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view> 
@@ -24,7 +24,7 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 0"><video controls :src="val.Video"></video></view>
+					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
 					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
 						<view class="being uni-ellipsis2">{{ val.Name }}</view>
@@ -66,15 +66,11 @@ export default {
 			tabnav:[
 				{
 					Id:0,
-					TypeName:"产品"
+					TypeName:"课程"
 				},
 				{
-					Id:5,
+					Id:1,
 					TypeName:"舞曲"
-				},
-				{
-					Id:7,
-					TypeName:"视频"
 				}
 			],
 			page:1,
@@ -87,7 +83,7 @@ export default {
 			datalength: 0,
 			Ids: [], //保存要删除数据
 			checked: false,
-			Type: 0, //0-产品  5-舞曲  7-视频
+			Type : 0, //0-产品  5-舞曲  7-视频
 		};
 	},
 	components: {
@@ -153,7 +149,6 @@ export default {
 		},
 		//选择
 		shiftChecked(key) {
-			console.log(key, 'key');
 			this.datalist[key].checked = !this.datalist[key].checked;
 			let _this = this;
 			let sum = 0;
@@ -390,5 +385,4 @@ export default {
 video{
 	width: 180upx;height: 180upx;border-radius: 10upx;
 }
-
 </style>

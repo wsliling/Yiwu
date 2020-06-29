@@ -12,12 +12,12 @@
 			</view>
 		</view>
         <div class="list">
-            <div class="item" v-for="(val,key) in 3" :key="key">
-                <img src="" alt="">
+            <div class="item" v-for="(val,key) in problemList" :key="key">
+                <img :src="val.Avatar" alt="">
                 <div class="info">
-                    <div class="name"></div>
-                    <div class="time"></div>
-                    <div class="content"></div>
+                    <div class="name">{{val.NickName}}</div>
+                    <div class="time">{{val.AddTime}}</div>
+                    <div class="content">{{val.Content}}</div>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
             console.log(this.item,'item')
             this.userId = uni.getStorageSync("userId");
             this.token = uni.getStorageSync("token");
-            // this.getProblemList();
+            this.getProblemList();
         },
         onShow() {
             this.userId = uni.getStorageSync("userId");
@@ -76,15 +76,19 @@
 				if(this.page===1){
 					this.problemList=[];
 				}
-                const res = await post('Goods/QuestionsdList',{
+                const res = await post('Goods/AnswersList',{
                     UserId:this.userId,
                     Token:this.token,
-                    ProductId:this.proId,
+                    ParentId:this.item.Id,
                     Page:this.page,
                     PageSize:this.pageSize
                 })
                 const data = res.data;
-				// if(res.code)return;
+                if(res.code)return;
+                if(data[0]&&this.page==1){
+                     this.item.count = res.count;
+                    this.item.AddTime = dateUtils.format(data[0].AddTime)
+                }
                 data.map(item=>{
                     item.AddTime = dateUtils.format(item.AddTime)
                     this.problemList.push(item);
@@ -180,19 +184,28 @@
         .list{
             .item{
                 display:flex;
-                align-items:center;
-                padding:40upx 30upx;
+                align-items:flex-start;
+                padding:20upx 30upx 30upx;
                 border-top:1upx solid #ececec;
+                background:#fff;
                 font-size:30upx;
                 line-height:1.3;
                 img{
                     width:80upx;height:80upx;
                     border-radius:50%;
                     margin-right:30upx;
+                    margin-top:10upx;
                 }
                 .time{
                     color:#999;
                     font-size:24upx;
+                }
+                .info{
+                    width:83%;
+                    line-height:1.5;
+                    .content{
+                        margin-top:10upx;
+                    }
                 }
             }
         }

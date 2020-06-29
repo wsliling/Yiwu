@@ -10,7 +10,7 @@
 					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
 						<view class="icon" @click="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
+						<view class="icon" @click="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
 			</view>

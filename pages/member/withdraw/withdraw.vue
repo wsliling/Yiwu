@@ -219,7 +219,7 @@ export default {
 						success: function() {
 							setTimeout(function() {
 								uni.redirectTo({
-									url: '/pages/menber/myIncome/myIncome'
+									url: '/pages/member/myIncome/myIncome'
 								});
 							}, 1500);
 						}
