@@ -337,6 +337,15 @@
 						"navigationBarTitleText":"选择银行"
 					}
 				}
+                ,{
+                    "path" : "myDownload/myDownload",
+                    "style" : {
+						"navigationBarTitleText":"我的下载",
+						"app-plus": {
+							"titleNView": false
+						}
+					}
+                }
             ]
 		},
 		{

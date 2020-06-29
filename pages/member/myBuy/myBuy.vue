@@ -6,8 +6,7 @@
 		</scroll-view>
 		<view style="height:40px"></view>
 		<view class="bb_pt uni-bg-white" v-if="hasData">
-			<view :class="['listbox',tabIndex==1?'musicbox':'']" v-for="(val, index) in datalist" :key="index">
-				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
+			<view :class="['listbox',tabIndex==1?'musicbox':'']" v-for="(val, index) in datalist" :key="index" @click="godetail(val.Id,index)">
 				<view class="drawing flex">
 					<view class=""><image class="imgs" v-if="tabIndex==0" :src="val.PicImg" mode=""></image><image class="imgs" v-if="tabIndex==1" :src="val.PicImg||'/static/default_music.png'" mode=""></image></view>
 					<view class="brace">
@@ -22,20 +21,13 @@
 				</view>
 			</view>
 		</view>
-		<view class="lect" v-if="isShowDel">
-			<view class="lects" @click="cancelDel()"><view class="IconsCK IconsCK-radio" :class="{ checked }"></view></view>
-			<view class="cancel">
-				<view class="cover">全选</view>
-				<view class="covers" @click="btnDel">删除</view>
-			</view>
-		</view>
 		<noData :isShow="noDataIsShow"></noData>
 		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType" v-if="noDataIsShow == false"></uni-load-more></view>
 	</view>
 </template>
 
 <script>
-import { post, get } from '@/common/util.js';
+import { post, get} from '@/common/util.js';
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 import noData from '@/components/noData.vue'; //暂无数据
 export default {
@@ -55,7 +47,7 @@ export default {
 				}
 			],
 			page:1,
-			pageSize:5,
+			pageSize:10,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
 			isLoad: false,
 			hasData: false,
@@ -142,7 +134,18 @@ export default {
 				this.datalength = this.datalist.length;
 			}
 		},
-		
+		godetail(id,index){
+			if(this.tabIndex==0){
+				uni.navigateTo({
+					url:'/pages/video/videoDetails/videoDetails?id='+id
+				})
+			}else{
+				uni.setStorageSync("musicList",this.datalist)
+				uni.navigateTo({
+					url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
+				})
+			}
+		}
 	},
 	// 上拉加载
 	onReachBottom: function() {

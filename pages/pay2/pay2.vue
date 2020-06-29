@@ -175,9 +175,14 @@
 				}
 				let result = await post(url, param);
 				if(result.code==0){
+					uni.showToast({
+						title: result.msg
+					})
+				}
+				else if(result.code==200){
 					uni.hideLoading();
 					uni.showToast({
-						title: "支付成功"
+						title: result.msg
 					})
 					setTimeout(function(){
 						uni.navigateBack()
