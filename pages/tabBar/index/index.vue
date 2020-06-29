@@ -75,7 +75,7 @@
 									</view>
 									<view :class="['maxpic',item.PicImg?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" poster="item.PicImg"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
