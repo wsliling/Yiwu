@@ -42,8 +42,8 @@
 		onShow() {
 			this.userId = uni.getStorageSync("userId")
 			this.token = uni.getStorageSync("token")
-			this.videoImg = uni.getStorageSync("fileName")
-			this.videofile = uni.getStorageSync("filePath")
+			this.videoImg = uni.getStorageSync("VfileName")
+			this.videofile = uni.getStorageSync("VfilePath")
 		},
 		methods: {
 			choosevideo(){

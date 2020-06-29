@@ -128,7 +128,7 @@
 			</view>
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')">
 				<view class="item-left">
-					<image  src="@/static/my/icon17.png" mode="aspectFit"></image>
+					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>
 					<view>我的下载</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>

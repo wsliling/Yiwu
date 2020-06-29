@@ -24,8 +24,10 @@
 			</view>
 			<view class="line-item" @click="chooseMusic">
 				<view class="filebtn">{{musicFile?"已选择":"请选择舞曲"}}</view>
-				<view class="" v-if="musicFile">{{fileName}}</view>
-				<view class="" v-else>未选择</view>
+<!-- 				<view class="" v-if="musicFile">{{fileName}}</view>
+				<view class="" v-else>未选择</view> -->
+				<input type="text" value="" dir="rtl" v-model="fileName" v-if="musicFile" disabled="true" class="flex1"/>
+				<input type="text" value="未选择" disabled="true" v-else/>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
 				<view class="lab" style="width: 100%;">请选择封面</view>
