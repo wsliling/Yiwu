@@ -9,19 +9,19 @@
 			<text>{{pageTitle}}</text>
 		</view>
 		<view class="bgbox">
-			<view class="topplay flex-start">
+			<view class="topplay flex-start" @click="toplaylist(datalist[0].Id,0)">
 				<image src="/static/play4.png"></image>
 				<text>播放全部</text>
 			</view>
 			<view class="musiclist pd15">
-				<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+item.Id)">
+				<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 					<view class="imgbox">
 						<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<view class="info flex1 flex-between">
 						<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
-							<view class="icon" @click.stop="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 							<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
@@ -79,9 +79,9 @@
 				<view class="uni-modal__hd pd15">选择曲单</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in 12" :key="index">
+						<view class="line-item" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
 							<view class="line-item-l text_left">
-								<text class="txt">默认曲单</text>
+								<text class="txt">{{item.Name}}</text>
 							</view>
 						</view>
 					</view>
@@ -125,7 +125,8 @@
 				playID:"",//当前播放
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
-				itemdata:{}
+				itemdata:{},
+				DancePlayList:[],//曲单列表
 			}
 		},
 		onLoad(e) {
@@ -149,7 +150,7 @@
 			uni.setNavigationBarTitle({
 				title: this.pageTitle
 			})
-			this.workeslist()
+			this.workeslist();
 		},
 		methods: {
 			/*获取列表*/
@@ -218,14 +219,27 @@
 				})
 			},
 			//播放
-			playBtn(index,id){
-				uni.setStorageSync("musicList",this.datalist)
-				if(this.playID==id){
-					this.playID="";
+			playBtn(index,id,isbuy){
+				if(isbuy==0){
+					// uni.setStorageSync("musicList",this.datalist)
+					if(this.playID==id){
+						this.playID="";
+					}else{
+						this.playID=id;
+					}
+					playMusic(index,id)
 				}else{
-					this.playID=id;
+					uni.showToast({
+						title:"抱歉！该舞曲需付费",
+						icon:"none"
+					})
 				}
-				playMusic(index,id)
+			},
+			toplaylist(id,index){
+				uni.setStorageSync("musicList",this.datalist)
+				uni.navigateTo({
+					url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
+				})	
 			},
 			//弹出更多操作
 			ShowOperation(item){console.log(item)
@@ -241,8 +255,11 @@
 			},
 			//弹出选择歌单
 			ShowSelect(){
-				this.isShowOperation=false;
-				this.isShowSelect=true;
+				if(toLogin()){
+					this.getDancePlayList();
+					this.isShowOperation=false;
+					this.isShowSelect=true;
+				}
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
@@ -251,18 +268,31 @@
 			},
 			//收藏
 			async Collect(){
-				this.isCollect=!this.isCollect;
 				let result = await post('DanceMusic/CollectOperation', {
 					UserId: this.userId,
 					Token: this.token,
 					FindId: this.MusicId,
 				});
-				uni.showToast({
-					title:result.msg,
-					icon:"none"
-				})
-				this.workeslist();//刷新状态
-				this.hidePopup()
+				if(result.code==0){
+					this.isCollect=!this.isCollect;
+					uni.showToast({
+						title:result.msg,
+						icon:"none"
+					})
+					this.workeslist();//刷新状态
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
 			},
 			//购买
 			tobuy(){
@@ -278,6 +308,39 @@
 					})
 				}
 			},
+			/*获取列表*/
+			async getDancePlayList() {
+				let result = await post('DanceMusic/DancePlayList', {
+					UserId: this.userId,
+					Token: this.token,
+					page: 1,
+					pageSize: 99
+				});
+				if (result.code === 0) {
+					let _this=this;
+					this.DancePlayList=result.data
+				}
+			},
+			//加入曲单
+			async joinList(id){
+				let result = await post('DanceMusic/AddPlayList', {
+					UserId: this.userId,
+					Token: this.token,
+					MusicId: this.MusicId,
+					PlayId: id
+				});
+				if(result.code==0){
+					uni.showToast({
+						title:"添加成功"
+					})
+				}else{
+					uni.showToast({
+						title:result.msg,
+						icon:"none"
+					})
+				}
+				this.hidePopup()
+			}
 		},
 		onReachBottom(){
 			if (this.isLoad) {

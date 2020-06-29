@@ -2,7 +2,7 @@
 	<view>
 		<view class="warp">
 			<view class="playimgbox">
-				<image src="/static/music/music-item.png" mode="" :class="{'playLoading':!paused}"></image>
+				<image :src="postImg||'/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
 				<view class="border2">
 					<view class="border1"></view>
 				</view>
@@ -25,8 +25,8 @@
 			 	</view>
 			 </view>
 			 <view class="playicon">
-				 <view class="item">
-				 	<image src="/static/collect3.png" mode="widthFix" class="addwidth"></image>
+				 <view class="item" @click="Collect">
+				 	<image :src="isCollect==0?'/static/collect3.png':'/static/collect2.png'" mode="widthFix" class="addwidth"></image>
 				 </view>
 			 	<view class="item">
 			 		<image src="/static/music/playicon1.png" mode="widthFix"></image>
@@ -45,32 +45,13 @@
 </template>
 
 <script>
-	import {audio,playMusic} from '@/common/util.js';
+	import {post,audio,playMusic} from '@/common/util.js';
 	export default {
 		data() {
 			return {
-				musicList: [
-					// {
-					// 	Audio: 'http://mouyizhan.com/1.mp3',
-					// 	ADuration: 212
-					// },
-					// {
-					// 	Audio: 'http://mouyizhan.com/2.mp3',
-					// 	ADuration: 189
-					// },
-					// {
-					// 	Audio: 'http://mouyizhan.com/3.mp3',
-					// 	ADuration: 214
-					// },
-					// {
-					// 	Audio: 'http://mouyizhan.com/4.mp3',
-					// 	ADuration: 205
-					// },
-					// {
-					// 	Audio: 'http://mouyizhan.com/5.mp3',
-					// 	ADuration: 228
-					// }
-				],
+				userId: '',
+				token: '',
+				musicList: [],
 				nowIndex: 0,
 				musicID:"",
 				duration: 0, //总时长（单位：s）
@@ -79,7 +60,9 @@
 				current: '', //slider当前进度
 				loading: false, //是否处于读取状态
 				paused: true, //是否处于暂停状态
-				seek: false //是否处于拖动状态
+				seek: false, //是否处于拖动状态
+				postImg:"",//当前封面
+				isCollect:0,//是否收藏
 			}
 		},
 		watch: {
@@ -97,8 +80,15 @@
 			this.musicID=e.id
 		},
 		onShow() {
-			this.musicList=uni.getStorageSync("musicList")//音乐列表
-			this.duration=this.musicList[this.nowIndex].ADuration
+			this.userId = uni.getStorageSync('userId');
+			this.token = uni.getStorageSync('token');
+			this.musicList=uni.getStorageSync("musicList");//音乐列表
+			this.duration=this.musicList[this.nowIndex].ADuration;
+			this.postImg=this.musicList[this.nowIndex].PicImg;
+			this.isCollect=this.musicList[this.nowIndex].IsCollect;
+			uni.setNavigationBarTitle({
+				title: this.musicList[this.nowIndex].Name
+			})
 			this.init()
 		},
 		methods: {
@@ -155,7 +145,41 @@
 			//完成拖动事件
 			change(e) {
 				audio.seek(e.detail.value)
-			}
+			},
+			//收藏
+			async Collect(){
+				let result = await post('DanceMusic/CollectOperation', {
+					UserId: this.userId,
+					Token: this.token,
+					FindId: this.musicID,
+				});
+				if(result.code==0){
+					if(this.musicList[this.nowIndex].IsCollect==0){
+						this.isCollect=1
+					}else{
+						this.isCollect=0
+					}
+					uni.showToast({
+						title:result.msg,
+						icon:"none"
+					})
+					//刷新状态
+					this.musicList[this.nowIndex].IsCollect=this.isCollect;
+					uni.setStorageSync("musicList",this.musicList);
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
 		}
 	}
 </script>
