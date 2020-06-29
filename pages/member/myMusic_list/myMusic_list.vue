@@ -4,22 +4,37 @@
 			<view class="item flex-between">
 				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">{{datalist.Name}}</view>
-					<view class="fz12 c_999 uni-mt10">{{datalist.Num}}</view>
+					<view class="name uni-ellipsis">{{Id==-1?'我上传的舞曲':datalist.Name}}</view>
+					<view class="fz12 c_999 uni-mt10">{{Id==-1?datalist.length:datalist.Num}}</view>
 				</view>
 			</view>
 		</view>
-		<view class="musiclist pd15">
-			<view class="item flex-between" v-for="(item,index) in datalist.DanceMusicList" :key="index">
+		<view class="musiclist pd15" v-if="Id==-1">
+			<view class="item flex-between" v-for="(item,index) in datalist" :key="index">
 				<view class="imgbox">
-					<image v-if="item.Cover_pic" :src="item.Cover_pic" mode="aspectFill"></image>
+					<image v-if="item.PicImg" :src="item.PicImg" mode="aspectFill"></image>
 					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',playIndex==index?'c_theme':'']">{{item.Name}}</view>
+					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click="playMusic(index)"><image :src="playIndex==index?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
-						<view class="icon" @click="ShowOperation(index)"><image src="/static/more.png" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="musiclist pd15" v-else>
+			<view class="item flex-between" v-for="(item,index) in datalist.DanceMusicList" :key="index">
+				<view class="imgbox">
+					<image v-if="item.PicImg" :src="item.PicImg" mode="aspectFill"></image>
+					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
+				</view>
+				<view class="info flex1 flex-between">
+					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
+					<view class="icons flex-end">
+						<view class="icon" @click.stop="playBtn(index,item.Id)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
 			</view>
@@ -87,7 +102,7 @@
 </template>
 
 <script>
-	import { post, get } from '@/common/util.js';
+	import {post,get,playMusic} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import noData from '@/components/noData.vue'; //暂无数据
@@ -99,7 +114,7 @@
 				token: '',
 				Id:0,//曲单id
 				page:1,
-				pageSize:6,
+				pageSize:12,
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
@@ -108,7 +123,7 @@
 				isShowOperation:false,
 				isShowSelect:false,
 				isCollect:false,//是否收藏
-				playIndex:0,//当前播放
+				playID:"",//当前播放
 			}
 		},
 		components: {
@@ -142,8 +157,14 @@
 				});
 			},
 			//播放
-			playMusic(index){
-				this.playIndex=index
+			playBtn(index,id){
+				uni.setStorageSync("musicList",this.datalist)
+				if(this.playID==id){
+					this.playID="";
+				}else{
+					this.playID=id;
+				}
+				playMusic(index,id)
 			},
 			//弹出更多操作
 			ShowOperation(index){
@@ -165,13 +186,24 @@
 			},
 			/*获取列表*/
 			async workeslist() {
-				let result = await post('DanceMusic/GetMusicListByPId', {
-					UserId: this.userId,
-					Token: this.token,
-					PlayId:this.Id,
-					page: this.page,
-					pageSize: this.pageSize
-				});
+				let result=""
+				if(this.Id==-1){
+					result = await post('DanceMusic/DanceMusicList', {
+						UserId: this.userId,
+						Token: this.token,
+						MemberId:uni.getStorageSync("MemberId"),
+						page: this.page,
+						pageSize: this.pageSize
+					});
+				}else{
+					result = await post('DanceMusic/GetMusicListByPId', {
+						UserId: this.userId,
+						Token: this.token,
+						PlayId:this.Id,
+						page: this.page,
+						pageSize: this.pageSize
+					});
+				}
 				if (result.code === 0) {
 					let _this=this;
 					if (result.data.length > 0) {
