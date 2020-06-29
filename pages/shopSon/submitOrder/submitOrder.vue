@@ -54,16 +54,11 @@
 						</view>
 					</view>
 					<view class="procontent orderbox mb10 b_radius">
-						<view class="orderinfo"  @click="openshopCoupon(info.UseCouponList,info.CouponId,index)">
+						<!-- <view class="orderinfo"  @click="openshopCoupon(info.UseCouponList,info.CouponId,index)">
 							<view class="orderleft">优惠劵</view>
 							<view class="orderright">
 								<view class="infotxt actives" v-if="couponPrice">-￥{{couponPrice}}</view>
 								<view class="infotxt" v-else>暂无可用优惠劵</view>
-								<!-- <block v-for="(e,i) in info.UseCouponList" :key="i">
-									<view class="infotxt" v-if="e.Id==info.CouponId">
-										{{e.Id==info.CouponId?'￥'+info.yhPrice:'不使用'}}
-									</view>
-								</block> -->
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
 						</view>
@@ -75,7 +70,7 @@
 								</view>
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
-						</view>
+						</view> -->
 					</view>
 					<view class="orderbox procontent b_radius">
 						<view class="orderinfo">
@@ -143,18 +138,14 @@
 						</view>
 					</view>
 					<view class="procontent orderbox mb10 b_radius">
-						<view class="orderinfo" @click="openshopCoupon(info.CouponsList,info.CouponId,0)">
+						<!-- <view class="orderinfo" @click="openshopCoupon(info.CouponsList,info.CouponId,0)">
 							<view class="orderleft">优惠劵</view>
 							<view class="orderright">
-								<!-- <view class="infotxt">{{couponPrice || '暂无可用优惠劵'}}</view>
-								<block v-for="(e,i) in info.UseCouponList" :key="i">
-									<view class="infotxt" v-if="e.Id==info.CouponId">{{e.Id==info.CouponId?'￥'+info.yhPrice:'不使用'}}</view>
-								</block> -->
 								<view class="infotxt actives" v-if="couponPrice">-￥{{couponPrice}}</view>
 								<view class="infotxt" v-else>暂无可用优惠劵</view>
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
-						</view>
+						</view> -->
 						<!-- <view class="orderinfo" @click="ChooseInvoice(0)">
 							<view class="orderleft">开票类型</view>
 							<view class="orderright">
@@ -299,15 +290,21 @@
 				<view class="bottom-btn" @click="selectCouponok">完成</view>
 			</view>
 		</uni-popup>
+		<!-- 支付弹窗 -->
+		<uni-popup type="bottom" ref="payWin">
+			<!-- :orderNumber="orderNo" -->
+			<pay :total="info.AllPrice" @onClose="$refs.payWin.close()" @success="BuyNowSubmitOrder" 
+				:payMode="['wx','alipay','balance','integral']"></pay>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
 	import {post,get,navigateBack} from '@/common/util';
-	import uniPopup from '@/components/uni-popup/uni-popup.vue';
+	import pay from '@/components/pay.vue';
 	export default {
 		components: {
-			uniPopup
+			pay
 		},
 		data() {
 			return {
@@ -353,17 +350,15 @@
 		},
 		onLoad: function(e) {
 			console.log(e)
-			// #ifdef APP-PLUS
 			this.orderSType=e.orderSType*1;
-			this.CartIds=e.cartItem
-			this.ProId=e.id
-			this.GroupId=e.GroupId||0
-			this.Total=e.number
+			// this.CartIds=e.cartItem
+			this.ProId=e.proId
+			// this.GroupId=e.GroupId||0
+			this.Total=e.buyNum
 			this.SpecText=e.SpecText
 			if(e.inCode){
 				this.inCode = e.inCode
 			}
-			// #endif
 		},
 		onShow() {
 			// this.ContactName = this.$store.state.peopleInfo.ContactName;console.log(this.$store.state.peopleInfo,11)
@@ -372,17 +367,17 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			// #ifndef APP-PLUS
-			this.orderSType= this.$root.$mp.query.orderSType*1;
-			// this.CartIds=this.$root.$mp.query.cartItem;
-			this.ProId=this.$root.$mp.query.proId;
-			// this.GroupId=this.$root.$mp.query.GroupId||0;
-			this.Total=this.$root.$mp.query.buyNum;
-			this.SpecText=this.$root.$mp.query.SpecText;
-			if(this.$root.$mp.query.inCode){
-				this.inCode = this.$root.$mp.query.inCode
-				console.log(this.inCode,"///////")
-			}
-			// #endif
+			// this.orderSType= this.$root.$mp.query.orderSType*1;
+			// // this.CartIds=this.$root.$mp.query.cartItem;
+			// this.ProId=this.$root.$mp.query.proId;
+			// // this.GroupId=this.$root.$mp.query.GroupId||0;
+			// this.Total=this.$root.$mp.query.buyNum;
+			// this.SpecText=this.$root.$mp.query.SpecText;
+			// if(this.$root.$mp.query.inCode){
+			// 	this.inCode = this.$root.$mp.query.inCode
+			// 	console.log(this.inCode,"///////")
+			// }
+			// // #endif
 			if(uni.getStorageSync("addressinfo")){
 			  this.addrInfo=uni.getStorageSync("addressinfo");
 			  uni.setStorageSync("addressinfo",null)
@@ -844,7 +839,8 @@
 					// 		  	url:"/pages/homePage/writeInfo?IsSalesOffice="+this.info.IsSalesOffice
 					// 		  })
 					// 	  }else{
-						this.BuyNowSubmitOrder();//立即购买
+						// this.BuyNowSubmitOrder();//立即购买
+					this.$refs.payWin.open();
 					// 	  }
 					//   }
 					}else{

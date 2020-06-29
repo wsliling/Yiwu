@@ -128,7 +128,7 @@
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
 			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" 
-				@getSkuData="getSkuData" @addcart="addcart" @buy="buy"
+				@getSkuData="getSkuData" @addcart="addcart" @buy="buy" @setBuyNum="setBuyNum"
 				>
 			</sku>
 		</uni-popup>
@@ -160,7 +160,8 @@ export default {
 				num:12,
 				price:123
 			},
-			selectSku:{}
+			selectSku:{},
+			buyNum:1,
 		};
 	},
 	onLoad(e) {
@@ -247,7 +248,7 @@ export default {
 				UserId:this.userId,
 				Token:this.token,
 				ProId:this.proId,
-				Count:this.selectSku.num,
+				Count:this.buyNum,
 				SpecText:this.selectSku.text
 			})
 			if(res.code) return;
@@ -258,9 +259,13 @@ export default {
 		buy(){
 			navigate('shopSon/submitOrder/submitOrder',{
 				proId:this.proId,
-				buyNum:this.selectSku.num,
+				buyNum:this.buyNum,
 				SpecText:this.selectSku.text,
+				orderSType:0
 			})
+		},
+		setBuyNum(num){
+			this.buyNum = num;
 		},
         async getProblemList(){
             const res = await post('Goods/QuestionsdList',{

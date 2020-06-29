@@ -415,7 +415,8 @@ export default {
 						this.goodsNum = stock;
 					}
 				}
-			}
+      }
+      this.$emit('setBuyNum',this.goodsNum)
     },
     // 设置已选择的sku
     setSelectSkuItem(){
