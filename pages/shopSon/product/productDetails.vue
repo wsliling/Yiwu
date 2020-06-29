@@ -22,11 +22,11 @@
 		</view>
 		<!-- 货品规格 -->
 		<view class="shipments">
-			<view class="pick">
-				<view class="shipmentsbox">
+			<view class="pick" v-if="data.IsSku">
+				<view class="shipmentsbox" @click="$refs.skuWin.open()">
 					<view class="flex">
 						<view class="">规格</view>
-						<view class="txt26">1件</view>
+						<view class="txt26">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</view>
 					</view>
 					<image class="exemption" src="http://shop.dadanyipin.com/static/hpicons/arrows.svg" mode=""></image>
 				</view>
@@ -73,9 +73,9 @@
 				</view>
 			</view>
 			<view class="">
-				<view class="question" v-for="(item,index) in problemList" :key="index">
+				<view class="question" v-for="(item,index) in problemList" :key="index" @click="navigate('shopSon/product/productProblemDetail',{item:JSON.stringify(item)})">
 					<view class="dot ellipsis"><span>问</span>{{item.Content}}</view>
-					<view class="">{{item.row}}个回答</view>
+					<view class="">{{item.count}}个回答</view>
 				</view>
 			</view>
 		</view>
@@ -114,7 +114,7 @@
 					<img v-else src="http://jd.wtvxin.com/images/images/index/collect_n.png" alt="" />
 					<p>收藏</p>
 				</div>
-				<div @click="goCart">
+				<div @click="navigate('cart/cart')">
 					<img src="http://jd.wtvxin.com/images/images/index/cart.png" alt="" />
 					<p>购物车</p>
 					<!-- <span class="num flexc" v-if="CartNumber > 0">{{ CartNumber }}</span> -->
@@ -127,13 +127,16 @@
 			</div>
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
-			<sku :sku="sku" :skuAll="skuAll" :product="product"></sku>
+			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" 
+				@getSkuData="getSkuData" @addcart="addcart" @buy="buy"
+				>
+			</sku>
 		</uni-popup>
 	</view>
 </template>
 
 <script>
-import {post,get,toLogin,navigate} from '@/common/util.js';
+import {post,get,toLogin,navigate,toast} from '@/common/util.js';
 import sku from '@/components/sku/popsku.vue'
 export default {
 	components:{
@@ -151,12 +154,13 @@ export default {
 
 			sku:{},
 			skuAll:[],
-			product:{
+			productInfo:{
 				img:'',
 				Name:'name',
 				num:12,
 				price:123
 			},
+			selectSku:{}
 		};
 	},
 	onLoad(e) {
@@ -181,7 +185,14 @@ export default {
 			const data = res.data;
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
-
+			this.productInfo={
+				img:data.PicData[0].PicUrl,//默认产品图片
+				maxbuy:data.MaxBuyNum,//最大购买量
+				minbuy:data.MinBuyNum, //最小购买量
+				stock:data.Stock,
+				price:data.Price,
+				name:data.Name,
+			}
 			// 初始化sku数据
 			let skuAll = [];
 			data.Sku.map(item => {
@@ -212,6 +223,44 @@ export default {
 			console.log(this.sku,this.skuAll,'sku')
 
 			this.data = data;
+		},
+		getSkuData(selectSku){
+			this.selectSku = selectSku;
+		},
+		// type;1--加入购物车；2--立即购买
+		showSku(type){
+			if(this.data.IsSku&&!this.selectSku.value){
+					this.$refs.skuWin.open();
+			}else{
+				if(type==1){
+					this.addcart();
+					
+				}else{
+					this.buy();
+				}
+			}
+		},
+		// 加入购物车
+		async addcart(){
+			console.log(this.selectSku)
+			const res = await post('Cart/AddCart',{
+				UserId:this.userId,
+				Token:this.token,
+				ProId:this.proId,
+				Count:this.selectSku.num,
+				SpecText:this.selectSku.text
+			})
+			if(res.code) return;
+			toast('添加成功',{icon:true})
+			this.$refs.skuWin.close();
+		},
+		// 立即购买
+		buy(){
+			navigate('shopSon/submitOrder/submitOrder',{
+				proId:this.proId,
+				buyNum:this.selectSku.num,
+				SpecText:this.selectSku.text,
+			})
 		},
         async getProblemList(){
             const res = await post('Goods/QuestionsdList',{
@@ -250,9 +299,6 @@ export default {
 					this.data.IsCollection = true;
 				}
 			}
-		},
-		showSku(){
-			this.$refs.skuWin.open();
 		},
 		toindex() {
 			uni.navigateBack({

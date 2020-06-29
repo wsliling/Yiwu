@@ -203,9 +203,7 @@
 				})
 			},
 			toback() {
-				uni.switchTab({
-					url: '/pages/tabBar/my/my'
-				});
+				uni.navigateBack();
 			},
 			// 跳转商品详情页
 			gotoDetail(pid,Isinvalid){
