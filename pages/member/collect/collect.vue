@@ -1,4 +1,5 @@
 <template>
+	<!-- 我的收藏 -->
 	<view>
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="tab_head flex-between">
@@ -23,16 +24,15 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class=""><image class="imgs" :src="val.PicFrist" mode=""></image></view>
+					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
+					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
-						<view class="being uni-ellipsis2">{{ val.ProName }}</view>
-						<view class="fz12 c_999">
-							{{val.zan}}
+						<view class="being uni-ellipsis2">{{ val.Name }}</view>
+						<view class="fz12 c_999" v-if="val.LikeNum">
+							{{val.LikeNum}}人点赞
 						</view>
 						<view class="correct">
-							<block v-if="val.Price==0">
-								免费
-							</block>
+							<block v-if="val.Is_Charge==0">免费</block>
 							<block v-else><span class="spanl">¥</span>{{ val.Price }}</block>
 						</view>
 					</view>
@@ -65,20 +65,20 @@ export default {
 			tabIndex:0,
 			tabnav:[
 				{
-					Id:1,
-					TypeName:"视频"
+					Id:0,
+					TypeName:"产品"
 				},
 				{
-					Id:2,
+					Id:5,
 					TypeName:"舞曲"
 				},
 				{
-					Id:3,
-					TypeName:"产品"
+					Id:7,
+					TypeName:"视频"
 				}
 			],
 			page:1,
-			pageSize:4,
+			pageSize:5,
 			loadingType: 0, //0加载前，1加载中，2没有更多了
 			isLoad: false,
 			hasData: false,
@@ -86,7 +86,8 @@ export default {
 			datalist: {}, //列表
 			datalength: 0,
 			Ids: [], //保存要删除数据
-			checked: false
+			checked: false,
+			Type : 0, //0-产品  5-舞曲  7-视频
 		};
 	},
 	components: {
@@ -132,6 +133,9 @@ export default {
 				return false;
 			} else {
 				this.tabIndex = index;
+				this.Type = id
+				this.page = 1
+				this.workeslist()
 			}
 		},
 		// 全选
@@ -166,39 +170,40 @@ export default {
 		},
 		/*获取列表*/
 		async workeslist() {
-			// let result = await post('User/Memberdatalist', {
-			// 	UserId: this.userId,
-			// 	Token: this.token,
-			// 	page: this.page,
-			// 	pageSize: this.pageSize
-			// });
-			let result={
-				code:0,
-				data:[
-					{
-						Id:1,
-						Price:16.8,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					},
-					{
-						Id:2,
-						Price:0,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					},
-					{
-						Id:3,
-						Price:16.8,
-						ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
-						PicFrist:'/static/of/pro1.jpg',
-						zan:"268人点赞"
-					}
+			let result = await post('User/MemberCollections', {
+				UserId: this.userId,
+				Token: this.token,
+				Page: this.page,
+				pageSize: this.pageSize,
+				Type: this.Type
+			});
+			// let result={
+			// 	code:0,
+			// 	data:[
+			// 		{
+			// 			Id:1,
+			// 			Price:16.8,
+			// 			ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
+			// 			PicFrist:'/static/of/pro1.jpg',
+			// 			zan:"268人点赞"
+			// 		},
+			// 		{
+			// 			Id:2,
+			// 			Price:0,
+			// 			ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉",
+			// 			PicFrist:'/static/of/pro1.jpg',
+			// 			zan:"268人点赞"
+			// 		},
+			// 		{
+			// 			Id:3,
+			// 			Price:16.8,
+			// 			ProName:"拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞拉丁舞",
+			// 			PicFrist:'/static/of/pro1.jpg',
+			// 			zan:"268人点赞"
+			// 		}
 					
-				]
-			}
+			// 	]
+			// }
 			
 			if (result.code === 0) {
 				let _this=this;
@@ -263,10 +268,10 @@ export default {
 			}
 		},
 		async DeleteMyFootprint() {
-			let result = await post('User/DeleteMyFootprint', {
+			let result = await post('User/DelCollections', {
 				UserId: this.userId,
 				Token: this.token,
-				Id: this.Ids.join(',')
+				IdArr: this.Ids.join(',')
 			});
 			if (result.code === 0) {
 				let _this = this;
@@ -409,6 +414,9 @@ export default {
 			color: #fff;
 		}
 	}
+}
+video{
+	width: 180upx;height: 180upx;border-radius: 10upx;
 }
 
 </style>

@@ -145,6 +145,9 @@
 					return false;
 				} else {
 					this.tabIndex = index;
+					this.page=1;
+					this.hasData=false;
+					this.noDataIsShow=false;
 					this.VideoList();
 				}
 			},

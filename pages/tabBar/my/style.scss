@@ -203,6 +203,15 @@
 			color: #ccc;
 			font-size: 36upx;
 			line-height: 1.2;
+			.rag{
+				background: $primary;
+				color: #fff;
+				border-radius: 100px;
+				font-size: 24upx;
+				padding: 0 6upx;
+				float: left;
+				margin: 6upx 0;
+			}
 		}
 	}
 }

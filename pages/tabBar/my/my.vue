@@ -112,12 +112,12 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/message/messageClass/messageClass')">
 				<view class="item-left">
 					<image  src="@/static/my/icon15.png" mode="aspectFit"></image>
 					<view>我的消息</view>
 				</view>
-				<view class="arrowr uni-icon uni-icon-arrowright"></view>
+				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
 			<view class="item">
 				<view class="item-left">
@@ -175,6 +175,7 @@
 				token: "",
 				memberInfo:{},//用户信息
 				wallet:[],
+				newscount:0,
 			}
 		},
 		onLoad() {
@@ -194,7 +195,8 @@
 					this.wallet=result.data.Wallet.split('.');
 					this.$store.commit("update", {
 					  Wallet:result.data.Wallet
-					});  
+					}); 
+					 this.NewsCount();
 				} else if (result.code === 2) {
 					let _this = this;
 					// #ifndef MP-WEIXIN
@@ -238,7 +240,16 @@
 						})
 					}
 				})
-			}
+			},
+			async NewsCount() {
+				let result = await post("News/NewsCount", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				});
+				if (result.code === 0) {
+					this.newscount = result.count;
+				} 
+			},
 		}
 	}
 </script>
