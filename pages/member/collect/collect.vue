@@ -24,8 +24,7 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
-					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
+					<view class=""><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
 						<view class="being uni-ellipsis2">{{ val.Name }}</view>
 						<view class="fz12 c_999" v-if="val.LikeNum">
@@ -241,8 +240,11 @@ export default {
 		btnDel() {
 			let _this = this;
 			this.datalist.forEach(function(item) {
+				let obj = {}
 				if (item.checked == true) {
-					_this.Ids.push(item.Id);
+					obj.Id = item.Id
+					obj.Type = item.Type
+					_this.Ids.push(obj);
 				}
 				console.log(_this.Ids, '_this.Ids');
 			});
@@ -271,7 +273,7 @@ export default {
 			let result = await post('User/DelCollections', {
 				UserId: this.userId,
 				Token: this.token,
-				IdArr: this.Ids.join(',')
+				IdArr: this.Ids   //join(',')
 			});
 			if (result.code === 0) {
 				let _this = this;
