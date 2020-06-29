@@ -15,19 +15,21 @@
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		
 		<view class="bb_pt uni-bg-white" v-if="hasData">
-			<view class="listbox" v-for="(val, index) in datalist" :key="index">
+			<view class="listbox" v-for="(val, index) in datalist" :key="index" @click="godetail(val.Id,val.Type,index)">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
-					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
+					<view><image class="imgs" :src="val.PicImg" mode=""></view>
 					<view class="brace">
 						<view class="being uni-ellipsis2">{{ val.Name }}</view>
 						<view class="fz12 c_999">
 							{{val.LikeNum}}人点赞
 						</view>
 						<view class="correct">
-							<block v-if="val.Is_Charge==0">
+							<block v-if="val.Is_Charge==0&&val.Type == 1">
 								免费
+							</block>
+							<block v-else-if="val.Type == 0">
+								短视频
 							</block>
 							<block v-else><span class="spanl">¥</span>{{ val.Price}}</block>
 						</view>
@@ -43,6 +45,10 @@
 			</view>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
+		<view class="videobox" v-if="isShowvideo">
+			<view class="uni-icon uni-icon-close" @click="closevideo"></view>
+			<video :src="videoSrc" controls :poster="videoPoster"></video>
+		</view>
 		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType" v-if="noDataIsShow == false"></uni-load-more></view>
 	</view>
 </template>
@@ -67,7 +73,10 @@ export default {
 			datalist: {}, //列表
 			datalength: 0,
 			Ids: [], //保存要删除数据
-			checked: false
+			checked: false,
+			isShowvideo:false,
+			videoSrc:"",
+			videoPoster:''
 		};
 	},
 	components: {
@@ -97,6 +106,24 @@ export default {
 			uni.switchTab({
 				url: '/pages/tabBar/my/my'
 			});
+		},
+		godetail(id,type,index){
+			if(type==1&&!this.isShowDel){
+				uni.navigateTo({
+					url:'/pages/video/videoDetails/videoDetails?id='+id
+				})
+			}
+			if(type==0){
+				this.isShowvideo=true;
+				this.videoSrc=this.datalist[index].Video;
+				this.videoPoster=this.datalist[index].PicImg;
+			}
+		},
+		//关闭视频
+		closevideo(){
+			this.isShowvideo=false;
+			this.videoSrc="";
+			this.videoPoster="";
 		},
 		//点击编辑 完成
 		ShowDel() {
@@ -137,8 +164,8 @@ export default {
 			let result = await post('User/GetMyWorksList', {
 				UserId: this.userId,
 				Token: this.token,
-				// page: this.page,
-				// pageSize: this.pageSize
+				page: this.page,
+				pageSize: this.pageSize
 			});
 			if (result.code === 0) {
 				let _this=this;
@@ -355,5 +382,29 @@ export default {
 		}
 	}
 }
-
+.videobox{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.6);
+	left: 0;
+	top: 0;
+	z-index: 99;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	.uni-icon{
+		position: absolute;
+		right: 20upx;
+		top: 20upx;
+		color: #FFF;
+		font-size: 72upx;
+		line-height: 1;
+		z-index: 9999;
+	}
+	video{
+		width: 100%;
+	}
+}
 </style>

@@ -94,12 +94,12 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
-						result.data.forEach(function(item) {
-							item.PubTime=dateUtils.format(item.PubTime);
-							if(item.Islook==0){
-								_this.ReadNoticeInfo(item.id);
-							}
-						})
+						// result.data.forEach(function(item) {
+						// 	item.PubTime=dateUtils.format(item.PubTime);
+						// 	if(item.Islook==0){
+						// 		_this.ReadNoticeInfo(item.id);
+						// 	}
+						// })
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;
