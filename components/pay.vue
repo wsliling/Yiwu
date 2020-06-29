@@ -62,14 +62,7 @@
     </div>
     <!-- 支付密码组件 -->
     <div class="payPasswordComponent flex-content" v-if="showPayStatus===3" @click.self="closePasswordInput">
-      <input
-        type="number"
-        password
-        v-model="password"
-        @input="editPaw"
-        :focus="focusflag"
-        maxlength="6"
-      />
+      
       <div class="box">
         <div class="header">
           请输入支付密码
@@ -77,6 +70,14 @@
         </div>
 
         <div class="bodys flex-content" @click="onFocusflag">
+          <input
+            type="number"
+            password
+            v-model="password"
+            @input="editPaw"
+            :focus="focusflag"
+            maxlength="6"
+          />
           <div class="boxItem flex-content" v-for="i in 6" :key="i">
             <div class="item" v-if="i<password.length+1"></div>
           </div>
@@ -230,7 +231,7 @@ export default {
 //   left: 0;
 //   z-index: 101;
   background: #fff;
-//   height: 680rpx;
+//   height: 680upx;
   width: 100%;
   padding-bottom:40upx;
 }
@@ -239,86 +240,86 @@ export default {
   align-items: center;
 }
 .flex-center img {
-  margin-right: 20rpx;
+  margin-right: 20upx;
 }
 .payPassword {
   text-align: right;
 }
 .paytile span {
-  padding-top: 20rpx;
-  font-size: 20rpx;
+  padding-top: 20upx;
+  font-size: 20upx;
   color: #999;
 }
 
 .paytile {
   position: relative;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #eee;
+  padding: 30upx;
+  border-bottom: 1upx solid #eee;
   text-align: center;
-  font-size: 36rpx;
+  font-size: 36upx;
   font-weight: bold;
 }
 .paytile .close {
-  width: 28rpx;
-  height: 28rpx;
-  margin-left: 102rpx;
+  width: 28upx;
+  height: 28upx;
+  margin-left: 102upx;
 }
 .maskprice {
   font-weight: bold;
-  font-size: 68rpx;
+  font-size: 68upx;
   text-align: center;
-  padding: 30rpx 0;
+  padding: 30upx 0;
 }
 .maskitem {
-  padding: 30rpx 20rpx;
-  border-bottom: 1rpx solid #eee;
+  padding: 30upx 20upx;
+  border-bottom: 1upx solid #eee;
 }
 .fontclolr {
   color: #999;
 }
 .wx {
-  margin-right: 20rpx;
+  margin-right: 20upx;
 }
 .leftposi {
   position: absolute;
   top: 50%;
-  left: 20rpx;
-  margin-top: -11rpx;
+  left: 20upx;
+  margin-top: -11upx;
 }
 .payimg {
-  width: 56rpx;
-  height: 56rpx;
+  width: 56upx;
+  height: 56upx;
 }
 .payitem {
-  padding: 40rpx 20rpx;
-  border-bottom: 1rpx solid #ececec;
+  padding: 40upx 20upx;
+  border-bottom: 1upx solid #ececec;
 }
 /*立即下单的按钮样式*/
 .paybtn {
-  width: 660rpx;
-  height: 90rpx;
+  width: 660upx;
+  height: 90upx;
   margin: 40upx auto 0;
   background: $primary;
-  border-radius: 10rpx;
-  line-height: 90rpx;
-  font-size: 30rpx;
+  border-radius: 10upx;
+  line-height: 90upx;
+  font-size: 30upx;
   color: #fff;
   text-align: center;
 }
 /*右侧箭头*/
 .right {
-  width: 12rpx;
-  height: 22rpx;
+  width: 12upx;
+  height: 22upx;
 }
 /*左侧箭头*/
 .leftarrow {
-  width: 16rpx;
-  height: 30rpx;
+  width: 16upx;
+  height: 30upx;
   vertical-align: middle;
 }
 .plr30 {
-  padding-left: 30rpx;
-  padding-right: 30rpx;
+  padding-left: 30upx;
+  padding-right: 30upx;
 }
 /* 选择支付方式 */
 
@@ -329,7 +330,7 @@ export default {
   z-index: 101;
   width: 100%;
   box-sizing: border-box;
-  /* padding-bottom:60rpx; */
+  /* padding-bottom:60upx; */
   background: #fff;
 }
 /* ----------------------------支付密码--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
@@ -351,53 +352,54 @@ export default {
 }
 .payPasswordComponent input {
   position: absolute;
-  z-index: -99999;
-  top: 0;
-  left: -800rpx;
+  opacity:0;
+  top: 60upx;
+  left: 80upx;
+  width:480upx;height:80upx;
 }
 
 .payPasswordComponent .box {
   width: 85%;
   background: #fff;
-  border-radius: 10rpx;
+  border-radius: 10upx;
 }
 
 .payPasswordComponent .header {
-  font-size: 35rpx;
+  font-size: 35upx;
   font-weight: 600;
-  line-height: 100rpx;
+  line-height: 100upx;
   text-align: center;
   position: relative;
-  border-bottom: 1rpx #e8e8e8 solid;
+  border-bottom: 1upx #e8e8e8 solid;
 }
 .payPasswordComponent .header .close {
   position: absolute;
   font-weight: 400;
-  right: 10rpx;
-  top: -20rpx;
-  font-size: 50rpx;
+  right: 10upx;
+  top: -20upx;
+  font-size: 50upx;
   color: #999;
 }
 .bodys {
-  height: 200rpx;
+  height: 200upx;
   position: relative;
 }
 .bodys .boxItem {
-  width: 80rpx;
-  height: 80rpx;
-  border-left: 1rpx #c8c8c8 solid;
-  border-top: 1rpx #999 solid;
-  border-bottom: 1rpx #999 solid;
+  width: 80upx;
+  height: 80upx;
+  border-left: 1upx #c8c8c8 solid;
+  border-top: 1upx #999 solid;
+  border-bottom: 1upx #999 solid;
 }
 .bodys .boxItem:first-child {
-  border-left: 1rpx #999 solid;
+  border-left: 1upx #999 solid;
 }
 .bodys .boxItem:last-child {
-  border-right: 1rpx #999 solid;
+  border-right: 1upx #999 solid;
 }
 .bodys .boxItem .item {
-  width: 20rpx;
-  height: 20rpx;
+  width: 20upx;
+  height: 20upx;
   border-radius: 50%;
   background: #000;
 }
@@ -405,24 +407,24 @@ export default {
 
 /*复选框清除默认样式*/
 .checkbox-cart .wx-checkbox-input {
-  width: 40rpx;
-  height: 40rpx;
+  width: 40upx;
+  height: 40upx;
   border-radius: 50% !important;
 }
 .checkbox-cart .wx-checkbox-input.wx-checkbox-input-checked {
   background: #3172f5;
   border-radius: 50% !important;
   border: 0 !important;
-  width: 45rpx;
-  height: 45rpx;
+  width: 45upx;
+  height: 45upx;
 }
 .checkbox-cart .wx-checkbox-input.wx-checkbox-input-checked::before {
-  width: 42rpx;
-  height: 42rpx;
+  width: 42upx;
+  height: 42upx;
   border-radius: 50% !important;
-  line-height: 42rpx;
+  line-height: 42upx;
   text-align: center;
-  font-size: 30rpx;
+  font-size: 30upx;
   color: #ffffff;
   background: transparent;
   transform: translate(-50%, -50%) scale(1);
@@ -431,10 +433,10 @@ export default {
 /*单选按钮清除默认样式*/
 radio .wx-radio-input {
   /* 自定义样式.... */
-  height: 40rpx;
-  width: 40rpx;
+  height: 40upx;
+  width: 40upx;
   border-radius: 50%;
-  border: 2rpx solid #999;
+  border: 2upx solid #999;
   background: transparent;
 }
 
@@ -446,11 +448,11 @@ radio .wx-radio-input.wx-radio-input-checked {
 /* 选中后的 对勾样式 （白色对勾 可根据UI需求自己修改） */
 radio .wx-radio-input.wx-radio-input-checked::before {
   border-radius: 50%; /* 圆角 */
-  width: 45rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
-  height: 45rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
-  line-height: 45rpx;
+  width: 45upx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  height: 45upx; /* 选中后对勾大小，不要超过背景的尺寸 */
+  line-height: 45upx;
   text-align: center;
-  font-size: 30rpx; /* 对勾大小 30rpx */
+  font-size: 30upx; /* 对勾大小 30upx */
   color: #fff; /* 对勾颜色 白色 */
   background: #3172f5;
   transform: translate(-50%, -50%) scale(1);
@@ -460,7 +462,7 @@ radio .wx-radio-input.wx-radio-input-checked::before {
 input[type="text"] {
   outline: none;
   border: 0;
-  font-size: 25rpx;
+  font-size: 25upx;
 }
 </style>
 
