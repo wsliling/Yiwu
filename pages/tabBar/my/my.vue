@@ -192,6 +192,7 @@
 				})
 				if (result.code === 0) {
 					this.memberInfo = result.data;
+					uni.setStorageSync("MemberId",result.data.Id)
 					this.wallet=result.data.Wallet.split('.');
 					this.$store.commit("update", {
 					  Wallet:result.data.Wallet
