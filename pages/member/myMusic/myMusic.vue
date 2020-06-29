@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="head" :style="{'padding-top':barHeight+'px'}">
+		<view v-if="false" class="head" :style="{'padding-top':barHeight+'px'}">
 			<!-- #ifndef MP-WEIXIN -->
 			<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
 			<view class="mine">我的舞曲</view>
@@ -13,7 +13,7 @@
 				<image src="@/static/playmusic.png" class="iconimg"></image>
 			</view>
 		</view> 
-		<view :style="{height:(44+barHeight)+'px'}"></view>
+		<view v-if="false" :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-hd flex-between">
 			<view class="title">我的曲单</view>
 			<view class="uni-icon uni-icon-plusempty" @click="isShowCreatMenu=true"></view>
