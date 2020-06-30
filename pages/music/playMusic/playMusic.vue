@@ -2,7 +2,7 @@
 	<view>
 		<view class="warp">
 			<view class="playimgbox">
-				<image :src="postImg||'/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
+				<image :src="itemdata.PicImg||'/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
 				<view class="border2">
 					<view class="border1"></view>
 				</view>
@@ -19,7 +19,7 @@
 			 	</view>
 			 	<view class="audio-wrapper">
 			 		<view class="audio-number">{{currentTime}}</view>
-			 		<slider class="audio-slider" activeColor="#e32a76" backgroundColor="#b9b8b8" block-size="16" :value="current" :max="duration" @changing="seek=true,current=$event.detail.value"
+			 		<slider class="audio-slider" activeColor="#e32a76" backgroundColor="#b9b8b8" block-size="16" :value="current" :max="itemdata.ADuration" @changing="seek=true,current=$event.detail.value"
 			 		 @change="change"></slider>
 			 		<view class="audio-number">{{durationTime}}</view>
 			 	</view>
@@ -36,17 +36,39 @@
 				<view class="item">
 					<image src="/static/music/playicon4.png" mode="widthFix"></image>
 				</view>
-				<view class="item">
+				<view class="item" @click="ShowPlaylist">
 					<image src="/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
 			 </view>
 		</view>
+		<!-- 播放列表	 -->
+		<uni-popup mode="fixed" :show="isShowPlaylist" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-music Menulist__modal">
+				<view class="uni-modal__hd pd15">播放列表</view>
+				<view class="uni-modal__bd">
+					<view class="line-list">
+						<view class="line-item" v-for="(item,index) in musicList" :key="index" @click="slectplay(index)">
+							<view class="line-item-l text_left">
+								<text :class="['txt',nowIndex==index?'c_theme':'']">{{item.Name}}</text>
+							</view>
+						</view>
+					</view>
+					<view class="btns flex-between">
+						<view class="btn c_theme"  @click="hidePopup">关闭</view>
+					</view>
+				</view>
+			</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
-	import {post,audio,playMusic} from '@/common/util.js';
+	import {post,audio,toLogin,playMusic} from '@/common/util.js';
+	import uniPopup from '@/components/uni-popup.vue';
 	export default {
+		components: {
+			uniPopup
+		},
 		data() {
 			return {
 				userId: '',
@@ -54,15 +76,18 @@
 				musicList: [],
 				nowIndex: 0,
 				musicID:"",
-				duration: 0, //总时长（单位：s）
+				//duration: 0, //总时长（单位：s）
 				currentTime: '', //当前播放时间
 				durationTime: '', //总时长
 				current: '', //slider当前进度
 				loading: false, //是否处于读取状态
 				paused: true, //是否处于暂停状态
 				seek: false, //是否处于拖动状态
-				postImg:"",//当前封面
+				//postImg:"",//当前封面
 				isCollect:0,//是否收藏
+				isbuy:0,//是否需要付费
+				itemdata:{},
+				isShowPlaylist:false,//弹出播放列表
 			}
 		},
 		watch: {
@@ -83,18 +108,20 @@
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			this.duration=this.musicList[this.nowIndex].ADuration;
-			this.postImg=this.musicList[this.nowIndex].PicImg;
+			// this.duration=this.musicList[this.nowIndex].ADuration;
+			// this.postImg=this.musicList[this.nowIndex].PicImg;
 			this.isCollect=this.musicList[this.nowIndex].IsCollect;
+			this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
+			this.itemdata=this.musicList[this.nowIndex];
 			uni.setNavigationBarTitle({
-				title: this.musicList[this.nowIndex].Name
+				title: this.itemdata.Name
 			})
 			this.init()
 		},
 		methods: {
 			init(){
-				let playID=uni.getStorageSync("playID");console.log(playID,this.musicID)
-				this.durationTime = this.format(this.duration);
+				let playID=uni.getStorageSync("playID");
+				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
 				audio.obeyMuteSwitch = false
 				audio.autoplay =true
@@ -129,12 +156,34 @@
 			},
 			//格式化时长
 			format(num) {
-				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(
-					Math.floor(num % 60)).length) + Math.floor(num % 60)
+				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
 			},
 			//播放/暂停操作
 			operation() {
-				playMusic(this.nowIndex,this.musicID)
+				if(this.isbuy==0){
+					playMusic(this.nowIndex,this.musicID)
+				}else{
+					let _this=this;
+					uni.showModal({
+						content: "该舞曲需付费,去付费？",
+						success(res) {
+							if (res.confirm) {
+								if(toLogin()){
+									let buyInfo={
+										PicImg:_this.itemdata.PicImg,
+										name:_this.itemdata.Name,
+										price:_this.itemdata.Price
+									}
+									uni.setStorageSync('buyInfo', buyInfo);
+									uni.navigateTo({
+										url:'/pages/pay2/pay2?type=1&id='+_this.musicID
+									})
+								}
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
 				// if (audio.paused) {
 				// 	audio.play()
 				// 	this.loading = true
@@ -145,6 +194,26 @@
 			//完成拖动事件
 			change(e) {
 				audio.seek(e.detail.value)
+			},
+			//弹出播放列表
+			ShowPlaylist(){
+				this.isShowPlaylist=true;
+			},
+			//选择播放
+			slectplay(index){
+				this.nowIndex=index;
+				this.itemdata=this.musicList[index];
+				this.musicID=this.musicList[index].Id;
+				this.isbuy=this.musicList[index].IsShowBuy;
+				uni.setNavigationBarTitle({
+					title: this.itemdata.Name
+				})
+				this.operation();
+				this.init();
+			},
+			//取消（统一关闭弹窗）
+			hidePopup(){
+				this.isShowPlaylist=false;
 			},
 			//收藏
 			async Collect(){
