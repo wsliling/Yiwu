@@ -42,6 +42,7 @@
 			var userId=getQuery("userId");
 			var token=getQuery("token");
 			var type=getQuery("type");
+			var filePath="";//选择的文件地址
 			console.log(userId+"参数"+type+"参数"+ token);
 			//取url中的参数值
 			function getQuery(id) {
@@ -57,8 +58,7 @@
 			}
 
 			$(".file").on("change", "input[type='file']", function() {
-				let filePath = $(this).val();
-				localStorage.setItem("fileAddress", filePath);//选择的文件名缓存
+				filePath = $(this).val();
 				let lastname = localStorage.getItem("fileAddress");
 				if (lastname != "") {
 					$(".showFileName").html(lastname);
@@ -67,7 +67,6 @@
 				}
 			});
 			$('.btn').click(function(evt) {
-				var fileUrl;
 				var formdata = new FormData(); // 创建一个form类型的数据
 				var url=""
 				if(type==0){// 上传舞曲
@@ -90,16 +89,16 @@
 					data: formdata,
 					dataType: "json",
 					success: function(res) {
-						//更新数据库添入附件的url"upload/music/u-music/2020061919322404828.mp3"
+						//更新数据库添入附件的url
 						console.log(JSON.stringify(res))
 						if(res.code==1){
-							let fileName=localStorage.getItem("fileAddress");
 							if(type==0){
-								localStorage.setItem("fileName", fileName);//上传成功的文件名缓存
+								localStorage.setItem("fileName", filePath);//上传成功的文件名缓存
+								localStorage.setItem("filePath", res.data);//上传成功返回的服务器地址
 							}else{
-								localStorage.setItem("fileName", res.data.imgUrl);//上传成功的返回的视频封面图片地址显示出来
+								localStorage.setItem("VfileName", res.data.imgUrl);//上传成功的返回的视频封面图片地址显示出来
+								localStorage.setItem("VfilePath", res.data.path);//上传视频成功返回的服务器地址
 							}
-							localStorage.setItem("filePath", res.data.path);//上传成功返回的服务器地址
 						}
 					},
 					error: function(err) {

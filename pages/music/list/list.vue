@@ -242,7 +242,7 @@
 				})	
 			},
 			//弹出更多操作
-			ShowOperation(item){console.log(item)
+			ShowOperation(item){
 				this.isShowOperation=true;
 				this.MusicId=item.Id;
 				this.price=item.Price;
