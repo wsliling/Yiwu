@@ -37,12 +37,14 @@
         <!-- <radio-group @change="changes"> -->
         <radio-group>
           <block v-for="(item,index) in payTypeList" :key="index">
-            <label class="flex-between payitem" @click="changes(item)" v-if="item.status">
+            <label class="flex-between payitem" :class="{'disable':integralDisable&&item.code=='integral'}" @click="changes(item)" v-if="item.status">
               <div class="flex-center">
                 <img :src="item.icon" class="payimg" />
-                {{item.name}}
+                {{item.name}}{{integralDisable&&item.code=='integral'?'（积分不足）':''}}
               </div>
-              <radio name="payType" :checked="payType.id==item.id" value="0" color="#dd196d"/>
+              <block v-if="item.code!='integral'||(!integralDisable&&item.code=='integral')">
+                <radio name="payType"  :checked="payType.id==item.id" value="0" color="#dd196d"/>
+              </block>
             </label>
           </block>
         </radio-group>
@@ -105,6 +107,10 @@ export default {
     payMode:{
       type:Array,
       default(){return ['wx','balance']}
+    },
+    disableIntegral:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -143,7 +149,8 @@ export default {
           code:'integral',
           status:false,
         },
-      ]
+      ],
+      integralDisable:false,//禁用积分
     };
   },
   watch:{
@@ -164,20 +171,26 @@ export default {
     //   },
     //   deep:true
     // }
+    disableIntegral(){
+      this.integralDisable = this.disableIntegral;
+    }
   },
   mounted(){
-        this.showPayStatus = 1;
-        let arr =[];
-        this.payTypeList.map(typeItem=>{
-          this.payMode.map(modeItem=>{
-            if(modeItem===typeItem.code){
-              typeItem.status = true;
-              arr.push(typeItem)
-            }
-          })
+      this.showPayStatus = 1;
+      let arr =[];
+      this.payTypeList.map(typeItem=>{
+        this.payMode.map(modeItem=>{
+          if(modeItem===typeItem.code){
+            typeItem.status = true;
+            arr.push(typeItem)
+          }
         })
-        this.payTypeList = arr;
-        this.payType = this.payTypeList[0];
+      })
+      this.payTypeList = arr;
+      this.payType = this.payTypeList[0];
+      //禁用积分
+      this.integralDisable = this.disableIntegral||false;
+      console.log(this.integralDisable)
   },
   methods: {
     // 获取焦点
@@ -186,6 +199,7 @@ export default {
       this.focusflag = true;
     },
     changes(item) {
+      if(item.code=='integral'&&this.integralDisable)return;
       this.payType = item;
       this.showPayStatus = 1;
     },
@@ -239,7 +253,7 @@ export default {
           }
         }
       });
-    }
+    },
   }
 };
 </script>
@@ -496,6 +510,9 @@ input[type="text"] {
   outline: none;
   border: 0;
   font-size: 25upx;
+}
+.disable{
+  color:#999;
 }
 </style>
 

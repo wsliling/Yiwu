@@ -257,10 +257,11 @@ export default {
 		},
 		// 立即购买
 		buy(){
+			this.$refs.skuWin.close();
 			navigate('shopSon/submitOrder/submitOrder',{
 				proId:this.proId,
 				buyNum:this.buyNum,
-				SpecText:this.selectSku.text,
+				SpecText:this.selectSku.text||'',
 				orderSType:0
 			})
 		},
