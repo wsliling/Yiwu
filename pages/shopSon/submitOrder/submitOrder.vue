@@ -54,16 +54,11 @@
 						</view>
 					</view>
 					<view class="procontent orderbox mb10 b_radius">
-						<view class="orderinfo"  @click="openshopCoupon(info.UseCouponList,info.CouponId,index)">
+						<!-- <view class="orderinfo"  @click="openshopCoupon(info.UseCouponList,info.CouponId,index)">
 							<view class="orderleft">优惠劵</view>
 							<view class="orderright">
 								<view class="infotxt actives" v-if="couponPrice">-￥{{couponPrice}}</view>
 								<view class="infotxt" v-else>暂无可用优惠劵</view>
-								<!-- <block v-for="(e,i) in info.UseCouponList" :key="i">
-									<view class="infotxt" v-if="e.Id==info.CouponId">
-										{{e.Id==info.CouponId?'￥'+info.yhPrice:'不使用'}}
-									</view>
-								</block> -->
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
 						</view>
@@ -75,7 +70,7 @@
 								</view>
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
-						</view>
+						</view> -->
 					</view>
 					<view class="orderbox procontent b_radius">
 						<view class="orderinfo">
@@ -143,18 +138,14 @@
 						</view>
 					</view>
 					<view class="procontent orderbox mb10 b_radius">
-						<view class="orderinfo" @click="openshopCoupon(info.CouponsList,info.CouponId,0)">
+						<!-- <view class="orderinfo" @click="openshopCoupon(info.CouponsList,info.CouponId,0)">
 							<view class="orderleft">优惠劵</view>
 							<view class="orderright">
-								<!-- <view class="infotxt">{{couponPrice || '暂无可用优惠劵'}}</view>
-								<block v-for="(e,i) in info.UseCouponList" :key="i">
-									<view class="infotxt" v-if="e.Id==info.CouponId">{{e.Id==info.CouponId?'￥'+info.yhPrice:'不使用'}}</view>
-								</block> -->
 								<view class="infotxt actives" v-if="couponPrice">-￥{{couponPrice}}</view>
 								<view class="infotxt" v-else>暂无可用优惠劵</view>
 								<view class="uni-icon uni-icon-arrowright"></view>
 							</view>
-						</view>
+						</view> -->
 						<!-- <view class="orderinfo" @click="ChooseInvoice(0)">
 							<view class="orderleft">开票类型</view>
 							<view class="orderright">
@@ -299,15 +290,21 @@
 				<view class="bottom-btn" @click="selectCouponok">完成</view>
 			</view>
 		</uni-popup>
+		<!-- 支付弹窗 -->
+		<uni-popup type="bottom" ref="payWin" @change="payWinChange">
+			<!-- :orderNumber="orderNo" -->
+			<pay :total="info.AllPrice" @onClose="closePay()" @success="payOrder" :orderNumber="OrderNo"
+				:payMode="['wx','alipay','balance','integral']" :disableIntegral="disableIntegral"></pay>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
-	import {post,get,navigateBack} from '@/common/util';
-	import uniPopup from '@/components/uni-popup/uni-popup.vue';
+	import {post,get,navigateBack,toast,navigate,redirect} from '@/common/util';
+	import pay from '@/components/pay.vue';
 	export default {
 		components: {
-			uniPopup
+			pay
 		},
 		data() {
 			return {
@@ -343,27 +340,24 @@
 				popCouponIdArr:[],
 				popshopCouponIndex:0,
 				CouponStr:'',
-				ContactName:"",//业主姓名
-				Tel:"",//业主电话
-				IsSalesOffice:null,//去过或咨询售楼处 1-有 0-没有
 				shopDataArr:[],//购物车默认选择店铺优惠券
 				inCode:0,//立即购买得邀请码分享好友得佣金
 				Remark:'', //买家留言
+				disableIntegral:false,
+				OrderNo:'',//订单号
 			};
 		},
 		onLoad: function(e) {
 			console.log(e)
-			// #ifdef APP-PLUS
 			this.orderSType=e.orderSType*1;
-			this.CartIds=e.cartItem
-			this.ProId=e.id
-			this.GroupId=e.GroupId||0
-			this.Total=e.number
+			// this.CartIds=e.cartItem
+			this.ProId=e.proId
+			// this.GroupId=e.GroupId||0
+			this.Total=e.buyNum
 			this.SpecText=e.SpecText
 			if(e.inCode){
 				this.inCode = e.inCode
 			}
-			// #endif
 		},
 		onShow() {
 			// this.ContactName = this.$store.state.peopleInfo.ContactName;console.log(this.$store.state.peopleInfo,11)
@@ -372,17 +366,17 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			// #ifndef APP-PLUS
-			this.orderSType= this.$root.$mp.query.orderSType*1;
-			// this.CartIds=this.$root.$mp.query.cartItem;
-			this.ProId=this.$root.$mp.query.proId;
-			// this.GroupId=this.$root.$mp.query.GroupId||0;
-			this.Total=this.$root.$mp.query.buyNum;
-			this.SpecText=this.$root.$mp.query.SpecText;
-			if(this.$root.$mp.query.inCode){
-				this.inCode = this.$root.$mp.query.inCode
-				console.log(this.inCode,"///////")
-			}
-			// #endif
+			// this.orderSType= this.$root.$mp.query.orderSType*1;
+			// // this.CartIds=this.$root.$mp.query.cartItem;
+			// this.ProId=this.$root.$mp.query.proId;
+			// // this.GroupId=this.$root.$mp.query.GroupId||0;
+			// this.Total=this.$root.$mp.query.buyNum;
+			// this.SpecText=this.$root.$mp.query.SpecText;
+			// if(this.$root.$mp.query.inCode){
+			// 	this.inCode = this.$root.$mp.query.inCode
+			// 	console.log(this.inCode,"///////")
+			// }
+			// // #endif
 			if(uni.getStorageSync("addressinfo")){
 			  this.addrInfo=uni.getStorageSync("addressinfo");
 			  uni.setStorageSync("addressinfo",null)
@@ -736,7 +730,7 @@
 			  }
 			},
 			//立即购买提交
-			async BuyNowSubmitOrder(){
+			async BuyNowSubmitOrder(payType,password){
 			  let result=await post("Order/BuyNowSubmitOrder",{
 				UserId: this.userId,
 				Token: this.token,
@@ -747,38 +741,74 @@
 				CouponId:this.info.CouponId>0?this.info.CouponId:0,
 				ShopCouponId:this.info.ShopCouponId>0?this.info.ShopCouponId:0,
 				InvoiceId:this.InvoiceIdArr[0],
-				Remark:this.Remark,
-				ContactName:this.ContactName,
-				Tel:this.Tel,
 				InviteCode:this.inCode,
-				IsSalesOffice:this.IsSalesOffice,
-				AreaCode:uni.getStorageSync("AreaCode")
+				Remark:this.Remark,
 			  })
-			  if(result.code==0){
-				uni.showToast({
-				  title: '订单提交成功',
-				  success(){
-					setTimeout(res=>{
-						uni.redirectTo({
-							url: '/pages/card/pay?orderNo='+result.data+'&source=1'
-						})
-					},1500)
-				  }
+			  if(result.code) return;
+				this.OrderNo = result.data;
+				//获取积分可用数量
+				post('User/GetMyIncome',{
+					UserId: uni.getStorageSync("userId"),
+					Token: uni.getStorageSync("token")
+				}).then(res=>{
+					if(res.data.Amount*1<this.info.AllPrice*1){
+						this.disableIntegral = true;
+					}else{
+						this.disableIntegral = false;
+					}
+					this.$refs.payWin.open();
 				})
-			  }else{
-				uni.showToast({
-				  title: result.msg,
-				  icon: "none",
-				  duration: 1000
-				});
-			  }
-			  //初始化业主参数
-			  let peopleInfo={ //业主信息
-			  	ContactName:"",//业主姓名
-			  	Tel:"",//业主电话
-			  	IsSalesOffice:null,//去过或咨询售楼处 1-有 0-没有
-			  }
-			  this.$store.commit("update", { peopleInfo });
+			},
+			async payOrder(payType,Password){
+				// 余额
+				if(payType.id==1){
+					const res = await post('Order/PaymentOrder',{
+						UserId: this.userId,
+						Token: this.token,
+						OrderNo:this.OrderNo,
+						Password
+					})
+					if(res.code) return;
+					this.paySuccess(res);
+				}else 
+				// 积分
+				if(payType.id==3){
+					const res = await post('Order/PayScoreOrder',{
+						UserId: this.userId,
+						Token: this.token,
+						OrderNo:this.OrderNo,
+						Password
+					})
+					if(res.code) return;
+					this.paySuccess(res);
+				}
+			},
+			// 支付成功
+			paySuccess(res){
+				toast(res.msg,{icon:true})
+				setTimeout(()=>{
+					console.log(321)
+					redirect('shopSon/submitOrder/submitStatus',{
+						status:'success',
+						orderNo:this.OrderNo,
+						allprice:this.info.AllPrice
+					})
+				},2000)
+			},
+			// 支付弹窗状态改变
+			payWinChange(e){
+				if(!e.show){
+					this.closePay();
+				}
+			},
+			// 关闭支付弹窗时
+			closePay(){
+				redirect('shopSon/submitOrder/submitStatus',{
+					status:'fail',
+					orderNo:this.OrderNo,
+					allprice:this.info.AllPrice
+				})
+				this.$refs.payWin.close();
 			},
 			//确认拼团
 			async CreateGroupOrder(){
@@ -795,7 +825,6 @@
 				ContactName:this.ContactName,
 				Tel:this.Tel,
 				InviteCode:this.inCode,
-				IsSalesOffice:this.IsSalesOffice,
 				AreaCode:uni.getStorageSync("AreaCode")
 			  })
 			  if(result.code==0){
@@ -821,32 +850,15 @@
 			  let peopleInfo={ //业主信息
 			  	ContactName:"",//业主姓名
 			  	Tel:"",//业主电话
-			  	IsSalesOffice:null,//去过或咨询售楼处 1-有 0-没有
 			  }
 			  this.$store.commit("update", { peopleInfo });
 			},
 			//提交订单
-			confirm(){console.log(this.yanzheng())
-				if(this.addressId>0||(this.addressId==0&&(this.info.IsSalesOffice==1||this.info.IsAloneBuy==1))){
+			confirm(){
+				if(this.addressId>0){
 					console.log(this.orderSType,'order')
 					if(!this.orderSType){
-					//   if(this.GroupId>0){
-					// 	  if(!this.yanzheng()){
-					// 		  uni.navigateTo({
-					// 			url:"/pages/homePage/writeInfo?IsSalesOffice="+this.info.IsSalesOffice
-					// 		  })
-					// 	  }else{
-					// 		this.CreateGroupOrder();//确认拼团
-					// 	  }
-					//   }else{
-					// 	  if(!this.yanzheng()){
-					// 		  uni.navigateTo({
-					// 		  	url:"/pages/homePage/writeInfo?IsSalesOffice="+this.info.IsSalesOffice
-					// 		  })
-					// 	  }else{
 						this.BuyNowSubmitOrder();//立即购买
-					// 	  }
-					//   }
 					}else{
 					  let DataArr = [];
 					  for (let i = 0; i < this.info.ProData.length; i++) {
@@ -870,24 +882,6 @@
 					})
 				}
 			},
-			//验证是否提交业主信息
-			yanzheng(){
-				if(this.info.IsAloneBuy==1||this.info.IsSalesOffice==1){console.log()
-					if(this.Tel==""||this.Tel==undefined){
-						return false
-					}
-					if(this.ContactName==""||this.ContactName==undefined){
-						return false
-					}
-					if(this.info.IsSalesOffice==1){
-						if(this.IsSalesOffice==null||this.IsSalesOffice==undefined){
-							return false
-						}
-					}
-					return true
-				}
-				return true
-			}
 		}
 	}
 </script>

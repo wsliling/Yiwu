@@ -459,6 +459,24 @@
 							// "titleNView": false
 						// }
 					}
+				},
+				{
+				    "path" : "submitOrder/submitOrder",
+				    "style" : {
+						"navigationBarTitleText": "确认订单"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
+				},
+				{
+				    "path" : "submitOrder/submitStatus",
+				    "style" : {
+						"navigationBarTitleText": "支付状态"
+						// "app-plus": {
+							// "titleNView": false
+						// }
+					}
 				}
 		    ]
 		},
