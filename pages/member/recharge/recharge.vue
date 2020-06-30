@@ -5,7 +5,7 @@
 				<view class="livebi flex-between" v-if="rechargeType==2">
 					<text>我的直播币:</text>
 					<view class="right flex-end">
-						426 <image class="icon" src="/static/my/jf.png" mode=""></image>
+						{{LiveStreamMoney || 0}} <image class="icon" src="/static/my/jf.png" mode=""></image>
 					</view>
 				</view>
 				<view class="withdraw">充值金额</view>
@@ -22,7 +22,7 @@
 			<view class="carry">{{rechargeType==2?'一个直播币=1元钱':''}}</view>
 			<view class="pay-hd uni-mb10">充值方式</view>
 			<view class="pay-bd line-list payMethods__modal">
-				<block v-for="(item,index) in payway" :key="index"> 
+				<block v-for="(item,index) in payway" :key="index" v-if="rechargeType==2 || item.Id == 1 || item.type == 0"> 
 					<view class="line-item flex-between" @click="tabBtn(item.Id)">
 					  <view class="item-l flex-start">
 						<image class="iconimg" :src="item.iconimg" mode="widthFix"></image>
@@ -42,25 +42,28 @@
 		<view class="alipayfram" v-if="isshowalipay">
 			<view id="alipayfram" v-html="alipayCon"></view>
 		</view>
+		<pay v-on:hidePay="hidePay" v-on:getPassword="getPassword" @success="CourseBuy" v-if="showPay" :allprice="allprice"></pay>
 	</view>
 </template>
 
 <script>
 	import {host,post,get,toLogin,getUrlParam} from '@/common/util.js';
+	import pay from '@/components/payPaw.vue';
 	export default {
+		components: {pay},
 		data(){
 			return{
 				userId: "",
 				token: "",
 				payway:[
 				// #ifdef APP-PLUS||H5	
-				{
-					Id:1,
-					iconimg:'/static/pay_alipay.png',
-					name:"支付宝"
-				}
+				// {
+				// 	Id:1,
+				// 	iconimg:'/static/pay_alipay.png',
+				// 	name:"支付宝"
+				// },
 				// #endif
-				,{
+				{
 					type:0,
 					iconimg:'/static/pay_weixin.png',
 					name:"微信"
@@ -73,7 +76,9 @@
 				rechargeType:1,//1余额充值，2直播币充值
 				payType:0, //0微信支付
 				money:"",//充值金额
-				WxOpenid:'',//微信支付
+				WxOpenid:'',//微信支付ID
+				showPay:false,//支付密码弹框
+				LiveStreamMoney:"", //直播币
 				WxCode:'',
 				isshowalipay:false,
 				alipayCon:"",
@@ -101,7 +106,7 @@
 					title: "钱包充值"
 				})
 			}
-			// #ifdef  MP-WEIXIN
+			// #ifdef  MP-WEIXIN  
 			this.WxOpenid = uni.getStorageSync("openId");
 			this.getcode();
 			// #endif
@@ -121,6 +126,7 @@
 			},
 			tabBtn(index){
 				this.payType=index;
+				this.allprice=this.money
 			},
 
 			Submit(){
@@ -154,6 +160,8 @@
 							this.H5ZfbRecharge();
 						}
 						// #endif
+					}else if(this.payType==2){ //余额
+						this.showPay=true;
 					}
 				}else{
 					uni.showToast({
@@ -372,8 +380,43 @@
 				urlStr = arrUrl[0] + '//' + start[0];
 				return urlStr;
 			},
+			//接收支付密码
+			getPassword(Password){
+				console.log(Password,'Password')
+				this.CourseBuy(Password);
+			},
+			//关闭支付密码弹窗
+			hidePay(e){
+				this.showPay=false;
+			},
+			//余额支付
+			CourseBuy(e,Password){
+				console.log(e,Password,'Password111')
+				post('Order/PayRechLiveStream',{
+					UserId: this.userId,
+					Token: this.token,
+					RechargeAmount:this.money,
+					Password:e,
+				}).then( res=> {
+					if(res.code === 0){
+						uni.showToast({
+							title:res.msg,
+							icon: "none",
+						})
+					}
+				})
+			},
+			// 获取直播币
+			async getMyIncome() {
+				let result = await post("User/GetMyIncome", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				});
+				if (result.code === 0) {
+					this.LiveStreamMoney = result.data.LiveStreamMoney;
+				} 
+			},
 		}
-	
 	}
 </script>
 

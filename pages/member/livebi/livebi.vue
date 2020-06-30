@@ -6,7 +6,7 @@
 				<view class="jf">我的直播币</view>
 				<view class="flex-start">
 					<view class="item">
-						<view class="symbol">4260</view>
+						<view class="symbol">{{LiveStreamMoney || 0}}</view>
 					</view>
 					<view class="item">
 						<view class="btn flex-column" @click="tolink('/pages/member/recharge/recharge?type=2')">充值</view>
@@ -16,24 +16,13 @@
 		</view>
 		<view class="jf_hd pd15">直播币明细</view>
 		<view class="line-list">
-			<block v-for="(item,index) in 5" :key="index">
+			<block v-for="(item,index) in liveList" :key="index">
 			<view class="line-item">
 				<view class="line-item-l">
-					<view class="txt">直播送礼</view>
-					<view class="c_999 fz12">2020-05-31 15:22</view>
+					<view class="txt">{{item.Remark}}</view>
+					<view class="c_999 fz12">{{item.AddTime}}</view>
 				</view>
-				<view class="item_r">
-					-1000
-				</view>
-			</view>
-			<view class="line-item">
-				<view class="line-item-l">
-					<view class="txt">直播币充值</view>
-					<view class="c_999 fz12">2020-05-26 15:22</view>
-				</view>
-				<view class="item_r" style="color: #ff9638;">
-					+1000
-				</view>
+				<view class="item_r">{{item.Change}}</view>
 			</view>
 			</block>
 		</view>
@@ -46,14 +35,17 @@
 	export default {
 		data(){
 			return{
-				userId: "",
-				token: "",
+				UserId: "",
+				Token: "",
+				liveList:[],
+				LiveStreamMoney:'',
 			}
 		},
 		onShow() {
-			this.userId = uni.getStorageSync("userId");
-			this.token = uni.getStorageSync("token");
-
+			this.UserId = uni.getStorageSync("userId");
+			this.Token = uni.getStorageSync("token");
+			this.getLiveStreamingList()
+			this.getMyIncome()
 		},
 		methods:{
 			tolink(url){
@@ -61,9 +53,27 @@
 					url:url
 				})
 			},
-
+			getLiveStreamingList(){
+				post('Recharge/GetLiveStreamingList',{
+					UserId : this.UserId,
+					Token : this.Token,
+				}).then( res=> {
+					if(res.code === 0){
+						this.liveList = res.data.list
+					}
+				})
+			},
+			// 获取直播币
+			async getMyIncome() {
+				let result = await post("User/GetMyIncome", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				});
+				if (result.code === 0) {
+					this.LiveStreamMoney = result.data.LiveStreamMoney;
+				} 
+			},
 		}
-	
 	}
 </script>
 

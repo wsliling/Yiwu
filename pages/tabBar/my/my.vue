@@ -176,6 +176,7 @@
 				memberInfo:{},//用户信息
 				wallet:[],
 				newscount:0,
+				myIncome:{},
 			}
 		},
 		onLoad() {
@@ -183,6 +184,7 @@
 		},
 		onShow(){
 			this.getMemberInfo();
+			this.getMyIncome();
 		},
 		methods: {
 			async getMemberInfo() {
@@ -249,6 +251,16 @@
 				});
 				if (result.code === 0) {
 					this.newscount = result.count;
+				} 
+			},
+			// 获取直播币
+			async getMyIncome() {
+				let result = await post("User/GetMyIncome", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				});
+				if (result.code === 0) {
+					this.myIncome = result.data;
 				} 
 			},
 		}
