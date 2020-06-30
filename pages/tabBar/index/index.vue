@@ -40,7 +40,7 @@
 								<view class="Yi-recomUser uni-mb10">
 									<view class="Yi-hd flex-between">
 										<view class="title">推荐用户</view>
-										<view class="more">查看全部</view>
+										<!-- <view class="more">查看全部</view> -->
 									</view>
 									<view class="Yi-bd">
 										<scroll-view class="User-swiper-tab" scroll-x>
@@ -75,7 +75,7 @@
 									</view>
 									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" poster="item.PicImg"></video>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
@@ -392,7 +392,7 @@
 					UserId:this.userId,
 					Token:this.token,
 					page:1,
-					pageSize:8
+					pageSize:20
 				});
 				if(result.code==0){
 					this.recuserlist=result.data;
