@@ -63,7 +63,7 @@
 				</view>
 				<view class="Title">水连动氢力氧</view>
 		    </view> 
-		    <button class="login-btn btn_gree" open-type="getUserInfo" @click="oauth">微信登录</button>
+		    <button class="login-btn btn_gree" open-type="getUserInfo" @getuserinfo="oauth">微信登录</button>
 		    <!-- <view class="c_blue uni-center" @click="loginTel">手机号登录/注册</view> -->
 		</view>
 		<!-- #endif -->  
@@ -373,6 +373,7 @@
 						         */
 								uni.setStorageSync("userInfo", infoRes.userInfo);
 								uni.setStorageSync("avatarUrl", infoRes.userInfo.avatarUrl);
+								console.log(res,infoRes,'red')
 								this.MPlogin(res.code, infoRes.iv, infoRes.encryptedData);
 						    }
 						});

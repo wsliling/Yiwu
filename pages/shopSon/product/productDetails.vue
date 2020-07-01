@@ -23,10 +23,10 @@
 		<!-- 货品规格 -->
 		<view class="shipments">
 			<view class="pick" v-if="data.IsSku">
-				<view class="shipmentsbox" @click="$refs.skuWin.open()">
+				<view class="shipmentsbox" @click="showSku()">
 					<view class="flex">
 						<view class="">规格</view>
-						<view class="txt26">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</view>
+						<view class="txt26">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text||''}}</view>
 					</view>
 					<image class="exemption" src="http://shop.dadanyipin.com/static/hpicons/arrows.svg" mode=""></image>
 				</view>
@@ -121,14 +121,14 @@
 				</div>
 			</div>
 			<div class="right flex">
-				<p :class="['flex1 flexc']" @click="showSku(1)">加入购物车</p>
+				<p :class="['flex1 flexc']" @click="showSku('addCar')">加入购物车</p>
 				<!-- <p :class="['flex1 flexc', starTimetype != 1 ? 'dis' : '']" @click="showSku(2)">立即购买</p> -->
-				<p :class="['flex1 flexc']" @click="showSku(2)">立即购买</p>
+				<p :class="['flex1 flexc']" @click="showSku('buy')">立即购买</p>
 			</div>
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
-			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" @close="$refs.skuWin.close()"
-				@getSkuData="getSkuData" @addcart="addcart" @buy="buy" @setBuyNum="setBuyNum"
+			<sku :sku="sku" :skuAll="skuAll" :proInfo="productInfo" :submitBtnType="submitBtnType"
+				 @getSkuData="getSkuData" @close="$refs.skuWin.close()" @success="planOrder"
 				>
 			</sku>
 		</uni-popup>
@@ -158,9 +158,12 @@ export default {
 				img:'',
 				Name:'',
 				num:0,
-				price:0
+				price:0,
+				minbuy:0,
+				maxbuy:0
 			},
 			selectSku:{},
+			submitBtnType:'',//确定按钮的类型
 		};
 	},
 	onLoad(e) {
@@ -220,6 +223,7 @@ export default {
 			});
 			this.sku = sku;
 			// this.product = data;
+			console.log()
 			console.log(this.sku,this.skuAll,'sku')
 
 			this.data = data;
@@ -229,6 +233,8 @@ export default {
 		},
 		// type;1--加入购物车；2--立即购买
 		showSku(type){
+			console.log(type,'type')
+			this.submitBtnType = type||'';
 			this.$refs.skuWin.open();
 			// if(this.data.IsSku&&!this.selectSku.value){
 			// }else{
@@ -239,6 +245,17 @@ export default {
 			// 		this.buy();
 			// 	}
 			// }
+		},
+		// 下单
+		// addCar--加入购物车  buy--立即购买
+		planOrder(type,selectSku){
+			this.$refs.skuWin.close();
+			this.selectSku = selectSku;
+			if(type==='addCar'){
+				this.addcart();
+			}else if(type==='buy'){
+				this.buy();
+			}
 		},
 		// 加入购物车
 		async addcart(){
@@ -252,7 +269,6 @@ export default {
 			})
 			if(res.code) return;
 			toast('添加成功',{icon:true})
-			this.$refs.skuWin.close();
 		},
 		// 立即购买
 		buy(){
