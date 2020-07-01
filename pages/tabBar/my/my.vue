@@ -119,6 +119,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
+			<!-- #ifdef APP-PLUS -->
 			<view class="item">
 				<view class="item-left">
 					<image  src="@/static/my/icon16.png" mode="aspectFit"></image>
@@ -126,6 +127,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
+			<!-- #endif -->
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')">
 				<view class="item-left">
 					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>

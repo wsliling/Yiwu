@@ -105,7 +105,7 @@
 		
 		<div class="foot ali-c jus-b">
 			<div class="left ali-c">
-				<div @click="gokefu">
+				<div @click="navigate('member/kefu/kefu')">
 					<img src="http://jd.wtvxin.com/images/images/index/ans.png" alt="" />
 					<p>客服</p>
 				</div>
