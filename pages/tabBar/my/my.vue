@@ -47,12 +47,12 @@
 		<view class="info1 uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
 				<image src="@/static/my/icon1.png" mode="aspectFit"></image>
-				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
+				<view>我的收入<span>{{memberInfo.SumIncome||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
 				<image src="@/static/my/icon2.png" mode="aspectFit"></image>
-				<view>我的积分<span>{{memberInfo.Score||0}}</span></view>
+				<view>我的积分<span>{{memberInfo.SumScore||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/livebi/livebi')">
@@ -147,7 +147,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
 				<view class="item-left">
 					<image  src="@/static/my/icon13.png" mode="aspectFit"></image>
 					<view>关于我们</view>

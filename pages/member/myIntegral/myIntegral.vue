@@ -3,7 +3,7 @@
 	<view class="Integral">
 		<view class="Integralbox uni-bg-white">
 			<view class="reveal">
-				<view class="jf">我的积分（8386）</view>
+				<view class="jf">我的积分{{integralList.SumScore}}</view>
 				<view class="flex-between">
 					<view class="item flex-column">
 						<view class="symbol">{{integralList.Score}}</view>
@@ -136,7 +136,6 @@
 				this.loadingType = 2;
 			}
 		}
-	
 	}
 </script>
 
