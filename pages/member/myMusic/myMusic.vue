@@ -80,6 +80,8 @@
 			// #endif
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
+		},
+		onShow() {
 			this.workeslist();
 		},
 		methods: {

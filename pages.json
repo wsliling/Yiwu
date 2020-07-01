@@ -366,6 +366,12 @@
 						}
 					}
                 }
+				,{
+				    "path" : "aboutUs/aboutUs",
+				    "style" : {
+						"navigationBarTitleText":"关于我们"
+					}
+				}
             ]
 		},
 		{

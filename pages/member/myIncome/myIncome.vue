@@ -8,7 +8,7 @@
 			</view>
 		</view>
 		<view class="line-list">
-			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=0')">
+			<view class="line-item line-arrow-r" v-if="IsShop == 1" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=0')">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/my/shop.png" mode="widthFix"></image>
 					<text class="txt">店铺收入</text>
@@ -55,6 +55,7 @@
 				wallet:0,//余额
 				userId: "",
 				token: "",
+				IsShop:'', //是否开通店铺 1-是 0-否
 			}
 		},
 		onShow() {
@@ -79,6 +80,7 @@
 				})
 				if (result.code === 0) {
 					this.wallet = result.data.Wallet;
+					this.IsShop = result.data.IsShop;
 					uni.setStorageSync('ReferralCode',result.data.ReferralCode)
 					this.$store.commit("update", {
 					  Wallet:result.data.Wallet

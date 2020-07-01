@@ -128,7 +128,7 @@
 						}
 						if (this.page > 1) {
 							this.datalist = this.datalist.concat(
-								res.data
+								res.data.list
 							);
 						}
 						if (len < this.pageSize) {

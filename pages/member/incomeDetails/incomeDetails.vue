@@ -45,7 +45,6 @@
 			return {
 				tabList:[{id:0,name:'店铺收入'},{id:1,name:'直播收入'},{id:2,name:'课程收入'},{id:3,name:'舞曲收入'}],
 				tabIndex:0,
-				
 				showDate: false,
 				minDate: new Date().setFullYear(2019, 0, 1),
 				currentDate: new Date().getTime(),
