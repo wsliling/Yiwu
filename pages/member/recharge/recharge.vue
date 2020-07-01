@@ -454,7 +454,10 @@ export default {
 						title: res.msg,
 						icon: 'none'
 					});
-					this.getMyIncome();
+					setTimeout( ()=> {
+						this.getMyIncome();
+					},1000)
+					
 				}
 			});
 		},

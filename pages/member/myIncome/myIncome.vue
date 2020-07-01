@@ -3,7 +3,7 @@
 	<view class="wallet">
 		<view class="walletbox uni-bg-white">
 			<view class="reveal">
-				<view class="symbol"><span>￥</span>{{wallet}}<span>W</span></view>
+				<view class="symbol"><span>￥</span>{{SumIncome}}<span>W</span></view>
 				<view class="balance">收入总额(元)</view>
 			</view>
 		</view>
@@ -41,7 +41,7 @@
 			</view>
 		</view>
 		<view class="present">
-			<view class="btn active" style="width: 100%;" @click="tolink('/pages/member/withdraw/withdraw')">提现</view>
+			<view class="btn active" style="width: 100%;" @click="tolink('/pages/member/withdraw/withdraw?type=1')">提现</view>
 		</view>
 		
 	</view>
@@ -52,7 +52,7 @@
 	export default {
 		data(){
 			return{
-				wallet:0,//余额
+				SumIncome:0,//余额
 				userId: "",
 				token: "",
 				IsShop:'', //是否开通店铺 1-是 0-否
@@ -79,7 +79,7 @@
 					"Token": this.token
 				})
 				if (result.code === 0) {
-					this.wallet = result.data.Wallet;
+					this.SumIncome = result.data.SumIncome;
 					this.IsShop = result.data.IsShop;
 					uni.setStorageSync('ReferralCode',result.data.ReferralCode)
 					this.$store.commit("update", {

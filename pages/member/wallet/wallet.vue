@@ -22,7 +22,7 @@
 			</view>
 		</view>
 		<view class="present">
-			<view class="btn" @click="tolink('/pages/member/withdraw/withdraw')">提现</view>
+			<view class="btn" @click="tolink('/pages/member/withdraw/withdraw?type=0')">提现</view>
 			<view class="btn active" @click="tolink('/pages/member/recharge/recharge?type=1')">充值</view>
 		</view>
 		
