@@ -1,6 +1,5 @@
 <template>
   <div class="mengban">
-      <!-- <div  @click="hidePopup" class="mengban"></div> -->
         <!-- content -->
         <div class="main" id="main">
             <div @click="hidePopup" class="close">+</div>
@@ -14,7 +13,7 @@
                             <!-- <p class="tit">{{productInfo.name}}</p> -->
                             <span><span class="fuhao">￥</span>{{selectSku.price||productInfo.price}}</span>
                             <p class="font_four">库存：{{selectSku.num||productInfo.stock}}</p>
-                            <p>{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</p>
+                            <p v-if="skuAll.length">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</p>
                                 <!-- :SpecInfo.PunitPrice -->
                         </div>
                     </div>
@@ -163,9 +162,10 @@ export default {
         //选中的sku组合
         value: {},
         img: "",
-        num: "",
+        num: 0,
         price: "",
-        text: "" //sku组合用下划线分隔_
+        text: "", //sku组合用下划线分隔_
+        buyNum:0
       },
       datas:{},
       // restock:0,//库存
@@ -185,7 +185,7 @@ export default {
   methods: {
     // 加入购物车
     addcart(){
-      if(this.hasSku){ 
+      if(this.skuAll.length&&this.hasSku){ 
         uni.showToast({
           title:"请选择商品规格",
           icon:'none'
@@ -196,7 +196,7 @@ export default {
     },
     // 立即购买
     buy(){
-      if(this.hasSku){ 
+      if(this.skuAll.length&&this.hasSku){ 
         uni.showToast({
           title:"请选择商品规格",
           icon:'none'
@@ -212,7 +212,7 @@ export default {
     },
     // 隐藏sku
     hidePopup(){
-      this.showPop =false;
+      this.$emit('close')
     },
     // clickSelectSku(skuIndex,index,item){
     //   // let obj = item;
@@ -289,7 +289,8 @@ export default {
               price: skuAllItem.price,
               img: skuAllItem.img,
               text: skuAllItem.text,
-              value
+              value,
+              buyNum:this.goodsNum
             };
             this.productInfo.stock = skuAllItem.num;
             this.goodsNum=1;

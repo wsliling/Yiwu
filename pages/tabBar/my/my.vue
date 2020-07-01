@@ -70,7 +70,7 @@
 			</view>
 		</view>
 		<view class="sevice">
-			<view class="item" @click="tolink('/pages/cart/cart')">
+			<view class="item" @click="tolink('/pages/member/cart/cart')">
 				<view class="item-left">
 					<image  src="@/static/my/icon5.png" mode="aspectFit"></image>
 					<view>购物车</view>

@@ -54,7 +54,7 @@
 										</view>
 									</view>
 									<view class="flex">
-										<view class="red fz12" v-if="item2.MinBuyNum>1">{{item2.MaxBuyNum}}件起购</view>
+										<view class="red fz12" v-if="item2.MinBuyNum>1">{{item2.MinBuyNum}}件起购</view>
 										<view class="red fz12" v-if="item2.MaxBuyNum>0">限购{{item2.MaxBuyNum}}件</view>
 										<view class="red fz12" v-if="item2.Stock>0&&item2.Stock<10">仅剩{{item2.Stock}}件</view>
 										<view class="red fz12" v-if="item2.Isinvalid>0">{{Isinvalidstr[item2.Isinvalid]}}</view>
@@ -566,7 +566,7 @@
 				});
 				if(dataArr.length){
 					uni.navigateTo({ 
-						url: "/pages/submitOrder/submitOrder?cartItem=" + dataArr.join(",") +'&orderSType=1'
+						url: "/pages/shopSon/submitOrder/submitOrder?cartItem=" + dataArr.join(",") +'&orderSType=1'
 					});
 				}else{
 					uni.showToast({

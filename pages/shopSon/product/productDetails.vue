@@ -114,7 +114,7 @@
 					<img v-else src="http://jd.wtvxin.com/images/images/index/collect_n.png" alt="" />
 					<p>收藏</p>
 				</div>
-				<div @click="navigate('cart/cart')">
+				<div @click="navigate('member/cart/cart')">
 					<img src="http://jd.wtvxin.com/images/images/index/cart.png" alt="" />
 					<p>购物车</p>
 					<!-- <span class="num flexc" v-if="CartNumber > 0">{{ CartNumber }}</span> -->
@@ -127,7 +127,7 @@
 			</div>
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
-			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" 
+			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" @close="$refs.skuWin.close()"
 				@getSkuData="getSkuData" @addcart="addcart" @buy="buy" @setBuyNum="setBuyNum"
 				>
 			</sku>
@@ -156,12 +156,11 @@ export default {
 			skuAll:[],
 			productInfo:{
 				img:'',
-				Name:'name',
-				num:12,
-				price:123
+				Name:'',
+				num:0,
+				price:0
 			},
 			selectSku:{},
-			buyNum:1,
 		};
 	},
 	onLoad(e) {
@@ -230,16 +229,16 @@ export default {
 		},
 		// type;1--加入购物车；2--立即购买
 		showSku(type){
-			if(this.data.IsSku&&!this.selectSku.value){
-					this.$refs.skuWin.open();
-			}else{
-				if(type==1){
-					this.addcart();
+			this.$refs.skuWin.open();
+			// if(this.data.IsSku&&!this.selectSku.value){
+			// }else{
+			// 	if(type==1){
+			// 		this.addcart();
 					
-				}else{
-					this.buy();
-				}
-			}
+			// 	}else{
+			// 		this.buy();
+			// 	}
+			// }
 		},
 		// 加入购物车
 		async addcart(){
@@ -248,7 +247,7 @@ export default {
 				UserId:this.userId,
 				Token:this.token,
 				ProId:this.proId,
-				Count:this.buyNum,
+				Count:this.selectSku.buyNum,
 				SpecText:this.selectSku.text
 			})
 			if(res.code) return;
@@ -260,13 +259,13 @@ export default {
 			this.$refs.skuWin.close();
 			navigate('shopSon/submitOrder/submitOrder',{
 				proId:this.proId,
-				buyNum:this.buyNum,
+				buyNum:this.selectSku.buyNum,
 				SpecText:this.selectSku.text||'',
 				orderSType:0
 			})
 		},
 		setBuyNum(num){
-			this.buyNum = num;
+			this.selectSku.buyNum = num;
 		},
         async getProblemList(){
             const res = await post('Goods/QuestionsdList',{
@@ -532,10 +531,10 @@ export default {
 			text-align:center;
 		}
 		.right p:nth-child(1) {
-			background-color: rgb(254, 203, 104);
+			background-color: #fda33a;
 		}
 		.right p:nth-child(2) {
-			background-color: #de1a6e;
+			background-color: #ff6f00;
 		}
 		.right p.dis {
 			// opacity: 0.5;
