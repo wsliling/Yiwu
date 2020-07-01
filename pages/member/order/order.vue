@@ -30,19 +30,21 @@
 				<view class="btns flex-end">
 					<view class="btn" v-if="item.IsCancel==1" @click.stop="chooseOrders(item.OrderNumber,1)">取消订单</view>
 					<view class="btn" v-if="item.IsDel==1" @click.stop="chooseOrders(item.OrderNumber,2)">删除</view>
-					<view class="btn bg_red" v-if="item.Ispay==1" @click.stop="goUrl('/pages/pay/pay?orderNo='+item.OrderNumber)">立即支付</view>
+					<view class="btn bg_red" v-if="item.Ispay==1" @click.stop="goUrl('/pages/member/orderDetail/orderDetail?id='+item.OrderNumber)">立即支付</view>
 					<view class="btn bg_red" v-if="item.IsComment==1" @click.stop="goPinJia(item.OrderDetails,item.OrderNumber)">去评价</view>
 					<view class="btn bg_red" v-if="item.IsConfirmReceipt==1" @click.stop="chooseOrders(item.OrderNumber,3)">确认收货</view>
 					<view class="btn bg_red" v-if="item.GroupRecordId>0" @click.stop="goUrl('/pages/pintuanOrder/pintuanOrder?id='+item.GroupRecordId)">拼团详情</view>
 				</view>
 			</view>
 		</view>
+		<noData v-if="list.length<1"></noData>
+		<uni-load-more :loadingType="loadingType" v-else></uni-load-more>
 	</view>
 </template>
 
 <script>
 	import {host,post,get,toLogin} from '@/common/util.js';
-	import noData from '@/components/noData.vue'; //暂无数据
+	import noData from '@/components/notData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue';
 	export default {
 		components: {
@@ -185,6 +187,19 @@
 			changeGoods(detailId){
 			  this.goUrl('/pages/member/addComment/addComment?id='+this.changeNumId+'&detailId='+detailId)
 			},
+		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			this.page = 1
+			this.getList();
+			// 停止下拉动画
+			uni.stopPullDownRefresh()
+		},
+		onReachBottom: function() {
+			if (this.loadingType !== 2) {
+				this.page++;
+				this.getList();
+			}
 		}
 	}
 </script>

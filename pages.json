@@ -116,16 +116,6 @@
 				"navigationBarTitleText": "资讯详情"
 			}
         }
-		,{
-		    "path" : "pages/cart/cart",
-		    "style" : {
-				"app-plus": {
-					"titleNView": false, //首页去除原生导航
-					"bounce": "none",
-					"scrollIndicator": "none" //不显示滚动条
-				}
-			}
-		}
         ,{
             "path" : "pages/pay2/pay2",
             "style" : {
@@ -185,10 +175,28 @@
 						"navigationBarTitleText":"店铺认证"
 					}
                 }
+				,{
+					"path" : "cart/cart",
+					"style" : {
+						"navigationBarTitleText":"购物车",
+						"app-plus": {
+							"titleNView": false, //首页去除原生导航
+							"bounce": "none",
+							"scrollIndicator": "none" //不显示滚动条
+						}
+					}
+				}
                 ,{
                     "path" : "order/order",
                     "style" : {
-						"navigationBarTitleText":"我的订单"
+						"navigationBarTitleText":"我的订单",
+						"enablePullDownRefresh":true
+					}
+                }
+                ,{
+                    "path" : "orderDetail/orderDetail",
+                    "style" : {
+						"navigationBarTitleText":"订单详情"
 					}
                 }
                 ,{

@@ -25,7 +25,7 @@
 		<view class="info uni-mb10">
 			<view class="item" @click="tolink('/pages/member/wallet/wallet')">
 				<view>
-					{{wallet[0]}}. <span>{{wallet[1]}}</span>
+					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
 				</view>
 				<span class="text">
 					零钱(元)
@@ -70,7 +70,7 @@
 			</view>
 		</view>
 		<view class="sevice">
-			<view class="item" @click="tolink('/pages/cart/cart')">
+			<view class="item" @click="tolink('/pages/member/cart/cart')">
 				<view class="item-left">
 					<image  src="@/static/my/icon5.png" mode="aspectFit"></image>
 					<view>购物车</view>
@@ -202,7 +202,6 @@
 					 this.NewsCount();
 				} else if (result.code === 2) {
 					let _this = this;
-					// #ifndef MP-WEIXIN
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -214,16 +213,15 @@
 							}
 						}
 					});
-					// #endif
 				}
 			},
 			//跳转
 			tolink(Url) {
-				//if(toLogin()){
+				if(toLogin()){
 					uni.navigateTo({
 						url: Url
 					})
-				//}
+				}
 			},
 			openAttestation(){
 				let urlstr="";
