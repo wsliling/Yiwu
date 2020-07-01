@@ -142,7 +142,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/kefu/kefu')">
 				<view class="item-left">
 					<image  src="@/static/my/icon12.png" mode="aspectFit"></image>
 					<view>客服服务</view>

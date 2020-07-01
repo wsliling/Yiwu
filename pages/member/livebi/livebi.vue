@@ -71,6 +71,7 @@
 					UserId : this.UserId,
 					Token : this.Token,
 					PageSize: this.PageSize,
+					Page:this.Page,
 					Type: this.Type,
 				}).then( result=> {
 					if (result.code === 0) {
@@ -83,7 +84,7 @@
 						}
 						if (this.Page > 1) {
 							this.liveList = this.liveList.concat(
-								result.data
+								result.data.list
 							);
 						}
 						if (result.data.list.length <this.PageSize) {
@@ -111,7 +112,7 @@
 		onReachBottom: function() {
 			if (this.isLoad) {
 				this.loadingType = 1;
-				this.page++;
+				this.Page++;
 				this.getLiveStreamingList();
 			} else {
 				this.loadingType = 2;
