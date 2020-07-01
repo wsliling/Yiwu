@@ -3,7 +3,10 @@
 	<view class="details">
 		<!-- 首图展示 -->
 		<view class="detailsmap">
-			<swiper indicator-dots indicator-active-color="#de1a6e" autoplay class="swiper">
+			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper">
+				<swiper-item v-if="data.Video" :show-fullscreen-btn="false" :show-play-btn="false" show-mute-btn :enable-progress-gesture="false">
+					<video :src="data.Video" class="video"></video>
+				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
 					<image :src="item.PicUrl" mode=""></image>
 				</swiper-item>
@@ -12,10 +15,15 @@
 		</view>
 		<!-- 价格 -->
 		<view class="listpt">
-			<view class="price">
-				<span>¥</span>
-				{{data.Price}}
-			</view>
+			<div class="priceBox">
+				<view class="price">
+					<span>¥</span>
+					{{data.Price}}
+				</view>
+				<view class="o-price">
+					￥{{data.MarketPrice}}
+				</view>
+			</div>
 			<view class="brandname">
 				<span v-if="data.IsPlatform">自营</span>{{data.Name}}
 			</view>
@@ -85,10 +93,11 @@
 				<image class="storeimg" :src="data.ShopData.Logo" mode=""></image>
 				<view class="">
 					<view class="storename">{{data.ShopData.ShopNick}}</view>
-					<view class="flex exp">
+					<!-- <view class="flex exp">
 						<view class="">综合体验</view>
 						<image class="star" src="http://shop.dadanyipin.com/static/hpicons/collect.svg" mode="" v-for="(item,index) in data.ShopData.ServiceScore/20" :key="index"></image>
-					</view>
+					</view> -->
+					<p>{{data.ShopData.Address}}</p>
 				</view>
 			</view>
 			<view class="flex">
@@ -337,6 +346,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.video{
+	width:100%;height:750upx;
+}
 .details {
 	background: #ffffff;
 	padding-bottom:100upx;
@@ -367,6 +379,17 @@ export default {
 	.listpt {
 		padding: 30upx;
 		width: 100%;
+		.priceBox{
+			display:flex;
+			align-items:flex-end;
+		}
+		.o-price{
+			color:#999;
+			font-size:16upx;
+			text-decoration:line-through;
+			line-height:2.1;
+			margin-left:10upx;
+		}
 		.price {
 			font-size: 44upx;
 			font-weight: bold;
@@ -498,6 +521,10 @@ export default {
 				height:16upx;
 				margin: 16upx 0 0 5upx;
 			}
+		}
+		p{
+			color: #888;
+			font-size: 14upx;
 		}
 		.plan{
 			height:48upx;
