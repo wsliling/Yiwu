@@ -98,7 +98,9 @@
 							result.data.forEach(function(item) {
 								item.PubTime=dateUtils.format(item.PubTime);
 								if(item.Islook==0){
-									_this.ReadNoticeInfo(item.id);
+									if(_this.Msgtype!=8){
+										_this.ReadNoticeInfo(item.id);
+									}
 								}
 							})
 						}
@@ -132,11 +134,20 @@
 			},
 			//添加阅读记录
 			async ReadNoticeInfo(Msgid){
-				let result = await post("News/ReadNoticeInfo",{
-					 UserId: this.userId,
-					 Token: this.token,
-					 newsid:Msgid
-				})
+				let result = ""
+				if(this.Msgtype==8){
+					result = await post("Message/ReadMessage",{
+						 UserId: this.userId,
+						 Token: this.token,
+						 ToMemberId:Msgid
+					})
+				}else{
+					result = await post("News/ReadNoticeInfo",{
+						 UserId: this.userId,
+						 Token: this.token,
+						 newsid:Msgid
+					})
+				}
 				if (result.code === 0) {
 					
 				}
