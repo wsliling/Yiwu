@@ -1,37 +1,41 @@
 <!DOCTYPE html>
 <html lang="zh">
 	<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>上传文件</title>
-	<style>
-		*{margin: 0;padding: 0;}
-		.head-btn{text-align: center;margin-top: 50px;}
-		.file {position: relative;display: inline-block;background: #D0EEFF;border: 1px solid #99D3F5;border-radius: 8px;width: 200px;overflow: hidden;color: #1E88C7;text-decoration: none;text-indent: 0;line-height: 40px;font-size: 14px;}
-		.file input {position: absolute;font-size: 200px;right: 0;top: 0;opacity: 0;}
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>上传文件</title>
+		<style>
+			*{margin: 0;padding: 0;}
+		.head-btn {text-align: center;margin-top: 1rem;}
+		.file {padding: 0.5rem 0; position: relative;display: inline-block;background: #fff;border: 0.01rem solid #E6E6E6;border-radius: 0.08rem;width: 5.69rem;;overflow: hidden;color: #333;text-decoration: none;text-indent: 0;line-height: 0.4rem;font-size: 0.32rem;font-weight:bold;}
+		.file input {position: absolute;font-size: 0.2rem;right: 0;top: 0;opacity: 0;}
+		.file img {width:0.35rem;height:0.31rem;}
 		.file:hover {background: #AADFFD;border-color: #78C3F3;color: #004974;text-decoration: none;}
-		.determine{color: #FFFFFF;background-color: #007AFF;display: inline-block;font-size: 20px;border-radius: 5px;padding: 8px 24px;}
-		.showFileName{display: inline-block;height: 30px;min-width: 300px;margin-top: 20px;margin-bottom: 20px;}
-		.btn {display: block;margin: 20px auto;padding: 5px;background-color: #007aff;border: 0;color: #ffffff;height: 40px;width: 200px;border-radius: 5px;}
-		.btn1 {display: block;margin: 20px auto;padding: 5px;background-color: #007aff;border: 0;color: #ffffff;height: 40px;width: 200px;border-radius: 5px;}
+		.determine{color: #FFFFFF;background-color: #007AFF;display: inline-block;font-size: 0.02rem;border-radius: 0.05rem;padding: 0.08rem 0.24ren;}
+		.showFileName{display: inline-block;height: 0.03rem;min-width: 0.3rem;margin-top: 0.02rem;margin-bottom: 0.02rem;}
+		.box{display: flex; justify-content: space-between;}
+		.btn {display: block;margin: 0.03rem auto;background: #fff;border: 0.01rem solid #DE1B6E;color: #DE1B6E;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
+		.btn1 {display: block;margin: 0.03rem auto;border: none;background: #DE1B6E;color: #fff;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
 		.btn-red {background-color: #dd524d;}
 		.btn-yellow {background-color: #f0ad4e;}
-		.desc {padding: 10px;color: #999999;}
+		.desc {padding: 0.01rem;color: #999999;}
 		.body{background-color: #f7f7f7;}
 	</style>
 	</head>
 	<body class="body">
 		<div class="head-btn">
 			<form action="" method="post">
-				<a href="javascript:;" class="file">选择文件
+				<a href="javascript:;" class="file">
+					<img src="../../static/upload.png">
+					<div id="">上传文件</div>
 					<input type="file" name="uploadFile" id="uploadFile">
 				</a>
 			</form>
 			<p class="showFileName"></p>
 
 		</div>
-		<div>
+		<div class="box">
 			<button class="btn" type="button" data-action="redirectTo">确定</button>
 			<button class="btn1" type="button" data-action="navigateBack">取消上传</button>
 		</div>
@@ -39,11 +43,11 @@
 		<script src="./js/jquery-1.8.2.min.js"></script>
 		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
 		<script>
-			var userId=getQuery("userId");
-			var token=getQuery("token");
-			var type=getQuery("type");
-			var filePath="";//选择的文件地址
-			console.log(userId+"参数"+type+"参数"+ token);
+			var userId = getQuery("userId");
+			var token = getQuery("token");
+			var type = getQuery("type");
+			var filePath = ""; //选择的文件地址
+			console.log(userId + "参数" + type + "参数" + token);
 			//取url中的参数值
 			function getQuery(id) {
 				// 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
@@ -68,17 +72,17 @@
 			});
 			$('.btn').click(function(evt) {
 				var formdata = new FormData(); // 创建一个form类型的数据
-				var url=""
-				if(type==0){// 上传舞曲
+				var url = ""
+				if (type == 0) { // 上传舞曲
 					formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
 					formdata.append("UserId", userId);
 					formdata.append("Token", token);
-					url="http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
-				}else{// 上传视频
+					url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
+				} else { // 上传视频
 					formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
 					formdata.append("UserId", userId);
 					formdata.append("Token", token);
-					url="http://ywapi.wtvxin.com/api/Find/UploadVideo"
+					url = "http://ywapi.wtvxin.com/api/Find/UploadVideo"
 				}
 				$.ajax({
 					url: url,
@@ -91,13 +95,13 @@
 					success: function(res) {
 						//更新数据库添入附件的url
 						console.log(JSON.stringify(res))
-						if(res.code==1){
-							if(type==0){
-								localStorage.setItem("fileName", filePath);//上传成功的文件名缓存
-								localStorage.setItem("filePath", res.data);//上传成功返回的服务器地址
-							}else{
-								localStorage.setItem("VfileName", res.data.imgUrl);//上传成功的返回的视频封面图片地址显示出来
-								localStorage.setItem("VfilePath", res.data.path);//上传视频成功返回的服务器地址
+						if (res.code == 1) {
+							if (type == 0) {
+								localStorage.setItem("fileName", filePath); //上传成功的文件名缓存
+								localStorage.setItem("filePath", res.data); //上传成功返回的服务器地址
+							} else {
+								localStorage.setItem("VfileName", res.data.imgUrl); //上传成功的返回的视频封面图片地址显示出来
+								localStorage.setItem("VfilePath", res.data.path); //上传视频成功返回的服务器地址
 							}
 						}
 					},
@@ -110,7 +114,9 @@
 				if (target.tagName === 'BUTTON') {
 					var action = target.getAttribute('data-action');
 					if (action == 'redirectTo') {
-						uni.navigateBack({delta: 1});
+						uni.navigateBack({
+							delta: 1
+						});
 					}
 				}
 			});
@@ -131,12 +137,27 @@
 					if (target.tagName === 'BUTTON') {
 						var action = target.getAttribute('data-action');
 						if (action == 'navigateBack') {
-							uni.navigateBack({delta: 1});
+							uni.navigateBack({
+								delta: 1
+							});
 						}
 					}
 				});
 			});
 
+			(function() {
+				function resizeBaseFontSize() {
+					var rootHtml = document.documentElement,
+						deviceWidth = rootHtml.clientWidth;
+					if (deviceWidth > 768) {
+						deviceWidth = 768;
+					}
+					rootHtml.style.fontSize = deviceWidth / 7.5 + "px";
+				}
+				resizeBaseFontSize();
+				window.addEventListener("resize", resizeBaseFontSize, false); //onresize 事件会在窗口或框架被调整大小时发生。
+				window.addEventListener("orientationchange", resizeBaseFontSize, false); //屏幕旋转事件：onorientationchange
+			})();
 		</script>
 	</body>
 </html>

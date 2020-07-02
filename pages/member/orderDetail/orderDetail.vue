@@ -97,7 +97,7 @@
 	  </button>
 	  <!-- <button open-type="contact" class="WEIXIN_btn"></button> -->
 	  <!-- #endif -->
-      <div class="flex justifyContentEnd bg_fff mt2 bb_fix btnbox">
+      <div class="flex bg_fff mt2 bb_fix btnbox" v-if="info.StatusName=='已发货'||info.StatusName=='已收货'||info.IsCancel==1||info.IsDel==1||info.Ispay==1||info.IsConfirmReceipt==1">
           <p class="btn btn_gray" v-if="info.StatusName=='已发货'||info.StatusName=='已收货'" @click="goUrl('/pages/member/logistics/logistics?orderNo='+info.OrderNumber)">查看物流</p>
           <p class="btn btn_gray" v-if="info.IsCancel==1" @click="chooseOrders(info.OrderNumber,1)">取消订单</p>
           <p class="btn btn_gray" v-if="info.IsDel==1" @click="chooseOrders(info.OrderNumber,2)">删除订单</p>
@@ -385,7 +385,7 @@ export default {
     padding-bottom:300upx;
   }
 .back_col{
-  background-color: #f00!important;
+  background-color: $primary!important;
 }
 .or_list{
   position: relative;top:180upx;left:0;
@@ -409,28 +409,38 @@ export default {
   .bor_tit{
       border-bottom:1upx solid #f5f5f5;
     }
+    .btnbox{
+      align-items:center;
+      justify-content:flex-end;
+      background:#fff;
+      padding:20upx;
+      border-top:1upx solid #e8e8e8;
+    }
   .btn{
-    width:50%;height:88upx;text-align: center;line-height: 88upx;
-    margin-left:20upx;border-radius: 5upx;
-    flex: 1;
+    height:60upx;text-align: center;line-height: 60upx;
+    margin-left:20upx;border-radius: 30upx;
+    padding:0 25upx;
+    flex: 0 0 auto;
+
   }
   .btn_gray{
     color:#858585;
+    border:1upx solid #ccc;
   }
   .btn_red{
-    color:#ffffff;background:#ff3333; 
+    color:#ffffff;background:$primary; 
   }
   .btnbox .btn:nth-child(2){
-    color:#ffffff;background:#ff3333;
+    // color:#ffffff;background:$primary;
   }
   .order_title{
-   border-left:4upx solid #f00;padding-left:20upx;
+   border-left:4upx solid $primary;padding-left:20upx;
  }
  .order_info p{
    padding:5upx 0;
  }
  .copy{
-   padding:0upx 20upx;border:1upx solid red;color:#f00;font-size:20upx;
+   padding:0upx 20upx;border:1upx solid $primary;color:$primary;font-size:20upx;
    line-height:1.5;
    border-radius: 5upx;
    margin-left:10upx;
@@ -438,7 +448,7 @@ export default {
  }
 
  .bg_statu{
-   width:750upx;background: #ff3333;
+   width:750upx;background: $primary;
    height:245upx;position: absolute;top:0;left:0;
    color:#ffffff;
  }

@@ -18,12 +18,12 @@
 				<view class="item" v-for="(item,index) in cartlist" :key="index">
 					<view class="item__hd flex flex-start">
 						<view :class="['IconsCK IconsCK-radio',item.select?'checked':'']" @click="shopcheck(index)"></view>
-						<view class="shop flex flex-start" @click="golink('/pages/brand/shopIndex/shopIndex?ShopId='+item.ShopId)">
+						<view class="shop flex flex-start" @click="golink('/pages/shopSon/shopHome/shopHome?shopId='+item.ShopId)">
 							<view class="iconfont icon-dianpu"></view>
 							<view class="shopName uni-ellipsis">{{item.ShopName}}</view>
 							<view class="uni-icon uni-icon-arrowright"></view>
 						</view>
-						<view class="btn_receive" @click="showCoupon(item.ShopId)">领券</view>
+						<!-- <view class="btn_receive" @click="showCoupon(item.ShopId)">领券</view> -->
 					</view>
 					<view class="column bg_fff">
 						<view class="item flex-between" v-for="(item2,index2) in item.ProData" :key="index2">
@@ -135,7 +135,7 @@
 </template>
 
 <script>
-	import {post,get} from '@/common/util.js';
+	import {post,get,debounce} from '@/common/util.js';
 	import uniNumberBox from '@/components/uni-number-box/uni-number-box.vue';
 	import uniPopup from '@/components/uni-popup.vue';
 	import noData from '@/components/noData.vue'; //暂无数据
@@ -209,7 +209,7 @@
 			gotoDetail(pid,Isinvalid){
 				if(Isinvalid!=2){
 					uni.navigateTo({
-						url:'/pages/homePage/details?id='+pid
+						url:'/pages/shopSon/product/productDetails?proId='+pid
 					})
 				}else{
 					uni.showToast({
@@ -221,17 +221,20 @@
 			},
 			//加减商品的数量
 			change(msg){
-				let number=msg[0];
-				let index1=msg[1];
-				let index2=msg[2];
-				if(this.cartlist[index1].ProData[index2].Isinvalid==0){
-					let dataArr=[],json = {};
-					json["CartId"] = this.cartlist[index1].ProData[index2].Id;
-					json["Total"] = number;
-					json["SpecText"] = this.cartlist[index1].ProData[index2].SpecText;
-					dataArr.push(json);
-					this.eaditCart(dataArr,index1,index2,number);
-				}
+				debounce(()=>{
+					let number=msg[0];
+					let index1=msg[1];
+					let index2=msg[2];
+    				console.log('+++')
+					if(this.cartlist[index1].ProData[index2].Isinvalid==0){
+						let dataArr=[],json = {};
+						json["CartId"] = this.cartlist[index1].ProData[index2].Id;
+						json["Total"] = number;
+						json["SpecText"] = this.cartlist[index1].ProData[index2].SpecText;
+						dataArr.push(json);
+						this.eaditCart(dataArr,index1,index2,number);
+					}
+				})
 			},
 			//编辑商品规格数量
 			async eaditCart(Arr,index1,index2,number) {

@@ -243,7 +243,7 @@
                 ,{
                     "path" : "withdraw/withdraw",
                     "style" : {
-						"navigationBarTitleText":"提现"
+						"navigationBarTitleText":"余额提现"
 					}
                 }
                 ,{
@@ -370,6 +370,13 @@
 				    "path" : "aboutUs/aboutUs",
 				    "style" : {
 						"navigationBarTitleText":"关于我们"
+					}
+				}
+				,{
+					"path":"kefu/kefu",
+					"style": {
+						"navigationBarTitleText": "在线客服",
+						"navigationBarBackgroundColor": "#ffffff"
 					}
 				}
             ]

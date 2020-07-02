@@ -25,7 +25,7 @@
 		<view class="info uni-mb10">
 			<view class="item" @click="tolink('/pages/member/wallet/wallet')">
 				<view>
-					{{wallet[0]}}. <span>{{wallet[1]}}</span>
+					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
 				</view>
 				<span class="text">
 					零钱(元)
@@ -119,6 +119,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
+			<!-- #ifdef APP-PLUS -->
 			<view class="item">
 				<view class="item-left">
 					<image  src="@/static/my/icon16.png" mode="aspectFit"></image>
@@ -126,6 +127,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
+			<!-- #endif -->
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')">
 				<view class="item-left">
 					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>
@@ -140,7 +142,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/kefu/kefu')">
 				<view class="item-left">
 					<image  src="@/static/my/icon12.png" mode="aspectFit"></image>
 					<view>客服服务</view>
@@ -202,7 +204,6 @@
 					 this.NewsCount();
 				} else if (result.code === 2) {
 					let _this = this;
-					// #ifndef MP-WEIXIN
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -214,16 +215,15 @@
 							}
 						}
 					});
-					// #endif
 				}
 			},
 			//跳转
 			tolink(Url) {
-				//if(toLogin()){
+				if(toLogin()){
 					uni.navigateTo({
 						url: Url
 					})
-				//}
+				}
 			},
 			openAttestation(){
 				let urlstr="";

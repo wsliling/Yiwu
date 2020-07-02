@@ -2,34 +2,52 @@
 	<!-- 加入官方交流 -->
 	<view class="interflow">
 		<view class="inter-img">
-			<image src="../../../static/jiaol.png" mode=""></image>
+			<image :src="list.WebLogo" mode=""></image>
 		</view>
 		<view class="inter-box">
 			<view class="flex-between inter-bott">
 				<view class="txt30">官方微博</view>
-				<view class="txt">壹舞</view>
+				<view class="txt">{{list.Microblog}}</view>
 			</view>
 			<view class="flex-between inter-bott">
 				<view class="txt30">官方微信</view>
-				<image src="../../../static/jiaol1.png" mode=""></image>
+				<image :src="list.Wechat" mode=""></image>
 			</view>
 			<view class="flex-between inter-bott">
 				<view class="txt30">官方QQ</view>
-				<view class="txt">3278611209</view>
+				<view class="txt">{{list.WebQQ}}</view>
 			</view>
 			<view class="flex-between inter-bott">
 				<view class="txt30">Facebook</view>
-				<view class="txt">https://yiwu.com</view>
+				<view class="txt">{{list.FaceBook}}</view>
 			</view>
 			<view class="flex-between inter-bott">
 				<view class="txt30">INS</view>
-				<view class="txt">https://yiwu.com</view>
+				<view class="txt">{{list.INS}}</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import { post } from '@/common/util.js';
+	export default {
+		data(){
+			return {
+				list: {},
+			}
+		},
+		onLoad() {
+			this.getWebConfiguration()
+		},
+		methods:{
+			getWebConfiguration(){
+				post('System/GetWebConfiguration').then( res=> {
+					this.list = res.data
+				})
+			}
+		}
+	}
 </script>
 
 <style lang="scss" scoped>
