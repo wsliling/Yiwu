@@ -192,6 +192,9 @@ export default {
 		},
 		Allwithdraw() {
 			this.amount = this.Wallet;
+			if(this.wType == 1){
+				this.amount = this.SumIncome;
+			}
 		},
 		//佣金提现
 		DrawMoneyApply() {

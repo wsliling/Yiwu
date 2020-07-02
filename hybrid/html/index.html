@@ -7,9 +7,6 @@
 		<title>上传文件</title>
 		<style>
 			*{margin: 0;padding: 0;}
-		.nav {display: flex;font-size:0.36rem;width:7.5rem;color: #333;height:1.28rem;font-weight:bold;line-height: 1.28rem;background: #fff;padding: 0 0.3rem;border-bottom: 0.01rem solid #f2f2f2;}
-		.nav img {width:0.36rem;height:0.36rem;padding-top: 0.5rem;}
-		.nav div {padding-top: 0.2rem;padding-left: 36%;}
 		.head-btn {text-align: center;margin-top: 1rem;}
 		.file {padding: 0.5rem 0; position: relative;display: inline-block;background: #fff;border: 0.01rem solid #E6E6E6;border-radius: 0.08rem;width: 5.69rem;;overflow: hidden;color: #333;text-decoration: none;text-indent: 0;line-height: 0.4rem;font-size: 0.32rem;font-weight:bold;}
 		.file input {position: absolute;font-size: 0.2rem;right: 0;top: 0;opacity: 0;}
@@ -27,10 +24,6 @@
 	</style>
 	</head>
 	<body class="body">
-		<div class="nav">
-			<img src="../../static/leftarrow.png">
-			<div class="">上传</div>
-		</div>
 		<div class="head-btn">
 			<form action="" method="post">
 				<a href="javascript:;" class="file">
@@ -70,9 +63,9 @@
 
 			$(".file").on("change", "input[type='file']", function() {
 				filePath = $(this).val();
-				let lastname = localStorage.getItem("fileAddress");
-				if (lastname != "") {
-					$(".showFileName").html(lastname);
+				// let lastname = localStorage.getItem("fileAddress");
+				if (filePath != "") {
+					$(".showFileName").html(filePath);
 				} else {
 					$(".showFileName").html("");
 				}

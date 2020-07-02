@@ -25,9 +25,9 @@
 						<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<view class="info flex1 flex-between">
-						<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
+						<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
-							<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 							<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
@@ -130,6 +130,7 @@
 				isShowSelect:false,
 				isCollect:false,//是否收藏
 				playID:"",//当前播放
+				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
 				itemdata:{},
@@ -144,6 +145,8 @@
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			this.playID=uni.getStorageSync("playID")
+			this.playIDtype=uni.getStorageSync("playIDtype")
 			// #ifndef APP-PLUS
 			this.pageType=this.$mp.query.type;
 			// #endif
