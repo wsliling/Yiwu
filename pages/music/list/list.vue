@@ -5,13 +5,19 @@
 			</view>
 		</view>
 		<view class="flex-end list_hd p_re pd15">
-			<image :src="pageType==0?'/static/icon_rec.png':pageType==1?'/static/icon_new.png':'/static/icon_hot.png'"></image>
+			<image :src="pageType==0?'/static/icon_rec.png':pageType==1?'/static/icon_new.png':pageType==2?'/static/icon_hot.png':''"></image>
 			<text>{{pageTitle}}</text>
 		</view>
 		<view class="bgbox">
-			<view class="topplay flex-start" @click="toplaylist(datalist[0].Id,0)">
+			<view class="topplay flex-start" @click="toplaylist(datalist[0].Id,0)" v-if="pageType!=3">
 				<image src="/static/play4.png"></image>
 				<text>播放全部</text>
+			</view>
+			<view class="search">
+				<view class="seachbox">
+					<text class="uni-icon uni-icon-search"></text>
+					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>
+				</view>
 			</view>
 			<view class="musiclist pd15">
 				<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
@@ -110,7 +116,8 @@
 			return {
 				userId: "",
 				token: "",
-				pageType:0,//0每日推荐，1最新推荐，2最热推荐
+				searchText:'',
+				pageType:0,//0每日推荐，1最新推荐，2最热推荐,3搜索舞曲
 				pageTitle:"",//页面名称
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
@@ -144,8 +151,10 @@
 				this.pageTitle="每日推荐";
 			}else if(this.pageType==1){
 				this.pageTitle="最新推荐";
-			}else{
+			}else if(this.pageType==2){
 				this.pageTitle="最热推荐";
+			}else if(this.pageType==3){
+				this.pageTitle="搜索舞曲";
 			}
 			uni.setNavigationBarTitle({
 				title: this.pageTitle
@@ -153,36 +162,42 @@
 			this.workeslist();
 		},
 		methods: {
+			// 搜索完成
+			searchConfirm(val){
+				this.searchText = val;
+				this.page=1;
+				this.hasData=false;
+				this.noDataIsShow=false;
+				this.workeslist();
+			},
+			// 取消搜索
+			searchClear(){
+				this.searchText = '';
+				this.page=1;
+				this.hasData=false;
+				this.noDataIsShow=false;
+				this.workeslist();
+			},
 			/*获取列表*/
 			async workeslist() {
 				var url=""
-				var param={}
+				var param={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize,
+						SearchKey:this.searchText
+					}
 				if(this.pageType==0){
 					url="DanceMusic/EverydayRecommend";
-					param={
-						UserId: this.userId,
-						Token: this.token,
-						page: this.page,
-						pageSize: this.pageSize
-					}
 				}else if(this.pageType==1){
 					url="DanceMusic/DanceMusicList";
-					param={
-						UserId: this.userId,
-						Token: this.token,
-						page: this.page,
-						pageSize: this.pageSize,
-						IsRecommend:1
-					}
-				}else{
+					param.IsRecommend=1;
+				}else if(this.pageType==2){
 					url="DanceMusic/DanceMusicList";
-					param={
-						UserId: this.userId,
-						Token: this.token,
-						page: this.page,
-						pageSize: this.pageSize,
-						IsHot:1
-					}
+					param.IsHot=1;
+				}else if(this.pageType==3){
+					url="DanceMusic/DanceMusicList";
 				}
 				let result = await post(url, param);
 				if (result.code === 0) {

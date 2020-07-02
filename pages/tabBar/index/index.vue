@@ -3,7 +3,8 @@
 		<view class="head">
 			<view class="index_head flex-between">
 				<view class="seachbox">
-					<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
+					<text class="uni-icon uni-icon-search"></text>
+					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm"></ans-input>
 				</view>
 				<view class="head_r">
 					<view class="scan uni-icon uni-icon-scan"></view>
@@ -81,7 +82,7 @@
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-											<view class="txt_info reply"@click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
+											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
 											<view class="txt_info share"></view>
 										</view>
 										<view class="ft_r">
@@ -90,12 +91,14 @@
 									</view>
 								</view>
 								<view class="media-comment" v-if="item.CommentNum>0">
-									<view class="comment-item" v-if="e<4" v-for="(i,e) in item.EvaluateList" :key="e">
-										<text class="name">{{i.MemberName||'匿名用户'}}：</text>
-										<text class="con">
-											{{i.Comment}}
-										</text>
-									</view>
+									<block v-for="(i,e) in item.EvaluateList" :key="e">
+										<view class="comment-item" v-if="e<4">
+											<text class="name">{{i.MemberName||'匿名用户'}}：</text>
+											<text class="con">
+												{{i.Comment}}
+											</text>
+										</view>
+									</block>
 									<view class="more c_999" v-if="item.CommentNum>4" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 										查看全部评论
 									</view>
@@ -220,16 +223,19 @@
 <script>
 	import {post,get,toLogin} from '@/common/util.js';
 	import noData from '@/components/noData.vue'; //暂无数据
+	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {
 		components: {
 			noData,
-			uniLoadMore
+			uniLoadMore,
+			ansInput
 		},
 		data() {
 			return {
 				userId: "",
 				token: "",
+				searchText:'',
 				scrollLeft: 0,
 				tabIndex:0,
 				tabnav:[
@@ -318,6 +324,43 @@
 				this.GetJiGouList();
 				this.GetCourseList();
 			},
+			// 搜索完成
+			searchConfirm(val){
+				this.searchText = val;
+				this.page=1;
+				switch(this.tabIndex*1){
+					case 0:
+						this.datalist=[],////推荐视频
+						this.datalistPage=1,
+						this.datalistLoadingType=0,//0加载前，1加载中，2没有更多了
+						this.IndexRecommend();
+						break;
+					case 1:
+						this.NewsList=[],//资讯
+						this.NewsListPage=1,
+						this.NewsListLoadingType=0,//0加载前，1加载中，2没有更多了
+						this.YWNewsList();
+						break;
+					case 2:
+						this.TeacherList=[],//名师
+						this.TeacherListPage=1,
+						this.TeacherListLoadingType=0,
+						this.GetTeacher();
+						break;
+					case 3:
+						this.JiGouList=[],//机构
+						this.JiGouListPage=1,
+						this.JiGouListLoadingType=0,
+						this.GetJiGouList();
+						break;
+					case 4:
+						this.CourseList=[],//课程
+						this.CourseListPage=1,
+						this.CourseListLoadingType=0;
+						this.GetCourseList();
+						break;
+				}
+			},
 			//跳转
 			tolink(Url,islogin) {
 				if(islogin=="login"){
@@ -403,6 +446,7 @@
 				let result = await post("Find/IndexRecommend", {
 					UserId:this.userId,
 					Token:this.token,
+					SearchKey:this.searchText,
 					page:this.datalistPage,
 					pageSize:this.pageSize
 				});
@@ -427,6 +471,7 @@
 				let result = await post("News/YWNewsList", {
 					UserId:this.userId,
 					Token:this.token,
+					Keywords:this.searchText,
 					page:this.NewsListPage,
 					pageSize:this.pageSize
 				});
@@ -451,6 +496,7 @@
 				let result = await post("User/GetDancerList", {
 					UserId:this.userId,
 					Token:this.token,
+					SearchKey:this.searchText,
 					page:this.TeacherListPage,
 					pageSize:this.pageSize
 				});
@@ -475,6 +521,7 @@
 				let result = await post("User/GetJiGouList", {
 					UserId:this.userId,
 					Token:this.token,
+					SearchKey:this.searchText,
 					page:this.JiGouListPage,
 					pageSize:this.pageSize
 				});
@@ -499,6 +546,7 @@
 				let result = await post("Course/GetCourseOutlineList", {
 					UserId:this.userId,
 					Token:this.token,
+					SearchKey:this.searchText,
 					page:this.CourseListPage,
 					pageSize:this.pageSize
 				});
