@@ -15,7 +15,7 @@
 		</view>
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-Userlist bg_fff" v-if="hasData">
-			<view class="user-item" v-for="(item,index) in datalist" :key="index">
+			<view class="user-item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 				<view class="flex-between">
 					<view class="author flex-start">
 						<view class="tx">
