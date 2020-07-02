@@ -5,7 +5,7 @@
 			confirm-type="search" @confirm="onConfirm" :style="'text-align:'+align"
 			class="input"
 		>
-		<div class="clear" @click="content=''" v-if="content">
+		<div class="clear" @click="clear" v-if="content">
 			<uni-icons color="#ccc" class="my-close" size="20" type="clear" />
 		</div>
 	</div>
@@ -24,7 +24,7 @@
 			},
 			placeholder:{
 				type:String,
-				default:'搜索内容'
+				default:'请输入搜索内容'
 			},
 			align:{
 				type:String,
@@ -63,7 +63,11 @@
 				if(this.isNull(this.content)) {
 					console.log('我是空')
 				}
-				this.$emit("onConfirm",this.content)
+				this.$emit("confirm",this.content)
+			},
+			clear(){
+				this.content='';
+				this.$emit("clear",this.content)
 			}
 		}
 	}

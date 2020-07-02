@@ -10,13 +10,13 @@
 					<view class="title">
 						{{item.title}}
 					</view>
-					<view class="uni-list-cell-navigate uni-navigate-right" @click="tolink('/pages/message/msgDetail/msgDetail?id='+item.id)">
+					<view class="uni-list-cell-navigate uni-navigate-right">
 						<view class="desc text-line2">
 							<uParse :content="item.Memo" />
 						</view>
 					</view>
 				</view>
-				<view v-else class="txtbox">
+				<view v-else class="txtbox" @click="tolink('/pages/chat/chat?id='+item.MemberId)">
 					<view class="title">
 						{{item.title}}
 					</view>
@@ -61,7 +61,7 @@
 				page: 1,
 				pageSize: 10,
 				datalist:{},
-				Id:0,
+				id:0,//他人会员id，用于聊天
 			}
 		},
 		onLoad: function(e) {
@@ -69,7 +69,7 @@
 			this.token = uni.getStorageSync("token");
 			this.keyname=e.keyname;
 			this.Msgtype=e.type;
-			this.shopId=e.shopId;
+			this.id=e.id;
 		},
 		onShow(){
 			if (toLogin()) {
@@ -87,7 +87,7 @@
 					PageSize: this.pageSize,
 					UserId: this.userId,
 					Token: this.token,
-					MsgType: this.Msgtype,
+					MsgType: 8,
 				});
 				if (result.code === 0) {
 					let _this=this;
@@ -99,7 +99,7 @@
 								item.PubTime=dateUtils.format(item.PubTime);
 								if(item.Islook==0){
 									if(_this.Msgtype!=8){
-										_this.ReadNoticeInfo(item.id);
+										// _this.ReadNoticeInfo(item.id);
 									}
 								}
 							})

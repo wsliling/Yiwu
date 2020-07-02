@@ -63,9 +63,9 @@
 
 			$(".file").on("change", "input[type='file']", function() {
 				filePath = $(this).val();
-				let lastname = localStorage.getItem("fileAddress");
-				if (lastname != "") {
-					$(".showFileName").html(lastname);
+				// let lastname = localStorage.getItem("fileAddress");
+				if (filePath != "") {
+					$(".showFileName").html(filePath);
 				} else {
 					$(".showFileName").html("");
 				}

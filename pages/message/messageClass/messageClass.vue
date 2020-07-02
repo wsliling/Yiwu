@@ -2,7 +2,7 @@
 	<view>
 		<view class="uni-list" v-if="hasData">
 			<block v-for="(item,index) in TypeList" :key="index">
-				<view class="uni-list-cell" @click="tolink('/pages/message/messageList/messageList?type='+item.MsgType+'&keyname='+item.MsgName+'&shopId='+item.ShopId)">
+				<view class="uni-list-cell" @click="goDetail(item)">
 					<view class="uni-media-list">
 						<view class="uni-media-list-logo">
 							<image class="img" :src="item.TypeImg" mode="aspectFill"></image>
@@ -85,6 +85,14 @@
 						icon: "none",
 						duration: 2000
 					});
+				}
+			},
+			goDetail(item){
+				console.log(item)
+				if(item.MsgType!=8){
+					this.tolink('/pages/message/messageList/messageList?type='+item.MsgType+'&keyname='+item.MsgName+'&shopId='+item.ShopId)
+				}else{
+					this.tolink('/pages/message/chatList/chatList?id='+item.MemberId+'&keyname='+item.MsgName)
 				}
 			},
 			//跳转

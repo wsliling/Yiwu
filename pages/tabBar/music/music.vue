@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="head">
-			<view class="search">
+			<view class="search" @click="tolink('/pages/music/list/list?type=3')">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search">请输入你想搜索的舞曲</text>
 				</view>
