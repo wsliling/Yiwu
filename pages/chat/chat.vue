@@ -102,36 +102,55 @@
 					Token: this.token,
 					ToMemberId:this.id
 				})
-
-				uni.onSocketOpen((res)=>{
-						console.log('成功连接',res)
-						this.getMsg();
-				})
-				uni.onSocketError((err)=>{
-						console.log('失败连接',err)
-				})
-				uni.onSocketClose((res)=>{
-						console.log('关闭连接',res)
-				})
+				// 创建连接
 				uni.connectSocket({
 					url:'ws://ywapi.wtvxin.com/WebSocketServer.ashx?Signature='+res.data.Signature,
 					complete(err){
-						console.log(err)
+						console.log(err,res.data.Signature)
 					}
 				})
-				uni.onSocketMessage((res)=>{
-					console.log('收到的消息',res)
+				uni.onSocketOpen((ress)=>{
+					console.log('成功连接',ress)
+					this.sendSocketMsg({MsgType: 1})
+					this.getMsg();
+				})
+				uni.onSocketError((err)=>{
+						console.log('失败连接',err)
+						toast('系统错误，请重新尝试')
+						setTimeout(()=>{
+							uni.navigateBack();
+						},1500)
+				})
+				//code=99,是错误，也包过正常错误。
+				// code=1 发起登录、登录成功、
+				// code=2 发起退出、需要登录
+				// code=3 聊天
+				// code=0 服务反馈处理了。
+				uni.onSocketMessage((ress)=>{
+					console.log('收到的消息',ress)
+        			let res = JSON.parse(ress.data);
+					if(res.code==3||res.code==0){
+						this.getMsg();
+					}
 				})
 			},
-			async send(){
-				await post('Message/SendMessage',{
+			// 发送socket
+			sendSocketMsg(data){
+				uni.sendSocketMessage({ data: JSON.stringify(data) });
+			},
+			async send(data){
+				const res = await post('Message/SendMessage',{
 					UserId: this.userId,
 					Token: this.token,
 					ToMemberId:this.id,
 					Info:this.Comment
 				})
+				this.sendSocketMsg({
+					MsgType:3,
+					Id:res.data.Id,
+					Info:this.Comment
+				})
 				this.Comment='';
-				this.getMsg();
 			},
 			async getMsg(){
 				const res = await post('Message/ReadMessage',{
@@ -157,7 +176,6 @@
 						scrollTop: 99999999999,
 						duration:100
 					})
-					// this.pageToBottom()
 				})
 			},
 			//显示评论按钮
