@@ -18,7 +18,8 @@
 		<view style="height: 80px;"></view>
 		<view class="search">
 			<view class="seachbox">
-				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
+				<text class="uni-icon uni-icon-search"></text>
+				<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>
 			</view>
 		</view>
 		<view class="videolist" v-if="hasData">
@@ -74,6 +75,7 @@
 			return {
 				userId: "",
 				token: "",
+				searchText:'',
 				scrollLeft: 0,
 				tabIndex:0,
 				tabnav:[
@@ -126,6 +128,21 @@
 		   }
 		 },
 		methods: {
+			// 搜索完成
+			searchConfirm(val){
+				this.searchText = val;
+				this.page=1;
+				this.hasData=false;
+				this.noDataIsShow=false;
+				this.VideoList();
+			},
+			searchClear(){
+				this.searchText = '';
+				this.page=1;
+				this.hasData=false;
+				this.noDataIsShow=false;
+				this.VideoList();
+			},
 			//跳转
 			tolink(Url,islogin) {
 				if(islogin=="login"){
@@ -173,39 +190,21 @@
 				uni.showLoading({
 				  title: '加载中' //数据请求前loading
 				})
-				var json={};
+				var json={
+						"UserId": this.userId,
+						"Token": this.token,
+						"page": this.page,
+						"pageSize": this.pageSize,
+						SearchKey:this.searchText
+					};
 				if(this.tabIndex==0){
-					json={
-						"UserId": this.userId,
-						"Token": this.token,
-						"page": this.page,
-						"pageSize": this.pageSize,
-						"IsRecommend":1,
-					}
+					json.IsRecommend=1;
 				}else if(this.tabIndex==1){
-					json={
-						"UserId": this.userId,
-						"Token": this.token,
-						"page": this.page,
-						"pageSize": this.pageSize,
-						"IsNews":1,
-					}
+					json.IsNews=1;
 				}else if(this.tabIndex==2||this.tabIndex==3||this.tabIndex==4){
-					json={
-						"UserId": this.userId,
-						"Token": this.token,
-						"page": this.page,
-						"pageSize": this.pageSize,
-						"ClassId":this.tabnav[this.tabIndex].Id,
-					}
+					json.ClassId=this.tabnav[this.tabIndex].Id;
 				}else if(this.tabIndex==5){
-					json={
-						"UserId": this.userId,
-						"Token": this.token,
-						"page": this.page,
-						"pageSize": this.pageSize,
-						"IsALL":1,
-					}
+					json.IsALL=1;
 				}	
 				let result =await post("Find/VideoList",json);
 				if(result.code==0){
