@@ -9,12 +9,12 @@
 			*{margin: 0;padding: 0;}
 		.head-btn {text-align: center;margin-top: 1rem;}
 		.file {padding: 0.5rem 0; position: relative;display: inline-block;background: #fff;border: 0.01rem solid #E6E6E6;border-radius: 0.08rem;width: 5.69rem;;overflow: hidden;color: #333;text-decoration: none;text-indent: 0;line-height: 0.4rem;font-size: 0.32rem;font-weight:bold;}
-		.file input {position: absolute;font-size: 0.2rem;right: 0;top: 0;opacity: 0;}
+		.file input {position: absolute;font-size: 0.2rem;right: 0;top: 0;opacity: 0;width: 100%;height: 100%;}
 		.file img {width:0.35rem;height:0.31rem;}
 		.file:hover {background: #AADFFD;border-color: #78C3F3;color: #004974;text-decoration: none;}
 		.determine{color: #FFFFFF;background-color: #007AFF;display: inline-block;font-size: 0.02rem;border-radius: 0.05rem;padding: 0.08rem 0.24ren;}
-		.showFileName{display: inline-block;height: 0.03rem;min-width: 0.3rem;margin-top: 0.02rem;margin-bottom: 0.02rem;}
-		.box{display: flex; justify-content: space-between;}
+		.showFileName{display: inline-block;min-width: 0.3rem;margin-top: 0.02rem;margin-bottom: 0.02rem;font-size: .3rem;word-break: break-all;}
+		.box{display: flex; justify-content: space-between;margin-top: .3rem;}
 		.btn {display: block;margin: 0.03rem auto;background: #fff;border: 0.01rem solid #DE1B6E;color: #DE1B6E;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
 		.btn1 {display: block;margin: 0.03rem auto;border: none;background: #DE1B6E;color: #fff;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
 		.btn-red {background-color: #dd524d;}
@@ -63,7 +63,6 @@
 
 			$(".file").on("change", "input[type='file']", function() {
 				filePath = $(this).val();
-				// let lastname = localStorage.getItem("fileAddress");
 				if (filePath != "") {
 					$(".showFileName").html(filePath);
 				} else {
