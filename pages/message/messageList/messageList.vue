@@ -16,6 +16,18 @@
 						</view>
 					</view>
 				</view>
+				<!-- 私信消息 -->
+				<view v-else-if="Msgtype==8" class="txtbox p_re">
+					<view class="dian" v-if="item.Islook==0"></view>
+					<view class="title">
+						【{{item.NickName}}】
+					</view>
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
+						<view class="desc text-line2">
+							<uParse :content="item.Memo" />
+						</view>
+					</view>
+				</view>
 				<view v-else class="txtbox">
 					<view class="title">
 						{{item.title}}

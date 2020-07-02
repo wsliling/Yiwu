@@ -97,11 +97,13 @@ export default {
 	}
 	.live-item {
 		display: flex;
-		justify-content: space-between;
+		// justify-content: space-between;
 		background: #fff;
 		padding: 30upx 0 30upx 20upx;
+		width: 100%;
 		.live-box {
 			padding-right: 25upx;
+			width: 33%;
 			image {
 				width: 198upx;
 				height: 198upx;
