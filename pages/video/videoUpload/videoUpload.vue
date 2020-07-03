@@ -74,10 +74,16 @@
 				});
 				if(res.code==0){
 					uni.showToast({
-						title:"发布成功"
+						title:"发布成功",
 					})
 					uni.setStorageSync("fileName","");//清空缓存
 					uni.setStorageSync("filePath","")
+					setTimeout(()=>{
+						uni.navigateBack({
+						    delta: 1
+						});
+					},1000)
+					
 				}else{
 					uni.showToast({
 						title:res.msg,
