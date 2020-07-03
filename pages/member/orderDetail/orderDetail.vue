@@ -18,7 +18,7 @@
             </div>
         </div> -->
         <div class="pp2 flex justifyContentBetween radius flexWrap flexAlignEnd bg_fff">
-            <image src="http://jyy.wtvxin.com/static/images/icons/lc.png" mode="aspectFit" alt="" class="icon_lc"></image>
+            <image src="http://jyy.wtvxin.com/static/images/icons/lc.png" mode="widthFix" alt="" class="icon_lc"></image>
             <div class="flex1">
                 <p>
                     <span>{{info.ContactName}}</span><span class="mr5">{{info.Tel}}</span>
@@ -28,7 +28,7 @@
         </div>
         <div class="or_item bg_fff radius">
             <div class="pp3 flex bor_tit" v-for="(item, index) in info.OrderDetails" :key="index" @click.stop="goUrl('/pages/homePage/details?id='+item.ProductId)">
-                <image mode="aspectFit" :src="item.PicNo" alt="" class="shop mr2" />
+                <image mode="aspectFill" :src="item.PicNo" alt="" class="shop mr2" />
                 <div class="flex1 flex  mr2">
                     <div class="or_left flex flexColumn justifyContentBetween">
                       <p>{{item.ProductName}}</p>
