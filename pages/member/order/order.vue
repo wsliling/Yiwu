@@ -16,7 +16,7 @@
 					<view class="color_red font26">{{item.StatusName}}</view>
 				</view>
 				<view class="flex-between mt2" v-for="(ite, ind) in item.OrderDetails" :key="ind">
-					<image :src="ite.PicNo" mode="aspectFit" class="img mr2"></image>
+					<image :src="ite.PicNo" mode="aspectFill" class="img mr2"></image>
 					<view class="flex1 order_info">
 						<view class="proname uni-ellipsis2">{{ite.ProductName}}</view> 
 						<view class="c_999 font18">{{ite.SpecText}}</view> 

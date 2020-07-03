@@ -10,13 +10,13 @@
 								<text>{{item.Info}}</text>
 							</view>
 						</view>
-						<view class="cu-avatar" :style="`background-image:url(${item.Avatar});`"></view>
+						<view class="cu-avatar" :style="'background-image:url('+item.Avatar+');'"></view>
 					</view>
 				</block>
 				<block v-else>
 					<uni-view class="cu-info round" v-if="item.AddTime">{{item.AddTime}}</uni-view>
 					<view class="cu-item">
-						<view class="cu-avatar" :style="`background-image:url(${item.Avatar});`"></view>
+						<view class="cu-avatar" :style="'background-image:url('+item.Avatar+');'"></view>
 						<view class="main">
 							<view class="content">
 								<text>{{item.Info}}</text>
@@ -27,24 +27,24 @@
 			</block>
 			<!-- <view class="cu-item self">
 				<view class="main">
-					<!-- #ifdef MP-WEIXIN --1>
+					<!-1- #ifdef MP-WEIXIN --1>
 					<image src="/static/of/banner.jpg" mode="widthFix"></image>
-					<!-- #endif -->
+					<!-1- #endif -->
 					<!-- #ifndef MP-WEIXIN --1>
 					<img src="/static/of/banner.jpg" class="img">
-					<!-- #endif --1>
+					<!-1- #endif --1>
 				</view>
 				<view class="cu-avatar" style="background-image:url(/static/default.png);"></view>
 			</view>
 			<view class="cu-item">
 				<view class="cu-avatar" style="background-image:url(/static/of/2.png);"></view>
 				<view class="main">
-					<!-- #ifdef MP-WEIXIN --1>
+					<!-1- #ifdef MP-WEIXIN --1>
 					<image src="/static/of/3.png" mode="widthFix"></image>
-					<!-- #endif -->
-					<!-- #ifndef MP-WEIXIN --1>
+					<!-1- #endif -1->
+					<!-1- #ifndef MP-WEIXIN -1->
 					<img src="/static/of/3.png" class="img">
-					<!-- #endif --1>
+					<!-1- #endif --1>
 				</view>
 			</view> -->
 		</view>

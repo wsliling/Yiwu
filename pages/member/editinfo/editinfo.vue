@@ -103,4 +103,10 @@ export default {
     width:100%;height:100%;border-radius:50%;
   }
 }
+.item_r{
+	flex:0 0 auto;
+	input{
+	width:515upx;
+	}
+}
 </style>

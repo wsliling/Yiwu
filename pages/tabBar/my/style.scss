@@ -68,9 +68,13 @@
 		.user-right{
 			width: 200upx;
 			height: 60upx;
+			text-align:right;
 			image{
 				width: 100%;
 				height: 60upx;
+			}
+			.vip{
+				width:40upx;height:40upx;
 			}
 		}
 	}

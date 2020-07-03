@@ -4,13 +4,18 @@
 			<view class="iconfont icon-wushuju"></view>
 			<!-- <image class="img" src="http://www.sc-mall.nethttp://shop.dadanyipin.com/static/noCart.png" mode="aspectFill"></image> -->
 		</view>
-		<view class="tips uni-center">暂无数据 </view>
+		<view class="tips uni-center">暂无数据</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		props: ["isShow"],
+		props: {
+			isShow:{
+				type:[Boolean,String,Number],
+				default:false,
+			}
+		},
 		data() {
 			return {
 				

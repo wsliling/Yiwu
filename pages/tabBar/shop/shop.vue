@@ -50,7 +50,10 @@
 			</view>
 		</view>
 		<!-- 正在直播 -->
-		<shopItem  v-for="(val,key) in proList" :key="key" :item="val"></shopItem>
+		<block v-for="(val,key) in proList" :key="key" :item="val">		
+			<shopItem v-if="val.ProductList.length"></shopItem>
+
+		</block>
 		<uni-load-more :loadingType="loadingType"></uni-load-more>
 	</view>
 </template>

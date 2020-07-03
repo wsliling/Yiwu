@@ -1,7 +1,7 @@
 <template>
     <view class="live">
         <view class="live-img">
-            <image :src="item.BannerPicNo" mode="" @click="navigate('shopSon/shopHome/shopHome',{shopId:item.ShopId})"></image>
+            <image :src="item.BannerPicNo" mode="aspectFill" @click="navigate('shopSon/shopHome/shopHome',{shopId:item.ShopId})"></image>
             <view class="islive">
                 <view class="line line1"></view>
                 <view class="line line2"></view>
@@ -12,7 +12,7 @@
         <view class="live-item">
             <view class="live-box"  v-for="(item,index) in item.ProductList" :key="index"
                     @click="navigate('shopSon/product/productDetails',{proId:item.Id})">
-                <image :src="item.PicNo" mode=""></image>
+                <image :src="item.PicNo" mode="aspectFill"></image>
                 <view class="live-day" v-if="item.IsExplosive||item.IsRecommend||item.IsNewProduct">
                     {{item.IsExplosive?'今日爆款':item.IsRecommend?'推荐':item.IsNewProduct?'新品':''}}
                 </view>
