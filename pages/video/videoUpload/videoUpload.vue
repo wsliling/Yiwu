@@ -68,7 +68,7 @@
 					Type: this.type,
 					Video:this.videofile,
 					Logo: this.videoImg,
-					Title:this.videoTitle,
+					Title:this.Title,
 					IsCharge:IsCharge,
 					Price:this.Price
 				});
