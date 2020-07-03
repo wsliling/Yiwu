@@ -1,7 +1,7 @@
 <template>
 	<view class="bg">
 		<view class="search">
-			<view class="seachbox" @click="navigate('shopSon/mywu/wu')">
+			<view class="seachbox" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 			</view>
 		</view>
@@ -50,8 +50,8 @@
 			</view>
 		</view>
 		<!-- 正在直播 -->
-		<block v-for="(val,key) in proList" :key="key" :item="val">		
-			<shopItem v-if="val.ProductList.length"></shopItem>
+		<block v-for="(val,key) in proList" :key="key" >		
+			<shopItem v-if="val.ProductList.length" :item="val"></shopItem>
 
 		</block>
 		<uni-load-more :loadingType="loadingType"></uni-load-more>

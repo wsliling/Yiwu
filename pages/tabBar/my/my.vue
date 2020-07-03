@@ -19,7 +19,7 @@
 				</view>
 				<view class="user-right">
 					<image src="@/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
-					<image class="vip" src="@/static/V.png"></image>
+					<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus"></image>
 				</view>
 			</view>
 		</view>

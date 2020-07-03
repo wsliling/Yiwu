@@ -6,7 +6,7 @@
 				<!-- <text class="uni-icon uni-icon-search">请输入你想搜索的产品</text> -->
 				
 				<uni-icons color="#ccc" class="my-close" size="20" type="search" />
-				<ans-input placeholder="请输入你想搜索的产品" @onConfirm="searchConfirm"
+				<ans-input placeholder="请输入你想搜索的产品" @confirm="searchConfirm" @clear="searchConfirm"
 				:value="searchText"></ans-input>
 			</view>
 		</view>
@@ -68,11 +68,9 @@
 			this.title = e.title;
 			e.classId&&(this.classId = e.classId);
 			e.brandId&&(this.brandId = e.brandId);
-			if(e.title){
-				uni.setNavigationBarTitle({
-					title: e.title
-				});
-			}
+			uni.setNavigationBarTitle({
+				title: e.title||'商品列表'
+			});
 			this.getData();
 		},
 		onShow() {

@@ -5,7 +5,7 @@
 		  <view class="p1 flex-center"><view class="iconfont icon-gou2"></view>{{status==='success'?'支付成功':'支付失败'}}</view>
 		  <view class="p2"><span class="yuan">￥</span>{{TotalPrice}}</view>
 		  <view class="btns">
-			<view class="btn toindex" @click="tolink('/pages/index/index',true)">返回首页</view>
+			<view class="btn toindex" @click="tolink('/pages/tabBar/index/index',true)">返回首页</view>
 			<view class="btn todetail" @click="toOrder">查看订单</view>
 		  </view>
 		</view>
@@ -71,6 +71,7 @@
 			//跳转
 			tolink(Url,tabBar) {
 				if(tabBar){
+					console.log(Url,tabBar)
 					uni.switchTab({
 						url: Url
 					})

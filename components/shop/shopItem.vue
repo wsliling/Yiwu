@@ -1,13 +1,14 @@
 <template>
     <view class="live">
         <view class="live-img">
-            <image :src="item.BannerPicNo" mode="aspectFill" @click="navigate('shopSon/shopHome/shopHome',{shopId:item.ShopId})"></image>
             <view class="islive">
                 <view class="line line1"></view>
                 <view class="line line2"></view>
                 <view class="line line3"></view>
                 <view class="txt">正在直播</view>
             </view>
+            <image :src="item.BannerPicNo" mode="aspectFill" @click="navigate('shopSon/shopHome/shopHome',{shopId:item.ShopId})"></image>
+
         </view>
         <view class="live-item">
             <view class="live-box"  v-for="(item,index) in item.ProductList" :key="index"
@@ -52,6 +53,7 @@ export default {
 	margin-top: 20upx;
 	padding: 30upx;
 	.live-img {
+		position:relative;
 		image {
 			height: 386upx;
 			border-radius: 6upx 6upx 0 0;
@@ -61,8 +63,9 @@ export default {
 			justify-content: center;
 			align-items: center;
 			position: absolute;
-			left: 48upx;
-			bottom: -176upx;
+			left: 30upx;
+			top: 30upx;
+			z-index:9;
 			padding: 0 20upx;
 			border-radius: 8upx;
 			height: 45upx;

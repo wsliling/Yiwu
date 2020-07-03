@@ -83,8 +83,8 @@ function toLogin(objUrl) {
   if(userId && token){
     return true;
   }else{
-	  var strUrl = '';
-	  if(objUrl){
+		var strUrl = '';
+		if(objUrl){
 			strUrl = objUrl.replace(/\?/g, '%3F').replace(/\=/g, '%3D').replace(/\&/g, '%26');
 		}
 		uni.showModal({
@@ -256,7 +256,7 @@ function MemberPaly(id){
 		});
 	}
 }
-import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call} from './ans-utils'
+import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
@@ -282,5 +282,6 @@ export {
 	switchTab,
 	redirect,
 	navigateBack,
-	call
+	call,
+	previewImage
 }
