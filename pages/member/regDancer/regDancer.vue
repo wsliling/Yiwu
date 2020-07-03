@@ -89,7 +89,10 @@
 					success: (res) =>{
 						// tempFilePath可以作为img标签的src属性显示图片
 						this.picStr=res.tempFilePaths[0];
-					} 
+					},
+					fail(err){
+						console.log(err,'err')
+					}
 				})
 			},
 			async submit(){
