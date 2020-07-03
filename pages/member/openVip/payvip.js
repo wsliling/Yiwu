@@ -117,9 +117,6 @@ async function appwxpay() {
         });
     }
 }
-
-
-
 //非微信环境 使用微信支付H5
 async function H5payweixin() {
     console.log('pay')
