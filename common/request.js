@@ -39,8 +39,10 @@ function request(url, method, data) {
      }else if(ret.code==201){//微信支付的返回code地址
 			 resolve(ret)
 		 }else if(ret.code==3){//微信支付的返回code地址
-			 resolve(ret)
-		 }else{
+      resolve(ret)
+    }else if(ret.code==200){
+      resolve(ret)
+    }else{
 			uni.showToast({
 			    title:ret.msg,
 			    icon:'none'

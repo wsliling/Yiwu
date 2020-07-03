@@ -178,12 +178,16 @@
 					uni.showToast({
 						title: result.msg
 					})
+					setTimeout(()=>{
+						uni.navigateBack();
+					},1500)
 				}
 				else if(result.code==200){
 					uni.hideLoading();
 					uni.showToast({
 						title: result.msg
 					})
+					console.log(result.code,'result.code')
 					setTimeout(function(){
 						uni.navigateBack()
 					},1500)
