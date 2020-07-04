@@ -45,16 +45,16 @@
 									</view>
 									<view class="Yi-bd">
 										<scroll-view class="User-swiper-tab" scroll-x>
-											<view class="item" v-for="(item,index) in recuserlist" :key="index">
-												<view class="uni-icon uni-icon-closeempty close"></view>
-												<view class="tx" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
-													<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
+											<view class="item" v-for="(e,i) in recuserlist" :key="i">
+												<view class="uni-icon uni-icon-closeempty close" @click="closeuser(i)"></view>
+												<view class="tx" @click="tolink('/pages/homepage/homepage?id='+e.Id)">
+													<image :src="e.Avatar||'/static/default.png'" mode="aspectFill"></image>
 												</view>
 												<view class="name uni-ellipsis">
-													{{item.NickName||'壹舞用户'}}
+													{{e.NickName||'壹舞用户'}}
 												</view>
-												<view :class="['flow',item.IsFollow==1?'active':'']" @click="flow(item.Id,index,4)">
-													{{item.IsFollow==1?'已关注':'关注'}}
+												<view :class="['flow',e.IsFollow==1?'active':'']" @click="flow(e.Id,i,4)">
+													{{e.IsFollow==1?'已关注':'关注'}}
 												</view>
 											</view>
 										</scroll-view>
@@ -440,6 +440,9 @@
 				if(result.code==0){
 					this.recuserlist=result.data;
 				}
+			},
+			closeuser(index){
+				this.recuserlist.splice(index,1);
 			},
 			//推荐视频
 			async IndexRecommend(){
