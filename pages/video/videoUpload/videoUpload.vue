@@ -3,7 +3,7 @@
 		<view class="upbox">
 			<textarea placeholder="请填写视频/课程的标题" v-model="Title"/>
 			<view class="videobox" @click="choosevideo">
-				<image class="img" v-if="videofile" :src="(webUrl+videoImg)" mode="aspectFill"></image>
+				<image v-if="videofile" :src="videoShowImg" mode="aspectFill"></image>
 				<image src="/static/videoUp.png" v-else></image>
 			</view>
 		</view>
@@ -23,7 +23,6 @@
 	export default {
 		data() {
 			return {
-				webUrl:webUrl,
 				type:0,//0：拍视频 1：课程
 				hascheck:false,//是否选中免费
 				videofile:"",//视频文件
@@ -31,6 +30,7 @@
 				Title:"",
 				Price:"",
 				videoImg:"",
+				videoShowImg:"",
 			};
 		},
 		onLoad(e){
@@ -43,6 +43,10 @@
 			this.userId = uni.getStorageSync("userId")
 			this.token = uni.getStorageSync("token")
 			this.videoImg = uni.getStorageSync("VfileName")
+			const that=this
+			setTimeout(()=>{
+				that.videoShowImg=webUrl+that.videoImg
+			},500)
 			this.videofile = uni.getStorageSync("VfilePath")
 		},
 		methods: {
@@ -64,16 +68,21 @@
 					Type: this.type,
 					Video:this.videofile,
 					Logo: this.videoImg,
-					Title:this.videoTitle,
+					Title:this.Title,
 					IsCharge:IsCharge,
 					Price:this.Price
 				});
 				if(res.code==0){
 					uni.showToast({
-						title:"发布成功"
+						title:"发布成功",
 					})
 					uni.setStorageSync("fileName","");//清空缓存
 					uni.setStorageSync("filePath","")
+					setTimeout(()=>{
+						uni.navigateBack({
+						    delta: 1
+						});
+					},1000)
 				}else{
 					uni.showToast({
 						title:res.msg,

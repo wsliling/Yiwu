@@ -21,8 +21,8 @@
 				</p>
 			</div>
 			<div class="tips" style="padding:20upx 0;border-top:1px solid #f2f2f2;">
-				可提现金额：{{ Wallet }}
-				<span class="red" v-if="Wallet > 0" @click="Allwithdraw">全部提现</span>
+				可提现金额：{{wType == 1 ? SumIncome : Wallet}}
+				<span class="red" v-if="Wallet > 0 || SumIncome > 0" @click="Allwithdraw">全部提现</span>
 			</div>
 		</div>
 		<div class="btns">
@@ -47,6 +47,7 @@ export default {
 			uni.setNavigationBarTitle({
 				title: '佣金提现'
 			});
+			this.getMyIncome() //佣金
 		}
 		this.amount = '';
 		//  console.log("余额"+this.Wallet);
@@ -87,7 +88,8 @@ export default {
 			WithdrawalFee: '', //提现手续费百分比（100为顶）
 			CashWithdrawalTime: '', //提现审核时间（单位：小时）
 			DayWithdrawalMaxNum: '', //会员每日提现最大次数
-			DaySurplusNum: '' //当天剩余提现次数
+			DaySurplusNum: '', //当天剩余提现次数
+			SumIncome:0, //佣金收入
 		};
 	},
 	methods: {
@@ -110,7 +112,7 @@ export default {
 			this.hasDefaultCard = false;
 			console.log(this.hasDefaultCard, 'shiftCardList');
 			this.$store.commit('setSelectMyCard', {
-				url: '/pages/member/withdraw/withdraw?type=' + this.type,
+				url: '/pages/member/withdraw/withdraw?type=' + this.wType,
 				status: true
 			});
 			uni.navigateTo({ url: '/pages/member/bankCard/bankCard' });
@@ -190,6 +192,9 @@ export default {
 		},
 		Allwithdraw() {
 			this.amount = this.Wallet;
+			if(this.wType == 1){
+				this.amount = this.SumIncome;
+			}
 		},
 		//佣金提现
 		DrawMoneyApply() {
@@ -218,15 +223,25 @@ export default {
 						duration: 1500,
 						success: function() {
 							setTimeout(function() {
-								uni.redirectTo({
-									url: '/pages/member/myIncome/myIncome'
+								uni.navigateBack({
+								    delta: 1
 								});
 							}, 1500);
 						}
 					});
 				}
 			});
-		}
+		},
+		// 获取我的收入
+		async getMyIncome() {
+			let result = await post("User/GetMyIncome", {
+				"UserId": uni.getStorageSync("userId"),
+				"Token": uni.getStorageSync("token")
+			});
+			if (result.code === 0) {
+				this.SumIncome = result.data.SumIncome;
+			} 
+		},
 	}
 };
 </script>

@@ -7,7 +7,7 @@
 					<image v-else src="/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">{{Name||舞曲列表}}</view>
+					<view class="name uni-ellipsis">{{Name||'舞曲列表'}}</view>
 					<view class="fz12 c_999 uni-mt10">{{count}}首</view>
 				</view>
 			</view>

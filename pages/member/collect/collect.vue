@@ -23,7 +23,7 @@
 		<view class="bb_pt uni-bg-white" v-if="hasData">
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
-				<view class="drawing flex">
+				<view class="drawing flex" @click.stop="tolink(val.ProId,val.Type,val.AssociationId)">
 					<view class="" v-if="val.Type == 0"><video controls :src="val.Video"></video></view>
 					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
@@ -113,10 +113,21 @@ export default {
 	},
 	methods: {
 		//跳转
-		tolink(Url) {
-			uni.navigateTo({
-				url: Url
-			})
+		tolink(ProId,Type,AssociationId) {
+			if(ProId){
+				uni.navigateTo({
+					url: '/pages/shopSon/product/productDetails?proId=' + ProId,
+				})
+			}else if(Type ==5){
+				uni.navigateTo({
+					url: '/pages/music/playMusic/playMusic?nowIndex=0'+ '&id=' + AssociationId,
+				})
+			}else if(Type ==6){
+				uni.navigateTo({
+					url: '/pages/video/videoDetails/videoDetails?id=' + AssociationId,
+				})
+			}
+			
 		},
 		toback() {
 			uni.switchTab({

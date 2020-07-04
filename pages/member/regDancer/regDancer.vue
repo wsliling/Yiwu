@@ -19,8 +19,8 @@
 				  <textarea value="" maxlength="300" v-model="explain" placeholder="请填写院校/培训机构、相关头衔和简介" />
 				</view>
 			</view>
-			<view class="line-item">
-				<view class="picbox flex-column" @click="uplLoadImg">
+			<view class="line-item" @click="uplLoadImg">
+				<view class="picbox flex-column">
 				    <image class="img" v-if="picStr" :src="picStr" mode="aspectFill"></image>
 					<text class="c_999" v-else>头衔相关证明</text>
 				</view>
@@ -82,14 +82,19 @@
 			},	
 			//上传
 			uplLoadImg(){
+				console.log('尝试打开上传图片')
 				uni.chooseImage({
 					count: 1,
 					sizeType: ['compressed'],
 					sourceType: ['album', 'camera'],
 					success: (res) =>{
+						console.log('成功打开上传图片',res)
 						// tempFilePath可以作为img标签的src属性显示图片
 						this.picStr=res.tempFilePaths[0];
-					} 
+					},
+					fail(err){
+						console.log('打开失败',err)
+					}
 				})
 			},
 			async submit(){

@@ -1,6 +1,6 @@
 {
     "name" : "壹舞",
-    "appid" : "__UNI__A3AF5B9",
+    "appid" : "__UNI__EAB64DC",
     "description" : "壹舞",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxa8ea45c214e5fde7",
         "setting" : {
             "urlCheck" : false,
             "minified" : true,

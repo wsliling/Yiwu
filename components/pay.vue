@@ -17,7 +17,7 @@
       <div class="flex-between maskitem" @click="showPayStatus=2">
         <div class="fontclolr">付款方式</div>
         <div>
-          <text class="wx">{{payText}}</text>
+          <text class="wx">{{payType.name}}</text>
           <img src="http://jrwd.wtvxin.com/upload/images/icons/right.png" class="right" />
         </div>
       </div>
@@ -36,27 +36,17 @@
       <div>
         <!-- <radio-group @change="changes"> -->
         <radio-group>
-          <label class="flex-between payitem" v-if="payMode==='wx'||payMode==='none'" @click="changes(0)">
-            <div class="flex-center">
-              <img src="/static/pay_weixin.png" class="payimg" />
-              微信
-            </div>
-            <radio name="payType" :checked="payType==0" value="0" color="#dd196d"/>
-          </label>
-          <label class="flex-between payitem" v-if="payMode==='none'" @click="changes(2)">
-            <div class="flex-center">
-              <img src="/static/pay_alipay.png" class="payimg" />
-              支付宝
-            </div>
-            <radio name="payType" :checked="payType==2" value="2" color="#dd196d"/>
-          </label>
-          <label class="flex-between payitem"  v-if="payMode==='balance'||payMode==='none'" @click="changes(1)">
-            <div class="flex-center">
-              <img src="/static/pay_yue.png" class="payimg" />
-              余额
-            </div>
-            <radio name="payType" :checked="payType==1" value="1" color="#dd196d"/>
-          </label>
+          <block v-for="(item,index) in payTypeList" :key="index">
+            <label class="flex-between payitem" :class="{'disable':integralDisable&&item.code=='integral'}" @click="changes(item)" v-if="item.status">
+              <div class="flex-center">
+                <img :src="item.icon" class="payimg" />
+                {{item.name}}{{integralDisable&&item.code=='integral'?'（积分不足）':''}}
+              </div>
+              <block v-if="item.code!='integral'||(!integralDisable&&item.code=='integral')">
+                <radio name="payType"  :checked="payType.id==item.id" value="0" color="#dd196d"/>
+              </block>
+            </label>
+          </block>
         </radio-group>
       </div>
     </div>
@@ -90,7 +80,7 @@
 //##  参数：
 // total--支付价格（确认与后台支付金额一致)
 // orderNumber -- 订单编号
-// payMode -- 支付模式，none--默认全部可选；wx --微信支付；balance -- 余额。
+// payMode -- 支付模式[wx--微信,alipay--支付宝,balance--余额,integral--积分]，--默认微信和余额
 
 // ## event: 动作事件
 // onClose --关闭弹窗
@@ -99,7 +89,10 @@
 //            payType---  Number支付类型；0--微信支付.1--余额支付,2--支付宝
 //            password--- string支付密码
 
-
+import wxIcon from '@/static/pay_weixin.png';
+import alipayIcon from '@/static/pay_alipay.png';
+import balanceIcon from '@/static/pay_yue.png';
+import jfIcon from '@/static/pay_jf.png';
 import { post } from "@/common/util";
 export default {
   props: {
@@ -112,38 +105,92 @@ export default {
       default: ""
     },
     payMode:{
-      type:String,
-      default:'none'
+      type:Array,
+      default(){return ['wx','balance']}
+    },
+    disableIntegral:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
     return {
       focusflag: true, //支付密码获取焦点
       showPayStatus:1, //支付密码状态 1--支付；2--选择支付方式；3--填写支付密码
-      payType: 0,// 0--微信支付.1--余额支付,2--支付宝
       password:'',
       forgetPasswordUrl:'/pages/member/setpwd/setpwd',//忘记密码跳转url
+      payType: {},//选择的支付方式
+      payTypeList:[
+        {
+          name:'微信',
+          icon:wxIcon,
+          id:0,
+          code:'wx',
+          status:true,
+        },
+        {
+          name:'支付宝',
+          icon:alipayIcon,
+          id:2,
+          code:'alipay',
+          status:false,
+        },
+        {
+          name:'余额',
+          icon:balanceIcon,
+          id:1,
+          code:'balance',
+          status:true,
+        },
+        {
+          name:'积分',
+          icon:jfIcon,
+          id:3,
+          code:'integral',
+          status:false,
+        },
+      ],
+      integralDisable:false,//禁用积分
     };
   },
-  computed:{
-    payText(){
-        if(this.payType==0){
-            return '微信'
-        }else if(this.payType==1){
-            return '余额'
-        }else if(this.payType==2){
-            return '支付宝'
-        }
+  watch:{
+    // payMode:{
+    //   handler(){
+    //     console.log(this.payTypeList,'mode1')
+    //     let arr=[];
+    //     this.payMode.map(modeItem=>{
+    //       this.payTypeList.map(typeItem=>{
+    //         if(modeItem===typeItem.code){
+    //           typeItem.status = true;
+    //         }else{
+    //           typeItem.status = false;
+    //         }
+    //       })
+    //     })
+    //     console.log(this.payTypeList,'mode')
+    //   },
+    //   deep:true
+    // }
+    disableIntegral(){
+      this.integralDisable = this.disableIntegral;
     }
   },
-  onLoad() {
-    this.showPayStatus = 1;
-    console.log(this.showPayStatus,'showpay')
-    if(this.payMode==='balance'){
-      this.payType=1
-    }else{
-      this.payType=0
-    }
+  mounted(){
+      this.showPayStatus = 1;
+      let arr =[];
+      this.payTypeList.map(typeItem=>{
+        this.payMode.map(modeItem=>{
+          if(modeItem===typeItem.code){
+            typeItem.status = true;
+            arr.push(typeItem)
+          }
+        })
+      })
+      this.payTypeList = arr;
+      this.payType = this.payTypeList[0];
+      //禁用积分
+      this.integralDisable = this.disableIntegral||false;
+      console.log(this.integralDisable)
   },
   methods: {
     // 获取焦点
@@ -151,14 +198,14 @@ export default {
       this.focusflag = false;
       this.focusflag = true;
     },
-    changes(e) {
-      this.payType = e;
+    changes(item) {
+      if(item.code=='integral'&&this.integralDisable)return;
+      this.payType = item;
       this.showPayStatus = 1;
-      console.log(e);
     },
     // 确认付款
     pay() {
-      if (this.payType * 1) {
+      if (this.payType.id==1||this.payType.id==3) {
          // 如果是余额支付弹出输入支付密码框，并获取焦点
         this.showPayStatus=3;
         this.focusflag = true;
@@ -190,6 +237,7 @@ export default {
     },
     // 关闭密码输入框
     closePasswordInput() {
+        this.password='';
         this.showPayStatus=1;
     },
    //  设置支付密码跳转页面
@@ -206,7 +254,7 @@ export default {
           }
         }
       });
-    }
+    },
   }
 };
 </script>
@@ -463,6 +511,9 @@ input[type="text"] {
   outline: none;
   border: 0;
   font-size: 25upx;
+}
+.disable{
+  color:#999;
 }
 </style>
 

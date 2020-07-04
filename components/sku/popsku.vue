@@ -1,20 +1,19 @@
 <template>
   <div class="mengban">
-      <!-- <div  @click="hidePopup" class="mengban"></div> -->
         <!-- content -->
         <div class="main" id="main">
             <div @click="hidePopup" class="close">+</div>
             <div class="top-box">
                 <div class="proinfo">
                     <div class="img-box">
-                        <img :src="selectSku.img||productInfo.img" alt="">
+                        <img :src="selectSku.img||proInfo.img" alt="">
                     </div>
                     <div class="right">
                         <div>
-                            <!-- <p class="tit">{{productInfo.name}}</p> -->
-                            <span><span class="fuhao">￥</span>{{selectSku.price||productInfo.price}}</span>
-                            <p class="font_four">库存：{{selectSku.num||productInfo.stock}}</p>
-                            <p>{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</p>
+                            <!-- <p class="tit">{{proInfo.name}}</p> -->
+                            <span><span class="fuhao">￥</span>{{selectSku.price||proInfo.price}}</span>
+                            <p class="font_four">库存：{{selectSku.num||proInfo.stock}}</p>
+                            <p v-if="skuAll.length">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</p>
                                 <!-- :SpecInfo.PunitPrice -->
                         </div>
                     </div>
@@ -70,9 +69,15 @@
               <!-- <p v-if="isLimint==1&&starTimetype==0" class="flex1 jus-c ali-c">即将开始 敬请期待</p>
               <p v-else-if="isLimint==1&&starTimetype==2" class="flex1 jus-c ali-c btn_ccc">秒杀已结束</p> -->
               <!-- <block v-else> -->
-                
-              <p class="addcard" @click="addcart">加入购物车</p>
-              <p class="nowbuy btn_red" @click="buy">立即购买</p>
+              <div class="btnBox">
+                <block v-if="submitBtnType">
+                  <p class="btn_red" @click="success(submitBtnType)">确认</p>
+                </block>
+                <block v-else>
+                  <p class="addcard" @click="success('addCar')">加入购物车</p>
+                  <p class="nowbuy btn_red" @click="success('buy')">立即购买</p>
+                </block>
+              </div>
             </div>
         </div>
       
@@ -131,7 +136,7 @@ export default {
         return [];
       }
     },
-    productInfo:{
+    proInfo:{
       type:Object,
       default(){
         return {
@@ -144,13 +149,21 @@ export default {
         };
       }
     },
+    // 提交按钮的类型，点击后返回该类型字符串（主要区分确定按钮的功能）；默认展示--立即购买+加入购物车
+    // addCar加入购物车  buy立即购买
+    submitBtnType:{
+      type:[String,Number],
+      default:''
+    }
   },
   watch:{
     sku:{
       handler(e){
         // 赋值为组件内data声明变量，兼容小程序组件
+        console.log('小程序改变',this.proInfo);
         this.thisSku = JSON.parse(JSON.stringify(this.sku));
         this.isUseSku();
+        this.init();
         this.setSelectSkuItem();
       },
       deep:true
@@ -163,9 +176,10 @@ export default {
         //选中的sku组合
         value: {},
         img: "",
-        num: "",
+        num: 0,
         price: "",
-        text: "" //sku组合用下划线分隔_
+        text: "", //sku组合用下划线分隔_
+        buyNum:1
       },
       datas:{},
       // restock:0,//库存
@@ -181,51 +195,33 @@ export default {
     // 赋值为组件内data声明变量，兼容小程序组件
     this.thisSku = JSON.parse(JSON.stringify(this.sku));
     this.isUseSku();
+    this.init();
   },
   methods: {
-    // 加入购物车
-    addcart(){
-      if(this.hasSku){ 
-        uni.showToast({
-          title:"请选择商品规格",
-          icon:'none'
-        })
-        return
-      };
-      this.$emit('addcart',this.selectSku)
+    init(){
+      this.goodsNum = this.proInfo.minbuy||1;
+      this.selectSku.buyNum = this.proInfo.minbuy||1;
     },
-    // 立即购买
-    buy(){
-      if(this.hasSku){ 
+    //type =   addCar加入购物车  buy立即购买
+    success(type){
+      if(this.skuAll.length&&this.hasSku){ 
         uni.showToast({
           title:"请选择商品规格",
           icon:'none'
         })
         return
       };
-      this.$emit('buy',this.selectSku)
+      this.$emit('success',type,this.selectSku)
+    },
 
-    },
     // 确定
     confirmBtn(){
-
+      this.$emit('confirm',this.submitBtnType)
     },
     // 隐藏sku
     hidePopup(){
-      this.showPop =false;
+      this.$emit('close')
     },
-    // clickSelectSku(skuIndex,index,item){
-    //   // let obj = item;
-    //   // obj.selectStatus = !obj.selectStatus;
-    //   // this.sku[skuIndex].list[index] = obj;
-    //   let list = this.sku[skuIndex].list;
-    //   list[index].selectStatus = !item.selectStatus;
-    //   console.log(list,'list')
-    //   this.$set(this.sku[skuIndex],'title','123');
-    //   console.log(this.sku,'this.sku')
-
-    //   // console.log(item,'item')
-    // },
     // 选择sku
     onSelectSku(val, index) {
       // 判断是否为不可选状态
@@ -289,10 +285,11 @@ export default {
               price: skuAllItem.price,
               img: skuAllItem.img,
               text: skuAllItem.text,
-              value
+              value,
+              buyNum:this.goodsNum
             };
-            this.productInfo.stock = skuAllItem.num;
-            this.goodsNum=1;
+            this.proInfo.stock = skuAllItem.num;
+            this.goodsNum=this.proInfo.minbuy||1;
             this.$emit("getSkuData", skuAllItem);//更新了sku
           }
         });
@@ -371,9 +368,9 @@ export default {
     },
     // 更改数量
 		suan(tip) {
-      const minbuy = this.productInfo.minbuy;
-      const maxbuy = this.productInfo.maxbuy;
-      const stock = this.productInfo.stock;
+      const minbuy = this.proInfo.minbuy;
+      const maxbuy = this.proInfo.maxbuy;
+      const stock = this.proInfo.stock;
 			if (tip == 1) {
 				if (this.goodsNum > 1) {
 					if (this.goodsNum > minbuy) {
@@ -385,6 +382,7 @@ export default {
 							icon: 'none',
 							duration: 1500
 						});
+            return;
 					}
 				}
 			} else if (tip == 2) {
@@ -395,7 +393,8 @@ export default {
 							title: '库存不足！',
 							icon: 'none',
 							duration: 1500
-						});
+            });
+            return;
 					} else {
 						this.goodsNum++;
 					}
@@ -410,12 +409,21 @@ export default {
 								icon: 'none',
 								duration: 1500
 							});
+              return;
 						}
 					} else {
 						this.goodsNum = stock;
+						uni.showToast({
+							title: '库存不足！',
+							icon: 'none',
+							duration: 1500
+            });
+            return;
 					}
 				}
-			}
+      }
+      this.selectSku.buyNum = this.goodsNum;
+      this.$emit('setBuyNum',this.goodsNum)
     },
     // 设置已选择的sku
     setSelectSkuItem(){
@@ -429,21 +437,10 @@ export default {
 </script>
 <style scoped lang="scss">
 .mengban{
-    // width: 100vw;
-    // height: 100vh;
-    // background-color: rgba(0, 0, 0, 0.5);
-    // position: fixed;
-    // top: 0;
-
-    // z-index: 98;
     .main{
-        // position: fixed;
-        // bottom: 0;
-        // left:0;
-        // z-index: 99;
         width: 100vw;
         background-color: #fff;
-        border-radius: 20rpx;
+        border-radius: 20rpx 20rpx 0 0;
         .close{
           font-size: 55rpx;
           transform: rotate(45deg);
@@ -454,27 +451,6 @@ export default {
           right: 10upx;
           line-height:1;
         }
-        // .guige{
-        //     p{
-        //         font-size: 28rpx;
-        //         color: #333;
-        //         line-height: 80rpx;
-        //     }
-        //     span{
-        //         background-color: #f5f5f5;
-        //         color: #666;
-        //         font-size: 24rpx;
-        //         padding: 10rpx 20rpx;
-        //         border-radius: 10rpx;
-        //         margin: 0 20rpx 20rpx 0;
-        //         border: 1rpx solid #f5f5f5;
-        //     }
-        //     .active{
-        //       background-color:#f9eeec;
-        //       color: #f0370b;
-        //       border: 1rpx solid #f0370b;
-        //     }
-        // }
         .top-box{
             padding: 0 30rpx 130rpx;
             .proinfo{
@@ -559,15 +535,21 @@ export default {
             bottom: 0;
             left:0;
             width: 100%;
-            height: 98rpx;
+            height: 118rpx;
             color: #fff;
             font-size: 28rpx;
-            display:flex;
-            align-items:center;
+            padding:20upx;
+            .btnBox{
+                border-radius:40upx;
+                overflow:hidden;
+                width:100%;
+                display:flex;
+                align-items:center;
+            }
             p{
                 background-color: #fda33a;
-                width:50%;
-                line-height: 98rpx;
+                width:100%;
+                line-height: 80rpx;
                 text-align:center;
             }
             p.btn_red{

@@ -86,6 +86,7 @@
 			cliTab(id) {
 				this.tabIndex = id;
 				this.datalist = [];
+				this.page =1
 				this.setDate() //重置月份
 				this.queryRecord()
 				// console.log(this.tabIndex)
@@ -127,7 +128,7 @@
 						}
 						if (this.page > 1) {
 							this.datalist = this.datalist.concat(
-								res.data
+								res.data.list
 							);
 						}
 						if (len < this.pageSize) {

@@ -9,8 +9,6 @@
 			</view>
 		</view>
 		<view class="playbox">
-<!-- 			<imt-audio :src="musicList[now].Audio" :duration="musicList[now].ADuration" @prev="now = now === 0?musicList.length-1:now-1"
-			 @next="now = now === musicList.length-1?0:now+1"></imt-audio> -->
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
 			 		<view class="audio-control audio-control-prev" @click="prev">&#xe601;</view>
@@ -28,10 +26,10 @@
 				 <view class="item" @click="Collect">
 				 	<image :src="isCollect==0?'/static/collect3.png':'/static/collect2.png'" mode="widthFix" class="addwidth"></image>
 				 </view>
-			 	<view class="item">
-			 		<image src="/static/music/playicon1.png" mode="widthFix"></image>
-					<!-- <image src="/static/music/playicon2.png" mode="widthFix"></image> -->
-					<!-- <image src="/static/music/playicon3.png" mode="widthFix"></image> -->
+			 	<view class="item" @click="tabPlayType">
+			 		<image src="/static/music/playicon1.png" mode="widthFix" v-if="playType==0"></image>
+					<image src="/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
+					<image src="/static/music/playicon3.png" mode="widthFix" v-else></image>
 			 	</view>
 				<view class="item">
 					<image src="/static/music/playicon4.png" mode="widthFix"></image>
@@ -76,18 +74,18 @@
 				musicList: [],
 				nowIndex: 0,
 				musicID:"",
-				//duration: 0, //总时长（单位：s）
+				duration: 0, //总时长（单位：s）
 				currentTime: '', //当前播放时间
 				durationTime: '', //总时长
 				current: '', //slider当前进度
 				loading: false, //是否处于读取状态
 				paused: true, //是否处于暂停状态
 				seek: false, //是否处于拖动状态
-				//postImg:"",//当前封面
 				isCollect:0,//是否收藏
 				isbuy:0,//是否需要付费
-				itemdata:{},
+				itemdata:{},//舞曲信息
 				isShowPlaylist:false,//弹出播放列表
+				playType:0,//0:顺序播放 1:单曲 2:随机
 			}
 		},
 		watch: {
@@ -108,11 +106,10 @@
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			// this.duration=this.musicList[this.nowIndex].ADuration;
-			// this.postImg=this.musicList[this.nowIndex].PicImg;
 			this.isCollect=this.musicList[this.nowIndex].IsCollect;
 			this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
 			this.itemdata=this.musicList[this.nowIndex];
+			this.duration=this.itemdata.ADuration
 			uni.setNavigationBarTitle({
 				title: this.itemdata.Name
 			})
@@ -131,8 +128,8 @@
 						if (!this.seek) {
 							this.current = audio.currentTime;
 						}
+						this.paused = false
 					})
-					this.paused = false
 				}else{
 					this.current = 0
 				}
@@ -162,6 +159,7 @@
 			operation() {
 				if(this.isbuy==0){
 					playMusic(this.nowIndex,this.musicID)
+					this.init()
 				}else{
 					let _this=this;
 					uni.showModal({
@@ -184,6 +182,7 @@
 						}
 					});
 				}
+				
 				// if (audio.paused) {
 				// 	audio.play()
 				// 	this.loading = true
@@ -200,16 +199,84 @@
 				this.isShowPlaylist=true;
 			},
 			//选择播放
-			slectplay(index){
-				this.nowIndex=index;
-				this.itemdata=this.musicList[index];
-				this.musicID=this.musicList[index].Id;
-				this.isbuy=this.musicList[index].IsShowBuy;
-				uni.setNavigationBarTitle({
-					title: this.itemdata.Name
-				})
-				this.operation();
-				this.init();
+			slectplay(index){console.log(index)
+				if(this.musicList[index].IsShowBuy==0){
+					this.nowIndex=index;
+					this.itemdata=this.musicList[index];
+					this.musicID=this.musicList[index].Id;
+					this.isbuy=this.musicList[index].IsShowBuy;
+					uni.setNavigationBarTitle({
+						title: this.itemdata.Name
+					})
+					this.operation();
+					this.init();
+				}else{
+					let _this=this;
+					uni.showModal({
+						content: "该舞曲需付费,去付费？",
+						success(res) {
+							if (res.confirm) {
+								if(toLogin()){
+									let buyInfo={
+										PicImg:_this.musicList[index].PicImg,
+										name:_this.musicList[index].Name,
+										price:_this.musicList[index].Price
+									}
+									uni.setStorageSync('buyInfo', buyInfo);
+									uni.navigateTo({
+										url:'/pages/pay2/pay2?type=1&id='+_this.musicList[index].Id
+									})
+								}
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+			//切换播放顺序
+			tabPlayType(){
+				this.playType++
+				if(this.playType==3){
+					this.playType=0
+				}
+			},
+			//下一曲
+			next(){console.log(this.playType)
+				if(this.playType==2){
+					let leng=this.musicList.length
+					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
+					if(num==this.nowIndex){//跳过正在播放的
+						this.next()
+					}{
+						this.slectplay(num)
+					}
+				}else{
+					let leng=this.musicList.length
+					if(this.nowIndex==leng-1){
+						this.slectplay(0)
+					}else{
+						this.slectplay(this.nowIndex*1+1)
+					}
+				}
+			},
+			//上一曲
+			prev(){
+				if(this.playType==2){
+					let leng=this.musicList.length
+					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
+					if(num==this.nowIndex){//跳过正在播放的
+						this.next()
+					}{
+						this.slectplay(num)
+					}
+				}else{
+					let leng=this.musicList.length
+					if(this.nowIndex==0){
+						this.slectplay(leng)
+					}else{
+						this.slectplay(this.nowIndex*1-1)
+					}
+				}
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){

@@ -10,8 +10,8 @@
 		<view class="regLoginBox" v-if="isShowMolie">
 			<view class="logo">
 				<view class="img">
-					<image class="logoimg" src="http://pintuan.wtvxin.com/static/logo.png" mode="widthFix"></image>
-					<view class="Title">水连动氢力氧</view>
+					<image class="logoimg" src="/static/logo.png" mode="widthFix"></image>
+					<!-- <view class="Title">水连动氢力氧</view> -->
 				</view>
 			</view>
 			<view class="from pd10">
@@ -59,11 +59,11 @@
 		<view class="MP-login" v-if="isShowminiApp">
 		    <view class="logo">
 				<view class="logoimg">
-					<image class="img_bb" src="http://pintuan.wtvxin.com/static/logo.png" mode="widthFix"></image>
+					<image class="img_bb" src="/static/logo.png" mode="widthFix"></image>
 				</view>
-				<view class="Title">水连动氢力氧</view>
+				<!-- <view class="Title">水连动氢力氧</view> -->
 		    </view> 
-		    <button class="login-btn btn_gree" open-type="getUserInfo" @click="oauth">微信登录</button>
+		    <button class="login-btn btn_gree" open-type="getUserInfo" @getuserinfo="oauth">微信登录</button>
 		    <!-- <view class="c_blue uni-center" @click="loginTel">手机号登录/注册</view> -->
 		</view>
 		<!-- #endif -->  
@@ -373,6 +373,7 @@
 						         */
 								uni.setStorageSync("userInfo", infoRes.userInfo);
 								uni.setStorageSync("avatarUrl", infoRes.userInfo.avatarUrl);
+								console.log(res,infoRes,'red')
 								this.MPlogin(res.code, infoRes.iv, infoRes.encryptedData);
 						    }
 						});

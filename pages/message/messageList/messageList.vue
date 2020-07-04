@@ -16,6 +16,18 @@
 						</view>
 					</view>
 				</view>
+				<!-- 私信消息 -->
+				<view v-else-if="Msgtype==8" class="txtbox p_re">
+					<view class="dian" v-if="item.Islook==0"></view>
+					<view class="title">
+						【{{item.NickName}}】
+					</view>
+					<view class="uni-list-cell-navigate uni-navigate-right" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
+						<view class="desc text-line2">
+							<uParse :content="item.Memo" />
+						</view>
+					</view>
+				</view>
 				<view v-else class="txtbox">
 					<view class="title">
 						{{item.title}}
@@ -98,7 +110,9 @@
 							result.data.forEach(function(item) {
 								item.PubTime=dateUtils.format(item.PubTime);
 								if(item.Islook==0){
-									_this.ReadNoticeInfo(item.id);
+									if(_this.Msgtype!=8){
+										_this.ReadNoticeInfo(item.id);
+									}
 								}
 							})
 						}
@@ -132,11 +146,20 @@
 			},
 			//添加阅读记录
 			async ReadNoticeInfo(Msgid){
-				let result = await post("News/ReadNoticeInfo",{
-					 UserId: this.userId,
-					 Token: this.token,
-					 newsid:Msgid
-				})
+				let result = ""
+				if(this.Msgtype==8){
+					result = await post("Message/ReadMessage",{
+						 UserId: this.userId,
+						 Token: this.token,
+						 ToMemberId:Msgid
+					})
+				}else{
+					result = await post("News/ReadNoticeInfo",{
+						 UserId: this.userId,
+						 Token: this.token,
+						 newsid:Msgid
+					})
+				}
 				if (result.code === 0) {
 					
 				}

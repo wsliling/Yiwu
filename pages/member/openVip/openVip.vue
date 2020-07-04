@@ -59,7 +59,8 @@
 		</view> -->
 		<!-- 支付弹窗 -->
 		<uni-popup type="bottom" ref="payWin">
-			<pay :total="totalprice" @onClose="$refs.payWin.close()" @success="paySuccess" :orderNumber="orderNo"></pay>
+			<pay :total="totalprice" @onClose="$refs.payWin.close()" @success="paySuccess" 
+			:orderNumber="orderNo" :payMode="['wx','balance']"></pay>
 		</uni-popup>
 	</view>
 </template>
@@ -127,7 +128,8 @@
 			},
 			//确认支付
 			async paySuccess(e,payPassword){
-				// 0--微信支付.1--余额支付,2--支付宝
+				
+				//e.id= 0--微信支付.1--余额支付,2--支付宝
 				const res = await post('User/PlusBuyOrder',{
 					UserId:this.userId,
 					Token:this.token,

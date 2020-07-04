@@ -3,19 +3,27 @@
 	<view class="details">
 		<!-- 首图展示 -->
 		<view class="detailsmap">
-			<swiper indicator-dots indicator-active-color="#de1a6e" autoplay class="swiper">
+			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper">
+				<swiper-item v-if="data.Video" :show-fullscreen-btn="false" :show-play-btn="false" show-mute-btn :enable-progress-gesture="false">
+					<video :src="data.Video" class="video"></video>
+				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
-					<image :src="item.PicUrl" mode=""></image>
+					<image :src="item.PicUrl" mode="aspectFill" @click="previewImages(index)"></image>
 				</swiper-item>
 			</swiper>
 			<!-- <view class="pagination">1/6</view> -->
 		</view>
 		<!-- 价格 -->
 		<view class="listpt">
-			<view class="price">
-				<span>¥</span>
-				{{data.Price}}
-			</view>
+			<div class="priceBox">
+				<view class="price">
+					<span>¥</span>
+					{{data.Price}}
+				</view>
+				<view class="o-price">
+					￥{{data.MarketPrice}}
+				</view>
+			</div>
 			<view class="brandname">
 				<span v-if="data.IsPlatform">自营</span>{{data.Name}}
 			</view>
@@ -23,10 +31,10 @@
 		<!-- 货品规格 -->
 		<view class="shipments">
 			<view class="pick" v-if="data.IsSku">
-				<view class="shipmentsbox" @click="$refs.skuWin.open()">
+				<view class="shipmentsbox" @click="showSku()">
 					<view class="flex">
 						<view class="">规格</view>
-						<view class="txt26">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text}}</view>
+						<view class="txt26">{{selectSku.text?'已选：':'请选择商品规格'}}{{selectSku.text||''}}</view>
 					</view>
 					<image class="exemption" src="http://shop.dadanyipin.com/static/hpicons/arrows.svg" mode=""></image>
 				</view>
@@ -85,10 +93,11 @@
 				<image class="storeimg" :src="data.ShopData.Logo" mode=""></image>
 				<view class="">
 					<view class="storename">{{data.ShopData.ShopNick}}</view>
-					<view class="flex exp">
+					<!-- <view class="flex exp">
 						<view class="">综合体验</view>
 						<image class="star" src="http://shop.dadanyipin.com/static/hpicons/collect.svg" mode="" v-for="(item,index) in data.ShopData.ServiceScore/20" :key="index"></image>
-					</view>
+					</view> -->
+					<p>{{data.ShopData.Address}}</p>
 				</view>
 			</view>
 			<view class="flex">
@@ -105,30 +114,30 @@
 		
 		<div class="foot ali-c jus-b">
 			<div class="left ali-c">
-				<div @click="gokefu">
+				<div @click="navigate('member/kefu/kefu')">
 					<img src="http://jd.wtvxin.com/images/images/index/ans.png" alt="" />
 					<p>客服</p>
 				</div>
 				<div @click="collect">
-					<img v-if="data.IsCollection" src="http://jd.wtvxin.com/images/images/index/collect_y.png" alt="" />
+					<img v-if="data.IsCollection&&data.IsCollection.Value" src="http://jd.wtvxin.com/images/images/index/collect_y.png" alt="" />
 					<img v-else src="http://jd.wtvxin.com/images/images/index/collect_n.png" alt="" />
 					<p>收藏</p>
 				</div>
-				<div @click="navigate('cart/cart')">
+				<div @click="navigate('member/cart/cart')">
 					<img src="http://jd.wtvxin.com/images/images/index/cart.png" alt="" />
 					<p>购物车</p>
 					<!-- <span class="num flexc" v-if="CartNumber > 0">{{ CartNumber }}</span> -->
 				</div>
 			</div>
 			<div class="right flex">
-				<p :class="['flex1 flexc']" @click="showSku(1)">加入购物车</p>
+				<p :class="['flex1 flexc']" @click="showSku('addCar')">加入购物车</p>
 				<!-- <p :class="['flex1 flexc', starTimetype != 1 ? 'dis' : '']" @click="showSku(2)">立即购买</p> -->
-				<p :class="['flex1 flexc']" @click="showSku(2)">立即购买</p>
+				<p :class="['flex1 flexc']" @click="showSku('buy')">立即购买</p>
 			</div>
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
-			<sku :sku="sku" :skuAll="skuAll" :productInfo="productInfo" 
-				@getSkuData="getSkuData" @addcart="addcart" @buy="buy"
+			<sku :sku="sku" :skuAll="skuAll" :proInfo="productInfo" :submitBtnType="submitBtnType"
+				 @getSkuData="getSkuData" @close="$refs.skuWin.close()" @success="planOrder"
 				>
 			</sku>
 		</uni-popup>
@@ -136,7 +145,7 @@
 </template>
 
 <script>
-import {post,get,toLogin,navigate,toast} from '@/common/util.js';
+import {post,get,toLogin,navigate,toast,previewImage} from '@/common/util.js';
 import sku from '@/components/sku/popsku.vue'
 export default {
 	components:{
@@ -156,11 +165,14 @@ export default {
 			skuAll:[],
 			productInfo:{
 				img:'',
-				Name:'name',
-				num:12,
-				price:123
+				Name:'',
+				num:0,
+				price:0,
+				minbuy:0,
+				maxbuy:0
 			},
-			selectSku:{}
+			selectSku:{},
+			submitBtnType:'',//确定按钮的类型
 		};
 	},
 	onLoad(e) {
@@ -220,6 +232,7 @@ export default {
 			});
 			this.sku = sku;
 			// this.product = data;
+			console.log()
 			console.log(this.sku,this.skuAll,'sku')
 
 			this.data = data;
@@ -229,15 +242,29 @@ export default {
 		},
 		// type;1--加入购物车；2--立即购买
 		showSku(type){
-			if(this.data.IsSku&&!this.selectSku.value){
-					this.$refs.skuWin.open();
-			}else{
-				if(type==1){
-					this.addcart();
+			console.log(type,'type')
+			this.submitBtnType = type||'';
+			this.$refs.skuWin.open();
+			// if(this.data.IsSku&&!this.selectSku.value){
+			// }else{
+			// 	if(type==1){
+			// 		this.addcart();
 					
-				}else{
-					this.buy();
-				}
+			// 	}else{
+			// 		this.buy();
+			// 	}
+			// }
+		},
+		// 下单
+		// addCar--加入购物车  buy--立即购买
+		planOrder(type,selectSku){
+			if(!toLogin())return;
+			this.$refs.skuWin.close();
+			this.selectSku = selectSku;
+			if(type==='addCar'){
+				this.addcart();
+			}else if(type==='buy'){
+				this.buy();
 			}
 		},
 		// 加入购物车
@@ -247,20 +274,24 @@ export default {
 				UserId:this.userId,
 				Token:this.token,
 				ProId:this.proId,
-				Count:this.selectSku.num,
+				Count:this.selectSku.buyNum,
 				SpecText:this.selectSku.text
 			})
 			if(res.code) return;
 			toast('添加成功',{icon:true})
-			this.$refs.skuWin.close();
 		},
 		// 立即购买
 		buy(){
+			this.$refs.skuWin.close();
 			navigate('shopSon/submitOrder/submitOrder',{
 				proId:this.proId,
-				buyNum:this.selectSku.num,
-				SpecText:this.selectSku.text,
+				buyNum:this.selectSku.buyNum,
+				SpecText:this.selectSku.text||'',
+				orderSType:0
 			})
+		},
+		setBuyNum(num){
+			this.selectSku.buyNum = num;
 		},
         async getProblemList(){
             const res = await post('Goods/QuestionsdList',{
@@ -276,6 +307,7 @@ export default {
         },
 		//添加取消收藏
 		async collect() {
+			if(!toLogin())return;
 			let res = await post('User/AddCollections', {
 				UserId: this.userId,
 				Token: this.token,
@@ -310,12 +342,23 @@ export default {
 			uni.navigateTo({
 				url: Url
 			});
+		},
+		// 预览图片
+		previewImages(index){
+			let arr=[];
+			this.data.PicData.map(item=>{
+				arr.push(item.PicUrl)
+			})
+			previewImage(arr,index)
 		}
 	}
 };
 </script>
 
 <style scoped lang="scss">
+.video{
+	width:100%;height:750upx;
+}
 .details {
 	background: #ffffff;
 	padding-bottom:100upx;
@@ -346,6 +389,17 @@ export default {
 	.listpt {
 		padding: 30upx;
 		width: 100%;
+		.priceBox{
+			display:flex;
+			align-items:flex-end;
+		}
+		.o-price{
+			color:#999;
+			font-size:16upx;
+			text-decoration:line-through;
+			line-height:2.1;
+			margin-left:10upx;
+		}
 		.price {
 			font-size: 44upx;
 			font-weight: bold;
@@ -478,6 +532,10 @@ export default {
 				margin: 16upx 0 0 5upx;
 			}
 		}
+		p{
+			color: #888;
+			font-size: 14upx;
+		}
 		.plan{
 			height:48upx;
 			line-height:48upx;
@@ -526,10 +584,10 @@ export default {
 			text-align:center;
 		}
 		.right p:nth-child(1) {
-			background-color: rgb(254, 203, 104);
+			background-color: #fda33a;
 		}
 		.right p:nth-child(2) {
-			background-color: #de1a6e;
+			background-color: #ff6f00;
 		}
 		.right p.dis {
 			// opacity: 0.5;

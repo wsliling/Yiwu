@@ -1,7 +1,7 @@
 <template>
 	<view class="bg">
 		<view class="search">
-			<view class="seachbox" @click="navigate('shopSon/mywu/wu')">
+			<view class="seachbox" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 			</view>
 		</view>
@@ -20,11 +20,13 @@
 		</view>
 		<!-- 快捷导航 -->
 		<view class="icon-menu">
-			<view class="item" v-if="index<4" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
-				v-for="(item,index) in classify" :key="index">
-				<image class="icon" :src="item.Pic"></image>
-				<text class="txt">{{item.Name}}</text>
-			</view>
+			<block v-for="(item,index) in classify" :key="index">
+				<view class="item" v-if="index<4" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
+					>
+					<image class="icon" :src="item.Pic"></image>
+					<text class="txt">{{item.Name}}</text>
+				</view>
+			</block>
 			<view class="item" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<image class="icon" src="@/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
@@ -48,34 +50,10 @@
 			</view>
 		</view>
 		<!-- 正在直播 -->
-		<view class="live" v-for="(val,key) in proList" :key="key">
-			<view class="live-img">
-				<image :src="val.BannerPicNo" mode="" @click="navigate('shopSon/shopHome/shopHome',{shopId:val.ShopId})"></image>
-				<view class="islive">
-					<view class="line line1"></view>
-					<view class="line line2"></view>
-					<view class="line line3"></view>
-					<view class="txt">正在直播</view>
-				</view>
-			</view>
-			<view class="live-item">
-				<view class="live-box"  v-for="(item,index) in val.ProductList" :key="index"
-					 @click="navigate('shopSon/product/productDetails',{proId:item.Id})">
-					<image :src="item.PicNo" mode=""></image>
-					<view class="live-day" v-if="item.IsExplosive||item.IsRecommend||item.IsNewProduct">
-						{{item.IsExplosive?'今日爆款':item.IsRecommend?'推荐':item.IsNewProduct?'新品':''}}
-					</view>
-					<view class="live-int">
-						<view class="live-tit">{{item.Name}}</view>
-						<view class="live-ef" v-if="item.IsPlatform||item.IsHot||item.IsRecommend">
-							{{item.IsPlatform?'自营':item.IsHot?'超级好物':item.IsRecommend?'推荐好物':''}}
-						</view>
-						<view class="live-price"><span>￥</span>{{item.Price}}</view>
-					</view>
-				</view>
-			</view>
-			
-		</view>
+		<block v-for="(val,key) in proList" :key="key" >		
+			<shopItem v-if="val.ProductList.length" :item="val"></shopItem>
+
+		</block>
 		<uni-load-more :loadingType="loadingType"></uni-load-more>
 	</view>
 </template>
@@ -83,9 +61,10 @@
 <script>
 	import {post,get,toLogin,navigate} from '@/common/util.js';
 	import uniLoadMore from '@/components/uni-load-more.vue';
+	import shopItem from '@/components/shop/shopItem.vue';
 	export default {
 		components: {
-			uniLoadMore
+			uniLoadMore,shopItem
 		},
 		data() {
 			return {

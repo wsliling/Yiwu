@@ -3,6 +3,7 @@
 const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
 const webUrl = 'http://yw.wtvxin.com';  //后台地址
+const wssPath = 'ws://ywapi.wtvxin.com/WebSocketServer.ashx';  //wss接口地址
 
 
 function formatNumber(n) {
@@ -82,8 +83,8 @@ function toLogin(objUrl) {
   if(userId && token){
     return true;
   }else{
-	  var strUrl = '';
-	  if(objUrl){
+		var strUrl = '';
+		if(objUrl){
 			strUrl = objUrl.replace(/\?/g, '%3F').replace(/\=/g, '%3D').replace(/\&/g, '%26');
 		}
 		uni.showModal({
@@ -219,13 +220,16 @@ export function playMusic(index,id){//index:当前列表的索引，舞曲id
 			if(hasplay){
 				audio.pause()
 				hasplay=false
+				uni.setStorageSync("playIDtype",0)
 			}else{
 				audio.play()
 				hasplay=true
+				uni.setStorageSync("playIDtype",1)
 			}
 		}else{
 			playID=id
 			uni.setStorageSync("playID",playID)
+			uni.setStorageSync("playIDtype",1)
 			audio.src = musicList[index].Audio;
 			audio.play()
 			MemberPaly(id)
@@ -238,7 +242,7 @@ export function playMusic(index,id){//index:当前列表的索引，舞曲id
 		MemberPaly(id)
 	}
 }
-//发布舞曲
+//记录播放舞曲
 function MemberPaly(id){
 	const userId = uni.getStorageSync('userId');
 	const token = uni.getStorageSync('token');
@@ -252,7 +256,7 @@ function MemberPaly(id){
 		});
 	}
 }
-import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call} from './ans-utils'
+import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
@@ -278,5 +282,6 @@ export {
 	switchTab,
 	redirect,
 	navigateBack,
-	call
+	call,
+	previewImage
 }

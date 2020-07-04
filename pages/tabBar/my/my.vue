@@ -17,15 +17,16 @@
 						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 					</view>
 				</view>
-				<view class="user-right" @click="tolink('/pages/member/openVip/openVip')" v-if="memberInfo.IsShowV">
-					<image src="@/static/my/sign.png" mode=""></image>
+				<view class="user-right">
+					<image src="@/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
+					<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus"></image>
 				</view>
 			</view>
 		</view>
 		<view class="info uni-mb10">
 			<view class="item" @click="tolink('/pages/member/wallet/wallet')">
 				<view>
-					{{wallet[0]}}. <span>{{wallet[1]}}</span>
+					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
 				</view>
 				<span class="text">
 					零钱(元)
@@ -47,12 +48,12 @@
 		<view class="info1 uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
 				<image src="@/static/my/icon1.png" mode="aspectFit"></image>
-				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
+				<view>我的收入<span>{{memberInfo.SumIncome||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
 				<image src="@/static/my/icon2.png" mode="aspectFit"></image>
-				<view>我的积分<span>{{memberInfo.Score||0}}</span></view>
+				<view>我的积分<span>{{memberInfo.SumScore||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/livebi/livebi')">
@@ -70,7 +71,7 @@
 			</view>
 		</view>
 		<view class="sevice">
-			<view class="item" @click="tolink('/pages/cart/cart')">
+			<view class="item" @click="tolink('/pages/member/cart/cart')">
 				<view class="item-left">
 					<image  src="@/static/my/icon5.png" mode="aspectFit"></image>
 					<view>购物车</view>
@@ -119,6 +120,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
+			<!-- #ifdef APP-PLUS -->
 			<view class="item">
 				<view class="item-left">
 					<image  src="@/static/my/icon16.png" mode="aspectFit"></image>
@@ -126,6 +128,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
+			<!-- #endif -->
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')">
 				<view class="item-left">
 					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>
@@ -140,14 +143,14 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/kefu/kefu')">
 				<view class="item-left">
 					<image  src="@/static/my/icon12.png" mode="aspectFit"></image>
 					<view>客服服务</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item">
+			<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
 				<view class="item-left">
 					<image  src="@/static/my/icon13.png" mode="aspectFit"></image>
 					<view>关于我们</view>
@@ -176,6 +179,7 @@
 				memberInfo:{},//用户信息
 				wallet:[],
 				newscount:0,
+				myIncome:{},
 			}
 		},
 		onLoad() {
@@ -183,6 +187,7 @@
 		},
 		onShow(){
 			this.getMemberInfo();
+			this.getMyIncome();
 		},
 		methods: {
 			async getMemberInfo() {
@@ -200,7 +205,6 @@
 					 this.NewsCount();
 				} else if (result.code === 2) {
 					let _this = this;
-					// #ifndef MP-WEIXIN
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -212,16 +216,15 @@
 							}
 						}
 					});
-					// #endif
 				}
 			},
 			//跳转
 			tolink(Url) {
-				//if(toLogin()){
+				if(toLogin()){
 					uni.navigateTo({
 						url: Url
 					})
-				//}
+				}
 			},
 			openAttestation(){
 				let urlstr="";
@@ -249,6 +252,16 @@
 				});
 				if (result.code === 0) {
 					this.newscount = result.count;
+				} 
+			},
+			// 获取直播币
+			async getMyIncome() {
+				let result = await post("User/GetMyIncome", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				});
+				if (result.code === 0) {
+					this.myIncome = result.data;
 				} 
 			},
 		}

@@ -116,3 +116,10 @@ export function call(phone){
     }
   })
 }
+// 全屏浏览图片
+export function previewImage(url,nowImg){
+	uni.previewImage({
+	  urls:url,//预览的图片数组
+	  current:nowImg,//预览图片的下标/图片链接
+	})
+}

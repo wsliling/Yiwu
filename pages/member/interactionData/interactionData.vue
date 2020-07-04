@@ -15,7 +15,7 @@
 		</view>
 		<view :style="{height:(44+barHeight)+'px'}"></view>
 		<view class="Yi-Userlist bg_fff" v-if="hasData">
-			<view class="user-item" v-for="(item,index) in datalist" :key="index">
+			<view class="user-item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 				<view class="flex-between">
 					<view class="author flex-start">
 						<view class="tx">
@@ -27,7 +27,7 @@
 							<view class="fz12 c_999 uni-ellipsis">{{item.Intro}}</view>
 						</view>
 					</view>
-					<view class="flow" :class="{'active':item.IsFollow}">{{item.IsFollow?"已关注":"关注"}}</view>
+					<view class="flow" :class="{'active':item.IsFollow}" @click="getFollowOperation(item.UserId)">{{item.IsFollow?"已关注":"关注"}}</view>
 				</view>
 			</view>
 		</view>
@@ -147,6 +147,23 @@
 			  this.myType=id
 			  this.getList(id)
 			},
+			// 关注或取消关注
+			getFollowOperation(id){
+				post('Find/FollowOperation',{
+					"UserId": this.userId,
+					"Token": this.token,
+					"ToMemberId": id,
+				}).then( res=> {
+					if(res.code === 0){
+						uni.showToast({
+							title: res.msg,
+							icon: "none",
+							duration: 2000
+						});
+						this.getList(this.myType)
+					}
+				})
+			}
 		}
 	}
 </script>
