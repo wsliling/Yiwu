@@ -30,7 +30,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="uni-list-cell location">
+			<view class="uni-list-cell location" v-show="false">
 				<view class="uni-list-cell-navigate uni-navigate-right" @tap="chooseLocation">
 					<view class="list-cell-l">
 						<text class="iconfont icon-dizhi"></text>所在位置
@@ -46,7 +46,7 @@
 					</block>
 				</view>
 			</view>
-			<view class="uni-list-cell limit">
+			<view class="uni-list-cell limit" v-show="false">
 				<view class="uni-list-cell-navigate">
 					<view class="list-cell-l">
 						<text :class="['iconfont',role==0?'icon-gongkai':'',role==1?'icon-haoyou':'',role==2?'icon-suo':'']"></text>
@@ -278,9 +278,7 @@
 					});
 					setTimeout(function() {
 						_this.clearData();
-						uni.navigateTo({
-						  url: "/pages/Article/myPost/myPost"
-						});
+						uni.navigateBack()
 					},2000)
 				}else if (result.code === 2) {
 					uni.showToast({
