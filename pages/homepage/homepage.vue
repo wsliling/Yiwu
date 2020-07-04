@@ -160,12 +160,12 @@ export default {
 		 this.token = uni.getStorageSync("token");
 		 this.tabWidth=(100/this.tab.length);
 		 this.leftscoll(); 
+	 	this.memberId=this.$mp.query.id;
+		this.GetPersonInfo();
 	 },
 	 onShow() {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
-	 	this.memberId=this.$mp.query.id;
-		this.GetPersonInfo();
 	 },
 	 methods:{
 		 //跳转
