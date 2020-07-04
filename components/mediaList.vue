@@ -77,14 +77,14 @@
 			}
 		},
 		created(){
-			this.userId = uni.getStorageSync("userId");
-			this.token = uni.getStorageSync("token");
+			// this.userId = uni.getStorageSync("userId");
+			// this.token = uni.getStorageSync("token");
 			this.dataitem=this.datajson;
 		},
 		data(){
 			return{
-				userId: "",
-				token: "",
+				// userId: "",
+				// token: "",
 				dataitem:{}
 			}
 		},
@@ -126,8 +126,8 @@
 			//点赞/取消点赞
 			async like(id){
 				let result = await post("Find/FindlikeOperation", {
-					"UserId": this.userId,
-					"Token": this.token,
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token"),
 					"FindId": id,
 					"TypeStatu":0
 				});
@@ -168,14 +168,14 @@
 				let result;
 				if(FindType==0){
 					result = await post("Find/FollowOperation", {
-						"UserId": this.userId,
-						"Token": this.token,
+						"UserId": uni.getStorageSync("userId"),
+						"Token": uni.getStorageSync("token"),
 						"ToMemberId":MemberId
 					});
 				}else if(FindType==1){
 					result = await post("Goods/ShopCollection", {
-						"UserId": this.userId,
-						"Token": this.token,
+						"UserId": uni.getStorageSync("userId"),
+						"Token": uni.getStorageSync("token"),
 						"ShopId":ShopId
 					});
 				}

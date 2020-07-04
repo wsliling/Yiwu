@@ -28,11 +28,10 @@
 		</view>
 		<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
 			<block v-for="(tab,index) in tab" :key="index" >
-				<view :style="'width:'+tabWidth+'%'" v-if="tab.taptitle!='产品'||(PersonInfo.IsShop&&tab=='产品')"
-					:class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}
+				<view :style="'width:'+tabWidth+'%'" :class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}
 				</view>
-				<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
 			</block>
+			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
 		</scroll-view>
 		<view class="tabCon">
 			<view class="profile item-box"  v-if="tabId==0&&PersonInfo.IsJiGou==1">
@@ -211,14 +210,14 @@ export default {
 				uni.setNavigationBarTitle({
 					title: result.data.IsMy==1?'我的主页':'TA的主页'
 				})
-				if(!result.data.IsJiGou==1){
+				if(result.data.IsJiGou==0){
 					this.tab.map((item,i)=>{
 						if(item.id==0){
 							this.tab.splice(i,1)
 						}
 					})
 				}
-				if(result.data.IsShop==1){
+				if(result.data.IsShop==0){
 					this.tab.map((item,i)=>{
 						if(item.id==4){
 							this.tab.splice(i,1)
