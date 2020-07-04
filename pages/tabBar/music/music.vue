@@ -114,6 +114,8 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.hasData=true;
+			this.page=1;
+			this.findlist=[];
 			this.workeslist()
 		},
 		 computed: {
