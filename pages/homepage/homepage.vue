@@ -163,6 +163,8 @@ export default {
 		 this.leftscoll(); 
 	 },
 	 onShow() {
+		this.userId = uni.getStorageSync("userId");
+		this.token = uni.getStorageSync("token");
 	 	this.memberId=this.$mp.query.id;
 		this.GetPersonInfo();
 	 },

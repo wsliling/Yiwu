@@ -2,25 +2,25 @@
 	<view>
 		<view class="line-list" style="margin-top: 20upx;">
 			<view class="line-item">
-				<view class="lab">机构名称</view>
+				<view class="lab">机构名称<span>*</span></view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请输入机构名称" v-model="name" class="flex1">
 				</view>
 			</view>
 			<view class="line-item">
-				<view class="lab">联系方式</view>
+				<view class="lab">联系方式<span>*</span></view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请输入联系方式" v-model="phone" class="flex1">
 				</view>
 			</view>
 			<view class="line-item">
-				<view class="lab">地址</view>
+				<view class="lab">地址<span>*</span></view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请输入街道门牌等信息" v-model="address" class="flex1">
 				</view>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
-				<view class="lab" style="width: 100%;">机构简介</view>
+				<view class="lab" style="width: 100%;">机构简介<span>*</span></view>
 				<view class="item_r" style="width: 100%;">
 				  <textarea value="" maxlength="300" v-model="explain" placeholder="请输入机购相关说明" />
 				</view>
@@ -28,7 +28,7 @@
 			<view class="line-item">
 				<view class="picbox flex-column" @click="uplLoadImg">
 				    <image class="img" v-if="picStr" :src="picStr" mode="aspectFill"></image>
-					<text class="c_999" v-else>营业执照或舞蹈室门头照</text>
+					<text class="c_999" v-else>营业执照或舞蹈室门头照<span>*</span></text>
 				</view>
 			</view>
 		</view>
@@ -163,5 +163,10 @@
 	}
 	.line-item textarea{ 
 		width: 100%;
+	}
+	.line-item{
+		span{
+			color:#ff3333;
+		}
 	}
 </style>

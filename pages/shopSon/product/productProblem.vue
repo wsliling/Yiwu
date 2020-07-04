@@ -3,7 +3,7 @@
 	<view class="askeveryone">
 		<view class="ask-box" v-for="(val,key) in problemList" :key="key">
 			<view class="ask"><span>问</span>{{val.Content}}</view>
-			<view class="ask color" v-if="val.answers&&val.answers.length"><span>答</span>{{val.answers[0]}}</view>
+			<view class="ask color" v-if="val.answers&&val.answers.length"><span>答</span>{{val.answers[0].Content}}</view>
 			<view class="flex-between">
 				<view class="ask-txt">{{val.AddTime}}</view>
 				<view class="flex">

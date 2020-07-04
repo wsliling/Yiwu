@@ -49,7 +49,7 @@
 </template>
 
 <script>
-	import {post,toast,valPhone} from '@/common/util'
+	import {post,toast,valPhone,navigateBack} from '@/common/util'
 	export default {
 		data() {
 			return {
@@ -93,6 +93,7 @@
 				if(verify&&verify!==Boolean){
 					toast(verify);return;
 				}
+				this.showBtn = false;
 				const res = await post('Shop/ApplyShop',{
 					userId:this.userId,
 					token:this.token,
@@ -104,7 +105,9 @@
 					Email:'',
 					Description:this.sketch,
 				})
+				this.showBtn = true;
 				if(res.code===0){
+				this.showBtn = false;
 					toast('提交成功！等待管理员审核',{icon:true});
 					navigateBack();
 				}

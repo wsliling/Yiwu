@@ -219,3 +219,23 @@
 		}
 	}
 }
+
+.ac{
+	padding:0 30upx;
+	margin-bottom:120upx;
+	line-height:3;
+	text-align:center;
+	.list1{
+		border-radius:15upx;
+		overflow:hidden;
+		.item1{
+			background:#fff;
+			border-bottom:1upx solid #ececec;
+		}
+	}
+	.cancel{
+		border-radius:15upx;
+		background:#fff;
+		margin:20upx 0;
+	}
+}

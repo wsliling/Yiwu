@@ -2,19 +2,19 @@
 	<view>
 		<view class="line-list" style="margin-top: 20upx;">
 			<view class="line-item">
-				<view class="lab">真实姓名</view>
+				<view class="lab">真实姓名<span>*</span></view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请输入姓名" class="flex1" v-model="name">
 				</view>
 			</view>
 			<view class="line-item">
-				<view class="lab">联系方式</view>
+				<view class="lab">联系方式<span>*</span></view>
 				<view class="item_r flex1">
 				  <input type="text" placeholder="请输入联系方式" class="flex1" v-model="phone">
 				</view>
 			</view>
 			<view class="line-item" style="flex-wrap: wrap;">
-				<view class="lab" style="width: 100%;">认证说明</view>
+				<view class="lab" style="width: 100%;">认证说明<span>*</span></view>
 				<view class="item_r" style="width: 100%;">
 				  <textarea value="" maxlength="300" v-model="explain" placeholder="请填写院校/培训机构、相关头衔和简介" />
 				</view>
@@ -22,7 +22,7 @@
 			<view class="line-item" @click="uplLoadImg">
 				<view class="picbox flex-column">
 				    <image class="img" v-if="picStr" :src="picStr" mode="aspectFill"></image>
-					<text class="c_999" v-else>头衔相关证明</text>
+					<text class="c_999" v-else>头衔相关证明<span>*</span></text>
 				</view>
 			</view>
 		</view>
@@ -158,5 +158,10 @@
 	}
 	.line-item textarea{ 
 		width: 100%;
+	}
+	.line-item{
+		span{
+			color:#ff3333;
+		}
 	}
 </style>

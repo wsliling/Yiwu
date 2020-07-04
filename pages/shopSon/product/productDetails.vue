@@ -308,29 +308,22 @@ export default {
 		//添加取消收藏
 		async collect() {
 			if(!toLogin())return;
-			let res = await post('User/AddCollections', {
+			const params = {
 				UserId: this.userId,
 				Token: this.token,
 				Type: 0,
 				Id: this.proId
-			});
-			if (res.code == 0) {
-				if (this.data.IsCollection) {
-					uni.showToast({
-						title: '已取消收藏！',
-						icon: 'none',
-						duration: 1500
-					});
-					this.data.IsCollection = false;
-				} else {
-					uni.showToast({
-						title: '添加收藏成功！',
-						icon: 'none',
-						duration: 1500
-					});
-					this.data.IsCollection = true;
-				}
 			}
+			let url="";
+			if (!this.data.IsCollection.Value) {
+				url = 'User/AddCollections';
+			} else {
+				url="User/ReCollections"
+			}
+			let res = await post(url,params);
+			if (res.code != 0) return;
+			toast(res.msg)
+			this.data.IsCollection.Value = !this.data.IsCollection.Value;
 		},
 		toindex() {
 			uni.navigateBack({
