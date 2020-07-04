@@ -42,7 +42,7 @@
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 		</scroll-view>
 		<view class="Yi-courselist flexWrap flex-between" v-if="tabIndex==0&&hasData">
-			<view class="item" v-for="(item,index) in otherlist" :key="index" @click="tolink('/pages/videoDetails/videoDetails?id='+item.Id)">
+			<view class="item" v-for="(item,index) in otherlist" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
 				<view class="maxpic">
 					<image :src="item.PicImg" mode="widthFix"></image>
 					<view class="isplay"></view>

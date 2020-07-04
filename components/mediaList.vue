@@ -104,7 +104,7 @@
 			gotoPensonal() {
 				if(this.dataitem.FindType==0){//指定用户个人主页
 					uni.navigateTo({
-						url: '/pages/Article/myCenter/myCenter?Memberid='+this.dataitem.MemberId
+						url: '/pages/homepage/homepage?id='+this.dataitem.MemberId
 					})	
 				}
 				if(this.dataitem.FindType==1){//指定店铺主页
