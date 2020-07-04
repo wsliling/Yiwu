@@ -291,6 +291,12 @@
 						"navigationBarTitleText":"账户安全"
 					}
                 }
+				,{
+				    "path" : "verPhone/verPhone",
+				    "style" : {
+						"navigationBarTitleText":"修改手机号"
+					}
+				}
                 ,{
                     "path" : "set/set",
                     "style" : {

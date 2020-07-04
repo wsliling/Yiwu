@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="line-list">
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" v-if="false">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/share_weixin.png" mode="widthFix"></image>
 					<text class="txt">绑定微信</text>
@@ -10,13 +10,13 @@
 				  已绑定
 				</view>
 			</view>
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/verPhone/verPhone?Mobile='+Mobile)">
 				<view class="line-item-l flex-start">
 					<image class="iconimg" src="/static/phone.png" mode="widthFix"></image>
 					<text class="txt">手机号更换</text>
 				</view>
 				<view class="item_r text_right">
-				  13556369887
+				  {{Mobile}}
 				</view>
 			</view>
 		</view>
@@ -24,26 +24,44 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post, toLogin} from '@/common/util.js';
 	export default {
 		data() {
 			return {
-				userId:"",
-				token:"",
+				Mobile:''
 			}
 		},
-		onLoad(){
-		  this.userId = uni.getStorageSync("userId")
-		  this.token = uni.getStorageSync("token")
-		},
 		onShow(){
-		 
+		 this.getMemberInfo()
 		},
 		methods: {
-			tolink(url){
-			  uni.navigateTo({
-			    url
-			  })
+			tolink(Url) {
+				if(toLogin()){
+					uni.navigateTo({
+						url: Url
+					})
+				}
+			},
+			async getMemberInfo() {
+				let result = await post("User/GetCenterInfo", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token")
+				})
+				if (result.code === 0) {
+					this.Mobile = result.data.Mobile; 
+				} else if (result.code === 2) {
+					let _this = this;
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							}
+						}
+					});
+				}
 			},
 		}
 	}
