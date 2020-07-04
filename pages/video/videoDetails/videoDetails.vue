@@ -51,7 +51,7 @@
 					<view class="item_title uni-ellipsis">{{item.Title}}</view>
 					<view class="item_total">
 						<view class="item_market">{{item.Is_Charge==0?item.SalesNum+'人付款':item.Hits+'人点击'}}</view>
-						<span class="item_price">{{item.IsCharge==1?'￥'+item.Price:'免费'}}</span>
+						<span class="item_price">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
 					</view>
 				</view>
 			</view>
