@@ -202,7 +202,7 @@
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">{{item.Title}}</view>
+								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
 								<view class="item_total">
 									<view class="item_market">{{item.Is_Charge==1?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
 									<span class="item_price">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
