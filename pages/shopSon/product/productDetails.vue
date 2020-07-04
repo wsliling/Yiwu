@@ -8,7 +8,7 @@
 					<video :src="data.Video" class="video"></video>
 				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
-					<image :src="item.PicUrl" mode=""></image>
+					<image :src="item.PicUrl" mode="aspectFill" @click="previewImages(index)"></image>
 				</swiper-item>
 			</swiper>
 			<!-- <view class="pagination">1/6</view> -->
@@ -119,7 +119,7 @@
 					<p>客服</p>
 				</div>
 				<div @click="collect">
-					<img v-if="data.IsCollection" src="http://jd.wtvxin.com/images/images/index/collect_y.png" alt="" />
+					<img v-if="data.IsCollection&&data.IsCollection.Value" src="http://jd.wtvxin.com/images/images/index/collect_y.png" alt="" />
 					<img v-else src="http://jd.wtvxin.com/images/images/index/collect_n.png" alt="" />
 					<p>收藏</p>
 				</div>
@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import {post,get,toLogin,navigate,toast} from '@/common/util.js';
+import {post,get,toLogin,navigate,toast,previewImage} from '@/common/util.js';
 import sku from '@/components/sku/popsku.vue'
 export default {
 	components:{
@@ -258,6 +258,7 @@ export default {
 		// 下单
 		// addCar--加入购物车  buy--立即购买
 		planOrder(type,selectSku){
+			if(!toLogin())return;
 			this.$refs.skuWin.close();
 			this.selectSku = selectSku;
 			if(type==='addCar'){
@@ -306,6 +307,7 @@ export default {
         },
 		//添加取消收藏
 		async collect() {
+			if(!toLogin())return;
 			let res = await post('User/AddCollections', {
 				UserId: this.userId,
 				Token: this.token,
@@ -340,6 +342,14 @@ export default {
 			uni.navigateTo({
 				url: Url
 			});
+		},
+		// 预览图片
+		previewImages(index){
+			let arr=[];
+			this.data.PicData.map(item=>{
+				arr.push(item.PicUrl)
+			})
+			previewImage(arr,index)
 		}
 	}
 };

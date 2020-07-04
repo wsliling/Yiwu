@@ -13,7 +13,7 @@
 				<image src="/static/play4.png"></image>
 				<text>播放全部</text>
 			</view>
-			<view class="search">
+			<view class="search" v-else>
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
 					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>

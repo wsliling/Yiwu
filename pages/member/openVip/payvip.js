@@ -11,11 +11,11 @@ let params={}; //参数
 // }
 
 export function payFn(type,param={}){
-    payType = type;
+    payType = type.id;
     params = param;
     if(!disable){
         disable = true;
-        console.log(1)
+        console.log(payType,'支付方式')
         if(payType==0){//微信支付
             // #ifdef  H5
             if(isWeixin()){
@@ -117,9 +117,6 @@ async function appwxpay() {
         });
     }
 }
-
-
-
 //非微信环境 使用微信支付H5
 async function H5payweixin() {
     console.log('pay')

@@ -109,7 +109,7 @@
 							<uni-load-more :loadingType="datalistLoadingType"></uni-load-more>
 						</view>	
 					</block>
-					<noData :isShow="!datalist.length"></noData>
+					<noData v-if="!datalist.length"></noData>
 					
 				</scroll-view>
 			</swiper-item>
@@ -137,7 +137,7 @@
 					<view class="uni-tab-bar-loading" v-if="NewsList.length">
 						<uni-load-more :loadingType="NewsListLoadingType"></uni-load-more>
 					</view>	
-					<noData :isShow="!NewsList.length"></noData>
+					<noData v-if="!NewsList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 名师	 -->
@@ -163,7 +163,7 @@
 					<view class="uni-tab-bar-loading" v-if="TeacherList.length">
 						<uni-load-more :loadingType="TeacherListLoadingType"></uni-load-more>
 					</view>
-				    <noData :isShow="!TeacherList.length"></noData>
+				    <noData v-if="!TeacherList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 机构	 -->
@@ -189,7 +189,7 @@
 					<view class="uni-tab-bar-loading" v-if="JiGouList.length">
 						<uni-load-more :loadingType="JiGouListLoadingType"></uni-load-more>
 					</view>
-					<noData :isShow="!JiGouList.length"></noData>
+					<noData v-if="!JiGouList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 			<!-- 课程	 -->
@@ -213,7 +213,7 @@
 					<view class="uni-tab-bar-loading" v-if="CourseList.length">
 						<uni-load-more :loadingType="CourseListLoadingType"></uni-load-more>
 					</view>
-					<noData :isShow="!CourseList.length"></noData>
+					<noData v-if="!CourseList.length"></noData>
 				</scroll-view>
 			</swiper-item>
 		</swiper>
@@ -222,7 +222,7 @@
 
 <script>
 	import {post,get,toLogin} from '@/common/util.js';
-	import noData from '@/components/noData.vue'; //暂无数据
+	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {

@@ -280,7 +280,7 @@
 		<uni-popup type="bottom" ref="payWin" @change="payWinChange">
 			<!-- :orderNumber="orderNo" -->
 			<pay :total="info.AllPrice||info.PayAmount" @onClose="closePay()" @success="payOrder" :orderNumber="OrderNo"
-				:payMode="['wx','alipay','balance','integral']" :disableIntegral="disableIntegral"></pay>
+				:payMode="['wx','balance','integral']" :disableIntegral="disableIntegral"></pay>
 		</uni-popup>
 	</view>
 </template>
@@ -288,6 +288,7 @@
 <script>
 	import {post,get,navigateBack,toast,navigate,redirect} from '@/common/util';
 	import pay from '@/components/pay.vue';
+	import payFn from './pay.js';
 	export default {
 		components: {
 			pay
@@ -748,40 +749,12 @@
 					this.$refs.payWin.open();
 				})
 			},
-			async payOrder(payType,Password){
-				// 余额
-				if(payType.id==1){
-					const res = await post('Order/PaymentOrder',{
-						UserId: this.userId,
-						Token: this.token,
-						OrderNo:this.OrderNo,
-						Password
-					})
-					if(res.code) return;
-					this.paySuccess(res);
-				}else 
-				// 积分
-				if(payType.id==3){
-					const res = await post('Order/PayScoreOrder',{
-						UserId: this.userId,
-						Token: this.token,
-						OrderNo:this.OrderNo,
-						Password
-					})
-					if(res.code) return;
-					this.paySuccess(res);
-				}
-			},
-			// 支付成功
-			paySuccess(res){
-				toast(res.msg,{icon:true})
-				setTimeout(()=>{
-					redirect('shopSon/submitOrder/submitStatus',{
-						status:'success',
-						orderNo:this.OrderNo,
-						allprice:this.info.AllPrice||this.info.PayAmount
-					})
-				},2000)
+			async payOrder(payType,Password,){
+				payFn(payType,{
+					Password,
+					OrderNo:this.OrderNo,
+					price:this.info.AllPrice||this.info.PayAmount
+				})
 			},
 			// 支付弹窗状态改变
 			payWinChange(e){

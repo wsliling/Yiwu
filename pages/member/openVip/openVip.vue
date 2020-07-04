@@ -60,7 +60,7 @@
 		<!-- 支付弹窗 -->
 		<uni-popup type="bottom" ref="payWin">
 			<pay :total="totalprice" @onClose="$refs.payWin.close()" @success="paySuccess" 
-			:orderNumber="orderNo" :payMode="['wx','alipay','balance']"></pay>
+			:orderNumber="orderNo" :payMode="['wx','balance']"></pay>
 		</uni-popup>
 	</view>
 </template>

@@ -27,8 +27,12 @@
 			<view class="text">{{PersonInfo.Introduction}}</view>
 		</view>
 		<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
-			<view :style="'width:'+tabWidth+'%'" v-for="(tab,index) in tab" :key="index" :class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}</view>
-			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
+			<block v-for="(tab,index) in tab" :key="index" >
+				<view :style="'width:'+tabWidth+'%'" v-if="tab.taptitle!='产品'||(PersonInfo.IsShop&&tab=='产品')"
+					:class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}
+				</view>
+				<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
+			</block>
 		</scroll-view>
 		<view class="tabCon">
 			<view class="profile item-box"  v-if="tabId==0&&PersonInfo.IsJiGou==1">

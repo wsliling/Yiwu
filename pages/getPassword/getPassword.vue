@@ -98,9 +98,10 @@
 						duration: 2000
 					});
 					setTimeout(function() {
-						uni.redirectTo({
-							url: "/pages/login/login"
-						})
+						// uni.redirectTo({
+						// 	url: "/pages/login/login"
+						// })
+						uni.navigateBack();
 					},2000)
 				} else if (result.code === 2) {
 					

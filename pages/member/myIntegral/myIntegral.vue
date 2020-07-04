@@ -3,6 +3,7 @@
 	<view class="Integral">
 		<view class="Integralbox uni-bg-white">
 			<view class="reveal">
+				<image class="bg" src="/static/my/bg3.png" alt="" />
 				<view class="jf">我的积分{{integralList.SumScore}}</view>
 				<view class="flex-between">
 					<view class="item flex-column">
@@ -146,10 +147,17 @@
 			width: 100%;
 			height: 300upx;
 			border-radius:30upx;
-			background:url(/static/my/bg3.png);
 			background-size: cover;
 			font-family:PingFang;
 			color:#fff;
+			position:relative;
+			z-index:1;
+			.bg{
+				position:absolute;
+				top:0;left:0;
+				width:100%;height:100%;
+				z-index:-1;
+			}
 			.jf{
 				color: #fff;
 				padding: 50upx 50upx 0;

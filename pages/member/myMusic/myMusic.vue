@@ -125,6 +125,9 @@
 					uni.showToast({
 						title:"创建成功"
 					})
+					setTimeout(()=>{
+						this.workeslist()
+					},1000)
 				}else{
 					uni.showToast({
 						title:res.msg,

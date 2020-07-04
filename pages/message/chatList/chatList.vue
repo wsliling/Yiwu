@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="Messagelist" v-if="hasData">
-			<view class="list-item" v-for="(item,index) in datalist" :key="index">
+			<!-- <view class="list-item" v-for="(item,index) in datalist" :key="index">
 				<view class="center uni-mb10">
 					<text class="time">{{item.PubTime}}</text>
 				</view>
@@ -26,7 +26,30 @@
 						</view>
 					</view>
 				</view>
-			</view>
+			</view> -->
+			
+				<block  v-for="(item,index) in datalist" :key="index"
+				
+				>
+					<div class="avatarhead  boxSize p2 padwids">
+						<div class="circlePosition" @click="navigate('homepage/homepage',{id:item.MemberId})">
+							<div class="dot" v-if="!item.Islook"></div>
+							<div class="avatarbox">
+								<img :src="item.Avatar" alt="" class="avatar">
+							</div>
+							<span class="circleNum msgnum" v-if="item.Count>0">{{item.Count }}</span>
+						</div>
+						<div class="flex flexColumn flex1" @click="navigate('chat/chat',{id:item.MemberId})" >
+							<div class="flex">
+								<span class="flex1 font32">{{item.NickName}}</span>
+								<span class="font_four">{{item.PubTime}}</span>
+							</div>
+							<div class="fontColor msgListContent">{{item.Memo}}</div>
+						</div>
+					</div>
+				</block>
+
+
 			<view class="uni-tab-bar-loading">
 				<uni-load-more :loadingType="loadingType"></uni-load-more>
 			</view>
@@ -36,7 +59,7 @@
 </template>
 
 <script>
-	import {host,post,get,dateUtils,toLogin} from '@/common/util.js';
+	import {host,post,get,dateUtils,toLogin,navigate} from '@/common/util.js';
 	import uParse from '@/components/uParse/src/wxParse.vue';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -48,6 +71,7 @@
 		},
 		data() {
 			return {
+				navigate,
 				userId: "",
 				token: "",
 				curPage:"",
@@ -190,4 +214,120 @@
 	position: absolute;
 	right: 20upx;
 	top: 30upx;}
+
+.font_four{
+	color:#999;
+	font-size:18upx;
+}
+	
+.head {
+    padding: 0 30rpx;
+    border-top: 1rpx solid #ececec;
+}
+
+.avatarhead {
+    padding: 40rpx 0;
+    position: relative;
+}
+
+
+.avatarbox {
+    width: 80rpx;
+    height: 80rpx;
+    margin-right: 40rpx;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    // margin-right:40rpx;
+}
+
+.vertical {
+    padding: 30rpx 0 70rpx 0;
+    box-sizing: border-box
+}
+
+.yanz::-webkit-input-placeholder {
+    /* placeholder颜色  */
+    color: #000000;
+    /* placeholder字体大小  */
+    font-size: 12px;
+    /* placeholder位置  */
+}
+
+.setclass {
+    padding: 20rpx 30rpx;
+    color: #999;
+    box-sizing: border-box;
+    font-size: 26rpx;
+}
+
+.group {
+    padding: 0 30rpx;
+    .slide {
+        padding: 20rpx 0;
+        p:first-child {
+            color: #999;
+            margin-right: 40rpx;
+        }
+    }
+}
+
+.sign {
+    position: relative;
+}
+
+.addtop {
+    margin-top: 70rpx;
+}
+
+
+
+
+.informRead{
+  background:#ff952e;
+  color:#fff;
+  height:170rpx;
+  line-height:170rpx;
+  width:130rpx;
+  display:inline-block;
+  text-align:center;
+}
+.padwids{
+	padding: 20rpx 30rpx!important;
+	display:flex;align-items:center;
+	background:#fff;
+	border-bottom:1upx solid #ececec;
+}
+.msgListContent{
+  width:100%;
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size:26upx;
+  color:#666;
+}
+.van-swipe-cell_son{
+  width:130rpx;
+  background:#ff3333;
+  color:#fff;
+  height:130rpx;
+  line-height:130rpx;
+  text-align:center;
+  display:block;
+}
+.van-swipe-cell_black{
+  background:#999;
+}
+.circlePosition{
+	position:relative;
+}
+.dot{
+	width:10upx;height:10upx;background:#ff3333;
+	border-radius:50%;
+	position:absolute;
+	top:3upx;left:0upx;
+}
 </style>

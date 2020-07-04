@@ -237,6 +237,7 @@ export default {
     },
     // 关闭密码输入框
     closePasswordInput() {
+        this.password='';
         this.showPayStatus=1;
     },
    //  设置支付密码跳转页面

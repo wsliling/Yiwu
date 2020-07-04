@@ -440,7 +440,7 @@
 				{
 				    "path" : "mywu/wu",
 				    "style" : {
-						"navigationBarTitleText": "舞衣",
+						"navigationBarTitleText": "",
 						"enablePullDownRefresh":true
 					}
 				},
@@ -526,6 +526,12 @@
 					"path" : "msgDetail/msgDetail",
 					"style" : {
 						"navigationBarTitleText": "详情"
+					}
+				}
+				,{
+					"path" : "agreement/agreement",
+					"style" : {
+						"navigationBarTitleText": "用户协议"
 					}
 				}
             ]

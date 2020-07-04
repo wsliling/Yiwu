@@ -138,14 +138,13 @@
 			}
 		},
 		onLoad(e) {
-			this.userId = uni.getStorageSync("userId");
-			this.token = uni.getStorageSync("token");
 			this.Courseid=e.id;
-			this.GetCoursexq();
 			
 		},
 		onShow(){
-			
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
+			this.GetCoursexq();
 		},
 		computed: {
 		   tabStyle(){
