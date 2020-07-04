@@ -141,10 +141,10 @@
 				</scroll-view>
 			</swiper-item>
 			<!-- 名师	 -->
-			<swiper-item>
+			<swiper-item style="background: #f7f7f7;">
 				<scroll-view class="swiper-item swiper-item-User" scroll-y @scrolltolower="loadMore('TeacherList')">
 					<view class="Yi-Userlist">
-						<view class="user-item" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
+						<view class="user-item uni-bg-white uni-mb10" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 							<view class="flex-between">
 								<view class="author flex-start">
 									<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
@@ -167,10 +167,10 @@
 				</scroll-view>
 			</swiper-item>
 			<!-- 机构	 -->
-			<swiper-item>
+			<swiper-item style="background: #f7f7f7;">
 				<scroll-view class="swiper-item swiper-item-mechanism" scroll-y @scrolltolower="loadMore('JiGouList')">
 					<view class="Yi-mechanismlist">
-						<view class="mechanism-item" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
+						<view class="mechanism-item uni-bg-white uni-mb10" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 							<view class="flex-between">
 								<view class="author flex-start">
 									<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
