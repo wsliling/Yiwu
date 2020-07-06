@@ -27,7 +27,7 @@
 							<view class="fz12 c_999 uni-ellipsis">{{item.Intro}}</view>
 						</view>
 					</view>
-					<view class="flow" :class="{'active':item.IsFollow}" @click="getFollowOperation(item.UserId)">{{item.IsFollow?"已关注":"关注"}}</view>
+					<view class="flow" :class="{'active':item.IsFollow}" @click.stop="getFollowOperation(item.UserId)">{{item.IsFollow?"已关注":"关注"}}</view>
 				</view>
 			</view>
 		</view>

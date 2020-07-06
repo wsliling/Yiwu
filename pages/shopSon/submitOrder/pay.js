@@ -1,4 +1,4 @@
-import {post,toast,navigateBack} from '@/common/util'
+import {post,toast,redirect ,navigate,navigateBack} from '@/common/util'
 let params = {};
 export default async function payFn(payType,param={}){
     params = param;
@@ -11,6 +11,16 @@ export default async function payFn(payType,param={}){
             OrderNo:params.OrderNo,
             Password:params.Password
         })
+        if(res.code==3){
+            uni.showModal({
+                title:'是否跳转设置支付密码页面',
+                success(ret){
+                    if(ret.confirm){
+                        navigate('member/setpwd/setpwd')
+                    }
+                }
+            })
+        }
         if(res.code) return;
         paySuccess(res);
     }else 
@@ -22,6 +32,16 @@ export default async function payFn(payType,param={}){
             OrderNo:params.OrderNo,
             Password:params.Password
         })
+        if(res.code==3){
+            uni.showModal({
+                title:'是否跳转设置支付密码页面',
+                success(ret){
+                    if(ret.confirm){
+                        navigate('member/setpwd/setpwd')
+                    }
+                }
+            })
+        }
         if(res.code) return;
         paySuccess(res);
     }else 

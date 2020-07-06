@@ -61,7 +61,7 @@
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
-				<view class="item" v-for="(item,index) in datalist" :key="index">
+				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/music/playMusic/playMusic?id='+item.Id)">
 					<image :src="item.Cover_pic||'/static/default_music.png'"></image>
 				</view>
 			</view>
@@ -160,10 +160,12 @@ export default {
 		 this.token = uni.getStorageSync("token");
 		 this.tabWidth=(100/this.tab.length);
 		 this.leftscoll(); 
-	 },
-	 onShow() {
 	 	this.memberId=this.$mp.query.id;
 		this.GetPersonInfo();
+	 },
+	 onShow() {
+		this.userId = uni.getStorageSync("userId");
+		this.token = uni.getStorageSync("token");
 	 },
 	 methods:{
 		 //跳转

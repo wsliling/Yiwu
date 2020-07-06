@@ -3,7 +3,7 @@
 	<view class="wallet">
 		<view class="walletbox uni-bg-white">
 			<view class="reveal">
-				<view class="symbol"><span>￥</span>{{SumIncome}}<span>W</span></view>
+				<view class="symbol"><span>￥</span>{{SumIncome}}<span></span></view>
 				<view class="balance">收入总额(元)</view>
 			</view>
 		</view>

@@ -84,6 +84,16 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
+			<uni-popup type="bottom" ref="ac">
+				<div class="ac">
+					<div class="list1" @click="$refs.ac.close()">
+						<div class="item1" @click="navigate('member/regDancer/regDancer')">舞者认证</div>
+						<div class="item1" @click="navigate('member/regMechanism/regMechanism')">机构认证</div>
+						<div class="item1" @click="navigate('member/regShop/regShop')">店铺认证</div>
+					</div>
+					<div class="cancel" @click="$refs.ac.close()">取消</div>
+				</div>
+			</uni-popup>
 			<view class="item" @click="tolink('/pages/member/myWorks/myWorks')">
 				<view class="item-left">
 					<image  src="@/static/my/icon7.png" mode="aspectFit"></image>
@@ -128,7 +138,8 @@
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<!-- #endif -->
-			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')">
+			<!-- 我的下载先不做，苹果的下载和多端下载很难实现 -->
+			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')" v-if="false">
 				<view class="item-left">
 					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>
 					<view>我的下载</view>
@@ -169,12 +180,13 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,navigate} from '@/common/util.js';
 	export default {
 		data() {
 			return {
 				userId: "",
 				token: "",
+				navigate,
 				memberInfo:{},//用户信息
 				wallet:[],
 				newscount:0,
@@ -226,23 +238,25 @@
 				}
 			},
 			openAttestation(){
-				let urlstr="";
-				uni.showActionSheet({
-					itemList: ['舞者认证', '机构认证', '店铺认证'],
-					success: (e) => {
-						console.log(e.tapIndex);
-						if(e.tapIndex==0){
-							urlstr="/pages/member/regDancer/regDancer";
-						}else if(e.tapIndex==1){
-							urlstr="/pages/member/regMechanism/regMechanism";
-						}else if(e.tapIndex==2){
-							urlstr="/pages/member/regShop/regShop";
-						}
-						uni.navigateTo({
-							url: urlstr
-						})
-					}
-				})
+				this.$refs.ac.open();
+				return;
+				// let urlstr="";
+				// uni.showActionSheet({
+				// 	itemList: ['舞者认证', '机构认证', '店铺认证'],
+				// 	success: (e) => {
+				// 		console.log(e.tapIndex);
+				// 		if(e.tapIndex==0){
+				// 			urlstr="/pages/member/regDancer/regDancer";
+				// 		}else if(e.tapIndex==1){
+				// 			urlstr="/pages/member/regMechanism/regMechanism";
+				// 		}else if(e.tapIndex==2){
+				// 			urlstr="/pages/member/regShop/regShop";
+				// 		}
+				// 		uni.navigateTo({
+				// 			url: urlstr
+				// 		})
+				// 	}
+				// })
 			},
 			async NewsCount() {
 				let result = await post("News/NewsCount", {
