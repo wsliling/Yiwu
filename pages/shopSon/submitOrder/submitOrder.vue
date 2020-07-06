@@ -429,6 +429,19 @@
 				  this.isAddress=false;
 				} 
 			  	this.getTypeDate();
+			  }else{
+				uni.showModal({
+					title:'登录提示',
+					content: "您还没有登录，是否重新登录？",
+					success(res) {
+						if (res.confirm) {
+							uni.navigateTo({
+								url: "/pages/login/login?askUrl="+strUrl
+							})
+						} else if (res.cancel) {
+						}
+					}
+				});
 			  }
 			},
 			

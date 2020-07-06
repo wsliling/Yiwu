@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="videobox">
-			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls></video>
+			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover"></video>
 			<view class="tipbox" v-if="CourseInfo.IsShowBuy==1">
 				<image :src="CourseInfo.PicImg" mode="aspectFill"></image>
 				<view class="txt flex-column">
