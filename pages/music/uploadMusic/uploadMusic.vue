@@ -142,9 +142,9 @@
 					})
 					uni.setStorageSync("fileName","");//清空缓存
 					uni.setStorageSync("filePath","")
-					uni.navigateBack({
-					    delta:1
-					});
+					setTimeout(function() {
+						uni.navigateBack()
+					},1500)
 				}else{
 					uni.showToast({
 						title:res.msg,

@@ -87,7 +87,6 @@ export default {
 		},
 		// 第二步发送验证码
 		async bindSendCode(){
-			console.log(111)
 			if(this.timer)return;
 			if(!valPhone(this.phone)) return;
 			if(this.phone==this.protophone){
@@ -129,16 +128,20 @@ export default {
 					Token:this.token,
 					Mobile:this.protoPhone,
 					VerifyCode:this.protoPhoneCode
+				}).then( res=>{
+					if(res.code == 0){
+						this.has_click = false;
+						clearInterval(this.timer);
+						this.timer = null;
+						this.codeMsg = "获取验证码";
+						this.step=2;
+					}else {
+						toast(res.msg,{icon:none});
+					}
 				})
-				this.has_click = false;
-				clearInterval(this.timer);
-				this.timer = null;
-				this.codeMsg = "获取验证码";
-				this.step=2;
 			}
 			// 第二部
 			else{
-				console.log(111)
 				if(!valPhone(this.phone)) return;
 				if(!this.phoneCode){toast('请输入验证码');return;}
 				const res = await post('User/UpdateMobile',{
@@ -148,12 +151,16 @@ export default {
 					VerifyCode:this.phoneCode,
 					Type:1, 
 				}).then(res=>{
-					toast('修改成功',{icon:true});
-					setTimeout( ()=>{
-						uni.navigateBack({
-						    delta: 2
-						});
-					},1000)
+					if(res.code == 0){
+						toast('修改成功',{icon:true});
+						setTimeout( ()=>{
+							uni.navigateBack({
+							    delta: 2
+							});
+						},1000)
+					} else {
+						toast(res.msg,{icon:none});
+					}
 				})
 			}
 		}
