@@ -76,15 +76,14 @@
 									</view>
 									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-											<share h5Url='http://localhost:8080/#/pages/tabBar/index/index'
-												wxUrl="/pages/tabBar/index/index">
+											<share wxUrl="/pages/tabBar/index/index">
 												<view class="txt_info share"></view>
 											</share>
 										</view>
