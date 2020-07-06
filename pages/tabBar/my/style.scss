@@ -46,6 +46,10 @@
 				.name{
 					font-size: 34upx;
 					color: #333333;
+					.vip{
+						width:40upx;height:40upx;
+						margin-left: 10upx;
+					}
 				}
 				.text{
 					font-size: 22upx;
@@ -58,7 +62,7 @@
 					white-space:nowrap;
 					text-overflow:ellipsis;
 					width: 300upx;
-					
+					margin-top: 10upx;
 				}
 			}
 			image{
@@ -72,9 +76,6 @@
 			image{
 				width: 100%;
 				height: 60upx;
-			}
-			.vip{
-				width:40upx;height:40upx;
 			}
 		}
 	}

@@ -243,11 +243,11 @@
 
 .Yi-Userlist{
 	.user-item{
-		padding: 30upx;
+		padding: 30upx 50upx;
 		.author{
 			.tx{
-				width: 120upx;
-				height: 120upx;
+				width: 160upx;
+				height: 160upx;
 				margin-right: 20upx;
 				image{
 					display: block;width: 100%; height: 100%;
@@ -267,7 +267,7 @@
 }
 .Yi-mechanismlist{
 	.mechanism-item{
-		padding: 30upx;
+		padding: 40upx 50upx;
 		.author{
 			.tx{
 				width: 120upx;
