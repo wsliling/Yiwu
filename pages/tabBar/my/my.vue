@@ -9,11 +9,19 @@
 					<view class="user-img">
 						<view>
 							<image v-if="memberInfo.Avatar" :src="memberInfo.Avatar" mode="aspectFill"></image>
-							<image v-else src="@/static/my/user.png" mode="widthFix"></image>
+							<image v-else src="@/static/my/user.png" mode="aspectFill"></image>
 						</view>
 					</view>
 					<view class="user-name">
-						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus"></image></view>
+						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}
+							<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus" 
+								@click.stop="navigate('member/openVip/openVip',{
+									avatar:memberInfo.Avatar,
+									name:memberInfo.NickName,
+									endTime:memberInfo.PlusEndTime
+								},true)">
+							</image>
+						</view>
 						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 					</view>
 				</view>

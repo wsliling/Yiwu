@@ -46,10 +46,12 @@
 				.name{
 					font-size: 34upx;
 					color: #333333;
-					.vip{
-						width:40upx;height:40upx;
-						margin-left: 10upx;
-					}
+					display:flex;
+					align-items:center;
+				}
+				.vip{
+					width:80upx;height:40upx;
+					padding:0 20upx;
 				}
 				.text{
 					font-size: 22upx;
@@ -79,6 +81,11 @@
 			}
 		}
 	}
+}
+
+.vip{
+	width:40upx;height:40upx;
+	margin-left:20upx;
 }
 .info{
 	display: flex;
