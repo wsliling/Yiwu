@@ -31,9 +31,9 @@
 					<image src="/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
 					<image src="/static/music/playicon3.png" mode="widthFix" v-else></image>
 			 	</view>
-				<view class="item">
+				<share class="item" :h5Url="h5Url" :wxUrl="'/pages/tabBar/music/music'">
 					<image src="/static/music/playicon4.png" mode="widthFix"></image>
-				</view>
+				</share>
 				<view class="item" @click="ShowPlaylist">
 					<image src="/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
@@ -86,6 +86,7 @@
 				itemdata:{},//舞曲信息
 				isShowPlaylist:false,//弹出播放列表
 				playType:0,//0:顺序播放 1:单曲 2:随机
+				h5Url:'',
 			}
 		},
 		watch: {
@@ -100,19 +101,23 @@
 		},
 		onLoad(e) {
 			this.nowIndex=e.nowIndex
-			this.musicID=e.id
+			this.musicID=e.id;
+			this.h5Url = window.location.origin+'/#/pages/tabBar/music/music';
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			this.isCollect=this.musicList[this.nowIndex].IsCollect;
-			this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
-			this.itemdata=this.musicList[this.nowIndex];
+			console.log(this.musicList,'list')
+			if(this.musicList.length&&this.nowIndex!=undefined){
+				this.isCollect=this.musicList[this.nowIndex].IsCollect;
+				this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
+				this.itemdata=this.musicList[this.nowIndex];
 			this.duration=this.itemdata.ADuration
 			uni.setNavigationBarTitle({
 				title: this.itemdata.Name
 			})
+			}
 			this.init()
 		},
 		methods: {

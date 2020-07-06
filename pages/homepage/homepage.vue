@@ -61,8 +61,8 @@
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
-				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/music/playMusic/playMusic?id='+item.Id)">
-					<image :src="item.Cover_pic||'/static/default_music.png'"></image>
+				<view class="item" v-for="(item,index) in datalist" :key="index" @click="playmusic(item.Id,index)">
+					<image :src="item.PicImg||'/static/default_music.png'"></image>
 				</view>
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import {post,get,toLogin,navigate} from '@/common/util.js';
+import {post,get,toLogin,navigate,playMusic} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
@@ -152,7 +152,9 @@ export default {
 					id: 4,
 					taptitle: '产品'
 				}
-			]
+			],
+			nowIndex:"",
+			musicID:"",
 		};
 	},
 	 onLoad(){
@@ -166,6 +168,9 @@ export default {
 	 onShow() {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
+		if(this.nowIndex&&this.musicID){
+			playMusic(this.nowIndex,this.musicID);//暂停音乐
+		}
 	 },
 	 methods:{
 		 //跳转
@@ -317,6 +322,14 @@ export default {
 					this.loadingType = 0
 				} 
 			 }
+		 },
+		 playmusic(id,index){
+			 this.musicID=id;
+			 this.nowIndex=index;
+			uni.setStorageSync("musicList",this.datalist)
+		 	uni.navigateTo({
+		 		url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
+		 	})	
 		 },
 		//预览图片
 		previewImg(index){

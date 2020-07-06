@@ -82,7 +82,7 @@
 				},
 				// #endif
 				{
-					type:0,
+					Id:0,
 					iconimg:'/static/pay_weixin.png',
 					name:"微信"
 				},
@@ -112,13 +112,15 @@
 			}
 		},
 		onLoad(e) {
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
 			// #ifdef H5
 			this.WxCode=getUrlParam("code");
 			this.WxOpenid = uni.getStorageSync("openId");
-			if(this.WxCode){//首次跳转获取code地址都直接调起支付
-				let OrderNo=e.OrderNo;
-				this.WechatPay(OrderNo)
-			}
+			// if(this.WxCode){//首次跳转获取code地址都直接调起支付
+			// 	let OrderNo=e.OrderNo;
+			// 	this.WechatPay(OrderNo)
+			// }
 			// #endif
 			// #ifdef APP-PLUS
 			this.proType=e.type;
@@ -224,7 +226,7 @@
 			//确认支付
 			surePop(){
 				if(this.payType==0){//微信
-					this.WechatPayOrder()
+					this.submitOrder()
 				}else if(this.payType==1){
 					
 				}else if(this.payType==2){//余额
@@ -248,7 +250,7 @@
 			async WechatPay(OrderNo){
 				uni.showLoading();
 				let url="",param={};
-				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?orderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
+				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?OrderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
 				if(this.proType==0){
 					url="Course/WeiXinCoursePay";
 					param={
@@ -275,7 +277,9 @@
 						// #endif
 					}
 				}
+				alert(JSON.stringify(param))
 				let result = await post(url, param);
+				alert(JSON.stringify(result))
 				if(result.code == 0){console.log(result.data)
 					uni.setStorageSync('openId', result.data.openid);
 					this.WxOpenid = uni.getStorageSync("openId");
@@ -322,7 +326,7 @@
 				if(result.code==0){
 					uni.hideLoading();
 					if(this.payType==0){//微信
-						this.WechatPay()
+						this.WechatPay(result.data)
 					}else if(this.payType==1){
 						
 					}

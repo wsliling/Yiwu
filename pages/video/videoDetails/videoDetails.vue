@@ -29,7 +29,9 @@
 				<view class="ft_l flex-start">
 					<view @click="likeBtn" :class="['txt_info like',CourseInfo.IsLike==1?'active':'']">{{CourseInfo.LikeNum}}</view>
 					<view class="txt_info reply">{{CourseInfo.CommentNum}}</view>
-					<view class="txt_info share"></view>
+					<share :wxUrl="'/pages/video/videoDetails/videoDetails?id='+Courseid">
+						<view class="txt_info share"></view>
+					</share>
 				</view>
 				<view class="ft_r flex-end">
 					<view :class="['txt_info download',CourseInfo.IsShowBuy==1?'dis':'']" @click="DownloadCourse(CourseInfo.IsShowBuy)"></view>
