@@ -13,13 +13,12 @@
 						</view>
 					</view>
 					<view class="user-name">
-						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}</view>
+						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus"></image></view>
 						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 					</view>
 				</view>
 				<view class="user-right">
 					<image src="@/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
-					<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus"></image>
 				</view>
 			</view>
 		</view>
