@@ -24,10 +24,10 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 0"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
+					<view class="" v-if="val.Type == 1"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
 					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
-						<view class="being uni-ellipsis2">{{ val.Name }}</view>
+						<view class="being uni-ellipsis2">{{ val.Title }}</view>
 						<view class="fz12 c_999" v-if="val.LikeNum">
 							{{val.LikeNum}}人点赞
 						</view>
@@ -65,11 +65,11 @@ export default {
 			tabIndex:0,
 			tabnav:[
 				{
-					Id:0,
+					Id:1,
 					TypeName:"课程"
 				},
 				{
-					Id:1,
+					Id:2,
 					TypeName:"舞曲"
 				}
 			],
@@ -83,7 +83,7 @@ export default {
 			datalength: 0,
 			Ids: [], //保存要删除数据
 			checked: false,
-			Type : 0, //0-产品  5-舞曲  7-视频
+			Type : 1, //  2-舞曲  1-视频
 		};
 	},
 	components: {
@@ -165,12 +165,12 @@ export default {
 		},
 		/*获取列表*/
 		async workeslist() {
-			let result = await post('User/MemberCollections', {
+			let result = await post('User/MyDownload', {
 				UserId: this.userId,
 				Token: this.token,
 				Page: this.page,
 				pageSize: this.pageSize,
-				Type: this.Type
+				TypeInt: this.Type
 			});
 			if (result.code === 0) {
 				let _this=this;

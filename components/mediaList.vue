@@ -43,7 +43,7 @@
 			</view>
 			<view class="media-foot">
 				<view class="media-info">
-					<text class="info-text">{{dataitem.Addtime}}</text>
+					<text class="info-text">{{dataitem.AddtimeStr}}</text>
 				</view>
 				<view class="media-info-r">
 					<text class="info-text"><text class="iconfont icon-eye"></text>{{dataitem.BrowseNum}}</text>

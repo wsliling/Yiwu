@@ -180,6 +180,16 @@ export default {
 						OrderNo:this.OrderNo,
 						Password
 					})
+          if(res.code==3){
+              uni.showModal({
+                  title:'是否跳转设置支付密码页面',
+                  success(ret){
+                      if(ret.confirm){
+                          navigate('member/setpwd/setpwd')
+                      }
+                  }
+              })
+          }
 					if(res.code) return;
 					this.paySuccess(res);
 				}else 
@@ -191,6 +201,16 @@ export default {
 						OrderNo:this.OrderNo,
 						Password
 					})
+          if(res.code==3){
+              uni.showModal({
+                  title:'是否跳转设置支付密码页面',
+                  success(ret){
+                      if(ret.confirm){
+                          navigate('member/setpwd/setpwd')
+                      }
+                  }
+              })
+          }
 					if(res.code) return;
 					this.paySuccess(res);
 				}
