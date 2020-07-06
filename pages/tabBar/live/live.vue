@@ -26,7 +26,7 @@
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
 					<view class="maxpic" v-if="item.VideoUrl">
-						<video :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+						<video :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
 					<view class="desc uni-ellipsis2">
 						{{item.Title}}
