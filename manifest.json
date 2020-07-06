@@ -47,12 +47,7 @@
             "ios" : {},
             /* SDK配置 */
             "sdkConfigs" : {
-                "share" : {
-                    "weixin" : {
-                        "appid" : "",
-                        "UniversalLinks" : ""
-                    }
-                }
+                "share" : {}
             }
         }
     },
