@@ -56,13 +56,13 @@
 			</view>
 			<view class="play-box item-box"  v-if="tabId==1&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
-					<image :src="item.Logo"></image>
+					<image :src="item.Logo" mode="aspectFill"></image>
 					<view class="playbtn"></view>
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index" @click="playmusic(item.Id,index)">
-					<image :src="item.PicImg||'/static/default_music.png'"></image>
+					<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">

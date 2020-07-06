@@ -38,6 +38,11 @@
 			if(this.type==0){
 				this.hascheck=true;
 			}
+			if (this.type == 1) {
+				uni.setNavigationBarTitle({
+					title: '上传课程'
+				});
+			}
 		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId")
