@@ -48,7 +48,11 @@
         <view class="wu-item" v-for="(val,key) in list" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
             <image :src="val.PicNo" mode="aspectFill"></image>
             <view class="wu-tet">
-                <view class="wu-name"><span v-if="val.IsPlatform">自营</span>{{val.Name}}</view>
+                <view class="wu-name">
+                    <!-- <span v-if="val.IsPlatform">自营</span> -->
+                    <span>{{item.IsPlatform?'自营':item.IsHot?'超级好物':item.IsRecommend?'推荐好物':''}}</span>
+                    {{val.Name}}
+                </view>
                 <view class="wu-price">￥{{val.Price}}</view>
             </view>
         </view>
