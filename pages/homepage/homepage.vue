@@ -71,13 +71,12 @@
 				</view>
 			</view>
 			<view class="product-box item-box"  v-if="tabId==4&&hasData">
-				<view class="item">
-					<image class="img" src="@/static/of/banner.jpg"></image>
-					<view class="product">
-						<view class="list" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/shopSon/product/productDetails?id='+item.Id)">
-							<image :src="item.PicImg" mode="widthFix"></image>
-							<view>{{item.Name}}</view>
-							<span>￥{{item.Price}}</span>
+				<view class="product">
+					<view class="wu-item" v-for="(val,key) in datalist" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
+						<image :src="val.PicImg" mode="aspectFill"></image>
+						<view class="wu-tet">
+							<view class="wu-name">{{val.Name}}</view>
+							<view class="wu-price">￥{{val.Price}}</view>
 						</view>
 					</view>
 				</view>
@@ -104,7 +103,7 @@
 </template>
 
 <script>
-import {post,get,toLogin} from '@/common/util.js';
+import {post,get,toLogin,navigate} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
@@ -114,6 +113,7 @@ export default {
 	},
 	data() {
 		return {
+			navigate,
 			userId: "",
 			token: "",
 			scrollLeft: 0,
