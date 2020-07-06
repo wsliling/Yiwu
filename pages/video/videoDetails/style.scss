@@ -24,6 +24,7 @@
 	.title{
 		font-size: 32upx;
 		line-height: 1.6;
+		font-weight: bold;
 	}
 	.desc{
 		color: #999;
@@ -35,6 +36,7 @@
 	}
 	.price{
 		font-size: 34upx;
+		font-weight: bold;
 	}
 	.buybtn{
 		color: #fff;
@@ -128,6 +130,7 @@
 		}
 		.item_title{
 			font-size:30upx;
+			font-weight: bold;
 		}
 		.item_price{
 			color:$primary;font-size:30upx;

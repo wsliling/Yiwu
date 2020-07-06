@@ -20,7 +20,7 @@
 		</view>
 		<view class="menulist">
 			<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/member/myMusic_list/myMusic_list?id='+item.Id)">
-				<view class="imgbox"><image src="/static/default_music.png" mode="aspectFill"></image></view>
+				<view class="imgbox"><image :src="item.Img || '/static/default_music.png'" mode="aspectFill"></image></view>
 				<view class="info flex1">
 					<view class="name uni-ellipsis">{{item.Name}}</view>
 					<view class="fz12 c_999 uni-mt10">{{item.Num}}</view>
