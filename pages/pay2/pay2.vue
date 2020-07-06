@@ -82,7 +82,7 @@
 				},
 				// #endif
 				{
-					type:0,
+					Id:0,
 					iconimg:'/static/pay_weixin.png',
 					name:"微信"
 				},
@@ -224,7 +224,7 @@
 			//确认支付
 			surePop(){
 				if(this.payType==0){//微信
-					this.WechatPayOrder()
+					this.submitOrder()
 				}else if(this.payType==1){
 					
 				}else if(this.payType==2){//余额
@@ -322,7 +322,7 @@
 				if(result.code==0){
 					uni.hideLoading();
 					if(this.payType==0){//微信
-						this.WechatPay()
+						this.WechatPay(result.data)
 					}else if(this.payType==1){
 						
 					}
