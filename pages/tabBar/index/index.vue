@@ -285,7 +285,7 @@
 				CourseListPage:1,
 				CourseListLoadingType:0,
 				videoContext:[],
-				onplayId:'',//当前播放
+				onplayId:-1,//当前播放
 			}
 		},
 		onLoad() {
@@ -392,7 +392,7 @@
 				}
 			},
 			tapTab(index) { //点击tab-bar
-				if(this.onplayId>=0){
+				if(this.onplayId>-1){
 					this.videoContext[this.onplayId].pause();
 				}
 				if (this.tabIndex === index) {
