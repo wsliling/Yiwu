@@ -103,8 +103,7 @@ export default {
 		display: flex;
 		// justify-content: space-between;
 		background: #fff;
-		padding: 30upx 0;
-		margin-right: -20upx;
+		padding: 20upx 0 20upx 20upx;
 		.live-box {
 			padding-right: 20upx;
 			width: 33.33%;
