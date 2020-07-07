@@ -177,6 +177,7 @@
 				}
 			}
 		},
+
 		onReachBottom: function() {
 			if (this.isLoad) {
 				this.loadingType = 1;
@@ -185,6 +186,15 @@
 			} else {
 				this.loadingType = 2;
 			}
+		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			this.page=1;
+			this.isLoad=false,
+			this.hasData=false,
+			this.noDataIsShow=false,
+			this.NoticeList();
+			uni.stopPullDownRefresh();
 		}
 	}
 </script>
