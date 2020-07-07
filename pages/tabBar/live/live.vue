@@ -171,21 +171,23 @@
 				}
 			},
 			openAttestation(){
-				let urlstr="";
-				uni.showActionSheet({
-					itemList: ['拍视频', '上传课程',],
-					success: (e) => {
-						console.log(e.tapIndex);
-						if(e.tapIndex==0){
-							urlstr="/pages/video/videoUpload/videoUpload?type=0";
-						}else if(e.tapIndex==1){
-							urlstr="/pages/video/videoUpload/videoUpload?type=1";
+				if(toLogin()){
+					let urlstr="";
+					uni.showActionSheet({
+						itemList: ['拍视频', '上传课程',],
+						success: (e) => {
+							console.log(e.tapIndex);
+							if(e.tapIndex==0){
+								urlstr="/pages/video/videoUpload/videoUpload?type=0";
+							}else if(e.tapIndex==1){
+								urlstr="/pages/video/videoUpload/videoUpload?type=1";
+							}
+							uni.navigateTo({
+								url: urlstr
+							})
 						}
-						uni.navigateTo({
-							url: urlstr
-						})
-					}
-				})
+					})
+				}
 			},
 			//视频列表
 			async VideoList(){
