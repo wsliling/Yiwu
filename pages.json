@@ -525,6 +525,7 @@
 				,{
 					"path" : "chatList/chatList",
 					"style" : {
+						"enablePullDownRefresh":true
 					}
 					
 				}
