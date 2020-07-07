@@ -45,7 +45,7 @@ export default {
 		// #endif
 		if (this.wType == 1) {
 			uni.setNavigationBarTitle({
-				title: '佣金提现'
+				title: '收入提现'
 			});
 			this.getMyIncome() //佣金
 		}
@@ -201,7 +201,7 @@ export default {
 			let that = this;
 			let objUrl = '';
 			if (this.wType == 1) {
-				objUrl = 'DrawMoney/memberDrawMoneyApply';
+				objUrl = 'DrawMoney/MemberIncomeApply';
 			} else {
 				objUrl = 'DrawMoney/memberDrawMoneyApply123';
 			}
@@ -224,7 +224,7 @@ export default {
 						success: function() {
 							setTimeout(function() {
 								uni.navigateBack({
-								    delta: 1
+								    delta: 2
 								});
 							}, 1500);
 						}
