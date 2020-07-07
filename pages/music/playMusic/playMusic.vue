@@ -134,10 +134,15 @@
 							this.current = audio.currentTime;
 						}
 						this.paused = false
+						this.loading=false
 					})
 				}else{
 					this.current = 0
 				}
+				//音频加载中
+				audio.onWaiting(()=>{
+					this.loading=true
+				})
 				//音频播放事件
 				audio.onPlay(() => {
 					this.paused = false

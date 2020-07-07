@@ -237,10 +237,21 @@ export function playMusic(index,id){//index:当前列表的索引，舞曲id
 	}else{
 		playID=id
 		uni.setStorageSync("playID",playID)
+		uni.setStorageSync("playIDtype",1)
 		audio.src = musicList[index].Audio;
 		audio.play()
 		MemberPaly(id)
 	}
+	//音频播放事件
+	audio.onPlay(() => {
+		hasplay=true
+		uni.setStorageSync("playIDtype",1)
+	})
+	//音频暂停事件
+	audio.onPause(() => {
+		hasplay=false
+		uni.setStorageSync("playIDtype",0)
+	})
 }
 //记录播放舞曲
 function MemberPaly(id){

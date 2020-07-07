@@ -75,11 +75,11 @@
 				showPay:false,//支付密码弹框
 				payway:[
 				// #ifdef APP-PLUS||H5	
-				{
-					Id:1,
-					iconimg:'/static/pay_alipay.png',
-					name:"支付宝"
-				},
+				// {
+				// 	Id:1,
+				// 	iconimg:'/static/pay_alipay.png',
+				// 	name:"支付宝"
+				// },
 				// #endif
 				{
 					Id:0,
@@ -136,6 +136,9 @@
 			// #ifndef APP-PLUS
 			this.proType=this.$mp.query.type;
 			this.proID=this.$mp.query.id;
+			// #endif
+			// #ifdef MP-WEIXIN
+			this.getcode();
 			// #endif
 		},
 		methods: {
@@ -251,7 +254,7 @@
 				uni.showLoading();
 				let url="",param={};
 				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?OrderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
-				if(this.proType==0){
+				if(this.proType==0){//课程
 					url="Course/WeiXinCoursePay";
 					param={
 						"UserId": this.userId,
@@ -266,9 +269,14 @@
 						// #ifdef APP-PLUS
 						"paytype":2,
 						// #endif
+						// #ifdef MP-WEIXIN
+						"WxCode": this.WxCode,
+						"WxOpenid":this.WxOpenid ,
+						"paytype":4
+						// #endif
 						
 					}
-				}else if(this.proType==1){
+				}else if(this.proType==1){//舞曲
 					url="DanceMusic/WechatPayWQ";
 					param={
 						"UserId": this.userId,
@@ -285,9 +293,8 @@
 						// #endif
 					}
 				}
-				alert(JSON.stringify(param))
 				let result = await post(url, param);
-				alert(JSON.stringify(result))
+				// #ifdef H5
 				if(result.code == 0){console.log(result.data)
 					uni.setStorageSync('openId', result.data.openid);
 					this.WxOpenid = uni.getStorageSync("openId");
@@ -304,6 +311,36 @@
 						duration: 1500
 					});
 				}
+				// #endif
+				// #ifdef APP-PLUS
+				if(result.code==0){console.log(result.data)
+					// var payData=JSON.parse(result.data.JsParam)
+					let _this=this;
+					uni.requestPayment({
+					  provider:"wxpay",
+					  orderInfo:result.data.JsParam,
+					  success(res) {
+						  console.log(res)
+						  _this.type = "";
+							_this.showPay=false;
+							uni.navigateBack()
+						},
+					  fail(err) {console.log(err)
+						  uni.showToast({
+						  	title:"支付失败",
+							icon:"none",
+							duration:4000
+						  })
+					  }
+					})
+				}else {
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 1500
+					});
+				}
+				// #endif
 			},
 			//订单提交
 			async submitOrder(){
@@ -386,7 +423,19 @@
 				var start = arrUrl[1].split("/");
 				urlStr = arrUrl[0] + '//' + start[0];　　　　
 				return urlStr;　　
-			},	
+			},
+			getcode(){
+				let _this=this;
+				uni.login({
+					success: function(res) {
+					  if (res.code) {
+						_this.WxCode=res.code;
+					  } else {
+						console.log('登录失败！' + res.errMsg)
+					  }
+					}
+				});
+			},
 		}
 	}
 </script>
