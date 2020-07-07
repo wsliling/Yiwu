@@ -117,10 +117,10 @@
 			// #ifdef H5
 			this.WxCode=getUrlParam("code");
 			this.WxOpenid = uni.getStorageSync("openId");
-			// if(this.WxCode){//首次跳转获取code地址都直接调起支付
-			// 	let OrderNo=e.OrderNo;
-			// 	this.WechatPay(OrderNo)
-			// }
+			if(this.WxCode){//首次跳转获取code地址都直接调起支付
+				let OrderNo=e.OrderNo;
+				this.WechatPay(OrderNo)
+			}
 			// #endif
 			// #ifdef APP-PLUS
 			this.proType=e.type;
@@ -257,7 +257,15 @@
 						"UserId": this.userId,
 						"Token": this.token,
 						"OrderNo":OrderNo,
+						// #ifdef H5
+						"NewUrl":NewUrl,//支付后的回调地址
+						"WxCode":this.WxCode,
+						"WxOpenid":this.WxOpenid,
 						"paytype":0,
+						// #endif
+						// #ifdef APP-PLUS
+						"paytype":2,
+						// #endif
 						
 					}
 				}else if(this.proType==1){

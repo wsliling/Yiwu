@@ -82,6 +82,10 @@
 				}
 			});
 			$('.btn').click(function(evt) {
+				if(filePath == '') {
+					$(".showFileName").html("内容不能为空");
+					return
+				}
 				$('.modal').show()
 				setTimeout(()=>{
 					let nameSuffix = /.[^.]+$/.exec(filePath)[0]
