@@ -76,7 +76,7 @@
 									</view>
 									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover" :id="'video'+item.Id" @play="onplayvideo"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
@@ -284,6 +284,8 @@
 				CourseList:[],//课程
 				CourseListPage:1,
 				CourseListLoadingType:0,
+				videoContext:[],
+				onplayId:'',//当前播放
 			}
 		},
 		onLoad() {
@@ -326,6 +328,17 @@
 				this.GetTeacher();
 				this.GetJiGouList();
 				this.GetCourseList();
+			},
+			onplayvideo(e){
+				let id=e.currentTarget.id;
+				for(let i=0; i<this.datalist.length;i++){
+					let _id='video'+this.datalist[i].Id;
+					if(_id==id){
+						this.onplayId=i;
+					}else{
+						this.videoContext[i].pause();
+					}
+				}
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -379,6 +392,7 @@
 				}
 			},
 			tapTab(index) { //点击tab-bar
+				this.videoContext[this.onplayId].pause();
 				if (this.tabIndex === index) {
 					return false;
 				} else {
@@ -457,6 +471,13 @@
 					pageSize:this.pageSize
 				});
 				if (result.code === 0) {
+					if(result.data.length>0){
+						this.videoContext=[];
+						for(let i=0;i<result.data.length;i++){
+							let n=result.data[i].Id;
+							this.videoContext[i]=uni.createVideoContext('video'+n);
+						}
+					}
 					if (this.datalistPage === 1) {
 						this.datalist = result.data;
 					}
