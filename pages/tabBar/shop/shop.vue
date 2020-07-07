@@ -34,7 +34,7 @@
 		</view>
 		<!-- 品牌 -->
 		<view class="brand">
-			<view class="brand-img" v-for="(item,index) in shopList" :key="index" 
+			<view class="brand-img flex-column" v-for="(item,index) in shopList" :key="index" 
 				 @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})">
 				<image class="icon" :src="item.Logo" mode="aspectFill"></image>
 			</view>
