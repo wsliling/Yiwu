@@ -14,12 +14,36 @@
 				<radio class="radio" :color="hascheck?'#de1b6e':'#999'" checked="true"></radio><text>免费</text>
 			</label>
 		</view>
+		<view class="listbox" @click="isShowSource = true">
+			<view class="">舞曲来源</view>
+			<view class="listdis">
+				<input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" />
+				<image src="../../../static/my/icon-right.png" mode=""></image>
+			</view>
+		</view>
+		<!-- 选择来源 -->
+		<uni-popup mode="fixed" :show="isShowSource" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-music Menulist__modal">
+				<view class="uni-modal__hd pd15">选择来源</view>
+				<view class="uni-modal__bd">
+					<view class="line-list">
+						<view class="line-item" v-for="(item, index) in Sourcelist" :key="index" @click="SelectSource(item.Id, item.Name)">
+							<view class="line-item-l text_left">
+								<text class="txt" v-if="item.TypeInt == 1">{{ item.Name }}</text>
+							</view>
+						</view>
+					</view>
+					<view class="btns flex-between"><view class="btn c_theme" @click="hidePopup">关闭</view></view>
+				</view>
+			</view>
+		</uni-popup>
 		<view class="btnbox" @click="uplLoadBtn">确定</view>
 	</view>
 </template>
 
 <script>
-	import {post,webUrl,host} from '@/common/util'
+	import {post,webUrl,host} from '@/common/util';
+	import uniPopup from '@/components/uni-popup.vue';
 	export default {
 		data() {
 			return {
@@ -31,6 +55,9 @@
 				Price:"",
 				videoImg:"",
 				videoShowImg:"",
+				Sourcelist:[], // 视频课程来源列表
+				isShowSource:false, //来源
+				sourcetype: '', //选中来源
 			};
 		},
 		onLoad(e){
@@ -43,6 +70,7 @@
 					title: '上传课程'
 				});
 			}
+			this.getSource()
 		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId")
@@ -114,7 +142,27 @@
 					return false
 				}
 				return true
-			}
+			},
+			//取消（统一关闭弹窗）
+			hidePopup() {
+				this.isShowSelect = false;
+			},
+			// 来源选中
+			SelectSource(id, name) {
+				this.sourcetype = name;
+				this.ClassId = id;
+				this.isShowSource = false;
+			},
+			//视频课程获取来源
+			getSource() {
+				post('DanceMusic/GetSource', {
+					Type: 0
+				}).then(res => {
+					if (res.code === 0) {
+						this.Sourcelist = res.data;
+					}
+				});
+			},
 		}
 	}
 </script>
@@ -168,5 +216,44 @@
 	position: fixed;
 	left: 30upx;
 	bottom: 20upx;
+}
+.listbox{
+	display: flex;
+	align-items: center;
+	padding: 0 30upx;
+	height: 90upx;
+	border-bottom: 1px #ececec solid;
+	background-color: #fff;
+	width: 100%;
+	.listdis{
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		input{
+			// margin-left: 40upx;
+		}
+		image{
+			width: 20upx;
+			height: 30upx;
+		}
+	}
+	&::after {
+	    content: '';
+	    display: block;
+	    position: absolute;
+	    right: 20px;
+	    top: 50%;
+	    width: 8px;
+	    height: 8px;
+	    margin-top: -4px;
+	    background: transparent;
+	    border: 1px solid #ccc;
+	    border-top: none;
+	    border-right: none;
+	    -webkit-border-radius: 0;
+	    border-radius: 0;
+	    -webkit-transform: rotate(-135deg);
+	    /* transform: rotate(-135deg); */
+	}
 }
 </style>

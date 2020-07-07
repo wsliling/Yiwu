@@ -19,7 +19,7 @@
 				<view class="lab">类型选择</view>
 				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="musictype" /></view>
 			</view>
-			<view class="line-item line-arrow-r" @click="showPopup()">
+			<view class="line-item line-arrow-r" @click="isShowSource = true">
 				<view class="lab">舞曲来源</view>
 				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" /></view>
 			</view>
@@ -124,7 +124,7 @@ export default {
 			this.ClassId = id;
 			this.isShowSelect = false;
 		},
-		// 来源选中
+		// 舞曲来源选中
 		SelectSource(id, name) {
 			this.sourcetype = name;
 			this.ClassId = id;
