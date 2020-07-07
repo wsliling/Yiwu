@@ -239,13 +239,15 @@
 			//播放
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
-					// uni.setStorageSync("musicList",this.datalist)
+					uni.setStorageSync("musicList",this.datalist)
 					if(this.playID==id){
 						this.playID="";
 					}else{
 						this.playID=id;
 					}
 					playMusic(index,id)
+					this.playID=uni.getStorageSync("playID")
+					this.playIDtype=uni.getStorageSync("playIDtype")
 				}else{
 					uni.showToast({
 						title:"抱歉！该舞曲需付费",

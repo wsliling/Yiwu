@@ -1,0 +1,483 @@
+<template>
+	<div>
+		<view :style="{ width: width + 'px', height: height + 'px' }" v-if="markact" class="mark"><text class="mark-text">直播启动中...</text></view>
+		<view>
+			<view @click="returns" class="arrow-box"><text class="jiesu">结束直播</text></view>
+			<view class="arrow-boxs">
+				<image class="user-img" src="/static/logo.png"></image>
+				<view>
+					<text class="text-box">8 关注</text>
+				</view>
+			</view>
+
+			<live-pusher :beauty="beauty" :style="{ width: width + 'px', height: (height + 1) + 'px' }" id="livePusher" :url="url" mode="FHD"></live-pusher>
+
+			<!-- 这是聊天室 -->
+			<view class="nlv-footToolbar">
+				<!-- 滚动msg信息 -->
+				<scroll-view class="nlv-rollMsgPanel" scroll-y show-scrollbar="false" :scroll-top="scrollTop">
+					<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
+						<view class="nlv-msglist">
+							<view class="msg_bg"><text class="msg_name">{{msgitem.name}}</text> <text class="msg_text">{{msgitem.Info}}</text></view>
+						</view>
+					</block>
+				</scroll-view>
+				<view class="goodsbox" v-if="showgoodsbox">
+					<view class="item">
+						<view class="imgbox">
+							<image src="/static/logo.png" class="spimg"></image>
+						</view>
+						<view class="txtBox">
+							<text class="title">"90分户外防水便携桶包"</text>
+							<text class="price">"￥99.9"</text>
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<!-- 这是功能按钮 -->
+			<view :style="{ width: width + 'px' }" class="but">
+				<view class="meiyanbut">
+					<image class="but-img" src="http://www.sc-mall.net/static/zhiboshop.png"></image>
+					<text class="but-text">宝贝</text>
+				</view>
+				<view @click="openmeiyan" class="meiyanbut">
+					<image class="but-img" src="http://www.sc-mall.net/static/meiyan.png"></image>
+					<text v-if="beauty == 0" class="but-text">开启美颜</text>
+					<text v-if="beauty == 9" class="but-text">关闭美颜</text>
+				</view>
+				<view @click="switchCamera" class="meiyanbut">
+					<image class="but-img" src="http://www.sc-mall.net/static/qiehuan.png"></image>
+					<text class="but-text">切换摄像头</text>
+				</view>
+			</view>
+		</view>
+	</div>
+</template>
+
+<script>
+import { host, post, get, wssPath } from '@/common/util.js';
+import permision from '@/common/permission.js';
+import uniPopup from '@/components/uni-popup/uni-popup.vue';
+export default {
+	components: {
+		uniPopup
+	},
+	data() {
+		return {
+			type: '',
+			width: '',
+			height: '',
+			liveUserId: '',
+			liveToken: '',
+			url: '', //这是推流地址
+			context: null,
+			markact: true,
+			beauty: 0,
+			showgoodsbox: false,//商品展示
+			SocketTask:null,
+			socketStatus:false,
+			strArr:[],//弹幕列表
+			Signature:"",// 获取WebSocketId 用于身份验证
+			TimeStamp:"",
+			SecretKey:"",
+			scrollTop:2000,//滚动到底部
+		};
+	},
+	onShow() {
+		let res = uni.getSystemInfoSync();
+		this.width = res.windowWidth;
+		this.height = res.windowHeight;
+		this.liveUserId = uni.getStorageSync('liveUserId');
+		this.liveToken = uni.getStorageSync('liveToken');
+		//权限设置,获取权限后开启直播
+		this.quanxian();
+		this.livemessage()
+	},
+	methods: {
+		async quanxian() {
+			switch (uni.getSystemInfoSync().platform) {
+				case 'android':
+					var result = await permision.requestAndroidPermission('android.permission.CAMERA');
+					var res = await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					console.log(res, 123456);
+					var strStatus;
+					if(result == 1 && res == 1){//已经获取授权开始直播
+						console.log("开始直播")
+						this.getPlay();
+					}else if (result == 1 && res !== 1) {
+						uni.showToast({
+							title: '麦克风未授权',
+							icon: 'none',
+							success() {
+								// permision.gotoAppPermissionSetting();
+							}
+						});
+						this.stopLive();
+					} else if (result == 0) {
+						uni.showToast({
+							title: '摄像头未授权',
+							icon: 'none',
+							success() {
+								// permision.gotoAppPermissionSetting();
+							}
+						});
+						this.stopLive();
+					} else if (result == -1) {
+						this.stopLive();
+						uni.showToast({
+							title: '被永久拒绝权限',
+							icon: 'none',
+							success() {
+								
+							}
+						});
+						setTimeout(function(){
+							uni.switchTab ({
+								url:'/pages/tabBar/my/my'
+							})
+						},1500)
+					}
+
+					break;
+
+				case 'ios':
+					var iosresult = await permision.judgeIosPermission('camera');
+					var iosres = await permision.judgeIosPermission('record');
+					console.log('运行iOS上');
+					var strStatus;
+					if(iosresult&& iosres){//已经获取授权开始直播
+						console.log("开始直播")
+						this.getPlay();
+					}else if ((!iosres)&&(!iosresult)) {
+						uni.showToast({
+							title: '请先开启摄像头和麦克风权限后再开启直播！',
+							icon: 'none',
+							success() {
+								// permision.gotoAppPermissionSetting();
+							}
+						});
+						this.stopLive();
+					} else if (!iosresult) {
+						uni.showToast({
+							title: '摄像机未授权',
+							icon: 'none', 
+							success() {
+								// permision.gotoAppPermissionSetting();
+							}
+						});
+						this.stopLive();
+					}else{
+						uni.showToast({
+							title: '麦克风未授权',
+							icon: 'none',
+							success() {
+								// permision.gotoAppPermissionSetting();
+							}
+						});
+						this.stopLive();
+					}
+				break;
+			}
+		},
+		async getPlay() {
+			let res = await post('TencentCloud/PushURL', {
+				push: '',
+				UserId: this.liveUserId,
+				Token: this.liveToken
+			});
+			if (res.code == 0) {console.log(res)
+				this.url = res.data.RTMP;
+				this.context = uni.createLivePusherContext('livePusher', this);
+				setTimeout(() => {
+					this.startLive();
+				}, 1000);
+			} else if(res.code == 2){
+				uni.setStorageSync('liveToken', '');
+				uni.setStorageSync('liveUserId', '');
+				uni.showToast({
+					title: "请重新登录商家直播账号",
+					icon: 'none',
+					duration: 2000
+				});
+				setTimeout(function() {
+					uni.navigateBack({});
+				}, 2000);
+			} else {
+				uni.setStorageSync('liveToken', '');
+				uni.setStorageSync('liveUserId', '');
+				uni.showToast({
+					title: res.msg,
+					icon: 'none',
+					duration: 2000
+				});
+				setTimeout(function() {
+					uni.navigateBack({});
+				}, 2000);
+			}
+		},
+		openmeiyan() {
+			if (this.beauty == 0) {
+				this.beauty = 9;
+			} else {
+				this.beauty = 0;
+			}
+		},
+		returns() {
+			this.stopLive();
+			uni.navigateBack({
+				delta: 1
+			});
+		},
+		startLive() {
+			let _this = this;
+			this.context.start({
+				success: a => {
+					_this.markact = false;
+					console.log('livePusher.start:' + JSON.stringify(a));
+				}
+			});
+		},
+		stopLive() {
+			this.context.stop({
+				success: a => {
+					console.log(JSON.stringify(a));
+				}
+			});
+		},
+		switchCamera() {
+			this.context.switchCamera({
+				success: a => {
+					console.log('livePusher.switchCamera:' + JSON.stringify(a));
+				}
+			});
+		},
+		// 获取WebSocketId 用于身份验证
+		async livemessage(){
+			let res =await post('User/GetWebSocketId',{
+				UserId: uni.getStorageSync('userId'),
+				Token: uni.getStorageSync('token'),
+				Type:0,
+				FriendId:uni.getStorageSync('liveShopId')
+			})
+			console.log(res)
+			this.Signature=res.data.Signature
+			this.TimeStamp=res.data.TimeStamp
+			this.SecretKey=res.data.SecretKey
+			this.connectSocket()
+		},
+		// 打开webSocket链接登录验证
+		async connectSocket(){
+			let that =this
+			this.SocketTask=uni.connectSocket({
+			    url:wssPath+'?Signature='+this.Signature,
+				success:()=>{}
+			})
+			
+			this.SocketTask.onOpen(res => {
+				// console.log("open", res);
+				this.socketStatus = true;
+				let data=this.LoginData(1,this.TimeStamp,this.SecretKey)
+				this.SocketTask.send({data:JSON.stringify(data)})
+				console.log("发送数据",res);
+			});
+			this.onMessage()
+			this.SocketTask.onError(function (res) {
+			  console.log('WebSocket连接打开失败，请检查！');
+			});
+			this.SocketTask.onClose(close => {
+				console.log("close", close);
+				this.socketStatus = false;
+			});
+		},
+		//接收消息
+		onMessage(){
+			let msg
+			let that=this
+		
+			this.SocketTask.onMessage(r => {
+				msg=JSON.parse(r.data)
+				// console.log(msg,55555)
+				if(msg.code==1){
+					
+				}else if(msg.code==3||msg.code==0){
+					let obj=JSON.parse(msg.data.Id)
+					console.log(obj,987)
+					that.strArr.push(obj)
+					for(let i=0; i<that.strArr.length; i++){
+					    for(let j=i+1; j<that.strArr.length; j++){
+					        if(that.strArr[i].Id==that.strArr[j].Id){ //第一个等同于第二个，splice方法删除第二个
+					            that.strArr.splice(j,1);
+					            j--;
+					        }
+					    }
+					}
+					console.log('arr',that.strArr)
+					this.$nextTick(function(){//等最新一条消息dom更新，滚动到底部
+						that.scrollTop=this.scrollTop+50
+					})
+				}else if(msg.code==2){//连接断开，重新连接
+					// let data=that.LoginData(1,that.TimeStamp,that.SecretKey)
+					// that.SocketTask.send({data:JSON.stringify(data)})
+					// uni.showToast({
+					// 	title:'正在重连请稍等...',
+					// 	icon:'none'
+					// })
+				}
+			})
+		},
+		LoginData(MsgType, TimeStamp, SecretKey) {//登录数据
+			let data = {
+				MsgType:MsgType, //咨询者还是回答者
+				TimeStamp:TimeStamp,
+				SecretKey:SecretKey
+			}
+			// console.log(data)
+			return data;
+		},
+	}
+};
+</script>
+
+<style scoped lang="scss">
+.but-img {
+	width: 20px;
+	height: 20px;
+}
+.meiyanbut {
+	flex: 1;
+	padding: 10px 20px 10px 20px;
+	/* margin-left: 20px; */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+.but-text {
+	padding-top: 3px;
+	font-size: 13px;
+	color: white;
+}
+.text-box {
+	font-size: 12px;
+	color: white;
+}
+.user-img {
+	margin-right: 16upx;
+	width: 50upx;
+	height: 50upx;
+	border-radius: 50%;
+}
+.mark-text {
+	color: white;
+	font-size: 28upx;
+}
+.mark {
+	position: fixed;
+	top: 0px;
+	background-color: #000000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+.but {
+	background-color: rgba(0, 0, 0, 0.4);
+	position: fixed;
+	bottom: 0px;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	border: none;
+}
+.arrow-box {
+	position: fixed;
+	top: 60upx;
+	left: 40upx;
+	z-index: 10;
+	border-radius: 20px;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+.arrow-boxs {
+	padding: 10upx 20upx;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+	position: fixed;
+	top: 60upx;
+	right: 40upx;
+	z-index: 10;
+	border-radius: 30px;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+.jiesu {
+	padding: 20upx;
+	color: white;
+	font-size: 28upx;
+}
+.nlv-footToolbar{
+	position: absolute;
+	width: 750upx;
+	bottom: 66px;
+	left: 0;
+	right: 0;
+	padding: 20upx;
+}
+.nlv-rollMsgPanel{
+	height: 700upx;
+}
+.nlv-msglist{
+	margin-bottom: 10px;
+	// flex-direction: row;
+	// display: flex;
+	width:750upx;
+}
+.msg_bg{
+	display: flex;
+	// flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	background-color: rgba(0,0,0,.4);
+	border-radius: 12upx;
+	padding: 16upx 20upx;
+	line-height: 1.2;
+	max-width:460upx;
+	height: auto;
+}
+.msg_name{ color:#f5d916;  margin-right: 10upx;font-size: 28upx;}
+.msg_text{ color:#fff;font-size: 28upx;lines:2;}
+.nlv-msglist::after{
+	display: block;
+	content:"";
+	width: 100%;
+}
+.goodsbox{
+	width: 230px;
+	margin-top: 10px;
+	border-radius: 12upx;
+}
+.item{
+	background-color: #fff;
+	width: 230px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+.imgbox{
+	width: 100upx; 
+	height:100upx;
+	margin-right: 20upx;
+}
+.spimg{
+	width: 100upx;
+	height:100upx;
+}
+.txtBox{ width: 300upx;padding: 10upx;padding-right: 0;}
+.title{
+	display: block;
+	font-size: 32upx;
+	lines:1;
+	text-overflow:ellipsis;
+}
+.price{color: #f0370b;font-size: 32upx;}
+</style>
