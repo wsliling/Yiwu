@@ -21,8 +21,7 @@
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
 						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum}}</view>
-						<share h5Url='http://localhost:8080/#/pages/tabBar/index/index'
-							wxUrl="/pages/tabBar/index/index">
+						<share :h5Url="'/pages/replylist/replylist?id='+Findid" :wxUrl="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
 						<view class="txt_info inwith">来源{{NewsInfo.Source}}</view>

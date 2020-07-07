@@ -63,8 +63,9 @@
 								<text class="txt">添加到歌单</text>
 							</view>
 						</view>
-						<share class="line-item" :wxUrl="'/pages/music/list/list?type='+pageType">
-							<view class="line-item-l flex-start">
+						<share class="line-item" :wxUrl="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id"
+						 :h5Url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id">
+							<view class="line-item-l flex-start" style="width:100%;">
 								<image class="iconimg" src="/static/share.png" mode="widthFix"></image>
 								<text class="txt">分享</text>
 							</view>

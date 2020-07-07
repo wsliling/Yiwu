@@ -52,6 +52,14 @@
 				width: 100%;
 				display: block;
 			}
+			.postpic{max-height: 450upx;}
+			&.dis{
+				position: relative;
+				video{
+					position: absolute;
+					left: -2000px;
+				}
+			}
 		}
 		.desc{
 			// position: absolute;

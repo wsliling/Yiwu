@@ -57,6 +57,7 @@ export default {
 		image {
 			height: 386upx;
 			border-radius: 6upx 6upx 0 0;
+			background: #eee;
 		}
 		.islive {
 			display: flex;
@@ -102,14 +103,13 @@ export default {
 		display: flex;
 		// justify-content: space-between;
 		background: #fff;
-		padding: 30upx 0 30upx 20upx;
-		width: 100%;
+		padding: 20upx 0 20upx 20upx;
 		.live-box {
-			padding-right: 25upx;
-			width: 33%;
+			padding-right: 20upx;
+			width: 33.33%;
 			image {
-				width: 198upx;
-				height: 198upx;
+				width: 100%;
+				height: 216upx;
 				border-radius: 6upx;
 			}
 			.live-int{

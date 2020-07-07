@@ -32,7 +32,7 @@
 					<image src="/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
 					<image src="/static/music/playicon3.png" mode="widthFix" v-else></image>
 			 	</view>
-				<share class="item" :h5Url="h5Url" :wxUrl="'/pages/tabBar/music/music'">
+				<share class="item" :h5Url="'/pages/music/playMusic/playMusic?type=share&id='+musicID" :wxUrl="'/pages/music/playMusic/playMusic?type=share&id='+musicID">
 					<image src="/static/music/playicon4.png" mode="widthFix"></image>
 				</share>
 				<view class="item" @click="ShowPlaylist">
@@ -89,6 +89,7 @@
 				playType:0,//0:顺序播放 1:单曲 2:随机
 				h5Url:'',
 				Source:'',//来源
+				type:'',
 			}
 		},
 		watch: {
@@ -97,30 +98,35 @@
 				this.durationTime = this.format(e)
 			},
 			//监听当前进度改变
-			current(e) {console.log(e)
+			current(e) {
 				this.currentTime = this.format(e)
 			}
 		},
 		onLoad(e) {
-			this.nowIndex=e.nowIndex
+			this.nowIndex=e.nowIndex||0
 			this.musicID=e.id;
-			this.h5Url = window.location.origin+'/#/pages/tabBar/music/music';
+			this.type = e.type||'';
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
 			console.log(this.musicList,'list')
-			if(this.musicList.length&&this.nowIndex!=undefined){
+			// 获取一条音乐，用户分享的页面
+			if(this.type==='share'){
+				this.getSoleMusic();
+				return;
+			}
+			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined){
 				this.isCollect=this.musicList[this.nowIndex].IsCollect;
 				this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
 				this.itemdata=this.musicList[this.nowIndex];
 				this.duration=this.itemdata.ADuration
-			uni.setNavigationBarTitle({
-				title: this.itemdata.Name
-			})
+				uni.setNavigationBarTitle({
+					title: this.itemdata.Name
+				})
+				this.init()
 			}
-			this.init()
 		},
 		methods: {
 			init(){
@@ -174,6 +180,7 @@
 					this.init()
 				}else{
 					let _this=this;
+					if(!toLogin())return;
 					uni.showModal({
 						content: "该舞曲需付费,去付费？",
 						success(res) {
@@ -211,7 +218,7 @@
 				this.isShowPlaylist=true;
 			},
 			//选择播放
-			slectplay(index){console.log(index)
+			slectplay(index){
 				if(this.musicList[index].IsShowBuy==0){
 					this.nowIndex=index;
 					this.itemdata=this.musicList[index];
@@ -254,6 +261,7 @@
 			},
 			//下一曲
 			next(){console.log(this.playType)
+				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
 					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
@@ -273,6 +281,7 @@
 			},
 			//上一曲
 			prev(){
+				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
 					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
@@ -296,6 +305,7 @@
 			},
 			//收藏
 			async Collect(){
+				if(toLogin()){
 				let result = await post('DanceMusic/CollectOperation', {
 					UserId: this.userId,
 					Token: this.token,
@@ -326,8 +336,29 @@
 							}
 						}
 					});
-				}
+				}}
 			},
+			// 获取一条音乐，用户分享的页面
+			getSoleMusic(){
+				post('DanceMusic/Music_xq',{
+					UserId:this.userId,
+					Token:this.token,
+					MusicId:this.musicID
+				}).then(res=>{
+					const data = res.data;
+					this.musicList=[];
+					this.musicList.push(data)
+					this.isCollect=data.IsCollect;
+					this.isbuy=data.IsShowBuy;
+					this.duration=data.ADuration
+					this.itemdata=data;
+					uni.setNavigationBarTitle({
+						title: data.Name
+					})
+					this.init()
+					if(!toLogin())return;
+				})
+			}
 		}
 	}
 </script>
