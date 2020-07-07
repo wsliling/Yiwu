@@ -15,7 +15,7 @@
 			</label>
 		</view>
 		<view class="listbox" @click="isShowSource = true">
-			<view class="">舞曲来源</view>
+			<view class="">视频/课程的来源</view>
 			<view class="listdis">
 				<input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" />
 				<image src="../../../static/my/icon-right.png" mode=""></image>
@@ -29,7 +29,7 @@
 					<view class="line-list">
 						<view class="line-item" v-for="(item, index) in Sourcelist" :key="index" @click="SelectSource(item.Id, item.Name)">
 							<view class="line-item-l text_left">
-								<text class="txt" v-if="item.TypeInt == 1">{{ item.Name }}</text>
+								<text class="txt" v-if="item.TypeInt == 0">{{ item.Name }}</text>
 							</view>
 						</view>
 					</view>
@@ -60,6 +60,7 @@
 				sourcetype: '', //选中来源
 			};
 		},
+		components: { uniPopup },
 		onLoad(e){
 			this.type=e.type;
 			if(this.type==0){
@@ -103,7 +104,8 @@
 					Logo: this.videoImg,
 					Title:this.Title,
 					IsCharge:IsCharge,
-					Price:this.Price
+					Price:this.Price,
+					Source:this.sourcetype
 				});
 				if(res.code==0){
 					uni.showToast({
@@ -137,6 +139,10 @@
 					uni.showToast({title:"请选择要上传的视频！",icon:"none"})
 					return false
 				}
+				if(this.sourcetype==""){
+					uni.showToast({title:"请选择视频/课程的来源！",icon:"none"})
+					return false
+				}
 				if(this.type==1&&!this.hascheck&&(this.Price==0||this.Price=="")){
 					uni.showToast({title:"请输入价格！",icon:"none"})
 					return false
@@ -145,7 +151,7 @@
 			},
 			//取消（统一关闭弹窗）
 			hidePopup() {
-				this.isShowSelect = false;
+				this.isShowSource = false;
 			},
 			// 来源选中
 			SelectSource(id, name) {
@@ -220,40 +226,23 @@
 .listbox{
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	padding: 0 30upx;
 	height: 90upx;
 	border-bottom: 1px #ececec solid;
 	background-color: #fff;
-	width: 100%;
 	.listdis{
 		display: flex;
-		justify-content: space-between;
-		width: 100%;
+		width: 65%;
 		input{
-			// margin-left: 40upx;
+			margin-left: 10upx;
+			font-size: 28upx;
 		}
 		image{
-			width: 20upx;
-			height: 30upx;
+			width: 15upx;
+			height: 20upx;
+			margin-top: 10upx;
 		}
-	}
-	&::after {
-	    content: '';
-	    display: block;
-	    position: absolute;
-	    right: 20px;
-	    top: 50%;
-	    width: 8px;
-	    height: 8px;
-	    margin-top: -4px;
-	    background: transparent;
-	    border: 1px solid #ccc;
-	    border-top: none;
-	    border-right: none;
-	    -webkit-border-radius: 0;
-	    border-radius: 0;
-	    -webkit-transform: rotate(-135deg);
-	    /* transform: rotate(-135deg); */
 	}
 }
 </style>
