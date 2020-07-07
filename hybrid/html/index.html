@@ -16,16 +16,16 @@
 		.determine{color: #FFFFFF;background-color: #007AFF;display: inline-block;font-size: 0.02rem;border-radius: 0.05rem;padding: 0.08rem 0.24ren;}
 		.showFileName{display: inline-block;min-width: 0.3rem;margin-top: 0.02rem;margin-bottom: 0.02rem;font-size: .3rem;word-break: break-all;}
 		.box{display: flex; justify-content: space-between;margin-top: .3rem;}
-		.btn {display: block;margin: 0.03rem auto;background: #fff;border: 0.01rem solid #DE1B6E;color: #DE1B6E;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
-		.btn1 {display: block;margin: 0.03rem auto;border: none;background: #DE1B6E;color: #fff;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
+		.btn {display: block;margin: 0.03rem auto;background: #DE1B6E;border: none;color: #fff;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
+		.btn1 {display: block;margin: 0.03rem auto;border: 0.01rem solid #DE1B6E;background: #fff;color: #DE1B6E;height: 0.88rem;width:3.2rem;border-radius: 0.5rem;}
 		.btn-red {background-color: #dd524d;}
 		.btn-yellow {background-color: #f0ad4e;}
 		.desc {padding: 0.01rem;color: #999999;}
 		.body{background-color: #f7f7f7;}
 		/* 加载样式 */
 		.modal{background:rgba(51,51,51,0.2);background: rgba(51,51,51,0.4);width: 100%;height: 100%;position: absolute;top: 0;}
-		.loading {position: absolute;top: 20%;left: 27%;width: 1.5rem;font-size: 0.3rem;padding: 1rem;text-align: center;border-radius: 0.1rem;}
-		.loading img {width: 1rem;height: 1rem;-webkit-animation:load 1.5s infinite linear;}
+		.loading {position: absolute;top: 20%;left: 27%;width: 1.5rem;font-size: 0.3rem;padding: 1rem;text-align: center;border-radius: 0.1rem;background-color: #fff;}
+		.loading img {width: 1rem;height: 1rem;-webkit-animation:load 1.8s infinite linear;}
 		@-webkit-keyframes load{ from {transform: rotate(0deg);} to {transform: rotate(360deg);}}
 
 	</style>
@@ -43,13 +43,13 @@
 
 		</div>
 		<div class="box">
-			<button class="btn" type="button" data-action="redirectTo">确定</button>
 			<button class="btn1" type="button" data-action="navigateBack">取消上传</button>
+			<button class="btn" type="button" data-action="redirectTo">确定</button>
 		</div>
 		<div class="modal" style="display: none;z-index: 999;">
 			<div class="loading">
 				<img src="../../static/loading.png" alt="">
-				<div id="">上传中</div>
+				<div id="">上传中...</div>
 			</div>
 		</div>
 		<script src="./js/jquery-1.8.2.min.js"></script>

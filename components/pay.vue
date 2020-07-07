@@ -128,13 +128,13 @@ export default {
           code:'wx',
           status:true,
         },
-        {
-          name:'支付宝',
-          icon:alipayIcon,
-          id:2,
-          code:'alipay',
-          status:false,
-        },
+        // {
+        //   name:'支付宝',
+        //   icon:alipayIcon,
+        //   id:2,
+        //   code:'alipay',
+        //   status:false,
+        // },
         {
           name:'余额',
           icon:balanceIcon,
