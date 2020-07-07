@@ -26,7 +26,7 @@
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
 					<view class="maxpic" v-if="item.VideoUrl">
-						<video :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+						<video :src="item.VideoUrl" controls @play="onplayvideo" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
 					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 						{{item.Title}}
@@ -114,6 +114,8 @@
 				isLoad: false,
 				hasData: false,
 				datalist:[],
+				videoContext:[],
+				onplayId:'',//当前播放
 			}
 		},
 		onLoad() {
@@ -130,6 +132,17 @@
 		   }
 		 },
 		methods: {
+			onplayvideo(e){
+				let id=e.currentTarget.id;
+				for(let i=0; i<this.datalist.length;i++){
+					let _id='video'+this.datalist[i].Id;
+					if(_id==id){
+						this.onplayId=i;
+					}else{
+						this.videoContext[i].pause();
+					}
+				}
+			},
 			// 搜索完成
 			searchConfirm(val){
 				this.searchText = val;
@@ -172,6 +185,9 @@
 			},
 			openAttestation(){
 				if(toLogin()){
+					if(this.onplayId){
+						this.videoContext[this.onplayId].pause();
+					}
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程',],
@@ -215,6 +231,11 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
+						this.videoContext=[];
+						for(let i=0;i<result.data.length;i++){
+							let n=result.data[i].Id;
+							this.videoContext[i]=uni.createVideoContext('video'+n);
+						}
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;

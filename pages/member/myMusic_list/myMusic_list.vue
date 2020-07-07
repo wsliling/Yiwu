@@ -29,9 +29,9 @@
 					<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
+					<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="playID==item.Id?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'/static/play3.png':'/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click.stop="ShowOperation(item)"><image src="/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,playMusic} from '@/common/util.js';
+	import {post,get,toLogin,playMusic,audio} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import noData from '@/components/noData.vue'; //暂无数据
@@ -126,6 +126,7 @@
 				price:0,//选择更多操作的价格
 				itemdata:{},
 				DancePlayList:[],//曲单列表
+				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 			}
 		},
 		components: {
@@ -137,14 +138,25 @@
 			// #ifdef APP-PLUS
 			var height = plus.navigator.getStatusbarHeight();
 			this.barHeight = height;
+			this.Id=e.id
 			// #endif
 			// #ifdef H5
 			this.barHeight = 0;
 			// #endif
+		},
+		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			this.Id=e.id
+			this.playID=uni.getStorageSync("playID")
+			// #ifndef APP-PLUS
+			this.Id=this.$mp.query.id;
+			// #endif
 			this.workeslist();
+			this.playID=uni.getStorageSync("playID")
+			this.playIDtype=uni.getStorageSync("playIDtype");
+		},
+		onUnload() {
+			audio.pause()
 		},
 		methods: {
 			//跳转
@@ -161,13 +173,18 @@
 			//播放
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
-					// uni.setStorageSync("musicList",this.datalist)
+					if(this.Id==-1){
+						uni.setStorageSync("musicList",this.datalist)
+					}else{
+						uni.setStorageSync("musicList",this.datalist.DanceMusicList)
+					}
 					if(this.playID==id){
 						this.playID="";
 					}else{
 						this.playID=id;
 					}
 					playMusic(index,id)
+					this.playIDtype=uni.getStorageSync("playIDtype");console.log(this.playIDtype)
 				}else{
 					uni.showToast({
 						title:"抱歉！该舞曲需付费",

@@ -3,9 +3,10 @@
 	<view class="details">
 		<!-- 首图展示 -->
 		<view class="detailsmap">
-			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper">
+			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper" @change="changeSwiper">
 				<swiper-item v-if="data.Video" :show-fullscreen-btn="false" :show-play-btn="false" show-mute-btn :enable-progress-gesture="false">
-					<video :src="data.Video" class="video"></video>
+					<image class="postpic" :src="data.PicData[0].PicUrl" mode="aspectFill"></image>
+					<video :src="data.Video" :class="['video',showVideo?'':'top']" id="proVideo" :poster="data.PicData[0].PicUrl"></video>
 				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
 					<image :src="item.PicUrl" mode="aspectFill" @click="previewImages(index)"></image>
@@ -137,7 +138,7 @@
 		</div>
 		<uni-popup ref="skuWin" type="bottom">
 			<sku :sku="sku" :skuAll="skuAll" :proInfo="productInfo" :submitBtnType="submitBtnType"
-				 @getSkuData="getSkuData" @close="$refs.skuWin.close()" @success="planOrder"
+				 @getSkuData="getSkuData" @close="closePop" @success="planOrder"
 				>
 			</sku>
 		</uni-popup>
@@ -173,6 +174,8 @@ export default {
 			},
 			selectSku:{},
 			submitBtnType:'',//确定按钮的类型
+			videoContext:null,
+			showVideo:true
 		};
 	},
 	onLoad(e) {
@@ -187,6 +190,11 @@ export default {
 		this.token = uni.getStorageSync("token");
 	},
 	methods: {
+		changeSwiper(){
+			if(this.data.Video){
+				this.videoContext.pause();
+			}
+		},
 		async getData(){
 			const res = await post('Goods/Goodsxq',{
 					UserId:this.userId,
@@ -195,6 +203,9 @@ export default {
 			})
 			if(res.code!=0) return;
 			const data = res.data;
+			if(data.Video){
+				this.videoContext=uni.createVideoContext('proVideo');
+			}
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
 			this.productInfo={
@@ -245,6 +256,10 @@ export default {
 			console.log(type,'type')
 			this.submitBtnType = type||'';
 			this.$refs.skuWin.open();
+			if(this.data.Video){
+				this.showVideo=false;
+				this.videoContext.pause();
+			}
 			// if(this.data.IsSku&&!this.selectSku.value){
 			// }else{
 			// 	if(type==1){
@@ -259,13 +274,17 @@ export default {
 		// addCar--加入购物车  buy--立即购买
 		planOrder(type,selectSku){
 			if(!toLogin())return;
-			this.$refs.skuWin.close();
+			this.closePop();
 			this.selectSku = selectSku;
 			if(type==='addCar'){
 				this.addcart();
 			}else if(type==='buy'){
 				this.buy();
 			}
+		},
+		closePop(){
+			this.$refs.skuWin.close();
+			this.showVideo=true;
 		},
 		// 加入购物车
 		async addcart(){
@@ -282,7 +301,7 @@ export default {
 		},
 		// 立即购买
 		buy(){
-			this.$refs.skuWin.close();
+			this.closePop();
 			navigate('shopSon/submitOrder/submitOrder',{
 				proId:this.proId,
 				buyNum:this.selectSku.buyNum,
@@ -350,7 +369,12 @@ export default {
 
 <style scoped lang="scss">
 .video{
+	position: absolute;
 	width:100%;height:750upx;
+	left: 0; top:0;
+}
+.video.top{
+	top: -2000px;
 }
 .details {
 	background: #ffffff;
