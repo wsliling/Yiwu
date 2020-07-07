@@ -336,7 +336,7 @@
 					if(_id==id){
 						this.onplayId=i;
 					}else{
-						this.videoContext[i].stop();
+						this.videoContext[i].pause();
 					}
 				}
 			},
