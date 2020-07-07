@@ -185,7 +185,9 @@
 			},
 			openAttestation(){
 				if(toLogin()){
-					this.videoContext[this.onplayId].pause();
+					if(this.onplayId){
+						this.videoContext[this.onplayId].pause();
+					}
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程',],
