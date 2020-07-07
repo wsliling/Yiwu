@@ -35,7 +35,7 @@ export default {
             // #ifdef H5
             console.log('h5')
 
-            const status = h5Copy(this.h5Url||window.location.href)
+            const status = h5Copy(this.h5Url?window.location.origin+'/#'+this.h5Url:window.location.href)
             if(status){
                 uni.showToast({title:'链接复制成功，快去分享给好友吧~'})
             }else{

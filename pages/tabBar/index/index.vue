@@ -71,7 +71,7 @@
 									<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 								</view>
 								<view class="media-bd">
-									<view class="desc">
+									<view class="desc" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 										{{item.Title}}
 									</view>
 									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
@@ -83,7 +83,7 @@
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-											<share wxUrl="/pages/tabBar/index/index">
+											<share wxUrl="/pages/tabBar/index/index" :h5Url="'/pages/replylist/replylist?id='+item.Id">
 												<view class="txt_info share"></view>
 											</share>
 										</view>

@@ -28,7 +28,7 @@
 					<view class="maxpic" v-if="item.VideoUrl">
 						<video :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
-					<view class="desc uni-ellipsis2">
+					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 						{{item.Title}}
 					</view>
 					<view class="media-ft flex-between">
@@ -49,7 +49,7 @@
 						<view class="ft_r flex-end">
 							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
 							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-							<share wxUrl="/pages/tabBar/live/live">
+							<share wxUrl="/pages/tabBar/live/live" :h5Url="'/pages/replylist/replylist?id='+item.Id">
 								<view class="txt_info share"></view>
 							</share>
 						</view>
