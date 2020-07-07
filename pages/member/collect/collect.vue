@@ -23,7 +23,7 @@
 		<view class="bb_pt uni-bg-white" v-if="hasData">
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
-				<view class="drawing flex" @click.stop="tolink(val.ProId,val.Type,val.AssociationId)">
+				<view class="drawing flex with-100" @click.stop="tolink(val.ProId,val.Type,val.AssociationId)">
 					<view class="" v-if="val.Type == 0"><video controls :src="val.Video"></video></view>
 					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
@@ -328,7 +328,9 @@ export default {
 		display: flex;
 		align-items: center;
 	}
-	
+	.with-100{
+		width: 100%;
+	}
 	.imgs {
 		width: 180upx;
 		height: 180upx;
@@ -343,6 +345,7 @@ export default {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		width: 80%;
 	}
 	.being {
 		line-height: 1.4;

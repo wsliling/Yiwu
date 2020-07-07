@@ -22,6 +22,7 @@
 				view{
 					font-size: 40upx;
 					color: #333;
+					font-weight:bold;
 				}
 				image{
 					width: 40upx;
@@ -51,7 +52,6 @@
 		}
 	}
 	.text{
-		padding-bottom: 40upx;
 		font-size: 30upx;
 		color: #666;
 	}
@@ -93,8 +93,8 @@
 
 }
 .product-box{
-	background-color: #fff;
-	padding: 50upx 0 0;
+	background-color: #f5f5f5;
+	padding: 30upx 0 0;
 	box-sizing: border-box;
 	.img{
 		margin-bottom: 20upx;
@@ -102,27 +102,70 @@
 		border-radius: 10upx;
 	}
 	.item{
-		padding: 0 25upx 70upx;
 		// padding-bottom: 70upx;
 	}
 	.product{
+		padding:0 20upx;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: space-between;
 		flex-wrap: wrap;
-		.list{
-			padding-right: 10upx;
-			margin-bottom: 10upx;
-			width: 33.33%;
-			box-sizing: border-box;
+		// .list{
+		// 	padding-right: 10upx;
+		// 	margin-bottom: 10upx;
+		// 	width: 33.33%;
+		// 	box-sizing: border-box;
+		// 	image{
+		// 		width: 224upx;
+		// 		border-radius: 10upx;
+		// 	}
+		// 	view{
+		// 		overflow:hidden;
+		// 		text-overflow:ellipsis;
+		// 		white-space:nowrap;
+		// 	}
+		// }
+		
+		.wu-item{
+			width:350upx;
+			margin-bottom: 30upx;
+			background:#fff;
 			image{
-				width: 224upx;
-				border-radius: 10upx;
+				width:100%;
+				height:440upx;
+				border-radius:6upx;
 			}
-			view{
-				overflow:hidden;
-				text-overflow:ellipsis;
-				white-space:nowrap;
+			.wu-tet{
+				width: 100%;
+				font-weight: bold;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				padding:20upx 10upx;
+				span{
+					height:31upx;
+					background:linear-gradient(90deg,rgba(222,26,110,1),rgba(233,56,132,1));
+					border-radius:6upx;
+					font-size:24upx;
+					font-weight:bold;
+					color:rgba(255,255,255,1);
+					line-height:31upx;
+					padding: 0 10upx;
+					margin-right:10upx;
+				}
+				.wu-name{
+					white-space:nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;//可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 
+					text-overflow: -o-ellipsis-lastline;
+					width: 100%;
+
+				}
+			}
+			.wu-price{
+				font-weight: 400;
+				font-size: 26upx;
+				color: #DE1A6E;
 			}
 		}
 	}

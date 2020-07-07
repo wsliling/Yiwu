@@ -76,14 +76,16 @@
 									</view>
 									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
 										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg"></video>
+										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
 											<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 											<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-											<view class="txt_info share"></view>
+											<share wxUrl="/pages/tabBar/index/index">
+												<view class="txt_info share"></view>
+											</share>
 										</view>
 										<view class="ft_r">
 											<view @click="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
@@ -225,11 +227,12 @@
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
+	import share from '@/components/share/share.vue'; //加载更多
 	export default {
 		components: {
 			noData,
 			uniLoadMore,
-			ansInput
+			ansInput,share	
 		},
 		data() {
 			return {

@@ -56,13 +56,13 @@
 			</view>
 			<view class="play-box item-box"  v-if="tabId==1&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
-					<image :src="item.Logo"></image>
+					<image :src="item.Logo" mode="aspectFill"></image>
 					<view class="playbtn"></view>
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
-				<view class="item" v-for="(item,index) in datalist" :key="index">
-					<image :src="item.Cover_pic||'/static/default_music.png'"></image>
+				<view class="item" v-for="(item,index) in datalist" :key="index" @click="playmusic(item.Id,index)">
+					<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
@@ -71,13 +71,12 @@
 				</view>
 			</view>
 			<view class="product-box item-box"  v-if="tabId==4&&hasData">
-				<view class="item">
-					<image class="img" src="@/static/of/banner.jpg"></image>
-					<view class="product">
-						<view class="list" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/shopSon/product/productDetails?id='+item.Id)">
-							<image :src="item.PicImg" mode="widthFix"></image>
-							<view>{{item.Name}}</view>
-							<span>￥{{item.Price}}</span>
+				<view class="product">
+					<view class="wu-item" v-for="(val,key) in datalist" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
+						<image :src="val.PicImg" mode="aspectFill"></image>
+						<view class="wu-tet">
+							<view class="wu-name">{{val.Name}}</view>
+							<view class="wu-price">￥{{val.Price}}</view>
 						</view>
 					</view>
 				</view>
@@ -104,7 +103,7 @@
 </template>
 
 <script>
-import {post,get,toLogin} from '@/common/util.js';
+import {post,get,toLogin,navigate,playMusic} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
@@ -114,6 +113,7 @@ export default {
 	},
 	data() {
 		return {
+			navigate,
 			userId: "",
 			token: "",
 			scrollLeft: 0,
@@ -152,7 +152,9 @@ export default {
 					id: 4,
 					taptitle: '产品'
 				}
-			]
+			],
+			nowIndex:"",
+			musicID:"",
 		};
 	},
 	 onLoad(){
@@ -160,10 +162,15 @@ export default {
 		 this.token = uni.getStorageSync("token");
 		 this.tabWidth=(100/this.tab.length);
 		 this.leftscoll(); 
-	 },
-	 onShow() {
 	 	this.memberId=this.$mp.query.id;
 		this.GetPersonInfo();
+	 },
+	 onShow() {
+		this.userId = uni.getStorageSync("userId");
+		this.token = uni.getStorageSync("token");
+		if(this.nowIndex&&this.musicID){
+			playMusic(this.nowIndex,this.musicID);//暂停音乐
+		}
 	 },
 	 methods:{
 		 //跳转
@@ -315,6 +322,14 @@ export default {
 					this.loadingType = 0
 				} 
 			 }
+		 },
+		 playmusic(id,index){
+			 this.musicID=id;
+			 this.nowIndex=index;
+			uni.setStorageSync("musicList",this.datalist)
+		 	uni.navigateTo({
+		 		url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
+		 	})	
 		 },
 		//预览图片
 		previewImg(index){

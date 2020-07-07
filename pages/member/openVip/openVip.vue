@@ -3,13 +3,15 @@
 		<view class="topbox">
 			<view class="userbox flex-start">
 				<view class="tx">
-					<image src="/static/my/user.png" mode="widthFix"></image>
+					<image src="/static/my/user.png" mode="aspectFill" v-if="!info.avatar"></image>
+					<image :src="info.avatar" mode="aspectFill" v-else></image>
 				</view>
 				<view class="info">
-					<view class="name uni-ellipsis">ladingwu</view>
+					<view class="name uni-ellipsis">{{info.name||'用户名'}}</view>
 					<view class="txt">
 						开通后  立享特权
 					</view>
+					<view class="endTime" v-if="info.endTime">{{info.endTime}}&nbsp;到期</view>
 				</view>
 			</view>
 			<view class="icon-menu">
@@ -66,7 +68,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,throttle} from '@/common/util.js';
 	import pay from '@/components/pay.vue';
 	import {payFn} from './payvip';
 	export default {
@@ -82,11 +84,17 @@
 				data:[],
 				setmeal:'',
 				orderNo:'',
+				info:{},
 			}
 		},
-		onLoad(){
+		onLoad(option){
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			this.info ={
+				avatar:option.avatar,
+				name:option.name,
+				endTime:option.endTime.slice(0,option.endTime.lastIndexOf(':')),
+			} 
 			this.getData();
 		},
 		onShow(){
@@ -113,12 +121,14 @@
 			},
 			//打开支付窗口
 			async VipOrder(){
-				this.data.map(item=>{
-					if(item.Id===this.setmeal){
-						this.totalprice = item.PlusPrice;
-					}
-				})
-				this.$refs.payWin.open();
+				throttle(()=>{
+					this.data.map(item=>{
+						if(item.Id===this.setmeal){
+							this.totalprice = item.PlusPrice;
+						}
+					})
+					this.$refs.payWin.open();
+				},2000)
 			},
 			shiftPayMethods(index) {
 				this.payTypeIndex = index;

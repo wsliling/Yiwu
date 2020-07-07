@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="videobox">
-			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls></video>
+			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover"></video>
 			<view class="tipbox" v-if="CourseInfo.IsShowBuy==1">
 				<image :src="CourseInfo.PicImg" mode="aspectFill"></image>
 				<view class="txt flex-column">
@@ -29,7 +29,9 @@
 				<view class="ft_l flex-start">
 					<view @click="likeBtn" :class="['txt_info like',CourseInfo.IsLike==1?'active':'']">{{CourseInfo.LikeNum}}</view>
 					<view class="txt_info reply">{{CourseInfo.CommentNum}}</view>
-					<view class="txt_info share"></view>
+					<share :wxUrl="'/pages/video/videoDetails/videoDetails?id='+Courseid">
+						<view class="txt_info share"></view>
+					</share>
 				</view>
 				<view class="ft_r flex-end">
 					<view :class="['txt_info download',CourseInfo.IsShowBuy==1?'dis':'']" @click="DownloadCourse(CourseInfo.IsShowBuy)"></view>

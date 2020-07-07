@@ -1,7 +1,41 @@
 <template>
 	<view class="content">
+		<view class="Yi-media" style="background: #fff;">
+			<view class="media-hd flex-between">
+				<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+NewsInfo.MemberId)">
+					<view class="tx"><image :src="NewsInfo.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+					<view class="name uni-ellipsis">{{NewsInfo.NickName}}</view>
+					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="/static/chat.png"></image></view>
+				</view>
+				<view v-if="NewsInfo.IsMy==0" @click="flow(NewsInfo.MemberId,index,1)" :class="['flow',NewsInfo.IsFollow==1?'active':'']">{{NewsInfo.IsFollow==1?'已关注':'关注'}}</view>
+			</view>
+			<view class="media-bd">
+				<view class="desc">
+					{{NewsInfo.Title}}
+				</view>
+				<view :class="['maxpic',NewsInfo.Type==0?'maxh':'']" v-if="NewsInfo.PicImg||NewsInfo.VideoUrl">
+					<view v-if="NewsInfo.VideoUrl" class="isplay"></view>
+					<video v-if="NewsInfo.Type==1" :src="NewsInfo.VideoUrl" controls :show-mute-btn="true" :poster="NewsInfo.PicImg"></video>
+					<image v-if="NewsInfo.Type==0" :src="NewsInfo.PicImg" mode="widthFix"></image>
+				</view>
+				<view class="media-ft flex-between">
+					<view class="ft_l flex-start">
+						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum}}</view>
+						<!-- <view class="txt_info reply">{{NewsInfo.CommentNum}}</view> -->
+						<share h5Url='http://localhost:8080/#/pages/tabBar/index/index'
+							wxUrl="/pages/tabBar/index/index">
+							<view class="txt_info share"></view>
+						</share>
+					</view>
+					<view class="ft_r">
+						<view @click="CollectBtn(NewsInfo.Id,index)" :class="['txt_info sign',NewsInfo.IsCollect==1?'active':'']"></view>
+					</view>
+				</view>
+			</view>
+		</view>
 		<!-- 评价列表 -->
 		<view class="comment-list uni-bg-white" v-if="hasData">
+			<view class="listname">评价列表</view>
 			<block v-for="(item,index) in datalist" :key="index">
 				<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 			</block>
@@ -51,6 +85,7 @@
 				PCommentId:0,//上级评论id
 				Comment:"",//评论内容
 				PCommentname:"",//上级评论名
+				NewsInfo:{},
 			}
 		},
 		onLoad(e){
@@ -58,6 +93,7 @@
 			this.token = uni.getStorageSync("token");
 			this.Findid=e.id;
 			this.CommnetList();
+			this.FindNewsInfo()
 		},
 		methods: {
 			//跳转
@@ -197,6 +233,116 @@
 				this.PCommentId=e[0];
 				this.IsShowReplyBox=true;
 			},
+			//推荐视频
+			async FindNewsInfo(){
+				let result = await post("Find/FindNewsInfo", {
+					UserId:this.userId,
+					Token:this.token,
+					FindId: this.Findid
+				});
+				if (result.code === 0) {
+					this.NewsInfo = result.data;
+				}
+			},
+			//关注取消关注 followtype 1推荐视频用户
+			async flow(id,index,followtype){
+				let result = await post("Find/FollowOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"ToMemberId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					uni.showToast({
+						title: result.msg
+					})
+					if(followtype==1){
+						let isf=0;
+						if(this.NewsInfo.IsFollow==0){
+							_this.$set(this.NewsInfo,"IsFollow",1)
+						}else{
+							_this.$set(this.NewsInfo,"IsFollow",0)
+						}
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+			//发现点赞
+			async likeBtn(id,index){
+				let result = await post("Find/FindlikeOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					let num=0;
+					uni.showToast({
+						title: result.msg
+					})
+					if(this.NewsInfo.IsLike==0){
+						this.$set(this.NewsInfo,"IsLike",1)
+						this.$set(this.NewsInfo,"LikeNum",_this.NewsInfo.LikeNum++)
+					}else{
+						this.$set(this.NewsInfo,"IsLike",0)
+						this.$set(this.NewsInfo,"LikeNum",_this.NewsInfo.LikeNum--)
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
+			//发现收藏和取消收藏
+			async CollectBtn(id,index){
+				let result = await post("Find/CollectOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
+				if(result.code==0){
+					let _this=this;
+					uni.showToast({
+						title: result.msg
+					})
+					if(this.NewsInfo.IsCollect==0){
+						this.$set(this.NewsInfo,"IsCollect",1)
+					}else{
+						this.$set(this.NewsInfo,"IsCollect",0)
+					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
+				}
+			},
 		},
 		// 上拉加载
 		onReachBottom: function() {
@@ -212,5 +358,10 @@
 </script>
 
 <style lang="scss" scoped>
-	@import './style';
+	@import '../tabBar/index/style';
+	.listname{
+		font-size: 30upx;
+		padding: 30upx 30upx 0;
+		font-weight: bold;
+	}
 </style>

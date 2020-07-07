@@ -46,6 +46,12 @@
 				.name{
 					font-size: 34upx;
 					color: #333333;
+					display:flex;
+					align-items:center;
+				}
+				.vip{
+					width:80upx;height:40upx;
+					padding:0 20upx;
 				}
 				.text{
 					font-size: 22upx;
@@ -58,7 +64,7 @@
 					white-space:nowrap;
 					text-overflow:ellipsis;
 					width: 300upx;
-					
+					margin-top: 10upx;
 				}
 			}
 			image{
@@ -73,11 +79,13 @@
 				width: 100%;
 				height: 60upx;
 			}
-			.vip{
-				width:40upx;height:40upx;
-			}
 		}
 	}
+}
+
+.vip{
+	width:40upx;height:40upx;
+	margin-left:20upx;
 }
 .info{
 	display: flex;
@@ -217,5 +225,26 @@
 				margin: 6upx 0;
 			}
 		}
+	}
+}
+
+.ac{
+	padding:0 30upx;
+	margin-bottom:120upx;
+	line-height:2.8;
+	text-align:center;
+	font-size:32upx;
+	.list1{
+		border-radius:15upx;
+		overflow:hidden;
+		.item1{
+			background:#fff;
+			border-bottom:1upx solid #ececec;
+		}
+	}
+	.cancel{
+		border-radius:15upx;
+		background:#fff;
+		margin:20upx 0;
 	}
 }

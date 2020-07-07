@@ -63,12 +63,12 @@
 								<text class="txt">添加到歌单</text>
 							</view>
 						</view>
-						<view class="line-item">
+						<share class="line-item" :wxUrl="'/pages/music/list/list?type='+pageType">
 							<view class="line-item-l flex-start">
 								<image class="iconimg" src="/static/share.png" mode="widthFix"></image>
 								<text class="txt">分享</text>
 							</view>
-						</view>
+						</share>
 						<view class="line-item" @click="Collect">
 							<view class="line-item-l flex-start">
 								<image class="iconimg" :src="isCollect?'/static/collect2.png':'/static/collect.png'" mode="widthFix"></image>

@@ -89,6 +89,7 @@
 				max-width: 300upx;
 				font-size: 30upx;
 				margin-right: 20upx;
+				font-weight: bold;
 			}
 			.tochat{ 
 				height: 40upx; width: 40upx;
@@ -99,7 +100,7 @@
 		}
 	}
 	.media-bd{
-		.desc{ line-height: 1.5;}
+		.desc{ line-height: 1.5;font-weight: bold;font-size: 30upx;}
 		.maxpic{
 			margin-top: 20upx;
 			border-radius: 12upx;
@@ -221,6 +222,7 @@
 				.name{
 					font-size: 30upx;
 					margin-bottom: 20upx;
+					font-weight: bold;
 				}
 				.flow{
 					color: #fff;
@@ -243,11 +245,11 @@
 
 .Yi-Userlist{
 	.user-item{
-		padding: 30upx;
+		padding: 30upx 50upx;
 		.author{
 			.tx{
-				width: 120upx;
-				height: 120upx;
+				width: 160upx;
+				height: 160upx;
 				margin-right: 20upx;
 				image{
 					display: block;width: 100%; height: 100%;
@@ -260,14 +262,17 @@
 				font-size: 30upx;
 				margin-right: 20upx;
 				line-height: 1.5;
+				color: #333333;
+				font-size: 30upx;
+				font-weight: bold;
 			}
 		}
-		.introduce{ color: #999; line-height: 1.5;}
+		.introduce{ color: #666; line-height: 1.8;font-size: 30upx;}
 	}
 }
 .Yi-mechanismlist{
 	.mechanism-item{
-		padding: 30upx;
+		padding: 40upx 50upx;
 		.author{
 			.tx{
 				width: 120upx;
@@ -283,9 +288,12 @@
 				font-size: 30upx;
 				margin-right: 20upx;
 				line-height: 1.5;
+				font-size: 32upx;
+				font-weight:bold;
+				color: #333333;
 			}
 		}
-		.introduce{ color: #666; line-height: 1.5;max-width: 400upx;}
+		.introduce{ color: #666; line-height: 1.5;max-width: 400upx;font-size: 30upx;}
 	}
 }
 .Yi-courselist{
@@ -321,10 +329,10 @@
 			}
 		}
 		.item_title{
-			font-size:30upx;
+			font-size:30upx;font-weight: bold;
 		}
 		.item_price{
-			color:$primary;font-size:30upx;
+			color:$primary;font-size:30upx;font-weight: bold;
 		}
 		.item_market{
 			color:#999;font-size:24upx; line-height: 1.4;
