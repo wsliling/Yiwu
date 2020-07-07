@@ -22,8 +22,7 @@
 					<view class="ft_l flex-start">
 						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum}}</view>
 						<!-- <view class="txt_info reply">{{NewsInfo.CommentNum}}</view> -->
-						<share h5Url='http://localhost:8080/#/pages/tabBar/index/index'
-							wxUrl="/pages/tabBar/index/index">
+						<share :h5Url="'/pages/replylist/replylist?id='+Findid" :wxUrl="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
 					</view>
