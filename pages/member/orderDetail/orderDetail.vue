@@ -114,37 +114,47 @@
 </template>
 
 <script>
-import {switchPath,post,navigate,toast} from '@/common/util.js'
+import {switchPath,post,navigate,toast,getUrlParam,isWeixin,GetUrlRelativePath} from '@/common/util.js'
 import pay from '@/components/pay.vue';
 export default {
-		components: {
-			pay
-		},
-  data () {
-    return {
-      navigate,
-      info:{},
-      OrderNo:'',
-      disabled:false,
-      disableIntegral:false,//是否禁用积分
-    }
-  },
-  onShow(){
-	  // #ifndef APP-PLUS
-	  // this.OrderNo = this.$mp.query.id
-	  // #endif
-     this.getDetail()
-  },
-  onLoad(e){
+	components: {
+		pay
+	},
+	data () {
+		return {
+			navigate,
+			info:{},
+			OrderNo:'',
+			disabled:false,
+			disableIntegral:false,//是否禁用积分
+		}
+	},
+	onLoad(e){
+		// #ifdef APP-PLUS
 		this.OrderNo = e.id;
-    console.log('onload')
-    // #ifdef APP-PLUS
-	 // #endif
-  },
-  methods: {
-	  btnConcat(e){
-		  console.log(e)
-	  },
+		// #endif
+		// #ifdef H5
+		this.WxCode=getUrlParam("code");
+		this.WxOpenid = uni.getStorageSync("openId");
+		if(this.WxCode){//首次跳转获取code地址都直接调起支付
+			this.payWeChat()
+		}
+		// #endif
+	},
+	onShow(){
+		// #ifndef APP-PLUS
+		this.OrderNo = this.$mp.query.id
+		// #endif
+		this.WxOpenid=uni.getStorageSync("openId");
+		this.getDetail()
+		// #ifdef MP-WEIXIN
+		this.getcode();
+		// #endif
+	},
+methods: {
+	btnConcat(e){
+	  console.log(e)
+	},
     getDetail(){
       post('Order/OrderDetails',{
         UserId:uni.getStorageSync("userId"),
@@ -157,64 +167,176 @@ export default {
     },
     // 打开支付窗口
     openOayWin(){
-				//获取积分可用数量
-				post('User/GetMyIncome',{
-					UserId: uni.getStorageSync("userId"),
-					Token: uni.getStorageSync("token")
-				}).then(res=>{
-					if(res.data.Amount*1<this.info.Total*1){
-						this.disableIntegral = true;
-					}else{
-						this.disableIntegral = false;
-					}
-					this.$refs.payWin.open();
-				})
+		//获取积分可用数量
+		post('User/GetMyIncome',{
+			UserId: uni.getStorageSync("userId"),
+			Token: uni.getStorageSync("token")
+		}).then(res=>{
+			if(res.data.Amount*1<this.info.Total*1){
+				this.disableIntegral = true;
+			}else{
+				this.disableIntegral = false;
+			}
+			this.$refs.payWin.open();
+		})
     },
     // 支付订单
     async payOrder(payType,Password){
-				// 余额
-				if(payType.id==1){
-					const res = await post('Order/PaymentOrder',{
-            UserId:uni.getStorageSync("userId"),
-            Token:uni.getStorageSync("token"),
-						OrderNo:this.OrderNo,
-						Password
-					})
-          if(res.code==3){
-              uni.showModal({
-                  title:'是否跳转设置支付密码页面',
-                  success(ret){
-                      if(ret.confirm){
-                          navigate('member/setpwd/setpwd')
-                      }
-                  }
-              })
-          }
-					if(res.code) return;
-					this.paySuccess(res);
-				}else 
-				// 积分
-				if(payType.id==3){
-					const res = await post('Order/PayScoreOrder',{
-            UserId:uni.getStorageSync("userId"),
-            Token:uni.getStorageSync("token"),
-						OrderNo:this.OrderNo,
-						Password
-					})
-          if(res.code==3){
-              uni.showModal({
-                  title:'是否跳转设置支付密码页面',
-                  success(ret){
-                      if(ret.confirm){
-                          navigate('member/setpwd/setpwd')
-                      }
-                  }
-              })
-          }
-					if(res.code) return;
-					this.paySuccess(res);
-				}
+		// 余额
+		if(payType.id==1){
+			const res = await post('Order/PaymentOrder',{
+				UserId:uni.getStorageSync("userId"),
+				Token:uni.getStorageSync("token"),
+				OrderNo:this.OrderNo,
+				Password
+			})
+			if(res.code==3){
+				uni.showModal({
+					title:'是否跳转设置支付密码页面',
+					success(ret){
+						if(ret.confirm){
+							navigate('member/setpwd/setpwd')
+						}
+					}
+				})
+			}
+			if(res.code) return;
+			this.paySuccess(res);
+		}else 
+		// 积分
+		if(payType.id==3){
+			const res = await post('Order/PayScoreOrder',{
+				UserId:uni.getStorageSync("userId"),
+				Token:uni.getStorageSync("token"),
+				OrderNo:this.OrderNo,
+				Password
+			})
+			if(res.code==3){
+				uni.showModal({
+					title:'是否跳转设置支付密码页面',
+					success(ret){
+						if(ret.confirm){
+							navigate('member/setpwd/setpwd')
+						}
+					}
+				})
+			}
+			if(res.code) return;
+			this.paySuccess(res);
+		}else
+		//微信
+		if(payType.id==0){
+			this.payWeChat()
+		}
     },
+	//微信支付
+	async payWeChat(){
+		let url="Order/WechatPay",param={};
+		// #ifdef H5
+		let NewUrl=GetUrlRelativePath() +'/#/pages/member/orderDetail/orderDetail?id='+this.OrderNo;
+		if(isWeixin()){
+			var paytype=0
+		}else{
+			var paytype=3
+		}
+		// #endif
+		param={
+			"UserId":uni.getStorageSync("userId"),
+			"Token":uni.getStorageSync("token"),
+			"OrderNo":this.OrderNo,
+			// #ifdef H5
+			"NewUrl":NewUrl,//支付后的回调地址
+			"WxCode":this.WxCode,
+			"WxOpenid":this.WxOpenid,
+			"paytype":paytype,
+			// #endif
+			// #ifdef APP-PLUS
+			"paytype":2,
+			// #endif
+			// #ifdef MP-WEIXIN
+			"WxCode": this.WxCode,
+			"WxOpenid":this.WxOpenid,
+			"paytype":4
+			// #endif
+		}
+		const result = await post(url, param);
+		// #ifdef H5
+		if(isWeixin()){//微信内置H5支付
+			if(result.code == 0){console.log(result.data)
+				uni.setStorageSync('openId', result.data.openid);
+				this.WxOpenid = uni.getStorageSync("openId");
+				if(this.WxOpenid!=""&&this.WxOpenid!="undefined"){
+					this.WxCode="";//每次获取的code只能使用一次，有openid时用openid调起支付数据
+				}
+				this.callpay(result.data.JsParam);
+			}else if (result.code == 201) { //检测不到openid需要进行微信授权
+				window.location.href=result.data;
+			}else {
+				uni.showToast({
+					title: result.msg,
+					icon: "none",
+					duration: 1500
+				});
+			}
+		}else{//浏览器H5微信支付
+			if(result.code == 0){
+				window.location.href = result.data.mweb_url;
+			}else {
+				uni.showToast({
+					title: result.msg,
+					icon: "none",
+					duration: 1500
+				});
+			}
+		}
+		// #endif
+		// #ifdef APP-PLUS
+		if(result.code==0){console.log(result.data)
+			// var payData=JSON.parse(result.data.JsParam)
+			let _this=this;
+			uni.requestPayment({
+			  provider:"wxpay",
+			  orderInfo:result.data.JsParam,
+			  success(res) {
+				  console.log(res)
+				  _this.type = "";
+					_this.showPay=false;
+					uni.navigateBack()
+				},
+			  fail(err) {console.log(err)
+				  uni.showToast({
+				  	title:"支付失败",
+					icon:"none",
+					duration:4000
+				  })
+			  }
+			})
+		}else {
+			uni.showToast({
+				title: result.msg,
+				icon: "none",
+				duration: 1500
+			});
+		}
+		// #endif
+		// #ifdef MP-WEIXIN
+		if(result.code===0){
+			let payData=JSON.parse(result.data.JsParam)
+			let _this=this;
+			uni.requestPayment({
+			  timeStamp: payData.timeStamp,
+			  nonceStr: payData.nonceStr,
+			  package: payData.package,
+			  signType: payData.signType,
+			  paySign: payData.paySign,
+			  success(res) {
+					uni.navigateBack()
+				},
+			  fail(res) {}
+			})
+		}
+		// #endif
+	},
     // 支付成功
     paySuccess(res){
       toast(res.msg,{icon:true})
@@ -241,38 +363,6 @@ export default {
         allprice:this.info.Total
       })
       this.$refs.payWin.close();
-    },
-    //微信支付需参数
-    async ConfirmWeiXinSmallPay(no){
-      let result = await post('Order/ConfirmWeiXinSmallPay',{
-        OrderNo:no,
-        UserId:uni.getStorageSync("userId"),
-        Token:uni.getStorageSync("token"),
-        WxCode:uni.getStorageSync("wxCode"),
-		WxOpenid:uni.getStorageSync("openId")
-      })
-      let payData=JSON.parse(result.data.JsParam)
-      if(result.code==0){
-        let _this=this;
-        uni.requestPayment({
-          timeStamp: payData.timeStamp,
-          nonceStr: payData.nonceStr,
-          package: payData.package,
-          signType: payData.signType,
-          paySign: payData.paySign,
-          success(res) {
-              uni.redirectTo({
-                url: "/pages/goodsSon/paysuccess/main?OrderNo="+no
-              })
-            },
-          fail(res) {
-            console.log(res);
-            uni.redirectTo({
-              url: "/pages/goodsSon/paysuccess/main?OrderNo="+no+"&msg=fail"
-            })
-          }
-        })
-      }
     },
     chooseOrders(OrderNo,type){//确认取消
       if(type==1){
@@ -359,6 +449,52 @@ export default {
         url:url
       })
     },
+	//微信公众号支付
+	callpay(param) {alert(JSON.stringify(param))
+		if(typeof WeixinJSBridge === 'undefined') {
+			if(document.addEventListener) {
+				document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(), false);
+			} else if(document.attachEvent) {
+				document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady());
+				document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady());
+			}
+		} else {
+			this.onBridgeReady(param);
+		}
+	},
+	onBridgeReady(param){
+		var _this=this;
+		var parameter = JSON.parse(param);
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest', parameter,
+			function(res){
+			if(res.err_msg == "get_brand_wcpay_request:ok" ){
+			// 使用以上方式判断前端返回,微信团队郑重提示：
+			//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+			  uni.redirectTo({
+				url: "/pages/payresult/payresult?allprice="+_this.orderInfo.TotalPrice+"&orderNo="+_this.orderNo
+			  })
+			}else{
+				uni.showToast({
+					title: "支付失败",
+					icon: "none",
+					duration: 1500
+				});
+			} 
+		}); 
+	},
+	getcode(){
+		let _this=this;
+		uni.login({
+			success: function(res) {
+			  if (res.code) {
+				_this.WxCode=res.code;
+			  } else {
+				console.log('登录失败！' + res.errMsg)
+			  }
+			}
+		});
+	},
   },
   onShareAppMessage: function( options ){
   　　var that = this;

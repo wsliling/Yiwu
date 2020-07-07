@@ -267,6 +267,24 @@ function MemberPaly(id){
 		});
 	}
 }
+// 判断浏览器环境true:微信内置
+function isWeixin() {
+	var ua = navigator.userAgent.toLowerCase();
+	if (ua.match(/MicroMessenger/i)=="micromessenger") {
+		return true;
+	} else {
+		return false;
+	}
+}
+//获取当前页面的域名
+function GetUrlRelativePath() {
+	var urlStr = '';　　　　
+	var url = document.location.toString();　　　　
+	var arrUrl = url.split("//");　　　　
+	var start = arrUrl[1].split("/");
+	urlStr = arrUrl[0] + '//' + start[0];　　　　
+	return urlStr;　　
+}
 import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
@@ -285,6 +303,8 @@ export {
 	getUrlParam,
 	uncodeUtf16,
 	audio,
+	isWeixin,
+	GetUrlRelativePath,
 
 	toast,
 	debounce,

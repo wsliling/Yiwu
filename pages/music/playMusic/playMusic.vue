@@ -88,7 +88,6 @@
 				isShowPlaylist:false,//弹出播放列表
 				playType:0,//0:顺序播放 1:单曲 2:随机
 				h5Url:'',
-				Source:'',//来源
 				type:'',
 			}
 		},
