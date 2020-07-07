@@ -12,6 +12,7 @@
 		<view class="videoinfo pp3">
 			<view class="title uni-mb10">
 				{{CourseInfo.Name}}
+				<text class="inwith">来源{{CourseInfo.Source}}</text>
 			</view>
 			<view class="desc uni-mb10" v-if="CourseInfo.Intro">
 				<view>简介：</view>
@@ -480,5 +481,12 @@
 	@import './style';
 	page{ 
 		background: #fff;
+	}
+	.inwith{
+		width: 100upx;
+		overflow: hidden;
+		margin-left: 30upx;
+		font-weight: 100;
+		font-size: 12upx;
 	}
 </style>

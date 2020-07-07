@@ -1,7 +1,7 @@
 .videobox{
-	video{ width: 100%; display: block;}
-	min-height: 450upx;
+	height: 450upx;
 	background: #999;
+	video{ width: auto; height: 100%; display: block; margin: 0 auto;}
 	.tipbox{
 		height: 450upx;
 		background: #999;

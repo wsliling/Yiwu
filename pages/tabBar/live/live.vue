@@ -25,10 +25,11 @@
 		<view class="videolist" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view class="maxpic" v-if="item.VideoUrl">
+					<view :class="['maxpic',IsEdit?'dis':'']" v-if="item.VideoUrl">
+						<image v-if="IsEdit" class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 						<video :src="item.VideoUrl" controls @play="onplayvideo" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
-					<view class="desc uni-ellipsis2">
+					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 						{{item.Title}}
 					</view>
 					<view class="media-ft flex-between">
@@ -49,7 +50,7 @@
 						<view class="ft_r flex-end">
 							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
 							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-							<share wxUrl="/pages/tabBar/live/live">
+							<share wxUrl="/pages/tabBar/live/live" :h5Url="'/pages/replylist/replylist?id='+item.Id">
 								<view class="txt_info share"></view>
 							</share>
 						</view>
@@ -115,7 +116,8 @@
 				hasData: false,
 				datalist:[],
 				videoContext:[],
-				onplayId:'',//当前播放
+				onplayId:-1,//当前播放
+				IsEdit:false
 			}
 		},
 		onLoad() {
@@ -185,7 +187,10 @@
 			},
 			openAttestation(){
 				if(toLogin()){
-					this.videoContext[this.onplayId].pause();
+					if(this.onplayId>=0){
+						this.videoContext[this.onplayId].pause();
+						this.IsEdit=true;
+					}
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程',],
@@ -199,6 +204,9 @@
 							uni.navigateTo({
 								url: urlstr
 							})
+						},
+						complete:(e)=>{
+							this.IsEdit=false;
 						}
 					})
 				}
