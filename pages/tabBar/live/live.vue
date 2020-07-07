@@ -187,7 +187,7 @@
 			},
 			openAttestation(){
 				if(toLogin()){
-					if(!this.onplayId<0){
+					if(this.onplayId>=0){
 						this.videoContext[this.onplayId].pause();
 						this.IsEdit=true;
 					}
