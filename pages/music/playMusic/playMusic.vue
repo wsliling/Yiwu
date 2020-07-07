@@ -7,6 +7,7 @@
 					<view class="border1"></view>
 				</view>
 			</view>
+			<view class="source">来源{{itemdata.Source}}</view>
 		</view>
 		<view class="playbox">
 			 <view class="imt-audio">
@@ -86,6 +87,8 @@
 				itemdata:{},//舞曲信息
 				isShowPlaylist:false,//弹出播放列表
 				playType:0,//0:顺序播放 1:单曲 2:随机
+				h5Url:'',
+				Source:'',//来源
 				type:'',
 			}
 		},
@@ -366,7 +369,10 @@ page{
 	min-height: 100%;
 }
 .warp{
-	padding: 60upx 0;
+	padding: 60upx 0 20upx;
+}
+.source{
+	color: #b9b8b8;text-align: center;padding-top: 30upx;font-size: 22upx;
 }
 .playimgbox{
 	width: 560upx;

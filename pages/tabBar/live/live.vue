@@ -25,7 +25,8 @@
 		<view class="videolist" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view class="maxpic" v-if="item.VideoUrl">
+					<view :class="['maxpic',IsEdit?'dis':'']" v-if="item.VideoUrl">
+						<image v-if="IsEdit" class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 						<video :src="item.VideoUrl" controls @play="onplayvideo" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
 					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
@@ -115,7 +116,8 @@
 				hasData: false,
 				datalist:[],
 				videoContext:[],
-				onplayId:'',//当前播放
+				onplayId:-1,//当前播放
+				IsEdit:false
 			}
 		},
 		onLoad() {
@@ -185,8 +187,9 @@
 			},
 			openAttestation(){
 				if(toLogin()){
-					if(this.onplayId){
+					if(this.onplayId>=0){
 						this.videoContext[this.onplayId].pause();
+						this.IsEdit=true;
 					}
 					let urlstr="";
 					uni.showActionSheet({
@@ -201,6 +204,9 @@
 							uni.navigateTo({
 								url: urlstr
 							})
+						},
+						complete:(e)=>{
+							this.IsEdit=false;
 						}
 					})
 				}
