@@ -392,7 +392,7 @@
 				}
 			},
 			tapTab(index) { //点击tab-bar
-				if(this.onplayId){
+				if(this.onplayId>=0){
 					this.videoContext[this.onplayId].pause();
 				}
 				if (this.tabIndex === index) {
