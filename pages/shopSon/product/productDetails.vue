@@ -3,9 +3,9 @@
 	<view class="details">
 		<!-- 首图展示 -->
 		<view class="detailsmap">
-			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper">
+			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper" @change="changeSwiper">
 				<swiper-item v-if="data.Video" :show-fullscreen-btn="false" :show-play-btn="false" show-mute-btn :enable-progress-gesture="false">
-					<video :src="data.Video" class="video"></video>
+					<video :src="data.Video" class="video" id="proVideo"></video>
 				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
 					<image :src="item.PicUrl" mode="aspectFill" @click="previewImages(index)"></image>
@@ -173,6 +173,7 @@ export default {
 			},
 			selectSku:{},
 			submitBtnType:'',//确定按钮的类型
+			videoContext:null,
 		};
 	},
 	onLoad(e) {
@@ -187,6 +188,9 @@ export default {
 		this.token = uni.getStorageSync("token");
 	},
 	methods: {
+		changeSwiper(){
+			this.videoContext.pause();
+		},
 		async getData(){
 			const res = await post('Goods/Goodsxq',{
 					UserId:this.userId,
@@ -195,6 +199,7 @@ export default {
 			})
 			if(res.code!=0) return;
 			const data = res.data;
+			this.videoContext=uni.createVideoContext('proVideo');
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
 			this.productInfo={
@@ -245,6 +250,7 @@ export default {
 			console.log(type,'type')
 			this.submitBtnType = type||'';
 			this.$refs.skuWin.open();
+			this.videoContext.pause();
 			// if(this.data.IsSku&&!this.selectSku.value){
 			// }else{
 			// 	if(type==1){
