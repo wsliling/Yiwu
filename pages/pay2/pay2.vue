@@ -59,7 +59,7 @@
 </template>
 
 <script>
-	import { post, get, getUrlParam} from '@/common/util.js';
+	import { post, get, getUrlParam,isWeixin} from '@/common/util.js';
 	import pay from '@/components/payPaw.vue';
 	export default {
 		components: {
@@ -254,6 +254,13 @@
 				uni.showLoading();
 				let url="",param={};
 				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?OrderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
+				// #ifdef H5
+				if(isWeixin()){
+					var paytype=0
+				}else{
+					var paytype=3
+				}
+				// #endif
 				if(this.proType==0){//课程
 					url="Course/WeiXinCoursePay";
 					param={
@@ -264,7 +271,7 @@
 						"NewUrl":NewUrl,//支付后的回调地址
 						"WxCode":this.WxCode,
 						"WxOpenid":this.WxOpenid,
-						"paytype":0,
+						"paytype":paytype,
 						// #endif
 						// #ifdef APP-PLUS
 						"paytype":2,
@@ -274,7 +281,6 @@
 						"WxOpenid":this.WxOpenid ,
 						"paytype":4
 						// #endif
-						
 					}
 				}else if(this.proType==1){//舞曲
 					url="DanceMusic/WechatPayWQ";
@@ -286,30 +292,47 @@
 						"NewUrl":NewUrl,//支付后的回调地址
 						"WxCode":this.WxCode,
 						"WxOpenid":this.WxOpenid,
-						"paytype":0,
+						"paytype":paytype,
 						// #endif
 						// #ifdef APP-PLUS
 						"paytype":2,
+						// #endif
+						// #ifdef MP-WEIXIN
+						"WxCode": this.WxCode,
+						"WxOpenid":this.WxOpenid ,
+						"paytype":4
 						// #endif
 					}
 				}
 				let result = await post(url, param);
 				// #ifdef H5
-				if(result.code == 0){console.log(result.data)
-					uni.setStorageSync('openId', result.data.openid);
-					this.WxOpenid = uni.getStorageSync("openId");
-					if(this.WxOpenid!=""&&this.WxOpenid!="undefined"){
-						this.WxCode="";//每次获取的code只能使用一次，有openid时用openid调起支付数据
+				if(isWeixin()){//微信内置H5支付
+					if(result.code == 0){console.log(result.data)
+						uni.setStorageSync('openId', result.data.openid);
+						this.WxOpenid = uni.getStorageSync("openId");
+						if(this.WxOpenid!=""&&this.WxOpenid!="undefined"){
+							this.WxCode="";//每次获取的code只能使用一次，有openid时用openid调起支付数据
+						}
+						this.callpay(result.data.JsParam);
+					}else if (result.code == 201) { //检测不到openid需要进行微信授权
+						window.location.href=result.data;
+					}else {
+						uni.showToast({
+							title: result.msg,
+							icon: "none",
+							duration: 1500
+						});
 					}
-					this.callpay(result.data.JsParam);
-				}else if (result.code == 201) { //检测不到openid需要进行微信授权
-					window.location.href=result.data;
-				}else {
-					uni.showToast({
-						title: result.msg,
-						icon: "none",
-						duration: 1500
-					});
+				}else{//浏览器H5微信支付
+					if(result.code == 0){
+						window.location.href = result.data.mweb_url;
+					}else {
+						uni.showToast({
+							title: result.msg,
+							icon: "none",
+							duration: 1500
+						});
+					}
 				}
 				// #endif
 				// #ifdef APP-PLUS
@@ -339,6 +362,23 @@
 						icon: "none",
 						duration: 1500
 					});
+				}
+				// #endif
+				// #ifdef MP-WEIXIN
+				if(result.code===0){
+					let payData=JSON.parse(result.data.JsParam)
+					let _this=this;
+					uni.requestPayment({
+					  timeStamp: payData.timeStamp,
+					  nonceStr: payData.nonceStr,
+					  package: payData.package,
+					  signType: payData.signType,
+					  paySign: payData.paySign,
+					  success(res) {
+							uni.navigateBack()
+						},
+					  fail(res) {}
+					})
 				}
 				// #endif
 			},
