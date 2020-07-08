@@ -321,6 +321,7 @@
 				}
 				let result = await post(url, param);
 				// #ifdef H5
+				alert(JSON.stringify(param))
 				if(isWeixin()){//微信内置H5支付
 					if(result.code == 0){console.log(result.data)
 						uni.setStorageSync('openId', result.data.openid);

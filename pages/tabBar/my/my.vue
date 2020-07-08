@@ -1,6 +1,6 @@
 <template>
 	<view class="pd15">
-		<view class="header">
+		<view class="header" :style="{'padding-top':barHeight+'px'}">
 			<view class="editor" @click="tolink('/pages/member/editinfo/editinfo')">
 				<image class="img30" src="@/static/my/editor.png"></image>
 			</view>
@@ -194,6 +194,7 @@
 			return {
 				userId: "",
 				token: "",
+				barHeight:0,
 				navigate,
 				memberInfo:{},//用户信息
 				wallet:[],
@@ -202,7 +203,9 @@
 			}
 		},
 		onLoad() {
-			
+			//#ifdef APP-PLUS
+			this.barHeight=plus.navigator.getStatusbarHeight();
+			//#endif
 		},
 		onShow(){
 			this.getMemberInfo();

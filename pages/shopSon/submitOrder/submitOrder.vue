@@ -343,9 +343,9 @@
 			// this.GroupId=e.GroupId||0
 			this.Total=e.buyNum
 			this.SpecText=e.SpecText
-			if(e.inCode){
-				this.inCode = e.inCode
-			}
+			// if(e.inCode){
+			// 	this.inCode = e.inCode
+			// }
 		},
 		onShow() {
 			// this.ContactName = this.$store.state.peopleInfo.ContactName;console.log(this.$store.state.peopleInfo,11)

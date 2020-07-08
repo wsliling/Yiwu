@@ -174,39 +174,38 @@
 			},
 			//播放/暂停操作
 			operation() {
-				if(this.isbuy==0){
-					playMusic(this.nowIndex,this.musicID)
-					this.init()
-				}else{
-					let _this=this;
-					if(!toLogin())return;
-					uni.showModal({
-						content: "该舞曲需付费,去付费？",
-						success(res) {
-							if (res.confirm) {
-								if(toLogin()){
-									let buyInfo={
-										PicImg:_this.itemdata.PicImg,
-										name:_this.itemdata.Name,
-										price:_this.itemdata.Price
+				post('DanceMusic/Music_xq',{
+					UserId:this.userId,
+					Token:this.token,
+					MusicId:this.musicID
+				}).then(res=>{
+					if(res.data.IsShowBuy==0){
+						playMusic(this.nowIndex,this.musicID)
+						this.init()
+					}else{
+						let _this=this;
+						if(!toLogin())return;
+						uni.showModal({
+							content: "该舞曲需付费,去付费？",
+							success(res) {
+								if (res.confirm) {
+									if(toLogin()){
+										let buyInfo={
+											PicImg:_this.itemdata.PicImg,
+											name:_this.itemdata.Name,
+											price:_this.itemdata.Price
+										}
+										uni.setStorageSync('buyInfo', buyInfo);
+										uni.navigateTo({
+											url:'/pages/pay2/pay2?type=1&id='+_this.musicID
+										})
 									}
-									uni.setStorageSync('buyInfo', buyInfo);
-									uni.navigateTo({
-										url:'/pages/pay2/pay2?type=1&id='+_this.musicID
-									})
+								} else if (res.cancel) {
 								}
-							} else if (res.cancel) {
 							}
-						}
-					});
-				}
-				
-				// if (audio.paused) {
-				// 	audio.play()
-				// 	this.loading = true
-				// } else {
-				// 	audio.pause()
-				// }
+						});
+					}
+				})
 			},
 			//完成拖动事件
 			change(e) {
@@ -218,38 +217,45 @@
 			},
 			//选择播放
 			slectplay(index){
-				if(this.musicList[index].IsShowBuy==0){
-					this.nowIndex=index;
-					this.itemdata=this.musicList[index];
-					this.musicID=this.musicList[index].Id;
-					this.isbuy=this.musicList[index].IsShowBuy;
-					uni.setNavigationBarTitle({
-						title: this.itemdata.Name
-					})
-					this.operation();
-					this.init();
-				}else{
-					let _this=this;
-					uni.showModal({
-						content: "该舞曲需付费,去付费？",
-						success(res) {
-							if (res.confirm) {
-								if(toLogin()){
-									let buyInfo={
-										PicImg:_this.musicList[index].PicImg,
-										name:_this.musicList[index].Name,
-										price:_this.musicList[index].Price
+				post('DanceMusic/Music_xq',{
+					UserId:this.userId,
+					Token:this.token,
+					MusicId:this.musicList[index].Id
+				}).then(res=>{
+					if(res.data.IsShowBuy==0){
+						this.nowIndex=index;
+						this.itemdata=this.musicList[index];
+						this.musicID=this.musicList[index].Id;
+						this.isbuy=this.musicList[index].IsShowBuy;
+						uni.setNavigationBarTitle({
+							title: this.itemdata.Name
+						})
+						this.operation();
+						this.init();
+					}else{
+						let _this=this;
+						uni.showModal({
+							content: "该舞曲需付费,去付费？",
+							success(res) {
+								if (res.confirm) {
+									if(toLogin()){
+										let buyInfo={
+											PicImg:_this.musicList[index].PicImg,
+											name:_this.musicList[index].Name,
+											price:_this.musicList[index].Price
+										}
+										uni.setStorageSync('buyInfo', buyInfo);
+										uni.navigateTo({
+											url:'/pages/pay2/pay2?type=1&id='+_this.musicList[index].Id
+										})
 									}
-									uni.setStorageSync('buyInfo', buyInfo);
-									uni.navigateTo({
-										url:'/pages/pay2/pay2?type=1&id='+_this.musicList[index].Id
-									})
+								} else if (res.cancel) {
 								}
-							} else if (res.cancel) {
 							}
-						}
-					});
-				}
+						});
+					}
+				})
+				
 			},
 			//切换播放顺序
 			tabPlayType(){
@@ -286,7 +292,7 @@
 					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
 					if(num==this.nowIndex){//跳过正在播放的
 						this.next()
-					}{
+					}else{
 						this.slectplay(num)
 					}
 				}else{
