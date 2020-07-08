@@ -1,6 +1,6 @@
 <template>
 	<view class="pd15">
-		<view class="header">
+		<view class="header" :style="{'padding-top':barHeight+'px'}">
 			<view class="editor" @click="tolink('/pages/member/editinfo/editinfo')">
 				<image class="img30" src="@/static/my/editor.png"></image>
 			</view>
@@ -55,7 +55,7 @@
 		<view class="info1 uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
 				<image src="@/static/my/icon1.png" mode="aspectFit"></image>
-				<view>我的收入<span>{{memberInfo.SumIncome||0}}</span></view>
+				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
@@ -194,6 +194,7 @@
 			return {
 				userId: "",
 				token: "",
+				barHeight:0,
 				navigate,
 				memberInfo:{},//用户信息
 				wallet:[],
@@ -202,7 +203,9 @@
 			}
 		},
 		onLoad() {
-			
+			//#ifdef APP-PLUS
+			this.barHeight=plus.navigator.getStatusbarHeight();
+			//#endif
 		},
 		onShow(){
 			this.getMemberInfo();

@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="head">
+		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="head_l">
 					<image src="@/static/live.png" class="iconimg"></image>
@@ -15,7 +15,7 @@
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
-		<view style="height: 80px;"></view>
+		<view :style="{'height':(80+barHeight)+'px'}"></view>
 		<view class="search">
 			<view class="seachbox">
 				<text class="uni-icon uni-icon-search"></text>
@@ -78,6 +78,7 @@
 			return {
 				userId: "",
 				token: "",
+				barHeight:0,
 				searchText:'',
 				scrollLeft: 0,
 				tabIndex:0,
@@ -121,6 +122,9 @@
 			}
 		},
 		onLoad() {
+			//#ifdef APP-PLUS
+			this.barHeight=plus.navigator.getStatusbarHeight();
+			//#endif
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.VideoList();

@@ -21,8 +21,8 @@
 				</p>
 			</div>
 			<div class="tips" style="padding:20upx 0;border-top:1px solid #f2f2f2;">
-				可提现金额：{{wType == 1 ? SumIncome : Wallet}}
-				<span class="red" v-if="Wallet > 0 || SumIncome > 0" @click="Allwithdraw">全部提现</span>
+				可提现金额：{{wType == 1 ? Income : Wallet}}
+				<span class="red" v-if="Wallet > 0 || Income > 0" @click="Allwithdraw">全部提现</span>
 			</div>
 		</div>
 		<div class="btns">
@@ -45,7 +45,7 @@ export default {
 		// #endif
 		if (this.wType == 1) {
 			uni.setNavigationBarTitle({
-				title: '佣金提现'
+				title: '收入提现'
 			});
 			this.getMyIncome() //佣金
 		}
@@ -89,7 +89,7 @@ export default {
 			CashWithdrawalTime: '', //提现审核时间（单位：小时）
 			DayWithdrawalMaxNum: '', //会员每日提现最大次数
 			DaySurplusNum: '', //当天剩余提现次数
-			SumIncome:0, //佣金收入
+			Income:0, //佣金收入
 		};
 	},
 	methods: {
@@ -193,7 +193,7 @@ export default {
 		Allwithdraw() {
 			this.amount = this.Wallet;
 			if(this.wType == 1){
-				this.amount = this.SumIncome;
+				this.amount = this.Income;
 			}
 		},
 		//佣金提现
@@ -201,7 +201,7 @@ export default {
 			let that = this;
 			let objUrl = '';
 			if (this.wType == 1) {
-				objUrl = 'DrawMoney/memberDrawMoneyApply';
+				objUrl = 'DrawMoney/MemberIncomeApply';
 			} else {
 				objUrl = 'DrawMoney/memberDrawMoneyApply123';
 			}
@@ -224,7 +224,7 @@ export default {
 						success: function() {
 							setTimeout(function() {
 								uni.navigateBack({
-								    delta: 1
+								    delta: 2
 								});
 							}, 1500);
 						}
@@ -239,7 +239,7 @@ export default {
 				"Token": uni.getStorageSync("token")
 			});
 			if (result.code === 0) {
-				this.SumIncome = result.data.SumIncome;
+				this.Income = result.data.Income;
 			} 
 		},
 	}
