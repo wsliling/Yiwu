@@ -136,11 +136,13 @@
 			// #ifdef H5
 			this.barHeight = 0;
 			// #endif
-			this.userId = uni.getStorageSync('userId');
-			this.token = uni.getStorageSync('token');
 			this.ClassId=e.id;
 			this.Logo=e.Logo;
 			this.Name=e.Name;
+		},
+		onShow() {
+			this.userId = uni.getStorageSync('userId');
+			this.token = uni.getStorageSync('token');
 			this.workeslist();
 		},
 		methods: {
