@@ -128,7 +128,6 @@ export default {
 		// 舞曲来源选中
 		SelectSource(id, name) {
 			this.sourcetype = name;
-			this.ClassId = id;
 			this.isShowSource = false;
 		},
 		//获取类型
