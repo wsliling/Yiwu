@@ -326,6 +326,11 @@
 			} else {
 				this.loadingType = 2;
 			}
+		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			this.VideoList();
+			uni.stopPullDownRefresh();
 		}
 	}
 </script>

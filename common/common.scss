@@ -609,7 +609,9 @@ a {
 	left: 0;
 	bottom: 0;
 	width: 100%;
+	/* #ifndef MP-WEIXIN*/
 	padding: 0 30upx;
+	/* #endif */
 	z-index: 998;
 	border-top: 1px solid #eee;
 	.ipt{ width: 100%; padding: 0 20upx; height: 60upx; font-size: 24upx; color: #999; background: #f2f2f2; border-radius: 6px;}

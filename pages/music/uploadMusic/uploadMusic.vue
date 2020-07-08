@@ -117,6 +117,7 @@ export default {
 		//取消（统一关闭弹窗）
 		hidePopup() {
 			this.isShowSelect = false;
+			this.isShowSource = false;
 		},
 		// 类型选中
 		SelectMenu(id, name) {

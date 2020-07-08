@@ -239,8 +239,9 @@ export default {
 		//微信付款
 		async AddRecharge() {
 			let NewUrl = this.GetUrlRelativePath() + '/#/pages/tabBar/my/topup';
+			let result = '';
 			if (this.rechargeType == 2) {
-				let result = await post('Order/WechatPayCZZBB', {
+				result = await post('Order/WechatPayCZZBB', {
 					UserId: this.userId,
 					Token: this.token,
 					RechargeAmount: this.money,
@@ -250,7 +251,7 @@ export default {
 					paytype: 0
 				});
 			}else{
-				let result = await post('Order/WechatPayCZYE', {
+				result = await post('Order/WechatPayCZYE', {
 					UserId: this.userId,
 					Token: this.token,
 					RechargeAmount: this.money,
@@ -260,7 +261,6 @@ export default {
 					paytype: 0
 				});
 			}
-			
 			if (result.code == 201) {
 				window.location.href = result.data;
 			} else if (result.code == 0) {
@@ -281,8 +281,9 @@ export default {
 		//非微信环境 使用微信支付H5
 		async H5AddRecharge() {
 			let NewUrl = this.GetUrlRelativePath() + '/#/pages/tabBar/my/wallet';
+			let result = '';
 			if (this.rechargeType == 2) {
-				let result = await post('Order/WechatPayCZZBB', {
+				result = await post('Order/WechatPayCZZBB', {
 					//直播币
 					UserId: this.userId,
 					Token: this.token,
@@ -291,7 +292,7 @@ export default {
 					paytype: 3
 				});
 			} else {
-				let result = await post('Order/WechatPayCZYE', {
+				result = await post('Order/WechatPayCZYE', {
 					//钱包充值
 					UserId: this.userId,
 					Token: this.token,
@@ -337,8 +338,9 @@ export default {
 		},
 		//小程序支付
 		async ConfirmWeiXinSmallPay() {
+			let result = '';
 			if (this.rechargeType == 2) {
-				let result= await post("Order/WechatPayCZZBB",{
+				result= await post("Order/WechatPayCZZBB",{
 					WxCode: this.WxCode,
 					UserId: this.userId,
 					Token: this.token,
@@ -347,7 +349,7 @@ export default {
 					paytype:4
 				  });
 			} else {
-				let result = await post('Order/WechatPayCZYE', {
+				result = await post('Order/WechatPayCZYE', {
 					WxCode: this.WxCode,
 					UserId: this.userId,
 					Token: this.token,

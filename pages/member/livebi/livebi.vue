@@ -2,6 +2,7 @@
 	<!-- 我的积分 -->
 	<view class="Integral">
 		<view class="Integralbox uni-bg-white">
+			<image class="In-image" src="../../../static/my/bg4.png" mode=""></image>
 			<view class="reveal">
 				<view class="jf">我的直播币</view>
 				<view class="flex-start">
@@ -124,11 +125,14 @@
 <style lang="scss" scoped>
 	.Integralbox{
 		padding: 30upx;
-		.reveal{
+		.In-image{
 			width: 100%;
 			height: 300upx;
-			border-radius:30upx;
-			background:url(/static/my/bg4.png);
+			position: relative;
+		}
+		.reveal{
+			position: absolute;
+			top: 0;
 			background-size: cover;
 			font-family:PingFang;
 			color:#fff;
@@ -136,6 +140,7 @@
 				color: #fff;
 				padding: 50upx 50upx 0;
 				line-height: 1;
+				margin-top: 30upx;
 			}
 			.item{
 				padding: 50upx;

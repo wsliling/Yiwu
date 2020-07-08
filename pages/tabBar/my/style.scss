@@ -50,8 +50,8 @@
 					align-items:center;
 				}
 				.vip{
-					width:80upx;height:40upx;
-					padding:0 20upx;
+					width:40upx;height:40upx;
+					// padding:0 20upx;
 				}
 				.text{
 					font-size: 22upx;
@@ -230,7 +230,9 @@
 
 .ac{
 	padding:0 30upx;
+	/* #ifndef MP-WEIXIN */
 	margin-bottom:120upx;
+	/* #endif */
 	line-height:2.8;
 	text-align:center;
 	font-size:32upx;

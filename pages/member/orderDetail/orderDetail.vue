@@ -450,7 +450,7 @@ methods: {
       })
     },
 	//微信公众号支付
-	callpay(param) {alert(JSON.stringify(param))
+	callpay(param) {
 		if(typeof WeixinJSBridge === 'undefined') {
 			if(document.addEventListener) {
 				document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(), false);
