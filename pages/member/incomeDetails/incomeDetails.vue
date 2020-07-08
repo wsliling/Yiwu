@@ -3,14 +3,20 @@
 	<view>
 		<view class="bg_fff tabList flex p_re">
 			<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':item.id==tabIndex}"  @click="cliTab(item.id)">{{item.name}}</view>
-			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
+			<!-- <view class="bb_line" :style="'left:'+tabStyle+'upx'"></view> -->
+			<!-- #ifndef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'upx'}"></view>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'rpx'}"></view>
+			<!-- #endif -->
 		</view>
 		<view style="height: 80upx;"></view>
 		<view class="time-box flex-between">
 			<view class="time flex-between" @tap="choseTime">
 				<span>{{setUpDate}}</span>
 			</view>
-			<view class="time_r">
+			<view class="time_r" v-if="false">
 				<span>最近交易</span>
 				￥{{count}}
 			</view>

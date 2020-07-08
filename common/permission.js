@@ -91,6 +91,7 @@ function judgeIosPermissionCamera() {
 		console.log("相机权限没有开启");
 	}
 	plus.ios.deleteObject(AVCaptureDevice);
+	console.log(result,'相机操作成功')
 	return result;
 }
 

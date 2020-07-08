@@ -128,8 +128,8 @@
 		},
 		onLoad(e){
 			// #ifdef APP-PLUS
-			this.ShopId=e.ShopId
 			// #endif
+			this.ShopId=e.id
 		},
 		onShow() {
 			let res = uni.getSystemInfoSync()
@@ -137,7 +137,7 @@
 			this.token = uni.getStorageSync("token");
 			this.height=res.windowHeight
 			// #ifndef APP-PLUS
-			this.ShopId = this.$mp.query.ShopId
+			// this.ShopId = this.$mp.query.ShopId
 			// #endif
 			console.log(this.ShopId)
 			this.play()
@@ -266,7 +266,7 @@
 				let res = await post('TencentCloud/PlayURL',{
 					UserId: this.userId,
 					Token: this.token,
-					ShopId:this.ShopId
+					MemberId:this.ShopId
 				})
 				if(res.code==0){
 					this.data=res.data;console.log(res.data)
@@ -282,7 +282,7 @@
 					"autoplay" : true,      //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
 					"live":true,
 					"controls":"none",
-					"systemFullscreen":true,
+					"systemFullscreen":false,
 					"width" :  '480',//视频的显示宽度，请尽量使用视频分辨率宽度
 					"height" : this.height//视频的显示高度，请尽量使用视频分辨率高度
 				});
