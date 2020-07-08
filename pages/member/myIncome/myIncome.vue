@@ -3,7 +3,7 @@
 	<view class="wallet">
 		<view class="walletbox uni-bg-white">
 			<view class="reveal">
-				<view class="symbol"><span>￥</span>{{SumIncome}}<span></span></view>
+				<view class="symbol"><span>￥</span>{{Income}}<span></span></view>
 				<view class="balance">收入总额(元)</view>
 			</view>
 		</view>
@@ -52,7 +52,7 @@
 	export default {
 		data(){
 			return{
-				SumIncome:0,//余额
+				Income:0,//余额
 				userId: "",
 				token: "",
 				IsShop:'', //是否开通店铺 1-是 0-否
@@ -79,7 +79,7 @@
 					"Token": this.token
 				})
 				if (result.code === 0) {
-					this.SumIncome = result.data.SumIncome;
+					this.Income = result.data.Income;
 					this.IsShop = result.data.IsShop;
 					uni.setStorageSync('ReferralCode',result.data.ReferralCode)
 					this.$store.commit("update", {

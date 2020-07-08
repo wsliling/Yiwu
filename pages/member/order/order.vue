@@ -31,9 +31,9 @@
 					<view class="btn" v-if="item.IsCancel==1" @click.stop="chooseOrders(item.OrderNumber,1)">取消订单</view>
 					<view class="btn" v-if="item.IsDel==1" @click.stop="chooseOrders(item.OrderNumber,2)">删除</view>
 					<view class="btn bg_red" v-if="item.Ispay==1" @click.stop="goUrl('/pages/member/orderDetail/orderDetail?id='+item.OrderNumber)">立即支付</view>
-					<view class="btn bg_red" v-if="item.IsComment==1" @click.stop="goPinJia(item.OrderDetails,item.OrderNumber)">去评价</view>
+					<!-- <view class="btn bg_red" v-if="item.IsComment==1" @click.stop="goPinJia(item.OrderDetails,item.OrderNumber)">去评价</view> -->
 					<view class="btn bg_red" v-if="item.IsConfirmReceipt==1" @click.stop="chooseOrders(item.OrderNumber,3)">确认收货</view>
-					<view class="btn bg_red" v-if="item.GroupRecordId>0" @click.stop="goUrl('/pages/pintuanOrder/pintuanOrder?id='+item.GroupRecordId)">拼团详情</view>
+					<!-- <view class="btn bg_red" v-if="item.GroupRecordId>0" @click.stop="goUrl('/pages/pintuanOrder/pintuanOrder?id='+item.GroupRecordId)">拼团详情</view> -->
 				</view>
 			</view>
 		</view>
@@ -55,7 +55,7 @@
 			return {
 				userId: "",
 				token: "",
-				tabList:[{id:0,name:'全部'},{id:1,name:'待付款'},{id:2,name:'待发货'},{id:3,name:'待收货'},{id:4,name:'待评价'}],
+				tabList:[{id:0,name:'全部'},{id:1,name:'待付款'},{id:2,name:'待发货'},{id:3,name:'待收货'},{id:4,name:'已完成'}],
 				tabIndex:0,
 				page:1,
 				pagesize:8,
