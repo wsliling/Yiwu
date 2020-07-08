@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<view class="head" :style="{'padding-top':barHeight+'px'}">
+		<view class="head autotop">
 			<view class="index_head flex-between">
 				<view class="head_l">
 					<image src="@/static/live.png" class="iconimg"></image>
@@ -37,7 +37,7 @@
 							<view class="author flex-start">
 								<view class="tx">
 									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
-									<view class="islive" style="display: none;">
+									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
 										<view class="line line3"></view>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,navigate} from '@/common/util.js';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {
@@ -76,6 +76,7 @@
 		},
 		data() {
 			return {
+				navigate,
 				userId: "",
 				token: "",
 				barHeight:0,

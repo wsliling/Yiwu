@@ -128,8 +128,8 @@
 		},
 		onLoad(e){
 			// #ifdef APP-PLUS
-			this.ShopId=e.ShopId
 			// #endif
+			this.ShopId=e.id
 		},
 		onShow() {
 			let res = uni.getSystemInfoSync()
@@ -137,7 +137,7 @@
 			this.token = uni.getStorageSync("token");
 			this.height=res.windowHeight
 			// #ifndef APP-PLUS
-			this.ShopId = this.$mp.query.ShopId
+			// this.ShopId = this.$mp.query.ShopId
 			// #endif
 			console.log(this.ShopId)
 			this.play()
@@ -266,7 +266,7 @@
 				let res = await post('TencentCloud/PlayURL',{
 					UserId: this.userId,
 					Token: this.token,
-					ShopId:this.ShopId
+					MemberId:this.ShopId
 				})
 				if(res.code==0){
 					this.data=res.data;console.log(res.data)

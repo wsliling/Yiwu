@@ -2,7 +2,15 @@
 	<view>
 		<view class="pd15 heade">
 			<view class="user">
-				<image class="left" :src="PersonInfo.Avatar||'/static/default.png'"></image>
+				<view class="left">
+					<image  :src="PersonInfo.Avatar||'/static/default.png'"></image>
+					<view class="islive" @click="navigate('liveplay/live',{id:memberId})">
+						<view class="line line1"></view>
+						<view class="line line2"></view>
+						<view class="line line3"></view>
+						<view class="txt">直播</view>
+					</view>
+				</view>
 				<view class="right">
 					<view class="name">
 						<view>{{PersonInfo.NickName}}</view>

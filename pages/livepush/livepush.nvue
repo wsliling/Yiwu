@@ -90,11 +90,15 @@ export default {
 		this.height = res.windowHeight;
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
+		
+		this.context = uni.createLivePusherContext('livePusher', this);
 		//权限设置,获取权限后开启直播
 		this.quanxian();
 	},
 	methods: {
 		async quanxian() {
+			let platform = uni.getSystemInfoSync()&&uni.getSystemInfoSync().platform;
+			
 			switch (uni.getSystemInfoSync().platform) {
 				case 'android':
 					var result = await permision.requestAndroidPermission('android.permission.CAMERA');
@@ -143,42 +147,58 @@ export default {
 				case 'ios':
 					var iosresult = await permision.judgeIosPermission('camera');
 					var iosres = await permision.judgeIosPermission('record');
-					console.log('运行iOS上');
+					console.log('运行iOS上',iosresult,iosres);
 					var strStatus;
 					if(iosresult&& iosres){//已经获取授权开始直播
 						console.log("开始直播")
 						this.getPlay();
 					}else if ((!iosres)&&(!iosresult)) {
-						uni.showToast({
-							title: '请先开启摄像头和麦克风权限后再开启直播！',
-							icon: 'none',
-							success() {
-								// permision.gotoAppPermissionSetting();
-							}
-						});
-						this.stopLive();
+						uni.showModal({  
+							content: '请先开启摄像头和麦克风权限后再开启直播！',  
+							confirmText: '设置',  
+							success: res => {  
+								if(res.confirm) {  
+									plus.runtime.openURL('app-settings://')  
+								} else {  
+									uni.navigateBack({  
+										delta: 1  
+									})  
+								}  
+							}  
+						}); 
 					} else if (!iosresult) {
-						uni.showToast({
-							title: '摄像机未授权',
-							icon: 'none', 
-							success() {
-								// permision.gotoAppPermissionSetting();
-							}
-						});
-						this.stopLive();
+						uni.showModal({  
+							content: '需要访问您的相机，请到设置里开启',  
+							confirmText: '设置',  
+							success: res => {  
+								if(res.confirm) {  
+									plus.runtime.openURL('app-settings://')  
+								} else {  
+									uni.navigateBack({  
+										delta: 1  
+									})  
+								}  
+							}  
+						}); 
 					}else{
-						uni.showToast({
-							title: '麦克风未授权',
-							icon: 'none',
-							success() {
-								// permision.gotoAppPermissionSetting();
-							}
-						});
-						this.stopLive();
+						uni.showModal({  
+							content: '麦克风未授权，请到设置里开启',  
+							confirmText: '设置',  
+							success: res => {  
+								if(res.confirm) {  
+									plus.runtime.openURL('app-settings://')  
+								} else {  
+									uni.navigateBack({  
+										delta: 1  
+									})  
+								}  
+							}  
+						}); 
 					}
 				break;
 			}
 		},
+		// 开始直播
 		async getPlay() {
 			// 开启实时聊天
 			this.livemessage()
@@ -240,11 +260,20 @@ export default {
 			});
 		},
 		stopLive() {
-			this.context.stop({
-				success: a => {
-					console.log(JSON.stringify(a));
+			const that = this;
+			uni.showModal({
+				title:'是否结束直播！',
+				success(res){
+					if(res.confirm){
+						that.context.stop({
+							success: a => {
+								console.log(JSON.stringify(a));
+							}
+						});
+						uni.navigateBack();
+					}
 				}
-			});
+			})
 		},
 		switchCamera() {
 			this.context.switchCamera({
