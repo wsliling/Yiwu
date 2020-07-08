@@ -4,7 +4,7 @@
 			<view class="user">
 				<view class="left">
 					<image  :src="PersonInfo.Avatar||'/static/default.png'"></image>
-					<view class="islive" @click="navigate('liveplay/live',{id:memberId})">
+					<view class="islive" v-if="PersonInfo.Flag" @click="navigate('liveplay/live',{id:memberId})">
 						<view class="line line1"></view>
 						<view class="line line2"></view>
 						<view class="line line3"></view>
@@ -165,12 +165,12 @@ export default {
 			musicID:"",
 		};
 	},
-	 onLoad(){
+	 onLoad(e){
 		 this.userId = uni.getStorageSync("userId");
 		 this.token = uni.getStorageSync("token");
 		 this.tabWidth=(100/this.tab.length);
 		 this.leftscoll(); 
-	 	this.memberId=this.$mp.query.id;
+	 	this.memberId=e.id;
 		this.GetPersonInfo();
 	 },
 	 onShow() {
