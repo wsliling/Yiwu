@@ -416,6 +416,9 @@
 				let id= this.tabnav[index].Id;
 				this.tabIndex = index;
 				this.setScrollLeft(index);
+				if(this.onplayId>-1){
+					this.videoContext[this.onplayId].pause();
+				}
 				// this.fun(index);
 				// if(index==0){
 				// 	this.GetDancerList();

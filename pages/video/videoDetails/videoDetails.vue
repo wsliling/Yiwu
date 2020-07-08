@@ -298,24 +298,27 @@
 			},
 			//获取下载路径
 			async DownloadCourse(type){
-				if(type==1){
-					uni.showToast({
-						title: "购买后才可以下载哦！",
-						icon: "none",
-						duration: 1500
-					});
-				}else{
-					let result = await post("Course/DownloadCourse", {
-						"UserId": this.userId,
-						"Token": this.token,
-						"CourseId":this.Courseid
-					});
-					if(result.code==0){
-						this.durl=result.data;
-						this.isShowDowninfo=true;
+				if(toLogin()){
+					if(type==1){
+						uni.showToast({
+							title: "购买后才可以下载哦！",
+							icon: "none",
+							duration: 1500
+						});
+					}else{
+						let result = await post("Course/DownloadCourse", {
+							"UserId": this.userId,
+							"Token": this.token,
+							"CourseId":this.Courseid
+						});
+						if(result.code==0){
+							this.durl=result.data;
+							this.isShowDowninfo=true;
+						}
 					}
 				}
 			},
+			
 			// 下载
 			Downloadfun(){
 				let that = this;
@@ -323,22 +326,30 @@
 					url: that.durl, 
 					success: (res) => {
 						console.log(res)
+						console.log("res")
 						if (res.statusCode === 200) {
 							uni.showToast({
 								title: "下载成功"
 							})
 							that.AddDownloadRecord();
 						}
+					
+						// #ifndef H5
 						uni.saveFile({
 							tempFilePath: res.tempFilePath,
 								success: function(red) {
 									that.luj = red.savedFilePath
 									console.log(red)
+									console.log("red")
 								}
 							});
 						}
-					});
-								
+						// #endif
+						// #ifdef H5
+						 this.saveH5(res.tempFilePath)
+						// #endif
+					}
+				});			
 				downloadTask.onProgressUpdate((res) => {
 					this.dsize=res.totalBytesExpectedToWrite;
 					console.log('下载进度' + res.progress);
@@ -346,6 +357,14 @@
 					console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
 				});
 			},	
+			saveH5(url){
+				let oA = document.createElement("a");
+				oA.download = '';// 设置下载的文件名，默认是'下载'
+				oA.href = url;
+				document.body.appendChild(oA);
+				oA.click();
+				oA.remove(); // 下载之后把创建的元素删除
+			},
 			//添加下载记录
 			async AddDownloadRecord(){
 				let result = await post("User/AddDownloadRecord", {
