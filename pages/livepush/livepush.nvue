@@ -68,8 +68,8 @@ export default {
 			type: '',
 			width: '',
 			height: '',
-			liveUserId: '',
-			liveToken: '',
+			userId: '',
+			token: '',
 			url: '', //这是推流地址
 			context: null,
 			markact: true,
@@ -88,11 +88,10 @@ export default {
 		let res = uni.getSystemInfoSync();
 		this.width = res.windowWidth;
 		this.height = res.windowHeight;
-		this.liveUserId = uni.getStorageSync('liveUserId');
-		this.liveToken = uni.getStorageSync('liveToken');
+		this.userId = uni.getStorageSync('userId');
+		this.token = uni.getStorageSync('token');
 		//权限设置,获取权限后开启直播
 		this.quanxian();
-		this.livemessage()
 	},
 	methods: {
 		async quanxian() {
@@ -181,10 +180,12 @@ export default {
 			}
 		},
 		async getPlay() {
+			// 开启实时聊天
+			this.livemessage()
 			let res = await post('TencentCloud/PushURL', {
-				push: '',
-				UserId: this.liveUserId,
-				Token: this.liveToken
+				// push: '',
+				UserId: this.userId,
+				Token: this.token
 			});
 			if (res.code == 0) {console.log(res)
 				this.url = res.data.RTMP;
@@ -193,8 +194,8 @@ export default {
 					this.startLive();
 				}, 1000);
 			} else if(res.code == 2){
-				uni.setStorageSync('liveToken', '');
-				uni.setStorageSync('liveUserId', '');
+				uni.setStorageSync('token', '');
+				uni.setStorageSync('userId', '');
 				uni.showToast({
 					title: "请重新登录商家直播账号",
 					icon: 'none',
@@ -204,8 +205,8 @@ export default {
 					uni.navigateBack({});
 				}, 2000);
 			} else {
-				uni.setStorageSync('liveToken', '');
-				uni.setStorageSync('liveUserId', '');
+				uni.setStorageSync('token', '');
+				uni.setStorageSync('userId', '');
 				uni.showToast({
 					title: res.msg,
 					icon: 'none',

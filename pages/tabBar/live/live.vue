@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="head">
-			<view class="index_head flex-between">
+			<view class="index_head flex-between autotop">
 				<view class="head_l">
 					<image src="@/static/live.png" class="iconimg"></image>
 				</view>
@@ -193,13 +193,25 @@
 					}
 					let urlstr="";
 					uni.showActionSheet({
-						itemList: ['拍视频', '上传课程',],
+						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
 						success: (e) => {
 							console.log(e.tapIndex);
 							if(e.tapIndex==0){
 								urlstr="/pages/video/videoUpload/videoUpload?type=0";
 							}else if(e.tapIndex==1){
 								urlstr="/pages/video/videoUpload/videoUpload?type=1";
+							}else if(e.tapIndex==2){
+								// #ifndef APP-PLUS
+								uni.showToast({
+									title:'APP端才能开启直播哦~',
+									icon:'none'
+								})
+								// #endif
+								// #ifdef APP-PLUS
+								urlstr="/pages/livepush/livepush?type=0";
+								// #endif
+							}else if(e.tapIndex==3){
+								urlstr="/pages/livepush/livepush?type=1";
 							}
 							uni.navigateTo({
 								url: urlstr
