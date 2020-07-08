@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="head">
+		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="search" @click="tolink('/pages/music/list/list?type=3')">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search">请输入你想搜索的舞曲</text>
@@ -11,7 +11,7 @@
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
-		<view style="height: 80px;"></view>
+		<view :style="{'height':(80+barHeight)+'px'}"></view>
 		<view class="music-content" v-if="tabIndex==0">
 			<!--轮播图-->
 			<view class="index_swiper uni-mt10">
@@ -91,6 +91,7 @@
 			return {
 				userId: "",
 				token: "",
+				barHeight:0,
 				classifylist:[],//舞曲分类列表
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
@@ -107,6 +108,9 @@
 			}
 		},
 		onLoad() {
+			//#ifdef APP-PLUS
+			this.barHeight=plus.navigator.getStatusbarHeight();
+			//#endif
 			this.getclassifyList();
 			this.getBanner();
 		},

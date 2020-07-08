@@ -1,6 +1,6 @@
 <template>
 	<view class="content" style="height: 100%;">
-		<view class="head">
+		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
@@ -15,7 +15,7 @@
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
-		<view style="height: 80px;"></view>
+		<view :style="{'height':(80+barHeight)+'px'}"></view>
 		<swiper :current="tabIndex" class="swiper-box" duration="300" @change="changeTab">
 			<!-- 首页 -->
 			<swiper-item>
@@ -238,6 +238,7 @@
 			return {
 				userId: "",
 				token: "",
+				barHeight:0,
 				searchText:'',
 				scrollLeft: 0,
 				tabIndex:0,
@@ -289,6 +290,9 @@
 			}
 		},
 		onLoad() {
+			//#ifdef APP-PLUS
+			this.barHeight=plus.navigator.getStatusbarHeight();
+			//#endif
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.init();
