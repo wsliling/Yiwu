@@ -183,8 +183,10 @@ export default {
 		async getPlay() {
 			let res = await post('TencentCloud/PushURL', {
 				push: '',
-				UserId: this.liveUserId,
-				Token: this.liveToken
+				// UserId: this.liveUserId,
+				// Token: this.liveToken,
+				UserId: uni.getStorageSync('userId'),
+				Token: uni.getStorageSync('token')
 			});
 			if (res.code == 0) {console.log(res)
 				this.url = res.data.RTMP;

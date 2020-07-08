@@ -158,7 +158,7 @@
 			//播放
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
-					// uni.setStorageSync("musicList",this.datalist)
+					uni.setStorageSync("musicList",this.datalist)
 					if(this.playID==id){
 						this.playID="";
 					}else{
