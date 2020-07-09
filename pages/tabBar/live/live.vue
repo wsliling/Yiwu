@@ -1,13 +1,13 @@
 <template>
 	<view class="content">
-		<view class="head autotop">
+		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="head_l" @click="navigate('liveplay/live')">
-					<image src="@/static/live.png" class="iconimg"></image>
+					<image src="http://yw.wtvxin.com/static/live.png" class="iconimg"></image>
 				</view>
 				<view class="title">视频</view>
 				<view class="head_r" @click="openAttestation">
-					<image src="@/static/video.png" class="iconimg"></image>
+					<image src="http://yw.wtvxin.com/static/video.png" class="iconimg"></image>
 				</view>
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
@@ -16,18 +16,19 @@
 			</scroll-view>
 		</view>
 		<view :style="{'height':(80+barHeight)+'px'}"></view>
-		<view class="search">
+		<view class="search bg_fff">
 			<view class="seachbox">
 				<text class="uni-icon uni-icon-search"></text>
 				<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>
 			</view>
 		</view>
-		<view class="videolist" v-if="hasData">
+		<view class="videolist bg_fff" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view :class="['maxpic',IsEdit?'dis':'']" v-if="item.VideoUrl">
-						<image v-if="IsEdit" class="postpic" :src="item.PicImg" mode="aspectFill"></image>
-						<video :src="item.VideoUrl" controls @play="onplayvideo" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+					<view :class="['maxpic',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
+						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
+						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
+						<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
 					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 						{{item.Title}}
@@ -36,7 +37,7 @@
 						<view class="ft_l flex-start">
 							<view class="author flex-start">
 								<view class="tx">
-									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
+									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
 									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
@@ -117,9 +118,11 @@
 				isLoad: false,
 				hasData: false,
 				datalist:[],
-				videoContext:[],
-				onplayId:-1,//当前播放
-				IsEdit:false
+				videoContext:null,
+				IsEdit:false,
+				onplayId:-1,//当前播放视频id
+				onplayIndex:-1,//当前播放视频序号
+				onplayHeight:0,//当前播放视频距离顶部的高度
 			}
 		},
 		onLoad() {
@@ -139,14 +142,23 @@
 		   }
 		 },
 		methods: {
-			onplayvideo(e){
-				let id=e.currentTarget.id;
+			pauseVideo(id){
 				for(let i=0; i<this.datalist.length;i++){
-					let _id='video'+this.datalist[i].Id;
+					let _id=this.datalist[i].Id;
 					if(_id==id){
-						this.onplayId=i;
-					}else{
-						this.videoContext[i].pause();
+						this.onplayId=id;
+						this.onplayIndex=i;
+						this.$set(this.datalist[i],'fixed',true);
+					}
+				}
+			},
+			playVideo(id){
+				for(let i=0; i<this.datalist.length;i++){
+					let _id=this.datalist[i].Id;
+					if(_id==id){
+						this.onplayId=id;
+						this.onplayIndex=i;
+						this.$set(this.datalist[i],'fixed',false);
 					}
 				}
 			},
@@ -191,11 +203,8 @@
 				}
 			},
 			openAttestation(){
+				this.IsEdit=true;
 				if(toLogin()){
-					if(this.onplayId>=0){
-						this.videoContext[this.onplayId].pause();
-						this.IsEdit=true;
-					}
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
@@ -254,10 +263,9 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
-						this.videoContext=[];
 						for(let i=0;i<result.data.length;i++){
-							let n=result.data[i].Id;
-							this.videoContext[i]=uni.createVideoContext('video'+n);
+							this.$set(result.data[i],'play',false);
+							this.$set(result.data[i],'fixed',false);
 						}
 					}
 					if (result.data.length == 0 && this.page == 1) {
@@ -281,6 +289,21 @@
 					} 
 				}
 				uni.hideLoading();
+			},
+			playBtn(index,id){
+				let _this = this;
+				this.datalist.forEach(function(item){
+					if(id==item.Id){
+						_this.$set(item,'play',true);
+						_this.$set(item,'fixed',false);
+						setTimeout(()=>{
+							_this.videoContext=uni.createVideoContext('video'+item.Id);
+							_this.videoContext.play();
+						},500)
+					}else{
+						_this.$set(item,'play',false);
+					}
+				})
 			},
 			//发现点赞
 			async likeBtn(id,index){
@@ -331,6 +354,24 @@
 		onPullDownRefresh(){
 			this.VideoList();
 			uni.stopPullDownRefresh();
+		},
+		onPageScroll(e){
+			let _this=this;
+			const query = uni.createSelectorQuery().in(_this);
+			if(_this.onplayIndex>-1){
+				query.select('#box'+_this.onplayId).boundingClientRect(data => {
+				  // console.log("得到布局位置信息" + JSON.stringify(data));
+				  // console.log("节点离页面顶部的距离为" + data.top);
+				  _this.onplayHeight=data.top;
+				}).exec();
+				if(_this.onplayHeight<80){
+					_this.$set(_this.datalist[_this.onplayIndex],'fixed',true);
+					_this.videoContext.pause();
+				}else{
+					_this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
+					_this.videoContext.play();
+				}
+			}
 		}
 	}
 </script>
@@ -338,7 +379,7 @@
 <style lang="scss" scoped>
 	@import './style';
 	page{
-		background: #fff;
+		background: #fff !important;
 	}
 	.index-swiper-tab .item{
 		width: 16.66%;

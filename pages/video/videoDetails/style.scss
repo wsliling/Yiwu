@@ -66,24 +66,24 @@
 		.ft_r .txt_info{
 			margin-left: 90upx;
 		}
-		.like{padding-left: 50upx; background: url(@/static/like.png) left center no-repeat;
+		.like{padding-left: 50upx; background: url(http://yw.wtvxin.com/static/like.png) left center no-repeat;
 		background-size: 40upx 40upx;}
-		.like.active{ background: url(@/static/like2.png) left center no-repeat;
+		.like.active{ background: url(http://yw.wtvxin.com/static/like2.png) left center no-repeat;
 		background-size: 40upx 40upx;}
 		.reply{
-			padding-left: 50upx;background: url(@/static/reply.png) left center no-repeat;
+			padding-left: 50upx;background: url(http://yw.wtvxin.com/static/reply.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 		.share{
 			width: 40upx;
 			height: 40upx;
-			background: url(@/static/share.png) left center no-repeat;
+			background: url(http://yw.wtvxin.com/static/share.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 		.download{
 			width: 40upx;
 			height: 40upx;
-			background: url(@/static/download.png) left center no-repeat;
+			background: url(http://yw.wtvxin.com/static/download.png) left center no-repeat;
 			background-size: 40upx 40upx;
 			&.dis{
 				opacity: .5;
@@ -92,11 +92,11 @@
 		.sign{
 			width: 40upx;
 			height: 40upx;
-			background: url(@/static/sign.png) left center no-repeat;
+			background: url(http://yw.wtvxin.com/static/sign.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 		.sign.active{
-			background: url(@/static/sign2.png) left center no-repeat;
+			background: url(http://yw.wtvxin.com/static/sign2.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 	}
@@ -123,7 +123,7 @@
 				left: 50%;
 				top: 50%;
 				margin: -50upx 0 0 -50upx;
-				background: url(@/static/play.png) center center no-repeat;
+				background: url(http://yw.wtvxin.com/static/play.png) center center no-repeat;
 				background-size: cover;
 				z-index: 2;
 			}

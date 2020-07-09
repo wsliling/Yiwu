@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bg_fff">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="search" @click="tolink('/pages/music/list/list?type=3')">
 				<view class="seachbox">
@@ -29,19 +29,19 @@
 			<!-- 快捷导航 -->
 			 <view class="icon-menu">
 				 <view class="item" @click="tolink('/pages/music/list/list?type=0')">
-					 <image class="icon" src="@/static/music/icon15.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/music/icon15.png"></image>
 					 <text class="txt">每日推荐</text>
 				 </view>
 				 <view class="item" @click="tolink('/pages/music/list/list?type=1')">
-					 <image class="icon" src="@/static/music/icon16.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/music/icon16.png"></image>
 					 <text class="txt">最新推荐</text>
 				 </view>
 				 <view class="item" @click="tolink('/pages/music/list/list?type=2')">
-					 <image class="icon" src="@/static/music/icon17.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/music/icon17.png"></image>
 					 <text class="txt">最热</text>
 				 </view>
 				 <view class="item" @click="tolink('/pages/music/recently/recently')">
-					 <image class="icon" src="@/static/music/icon18.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/music/icon18.png"></image>
 					 <text class="txt">最近播放</text>
 				 </view>
 			 </view>
@@ -49,13 +49,13 @@
 				 <view class="item" v-for="(item,index) in classifylist " :key="index" @click="tolink('/pages/music/classify_list/classify_list?id='+item.Id+'&Logo='+item.Logo+'&Name='+item.Name)">
 					 <view class="img">
 						 <image v-if="item.Logo" :src="item.Logo"></image>
-						 <image v-else src="/static/music/music-item.png"></image>
+						 <image v-else src="http://yw.wtvxin.com/static/music/music-item.png"></image>
 						<view class="img-top">
-							<image class="icon" src="@/static/music/listen.png" mode=""></image>
+							<image class="icon" src="http://yw.wtvxin.com/static/music/listen.png" mode=""></image>
 							<span>{{item.PlayNum}}</span>
 						</view>
 						<view class="img-bottom">
-							<image class="play" src="@/static/music/play.png" mode=""></image>
+							<image class="play" src="http://yw.wtvxin.com/static/music/play.png" mode=""></image>
 						</view>
 					 </view>
 					 <view class="uni-ellipsis">{{item.Name}}</view>
@@ -71,7 +71,7 @@
 			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
-		<view v-if="tabIndex==0" @click="tolink('/pages/music/uploadMusic/uploadMusic')" class="uploadbtn flex-column"><image class="icon" src="@/static/music/upload.png"></image>上传</view>
+		<view v-if="tabIndex==0" @click="tolink('/pages/music/uploadMusic/uploadMusic')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 		<view v-if="tabIndex==1" @click="tolink('/pages/music/artPost/artPost')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view>
 	</view>
 </template>

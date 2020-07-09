@@ -90,7 +90,7 @@
 		<view class="noConPage table bg_fff nodatalocal" v-if="noDataIsShow">
 			<view class="table-cell">
 				<view class="noDataImg">
-					<image src="/static/nocart.png" mode="widthFix"></image>
+					<image src="http://yw.wtvxin.com/static/nocart.png" mode="widthFix"></image>
 				</view>
 				<view class="tips">购物车空空如也~</view>
 				<view class="btnBox">
@@ -120,7 +120,7 @@
 								</view>
 								<view class="couponbtn">
 									<view class="btn" v-if="item.IsMyAlready==0" @click="ReceiveCoupon(item.Id,index)">立即领取</view>
-									<view class="rightimg" v-else><image src="/static/ylq.png" mode=""></image></view>
+									<view class="rightimg" v-else><image src="http://yw.wtvxin.com/static/ylq.png" mode=""></image></view>
 								</view>
 							</view>
 						</view>
@@ -130,7 +130,6 @@
 				<view class="bottom-btn" @click="hidePopup">完成</view>
 			</view>
 		</uni-popup>
-		<!-- <notlogin v-if="!gologin"></notlogin> -->
 	</view>
 </template>
 
@@ -140,10 +139,9 @@
 	import uniPopup from '@/components/uni-popup.vue';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import popupsku from '@/components/popupSku.vue';
-	import notlogin from '@/components/notlogin.vue'; 
 	export default {
 		components: {
-			uniNumberBox,uniPopup,popupsku,noData,notlogin
+			uniNumberBox,uniPopup,popupsku,noData,
 		},
 		data() {
 			return {

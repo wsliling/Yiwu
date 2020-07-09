@@ -8,7 +8,7 @@
 				<view class="ask-txt">{{val.AddTime}}</view>
 				<view class="flex">
 					<view class="ask-txt txt" @click="navigate('shopSon/product/productProblemDetail',{item:JSON.stringify(val)})">共{{val.count}}个回答</view>
-					<image src="../../../static/my/icon-right.png" mode=""></image>
+					<image src="http://yw.wtvxin.com/static/my/icon-right.png" mode=""></image>
 				</view>
 			</view>
 		</view>

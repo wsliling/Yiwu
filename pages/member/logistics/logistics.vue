@@ -306,7 +306,7 @@
 	  width: 100%;
 	  height: 100%;
 	  margin: 0;
-	  background: url(http://www.sc-mall.nethttp://shop.dadanyipin.com/static/circle_gou.png) center no-repeat;
+	  background: url(http://www.sc-mall.net/static/circle_gou.png) center no-repeat;
 	  background-size: 50upx 50upx;
 	  border: none;
 	  top: 10upx;

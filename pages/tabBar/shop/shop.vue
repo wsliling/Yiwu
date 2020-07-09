@@ -1,5 +1,5 @@
 <template>
-	<view class="bg">
+	<view>
 		<view class="search">
 			<view class="seachbox" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
@@ -28,7 +28,7 @@
 				</view>
 			</block>
 			<view class="item" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
-				<image class="icon" src="@/static/fenlei5.png"></image>
+				<image class="icon" src="http://yw.wtvxin.com/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
 			</view> 
 		</view>
@@ -168,7 +168,4 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	page{
-		background: #fff;
-	}
 </style>

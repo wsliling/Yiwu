@@ -3,9 +3,9 @@
 		<view class="Yi-media" style="background: #fff;">
 			<view class="media-hd flex-between">
 				<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+NewsInfo.MemberId)">
-					<view class="tx"><image :src="NewsInfo.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+					<view class="tx"><image :src="NewsInfo.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
 					<view class="name uni-ellipsis">{{NewsInfo.NickName}}</view>
-					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="/static/chat.png"></image></view>
+					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
 				</view>
 				<view v-if="NewsInfo.IsMy==0" @click="flow(NewsInfo.MemberId,index,1)" :class="['flow',NewsInfo.IsFollow==1?'active':'']">{{NewsInfo.IsFollow==1?'已关注':'关注'}}</view>
 			</view>

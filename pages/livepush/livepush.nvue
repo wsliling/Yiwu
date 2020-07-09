@@ -3,8 +3,8 @@
 		<view :style="{ width: width + 'px', height: height + 'px' }" v-if="markact" class="mark"><text class="mark-text">直播启动中...</text></view>
 		<view>
 			<view @click="returns" class="arrow-box"><text class="jiesu">结束直播</text></view>
-			<!-- <view class="arrow-boxs">
-				<image class="user-img" src="/static/logo.png"></image>
+			<!--view class="arrow-boxs">
+				<image class="user-img" src="http://yw.wtvxin.com/static/logo.png"></image>
 				<view>
 					<text class="text-box">8 关注</text>
 				</view>

@@ -583,7 +583,7 @@
 		vertical-align: middle;
 		height: 16px;
 		width: 33px;
-		background: url(http://www.sc-mall.nethttp://shop.dadanyipin.com/static/plus/plus_icon.png) right center no-repeat;
+		background: url(http://www.sc-mall.net/static/plus/plus_icon.png) right center no-repeat;
 		background-size: 100%;
 	}
 	.pop-product .product-stock {

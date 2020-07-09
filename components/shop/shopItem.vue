@@ -49,9 +49,10 @@ export default {
 
 // 正在直播
 .live {
-	width: 100%;
-	margin-top: 20upx;
-	padding: 30upx;
+	margin: 30upx 30upx 0;
+	background: #fff;
+	border-radius: 12upx;
+	overflow: hidden;
 	.live-img {
 		position:relative;
 		image {
@@ -102,7 +103,6 @@ export default {
 	.live-item {
 		display: flex;
 		// justify-content: space-between;
-		background: #fff;
 		padding: 20upx 0 20upx 20upx;
 		.live-box {
 			padding-right: 20upx;
