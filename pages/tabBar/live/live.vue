@@ -38,7 +38,7 @@
 							<view class="author flex-start">
 								<view class="tx">
 									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
-									<view class="islive" style="display: none;">
+									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
 										<view class="line line3"></view>
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,navigate} from '@/common/util.js';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	export default {
@@ -77,6 +77,7 @@
 		},
 		data() {
 			return {
+				navigate,
 				userId: "",
 				token: "",
 				barHeight:0,
@@ -199,13 +200,25 @@
 					this.IsEdit=true;
 					let urlstr="";
 					uni.showActionSheet({
-						itemList: ['拍视频', '上传课程',],
+						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
 						success: (e) => {
 							console.log(e.tapIndex);
 							if(e.tapIndex==0){
 								urlstr="/pages/video/videoUpload/videoUpload?type=0";
 							}else if(e.tapIndex==1){
 								urlstr="/pages/video/videoUpload/videoUpload?type=1";
+							}else if(e.tapIndex==2){
+								// #ifndef APP-PLUS
+								uni.showToast({
+									title:'APP端才能开启直播哦~',
+									icon:'none'
+								})
+								// #endif
+								// #ifdef APP-PLUS
+								urlstr="/pages/livepush/livepush?type=0";
+								// #endif
+							}else if(e.tapIndex==3){
+								urlstr="/pages/livepush/livepush?type=1";
 							}
 							uni.navigateTo({
 								url: urlstr
@@ -327,6 +340,11 @@
 			} else {
 				this.loadingType = 2;
 			}
+		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			this.VideoList();
+			uni.stopPullDownRefresh();
 		}
 	}
 </script>

@@ -6,9 +6,11 @@
 					<text class="uni-icon uni-icon-search"></text>
 					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm"></ans-input>
 				</view>
-				<view class="head_r">
+				<!-- #ifndef H5 -->
+				<view class="head_r" @click="scanCode">
 					<view class="scan uni-icon uni-icon-scan"></view>
 				</view>
+				<!-- #endif -->
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
 				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index)">{{tab.TypeName}}</view>
@@ -772,6 +774,14 @@
 					});
 				}
 			},
+			scanCode(){
+				uni.scanCode({
+				    success: function (res) {
+				        console.log('条码类型：' + res.scanType);
+				        console.log('条码内容：' + res.result);
+				    }
+				});
+			}
 		},
 		// 下拉刷新
 		onPullDownRefresh(){

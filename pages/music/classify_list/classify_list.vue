@@ -136,11 +136,13 @@
 			// #ifdef H5
 			this.barHeight = 0;
 			// #endif
-			this.userId = uni.getStorageSync('userId');
-			this.token = uni.getStorageSync('token');
 			this.ClassId=e.id;
 			this.Logo=e.Logo;
 			this.Name=e.Name;
+		},
+		onShow() {
+			this.userId = uni.getStorageSync('userId');
+			this.token = uni.getStorageSync('token');
 			this.workeslist();
 		},
 		methods: {
@@ -158,7 +160,7 @@
 			//播放
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
-					// uni.setStorageSync("musicList",this.datalist)
+					uni.setStorageSync("musicList",this.datalist)
 					if(this.playID==id){
 						this.playID="";
 					}else{

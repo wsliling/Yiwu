@@ -37,7 +37,7 @@
                     </div>
                     <div class="mr3 flex flexColumn flexAlignEnd">
                       <span>x{{item.Number}}</span>
-                      <span class="tui_pill mt2" v-if="item.IsRefund!==0" @click.stop="navigate('member/afterSaleType/afterSaleType',{indexId:index,id:info.OrderNumber})">退款</span>
+                      <!-- <span class="tui_pill mt2" v-if="item.IsRefund!==0" @click.stop="navigate('member/afterSaleType/afterSaleType',{indexId:index,id:info.OrderNumber})">退款</span> -->
                     </div>
                 </div>
             </div>
@@ -127,6 +127,8 @@ export default {
 			OrderNo:'',
 			disabled:false,
 			disableIntegral:false,//是否禁用积分
+			WxCode:"",
+			WxOpenid:"",
 		}
 	},
 	onLoad(e){
@@ -450,7 +452,7 @@ methods: {
       })
     },
 	//微信公众号支付
-	callpay(param) {alert(JSON.stringify(param))
+	callpay(param) {
 		if(typeof WeixinJSBridge === 'undefined') {
 			if(document.addEventListener) {
 				document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(), false);

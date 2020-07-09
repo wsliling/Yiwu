@@ -117,6 +117,7 @@ export default {
 		//取消（统一关闭弹窗）
 		hidePopup() {
 			this.isShowSelect = false;
+			this.isShowSource = false;
 		},
 		// 类型选中
 		SelectMenu(id, name) {
@@ -127,7 +128,6 @@ export default {
 		// 舞曲来源选中
 		SelectSource(id, name) {
 			this.sourcetype = name;
-			this.ClassId = id;
 			this.isShowSource = false;
 		},
 		//获取类型

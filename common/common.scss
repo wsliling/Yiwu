@@ -784,3 +784,7 @@ a {
 		overflow-y: auto;
 	}
 }
+
+.autotop{
+  padding-top:var(--status-bar-height);
+}
