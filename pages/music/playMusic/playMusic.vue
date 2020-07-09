@@ -1,8 +1,8 @@
 <template>
-	<view>
+	<view class="playmusic">
 		<view class="warp">
 			<view class="playimgbox">
-				<image :src="itemdata.PicImg||'/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
+				<image :src="itemdata.PicImg||'/static/default_music.png'" mode="aspectFill" :class="{'playLoading':!paused}"></image>
 				<view class="border2">
 					<view class="border1"></view>
 				</view>
@@ -379,6 +379,11 @@ page{
 .source{
 	color: #b9b8b8;text-align: center;padding-top: 30upx;font-size: 22upx;
 }
+/* #ifdef MP-WEIXIN */
+.playmusic{
+	background-color: #252b2f;height: 100vh;
+}
+/* #endif */
 .playimgbox{
 	width: 560upx;
 	height: 560upx;

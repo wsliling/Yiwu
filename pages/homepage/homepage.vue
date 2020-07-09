@@ -39,7 +39,13 @@
 				<view :style="'width:'+tabWidth+'%'" :class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}
 				</view>
 			</block>
-			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
+			<!-- <view class="bb_line" :style="'left:'+tabStyle+'upx'"></view> -->
+			<!-- #ifndef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'upx'}"></view>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'rpx'}"></view>
+			<!-- #endif -->
 		</scroll-view>
 		<view class="tabCon">
 			<view class="profile item-box"  v-if="tabId==0&&PersonInfo.IsJiGou==1">
