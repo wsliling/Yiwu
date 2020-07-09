@@ -3,10 +3,11 @@
 	<view class="details">
 		<!-- 首图展示 -->
 		<view class="detailsmap">
-			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper" @change="changeSwiper">
+			<video v-if="showVideo" :src="data.Video" :class="['video',isfixed?'top':'']" id="proVideo" @play="playVideo" @pause="pauseVideo" :poster="data.PicData[0].PicUrl"></video>
+			<swiper indicator-dots indicator-active-color="#de1a6e" class="swiper">
 				<swiper-item v-if="data.Video" :show-fullscreen-btn="false" :show-play-btn="false" show-mute-btn :enable-progress-gesture="false">
+					<view class="isplay" @click="playBtn"></view>
 					<image class="postpic" :src="data.PicData[0].PicUrl" mode="aspectFill"></image>
-					<video :src="data.Video" :class="['video',showVideo?'':'top']" id="proVideo" :poster="data.PicData[0].PicUrl"></video>
 				</swiper-item>
 				<swiper-item v-for="(item,index) in data.PicData" :key="index">
 					<image :src="item.PicUrl" mode="aspectFill" @click="previewImages(index)"></image>
@@ -136,7 +137,7 @@
 				<p :class="['flex1 flexc']" @click="showSku('buy')">立即购买</p>
 			</div>
 		</div>
-		<uni-popup ref="skuWin" type="bottom">
+		<uni-popup ref="skuWin" type="bottom" @change="changeClose">
 			<sku :sku="sku" :skuAll="skuAll" :proInfo="productInfo" :submitBtnType="submitBtnType"
 				 @getSkuData="getSkuData" @close="closePop" @success="planOrder"
 				>
@@ -175,7 +176,9 @@ export default {
 			selectSku:{},
 			submitBtnType:'',//确定按钮的类型
 			videoContext:null,
-			showVideo:true
+			showVideo:false,
+			isfixed:false,
+			isplaynow:0,
 		};
 	},
 	onLoad(e) {
@@ -188,12 +191,26 @@ export default {
 	onShow() {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
+		this.isplaynow=0;
 	},
 	methods: {
-		changeSwiper(){
-			if(this.data.Video){
-				this.videoContext.pause();
-			}
+		//监听暂停
+		pauseVideo(){
+			this.isfixed=true;
+		},
+		//监听播放
+		playVideo(){
+			this.isfixed=false;
+		},
+		//点击播放
+		playBtn(){
+			let _this = this;
+			this.showVideo=true;
+			this.isfixed=false;
+			this.isplaynow=1;
+			setTimeout(()=>{
+				this.videoContext.play();
+			},500)
 		},
 		async getData(){
 			const res = await post('Goods/Goodsxq',{
@@ -256,8 +273,8 @@ export default {
 			console.log(type,'type')
 			this.submitBtnType = type||'';
 			this.$refs.skuWin.open();
-			if(this.data.Video){
-				this.showVideo=false;
+			if(this.data.Video&&this.isplaynow){
+				this.isfixed=true;
 				this.videoContext.pause();
 			}
 			// if(this.data.IsSku&&!this.selectSku.value){
@@ -284,7 +301,18 @@ export default {
 		},
 		closePop(){
 			this.$refs.skuWin.close();
-			this.showVideo=true;
+			if(this.isplaynow){
+				this.isfixed=false;
+				this.videoContext.play();	
+			}
+		},
+		changeClose(e){
+			if(!e.show){
+				if(this.isplaynow){
+					this.isfixed=false;
+					this.videoContext.play();	
+				}
+			}
 		},
 		// 加入购物车
 		async addcart(){
@@ -372,9 +400,21 @@ export default {
 	position: absolute;
 	width:100%;height:750upx;
 	left: 0; top:0;
+	z-index: 3;
 }
 .video.top{
 	top: -2000px;
+}
+.isplay{
+	height: 88upx;
+	width: 88upx;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -44upx 0 0 -44upx;
+	background: url(http://yw.wtvxin.com/static/play.png);
+	background-size: cover;
+	z-index: 2;
 }
 .details {
 	background: #ffffff;
