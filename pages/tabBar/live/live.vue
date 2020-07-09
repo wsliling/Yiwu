@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="head autotop">
 			<view class="index_head flex-between">
-				<view class="head_l">
+				<view class="head_l" @click="navigate('liveplay/live')">
 					<image src="@/static/live.png" class="iconimg"></image>
 				</view>
 				<view class="title">视频</view>

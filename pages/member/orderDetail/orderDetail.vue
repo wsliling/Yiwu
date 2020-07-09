@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import {switchPath,post,navigate,toast,getUrlParam,isWeixin,GetUrlRelativePath} from '@/common/util.js'
+import {switchPath,post,navigate,redirect,toast,getUrlParam,isWeixin,GetUrlRelativePath} from '@/common/util.js'
 import pay from '@/components/pay.vue';
 export default {
 	components: {
