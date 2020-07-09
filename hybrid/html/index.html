@@ -5,9 +5,27 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		<title>上传文件</title>
-		
+		<script src="./js/jquery-1.8.2.min.js"></script>
+		<script type="text/javascript" src="//res.wx.qq.com/open/js/jweixin-1.4.0.js"></script> 
+		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+		<script type="text/javascript">
+			(function() {
+				function resizeBaseFontSize() {
+					var rootHtml = document.documentElement,
+						deviceWidth = rootHtml.clientWidth;
+					if (deviceWidth > 768) {
+						deviceWidth = 768;
+					}
+					rootHtml.style.fontSize = deviceWidth / 7.5 + "px";
+				}
+				resizeBaseFontSize();
+				window.addEventListener("resize", resizeBaseFontSize, false); //onresize 事件会在窗口或框架被调整大小时发生。
+				window.addEventListener("orientationchange", resizeBaseFontSize, false); //屏幕旋转事件：onorientationchange
+			})();
+		</script>
 		<style>
-			*{margin: 0;padding: 0;}
+		*{margin: 0;padding: 0;}
+		button{outline:none;}
 		.head-btn {text-align: center;margin-top: 1rem;}
 		.file {padding: 0.5rem 0; position: relative;display: inline-block;background: #fff;border: 0.01rem solid #E6E6E6;border-radius: 0.08rem;width: 5.69rem;;overflow: hidden;color: #333;text-decoration: none;text-indent: 0;line-height: 0.4rem;font-size: 0.32rem;font-weight:bold;}
 		.file input {position: absolute;font-size: 0.2rem;right: 0;top: 0;opacity: 0;width: 100%;height: 100%;}
@@ -27,8 +45,7 @@
 		.loading {position: absolute;top: 20%;left: 27%;width: 1.5rem;font-size: 0.3rem;padding: 1rem;text-align: center;border-radius: 0.1rem;background-color: #fff;}
 		.loading img {width: 1rem;height: 1rem;-webkit-animation:load 1.8s infinite linear;}
 		@-webkit-keyframes load{ from {transform: rotate(0deg);} to {transform: rotate(360deg);}}
-
-	</style>
+		</style>
 	</head>
 	<body class="body">
 		<div class="head-btn">
@@ -49,11 +66,9 @@
 		<div class="modal" style="display: none;z-index: 999;">
 			<div class="loading">
 				<img src="http://yw.wtvxin.com/static/loading.png" alt="">
-				<div id="">上传中...</div>
+				<div id="loadtext">上传中...</div>
 			</div>
 		</div>
-		<script src="./js/jquery-1.8.2.min.js"></script>
-		<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
 		<script>
 			var userId = getQuery("userId");
 			var token = getQuery("token");
@@ -81,80 +96,99 @@
 					$(".showFileName").html("");
 				}
 			});
-			$('.btn').click(function(evt) {
-				if(filePath == '') {
-					$(".showFileName").html("内容不能为空");
-					return
-				}
-				$('.modal').show()
-				setTimeout(()=>{
-					let nameSuffix = /.[^.]+$/.exec(filePath)[0]
-					var formdata = new FormData(); // 创建一个form类型的数据
-					var url = ""
-					if (type == 0) { // 上传舞曲
-						if(nameSuffix == ".mp3" || nameSuffix == ".wma" || nameSuffix == ".wav" || nameSuffix ==".asf" || nameSuffix ==".aac" || nameSuffix ==".flac" || nameSuffix ==".vqf" || nameSuffix ==".ape" || nameSuffix ==".mid"){
-							formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
-							formdata.append("UserId", userId);
-							formdata.append("Token", token);
-							url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
-						}
-					} else { // 上传视频
-						if(nameSuffix == ".avi" || nameSuffix == ".mp4" || nameSuffix == ".wma" || nameSuffix == ".rmvb" || nameSuffix == ".rm" || nameSuffix == ".flash" || nameSuffix == ".3gp" || nameSuffix == ".flv"){
-							formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
-							formdata.append("UserId", userId);
-							formdata.append("Token", token);
-							url = "http://ywapi.wtvxin.com/api/Find/UploadVideo"
-						}
-					}
-					$.ajax({
-						url: url,
-						type: "POST",
-						async: false,
-						processData: false,
-						contentType: false,
-						data: formdata,
-						dataType: "json",
-						success: function(res) {
-							//更新数据库添入附件的url
-							console.log(JSON.stringify(res))
-							if (res.code == 0) {
-								if (type == 0) {
-									localStorage.setItem("fileName", filePath); //上传成功的文件名缓存
-									localStorage.setItem("filePath", res.data); //上传成功返回的服务器地址
-								} else {
-									localStorage.setItem("VfileName", res.data.imgUrl); //上传成功的返回的视频封面图片地址显示出来
-									localStorage.setItem("VfilePath", res.data.path); //上传视频成功返回的服务器地址
-								}
-							}
-							$(".modal").hide();
-						},
-						error: function(err) {
-							console.log("这是请求失败的");
-							$(".modal").hide();
-						}
-					});
-					console.log("end")
-					var target = evt.target;
-					if (target.tagName === 'BUTTON') {
-						var action = target.getAttribute('data-action');
-						if (action == 'redirectTo') {
-							uni.navigateBack({
-								delta: 1
-							});
-						}
-					}
-				},100)
-			});
-
-			//传输数据
+			//上传文件 ，传输数据
 			document.addEventListener('UniAppJSBridgeReady', function() {
-				uni.postMessage({
-					data: {
-						action: '123456'
+				let isH5=""
+				uni.getEnv(function(res) {
+					// alert(JSON.stringify(res));
+					if(res.h5){
+						isH5=true;//当前环境为h5
+					}else{
+						isH5=false;
 					}
 				});
-				uni.getEnv(function(res) {
-					console.log('当前环境：' + JSON.stringify(res));
+				//上传文件
+				$('.btn').click(function(evt) {
+					if(filePath == '') {
+						$(".showFileName").html("内容不能为空");
+						return
+					}
+					$('.modal').show()
+					setTimeout(()=>{
+						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
+						var formdata = new FormData(); // 创建一个form类型的数据
+						var url = ""
+						if (type == 0) { // 上传舞曲
+							if(nameSuffix == ".mp3" || nameSuffix == ".wma" || nameSuffix == ".wav" || nameSuffix ==".asf" || nameSuffix ==".aac" || nameSuffix ==".flac" || nameSuffix ==".vqf" || nameSuffix ==".ape" || nameSuffix ==".mid"){
+								formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+								formdata.append("UserId", userId);
+								formdata.append("Token", token);
+								url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
+							}
+						} else { // 上传视频
+							if(nameSuffix == ".avi" || nameSuffix == ".mp4" || nameSuffix == ".wma" || nameSuffix == ".rmvb" || nameSuffix == ".rm" || nameSuffix == ".flash" || nameSuffix == ".3gp" || nameSuffix == ".flv"){
+								formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+								formdata.append("UserId", userId);
+								formdata.append("Token", token);
+								url = "http://ywapi.wtvxin.com/api/Find/UploadVideo"
+							}
+						}
+						$.ajax({
+							url: url,
+							type: "POST",
+							async: false,
+							processData: false,
+							contentType: false,
+							data: formdata,
+							dataType: "json",
+							success: function(res) {
+								console.log(JSON.stringify(res))
+								if (res.code == 0) {
+									if(isH5){
+										if (type == 0) {
+											localStorage.setItem("fileName", filePath); //上传成功的文件名缓存
+											localStorage.setItem("filePath", res.data); //上传成功返回的服务器地址
+										} else {
+											localStorage.setItem("VfileName", res.data.imgUrl); //上传成功的返回的视频封面图片地址显示出来
+											localStorage.setItem("VfilePath", res.data.path); //上传视频成功返回的服务器地址
+										}
+									}else{//APP、小程序无法获取此页面缓存，将res传输给原页面
+										var param={}
+										if (type == 0) {
+											param={
+												fileName:filePath,//上传成功的文件名缓存
+												filePath:res.data//上传成功返回的服务器地址
+											}
+										} else {
+											param={
+												fileName:res.data.imgUrl,//上传成功的返回的视频封面图片地址显示出来
+												filePath:res.data.path//上传视频成功返回的服务器地址
+											}
+										}
+										//传输数据给原页面
+										uni.postMessage({
+											data: param
+										});
+									}
+								}
+								$(".modal").hide();
+							},
+							error: function(err) {
+								console.log("这是请求失败的");
+								$(".modal").hide();
+							}
+						});
+						console.log("end")
+						var target = evt.target;
+						if (target.tagName === 'BUTTON') {
+							var action = target.getAttribute('data-action');
+							if (action == 'redirectTo') {
+								uni.navigateBack({
+									delta: 1
+								});
+							}
+						}
+					},100)
 				});
 				//取消文件上传
 				$('.btn1').click(function(evt) {
@@ -162,27 +196,11 @@
 					if (target.tagName === 'BUTTON') {
 						var action = target.getAttribute('data-action');
 						if (action == 'navigateBack') {
-							uni.navigateBack({
-								delta: 1
-							});
+							uni.navigateBack();
 						}
 					}
 				});
 			});
-
-			(function() {
-				function resizeBaseFontSize() {
-					var rootHtml = document.documentElement,
-						deviceWidth = rootHtml.clientWidth;
-					if (deviceWidth > 768) {
-						deviceWidth = 768;
-					}
-					rootHtml.style.fontSize = deviceWidth / 7.5 + "px";
-				}
-				resizeBaseFontSize();
-				window.addEventListener("resize", resizeBaseFontSize, false); //onresize 事件会在窗口或框架被调整大小时发生。
-				window.addEventListener("orientationchange", resizeBaseFontSize, false); //屏幕旋转事件：onorientationchange
-			})();
 		</script>
 	</body>
 </html>

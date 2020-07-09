@@ -3,12 +3,12 @@
 		<view :style="{ width: width + 'px', height: height + 'px' }" v-if="markact" class="mark"><text class="mark-text">直播启动中...</text></view>
 		<view>
 			<view @click="returns" class="arrow-box"><text class="jiesu">结束直播</text></view>
-			<view class="arrow-boxs">
+			<!--view class="arrow-boxs">
 				<image class="user-img" src="http://yw.wtvxin.com/static/logo.png"></image>
 				<view>
 					<text class="text-box">8 关注</text>
 				</view>
-			</view>
+			</view> -->
 
 			<live-pusher :beauty="beauty" :style="{ width: width + 'px', height: (height + 1) + 'px' }" id="livePusher" :url="url" mode="FHD"></live-pusher>
 
@@ -18,27 +18,19 @@
 				<scroll-view class="nlv-rollMsgPanel" scroll-y show-scrollbar="false" :scroll-top="scrollTop">
 					<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
 						<view class="nlv-msglist">
-							<view class="msg_bg"><text class="msg_name">{{msgitem.name}}</text> <text class="msg_text">{{msgitem.Info}}</text></view>
+							<view class="msg_bg">
+								<text class="msg_name">{{msgitem.name}}:</text> 
+								<text class="msg_text">{{msgitem.Info}}</text>
+							</view>
 						</view>
 					</block>
 				</scroll-view>
-				<view class="goodsbox" v-if="showgoodsbox">
-					<view class="item">
-						<view class="imgbox">
-							<image src="http://yw.wtvxin.com/static/logo.png" class="spimg"></image>
-						</view>
-						<view class="txtBox">
-							<text class="title">"90分户外防水便携桶包"</text>
-							<text class="price">"￥99.9"</text>
-						</view>
-					</view>
-				</view>
 			</view>
 
 			<!-- 这是功能按钮 -->
 			<view :style="{ width: width + 'px' }" class="but">
-				<view class="meiyanbut">
-					<image class="but-img" src="http://www.sc-mall.net/static/zhiboshop.png"></image>
+				<view class="meiyanbut" v-if="liveType" @click="showProList">
+					<image class="but-img pro" src="/static/icons/product-icon.png" mode="widthFix"></image>
 					<text class="but-text">宝贝</text>
 				</view>
 				<view @click="openmeiyan" class="meiyanbut">
@@ -52,16 +44,20 @@
 				</view>
 			</view>
 		</view>
+		<uni-popup type="bottom" ref="proList">
+			<proList :list="proList" @confirm="recommendPro"></proList>
+		</uni-popup>
 	</div>
 </template>
 
 <script>
-import { host, post, get, wssPath } from '@/common/util.js';
+import { host, post, get, wssPath,toLogin } from '@/common/util.js';
 import permision from '@/common/permission.js';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
+import proList from '../liveplay/proList.vue';
 export default {
 	components: {
-		uniPopup
+		uniPopup,proList
 	},
 	data() {
 		return {
@@ -77,19 +73,44 @@ export default {
 			showgoodsbox: false,//商品展示
 			SocketTask:null,
 			socketStatus:false,
-			strArr:[],//弹幕列表
+			strArr:[
+				{
+					name:'123123',
+					Info:'ass所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所'
+				},
+				{
+					name:'打发斯蒂芬',
+					Info:'456456'
+				},
+				{
+					name:'打发546456斯蒂芬',
+					Info:'bsb'
+				},
+				{
+					name:'的非官方恢复规划',
+					Info:'aasddddddddddd'
+				},
+			],//弹幕列表
 			Signature:"",// 获取WebSocketId 用于身份验证
 			TimeStamp:"",
 			SecretKey:"",
 			scrollTop:2000,//滚动到底部
+			liveType:0, //直播类型。0--舞者;1--店铺
+			proList:[],//产品列表
 		};
 	},
+	onLoad(e){
+		this.liveType = e.type;
+		this.userId = uni.getStorageSync('userId');
+		this.token = uni.getStorageSync('token');
+		this.getProList();
+	},
 	onShow() {
+		this.userId = uni.getStorageSync('userId');
+		this.token = uni.getStorageSync('token');
 		let res = uni.getSystemInfoSync();
 		this.width = res.windowWidth;
 		this.height = res.windowHeight;
-		this.userId = uni.getStorageSync('userId');
-		this.token = uni.getStorageSync('token');
 		
 		this.context = uni.createLivePusherContext('livePusher', this);
 		//权限设置,获取权限后开启直播
@@ -205,7 +226,8 @@ export default {
 			let res = await post('TencentCloud/PushURL', {
 				// push: '',
 				UserId: this.userId,
-				Token: this.token
+				Token: this.token,
+				pType:this.liveType//0--舞者;1--店铺
 			});
 			if (res.code == 0) {console.log(res)
 				this.url = res.data.RTMP;
@@ -246,9 +268,6 @@ export default {
 		},
 		returns() {
 			this.stopLive();
-			uni.navigateBack({
-				delta: 1
-			});
 		},
 		startLive() {
 			let _this = this;
@@ -259,17 +278,12 @@ export default {
 				}
 			});
 		},
+		// 结束直播
 		stopLive() {
-			const that = this;
 			uni.showModal({
 				title:'是否结束直播！',
 				success(res){
 					if(res.confirm){
-						that.context.stop({
-							success: a => {
-								console.log(JSON.stringify(a));
-							}
-						});
 						uni.navigateBack();
 					}
 				}
@@ -365,14 +379,61 @@ export default {
 			// console.log(data)
 			return data;
 		},
+		//******************产品*******************************
+		// 获取产品列表
+		async getProList(){
+			const res = await post('Goods/GetGoodsListByM',{
+				UserId:this.userId,
+				Token:this.token
+			})
+			if(!toLogin())return;
+			if(res.code)return;
+			res.data.map(item=>{
+				item.confirmText='推荐商品';
+			})
+			console.log(res.data,'获取到的产品列表')
+			this.proList = res.data;
+		},
+		//显示产品列表
+		showProList(){
+			this.$refs.proList.open();
+		},
+		// 推荐商品
+		async recommendPro(item){
+			console.log(item,'推荐商品')
+			const res = await post('Goods/SetProductIsR',{
+				UserId:this.userId,
+				Token:this.token,
+				proId:item.Id,
+				})
+			if(res.code)return;
+			if(item.confirmText=='取消推荐'){
+				item.confirmText ='推荐商品';
+			}else{
+				item.confirmText ='取消推荐';
+			}
+		}
+	},
+	// 页面卸载
+	onUnload(){
+		const that = this;
+		post('TencentCloud/PushCallBack',{
+			UserId: this.userId,
+			Token: this.token
+		})
+		that.context.stop({
+			success: a => {
+				console.log(JSON.stringify(a),'页面卸载');
+			}
+		});
 	}
 };
 </script>
 
 <style scoped lang="scss">
 .but-img {
-	width: 20px;
-	height: 20px;
+	width: 45upx;
+	height: 45upx;
 }
 .meiyanbut {
 	flex: 1;
@@ -382,6 +443,9 @@ export default {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
+	.pro{
+		width:50upx;
+	}
 }
 .but-text {
 	padding-top: 3px;
@@ -417,6 +481,7 @@ export default {
 	bottom: 0px;
 	display: flex;
 	align-items: center;
+	justify-content:space-between;
 	flex-direction: row;
 	border: none;
 }
@@ -454,60 +519,32 @@ export default {
 	padding: 20upx;
 }
 .nlv-rollMsgPanel{
-	height: 700upx;
+	height: 600upx;
 }
 .nlv-msglist{
-	margin-bottom: 10px;
+	// margin-bottom: 10px;
 	// flex-direction: row;
 	// display: flex;
 	width:750upx;
 }
 .msg_bg{
 	display: flex;
-	// flex-direction: row;
-	flex-wrap: wrap;
+	flex-flow: row wrap;
+	align-items:flex-start;
 	justify-content: flex-start;
 	background-color: rgba(0,0,0,.4);
 	border-radius: 12upx;
-	padding: 16upx 20upx;
+	padding: 10upx 10upx;
 	line-height: 1.2;
-	max-width:460upx;
+	max-width:500upx;
 	height: auto;
 }
-.msg_name{ color:#f5d916;  margin-right: 10upx;font-size: 28upx;}
+.msg_name{ color:#F0AD4E;  margin-right: 10upx;font-size: 28upx;}
 .msg_text{ color:#fff;font-size: 28upx;lines:2;}
 .nlv-msglist::after{
 	display: block;
 	content:"";
 	width: 100%;
 }
-.goodsbox{
-	width: 230px;
-	margin-top: 10px;
-	border-radius: 12upx;
-}
-.item{
-	background-color: #fff;
-	width: 230px;
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-}
-.imgbox{
-	width: 100upx; 
-	height:100upx;
-	margin-right: 20upx;
-}
-.spimg{
-	width: 100upx;
-	height:100upx;
-}
-.txtBox{ width: 300upx;padding: 10upx;padding-right: 0;}
-.title{
-	display: block;
-	font-size: 32upx;
-	lines:1;
-	text-overflow:ellipsis;
-}
-.price{color: #f0370b;font-size: 32upx;}
+
 </style>
