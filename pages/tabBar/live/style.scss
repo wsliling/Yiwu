@@ -44,19 +44,32 @@
 		.maxpic{
 			border-radius: 12upx;
 			overflow: hidden;
-			
+			position: relative;
+			background-color: #e0e0e0;
 			&.maxh{
-				max-height: 400upx;
+				max-height: 450upx;
 			}
 			video{
 				width: 100%;
 				display: block;
+				position: absolute;
+				left: 0;
+				top: 0;
 			}
 			.postpic{max-height: 450upx;}
+			.isplay{
+				height: 88upx;
+				width: 88upx;
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				margin: -44upx 0 0 -44upx;
+				background: url(/static/play.png);
+				background-size: cover;
+				z-index: 2;
+			}
 			&.dis{
-				position: relative;
 				video{
-					position: absolute;
 					left: -2000px;
 				}
 			}

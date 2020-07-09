@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bg_fff">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="search" @click="tolink('/pages/music/list/list?type=3')">
 				<view class="seachbox">

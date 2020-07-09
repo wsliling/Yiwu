@@ -1,5 +1,5 @@
 <template>
-	<view class="content" style="height: 100%;">
+	<view class="content bg_fff" style="height: 100%;">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="seachbox">
@@ -74,10 +74,13 @@
 									<view class="desc" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 										{{item.Title}}
 									</view>
-									<view :class="['maxpic',item.Type==0?'maxh':'']" v-if="item.PicImg||item.VideoUrl">
-										<!-- <view v-if="item.VideoUrl" class="isplay"></view> -->
-										<video v-if="item.Type==1" :src="item.VideoUrl" controls :show-mute-btn="true" :poster="item.PicImg" object-fit="cover" :id="'video'+item.Id" @play="onplayvideo"></video>
-										<image v-if="item.Type==0" :src="item.PicImg" mode="widthFix"></image>
+									<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1">
+										<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
+										<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+										<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
+									</view>
+									<view class="maxpic maxh" v-if="item.Type==0&&item.PicImg">
+										<image :src="item.PicImg" mode="widthFix"></image>
 									</view>
 									<view class="media-ft flex-between">
 										<view class="ft_l flex-start">
@@ -112,7 +115,6 @@
 						</view>	
 					</block>
 					<noData v-if="!datalist.length"></noData>
-					
 				</scroll-view>
 			</swiper-item>
 			<!-- 资讯	 -->
@@ -285,7 +287,7 @@
 				CourseList:[],//课程
 				CourseListPage:1,
 				CourseListLoadingType:0,
-				videoContext:[],
+				videoContext:null,
 				onplayId:-1,//当前播放
 			}
 		},
@@ -333,17 +335,26 @@
 				this.GetJiGouList();
 				this.GetCourseList();
 			},
-			onplayvideo(e){
-				let id=e.currentTarget.id;
+			
+			pauseVideo(id){
 				for(let i=0; i<this.datalist.length;i++){
-					let _id='video'+this.datalist[i].Id;
+					let _id=this.datalist[i].Id;
 					if(_id==id){
 						this.onplayId=i;
-					}else{
-						this.videoContext[i].pause();
+						this.$set(this.datalist[i],'fixed',true);
 					}
 				}
 			},
+			playVideo(id){
+				for(let i=0; i<this.datalist.length;i++){
+					let _id=this.datalist[i].Id;
+					if(_id==id){
+						this.onplayId=i;
+						this.$set(this.datalist[i],'fixed',false);
+					}
+				}
+			},
+			
 			// 搜索完成
 			searchConfirm(val){
 				this.searchText = val;
@@ -397,7 +408,7 @@
 			},
 			tapTab(index) { //点击tab-bar
 				if(this.onplayId>-1){
-					this.videoContext[this.onplayId].pause();
+					this.videoContext.pause();
 				}
 				if (this.tabIndex === index) {
 					return false;
@@ -421,7 +432,7 @@
 				this.tabIndex = index;
 				this.setScrollLeft(index);
 				if(this.onplayId>-1){
-					this.videoContext[this.onplayId].pause();
+					this.videoContext.pause();
 				}
 				// this.fun(index);
 				// if(index==0){
@@ -482,10 +493,14 @@
 				if (result.code === 0) {
 					if(result.data.length>0){
 						this.videoContext=[];
+						this.videoItemarr=[];
 						for(let i=0;i<result.data.length;i++){
 							let n=result.data[i].Id;
 							this.videoContext[i]=uni.createVideoContext('video'+n);
+							this.$set(result.data[i],'play',false);
+							this.$set(result.data[i],'fixed',false);
 						}
+						
 					}
 					if (this.datalistPage === 1) {
 						this.datalist = result.data;
@@ -501,6 +516,19 @@
 						this.datalistLoadingType = 0
 					}
 				}
+			},
+			playBtn(index,id){
+				let _this = this;
+				this.datalist.forEach(function(item){
+					if(id==item.Id){
+						_this.videoContext=uni.createVideoContext('video'+item.Id);
+						_this.$set(item,'play',true);
+						_this.$set(item,'fixed',false);
+						_this.videoContext.play();
+					}else{
+						_this.$set(item,'play',false);
+					}
+				})
 			},
 			//分页获取资讯
 			async YWNewsList(){
@@ -756,7 +784,7 @@
 <style lang="scss" scoped>
 	@import './style';
 	page{
-		background: #fff;
+		background: #fff !important;
 		// height: 100vh;
 	}
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<view class="bg">
+	<view>
 		<view class="search">
 			<view class="seachbox" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
@@ -168,7 +168,4 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	page{
-		background: #fff;
-	}
 </style>
