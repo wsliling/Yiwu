@@ -8,7 +8,7 @@
 				<view class="ask-txt">2010-03-12</view>
 				<view class="flex">
 					<view class="ask-txt txt">共26个回答</view>
-					<image src="../../../static/my/icon-right.png" mode=""></image>
+					<image src="http://yw.wtvxin.com/static/my/icon-right" mode=""></image>
 				</view>
 			</view>
 		</view>

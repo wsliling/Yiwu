@@ -65,7 +65,7 @@
 				left: 50%;
 				top: 50%;
 				margin: -44upx 0 0 -44upx;
-				background: url(/static/play.png);
+				background: url(http://yw.wtvxin.com/static/play.png);
 				background-size: cover;
 				z-index: 2;
 			}
@@ -159,18 +159,18 @@
 		.ft_r .txt_info{
 			margin-left: 40upx;
 		}
-		.like{padding-left: 50upx; background: url(@/static/like.png) left center no-repeat;
+		.like{padding-left: 50upx; background: url(http://yw.wtvxin.com/static/like.png) left center no-repeat;
 		background-size: 40upx 40upx;}
-		.like.active{ background: url(@/static/like2.png) left center no-repeat;
+		.like.active{ background: url(http://yw.wtvxin.com/static/like2.png) left center no-repeat;
 		background-size: 40upx 40upx;}
 		.reply{
-			padding-left: 50upx;background: url(@/static/reply.png) left center no-repeat;
+			padding-left: 50upx;background: url(http://yw.wtvxin.com/static/reply.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 		.share{
 			width: 40upx;
 			height: 40upx;
-			background: url(@/static/share.png) left center no-repeat;
+			background: url(http://yw.wtvxin.com/static/share.png) left center no-repeat;
 			background-size: 40upx 40upx;
 		}
 	}

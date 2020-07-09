@@ -2,7 +2,7 @@
 	<view>
 		<view class="warp">
 			<view class="playimgbox">
-				<image :src="itemdata.PicImg||'/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
+				<image :src="itemdata.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
 				<view class="border2">
 					<view class="border1"></view>
 				</view>
@@ -25,18 +25,18 @@
 			 </view>
 			 <view class="playicon">
 				 <view class="item" @click="Collect">
-				 	<image :src="isCollect==0?'/static/collect3.png':'/static/collect2.png'" mode="widthFix" class="addwidth"></image>
+				 	<image :src="isCollect==0?'http://yw.wtvxin.com/static/collect3.png':'http://yw.wtvxin.com/static/collect2.png'" mode="widthFix" class="addwidth"></image>
 				 </view>
 			 	<view class="item" @click="tabPlayType">
-			 		<image src="/static/music/playicon1.png" mode="widthFix" v-if="playType==0"></image>
-					<image src="/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
-					<image src="/static/music/playicon3.png" mode="widthFix" v-else></image>
+			 		<image src="http://yw.wtvxin.com/static/music/playicon1.png" mode="widthFix" v-if="playType==0"></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon3.png" mode="widthFix" v-else></image>
 			 	</view>
 				<share class="item" :h5Url="'/pages/music/playMusic/playMusic?type=share&id='+musicID" :wxUrl="'/pages/music/playMusic/playMusic?type=share&id='+musicID">
-					<image src="/static/music/playicon4.png" mode="widthFix"></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon4.png" mode="widthFix"></image>
 				</share>
 				<view class="item" @click="ShowPlaylist">
-					<image src="/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
 			 </view>
 		</view>

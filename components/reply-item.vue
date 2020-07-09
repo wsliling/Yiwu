@@ -3,7 +3,7 @@
 		<view class="comment-hd flex-between">
 			<view class="flex-start">
 				<view class="tx">
-					<image :src="itemData.MemberHead||'/static/default.png'" mode="aspectFill"></image>
+					<image :src="itemData.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info">
 					<view class="name">{{itemData.MemberName||'匿名用户'}}</view>
@@ -12,10 +12,10 @@
 			</view>
 			<view class="flex-end">
 				<view class="txt_info reply" @click="Sendreplay(itemData.Id,itemData.MemberName,false)">
-					<image class="icon" src="/static/reply2.png"></image>
+					<image class="icon" src="http://yw.wtvxin.com/static/reply2.png"></image>
 					{{itemData.MyCommnetList.length>0?itemData.MyCommnetList.length:'回复'}}
 				</view>
-				<view :class="['txt_info zan',itemData.IsLike==1?'active':'']" @click="like(itemData.Id,1)"><image class="icon" :src="itemData.IsLike==1?'/static/zan2.png':'/static/zan.png'"></image>{{itemData.LikeNum>0?itemData.LikeNum:"点赞"}}</view>
+				<view :class="['txt_info zan',itemData.IsLike==1?'active':'']" @click="like(itemData.Id,1)"><image class="icon" :src="itemData.IsLike==1?'http://yw.wtvxin.com/static/zan2.png':'http://yw.wtvxin.com/static/zan.png'"></image>{{itemData.LikeNum>0?itemData.LikeNum:"点赞"}}</view>
 			</view>
 		</view>
 		<view class="comment-con">
@@ -26,7 +26,7 @@
 				<view class="reply-hd flex-between">
 					<view class="flex-start">
 						<view class="tx">
-							<image :src="item.MemberHead||'/static/default.png'" mode="aspectFill"></image>
+							<image :src="item.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 						</view>
 						<view class="info">
 							<view class="name">{{item.MemberName||'匿名用户'}}</view>
@@ -34,7 +34,7 @@
 						</view>
 					</view>
 					<view class="flex-end">
-						<view :class="['txt_info zan',item.IsLike==1?'active':'']" @click="like(item.Id,2,index)"><image class="icon" :src="item.IsLike==1?'/static/zan2.png':'/static/zan.png'"></image>{{item.LikeNum>0?item.LikeNum:"点赞"}}</view>
+						<view :class="['txt_info zan',item.IsLike==1?'active':'']" @click="like(item.Id,2,index)"><image class="icon" :src="item.IsLike==1?'http://yw.wtvxin.com/static/zan2.png':'http://yw.wtvxin.com/static/zan.png'"></image>{{item.LikeNum>0?item.LikeNum:"点赞"}}</view>
 					</view>
 				</view>
 				<view class="reply-con">

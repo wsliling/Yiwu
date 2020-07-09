@@ -2,7 +2,7 @@
 	<!-- 关于我们 -->
 	<view class="">
 		<view class="">
-			<view class="auoutimg"><image src="../../../static/jiaol.png" mode=""></image></view>
+			<view class="auoutimg"><image src="/static/http://yw.wtvxin.com/static/g" mode=""></image></view>
 			<view class="txt">{{ Content }}</view>
 		</view>
 	</view>

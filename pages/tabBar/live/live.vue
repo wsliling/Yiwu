@@ -3,11 +3,11 @@
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="head_l">
-					<image src="@/static/live.png" class="iconimg"></image>
+					<image src="http://yw.wtvxin.com/static/live.png" class="iconimg"></image>
 				</view>
 				<view class="title">视频</view>
 				<view class="head_r" @click="openAttestation">
-					<image src="@/static/video.png" class="iconimg"></image>
+					<image src="http://yw.wtvxin.com/static/video.png" class="iconimg"></image>
 				</view>
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
@@ -37,7 +37,7 @@
 						<view class="ft_l flex-start">
 							<view class="author flex-start">
 								<view class="tx">
-									<image :src="item.Avatar||'/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
+									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
 									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>

@@ -7,7 +7,7 @@
 					<view class="media-hd">
 						<view class="media-author" @click="gotoPensonal">
 							<image class="img" v-if="NewsInfo.Avatar" :src="NewsInfo.Avatar" mode="aspectFill"></image>
-							<image class="img" v-else src="/static/default.png"></image>
+							<image class="img" v-else src="http://yw.wtvxin.com/static/default.png"></image>
 						</view>
 						<view class="media-hd-l uni-ellipsis">
 							<text class="txt author-name">{{NewsInfo.NickName}}</text>

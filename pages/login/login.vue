@@ -10,7 +10,7 @@
 		<view class="regLoginBox" v-if="isShowMolie">
 			<view class="logo">
 				<view class="img">
-					<image class="logoimg" src="/static/logo.png" mode="widthFix"></image>
+					<image class="logoimg" src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
 					<!-- <view class="Title">水连动氢力氧</view> -->
 				</view>
 			</view>
@@ -59,7 +59,7 @@
 		<view class="MP-login" v-if="isShowminiApp">
 		    <view class="logo">
 				<view class="logoimg">
-					<image class="img_bb" src="/static/logo.png" mode="widthFix"></image>
+					<image class="img_bb" src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
 				</view>
 				<!-- <view class="Title">水连动氢力氧</view> -->
 		    </view> 

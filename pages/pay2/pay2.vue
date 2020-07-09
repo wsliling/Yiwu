@@ -16,7 +16,7 @@
 			</view>
 			<view class="proInfo1 flex-between pp3" v-if="proType==1">
 				<view class="imgbox">
-					<image :src="Info.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
+					<image :src="Info.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 				<view class="txtbox flex1 flex-between">
 					<view class="name uni-ellipsis flex1">
@@ -77,28 +77,28 @@
 				// #ifdef APP-PLUS||H5	
 				// {
 				// 	Id:1,
-				// 	iconimg:'/static/pay_alipay.png',
+				// 	iconimg:'http://yw.wtvxin.com/static/pay_alipay.png',
 				// 	name:"支付宝"
 				// },
 				// #endif
 				{
 					Id:0,
-					iconimg:'/static/pay_weixin.png',
+					iconimg:'http://yw.wtvxin.com/static/pay_weixin.png',
 					name:"微信"
 				},
 				{
 					Id:2,
-					iconimg:'/static/pay_yue.png',
+					iconimg:'http://yw.wtvxin.com/static/pay_yue.png',
 					name:"余额"
 				},
 				{
 					Id:3,
-					iconimg:'/static/pay_jf2.png',
+					iconimg:'http://yw.wtvxin.com/static/pay_jf2.png',
 					name:"普通积分"
 				},
 				{
 					Id:4,
-					iconimg:'/static/pay_jf.png',
+					iconimg:'http://yw.wtvxin.com/static/pay_jf.png',
 					name:"返佣积分"
 				}],
 				Info:{},
