@@ -1,8 +1,8 @@
 <template>
-	<view class="content bg_fff">
+	<view class="content">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
-				<view class="head_l">
+				<view class="head_l" @click="navigate('liveplay/live')">
 					<image src="http://yw.wtvxin.com/static/live.png" class="iconimg"></image>
 				</view>
 				<view class="title">视频</view>
@@ -16,16 +16,16 @@
 			</scroll-view>
 		</view>
 		<view :style="{'height':(80+barHeight)+'px'}"></view>
-		<view class="search">
+		<view class="search bg_fff">
 			<view class="seachbox">
 				<text class="uni-icon uni-icon-search"></text>
 				<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>
 			</view>
 		</view>
-		<view class="videolist" v-if="hasData">
+		<view class="videolist bg_fff" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view :class="['maxpic',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl">
+					<view :class="['maxpic',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
 						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 						<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
@@ -120,6 +120,9 @@
 				datalist:[],
 				videoContext:null,
 				IsEdit:false,
+				onplayId:-1,//当前播放视频id
+				onplayIndex:-1,//当前播放视频序号
+				onplayHeight:0,//当前播放视频距离顶部的高度
 			}
 		},
 		onLoad() {
@@ -143,6 +146,8 @@
 				for(let i=0; i<this.datalist.length;i++){
 					let _id=this.datalist[i].Id;
 					if(_id==id){
+						this.onplayId=id;
+						this.onplayIndex=i;
 						this.$set(this.datalist[i],'fixed',true);
 					}
 				}
@@ -151,6 +156,8 @@
 				for(let i=0; i<this.datalist.length;i++){
 					let _id=this.datalist[i].Id;
 					if(_id==id){
+						this.onplayId=id;
+						this.onplayIndex=i;
 						this.$set(this.datalist[i],'fixed',false);
 					}
 				}
@@ -287,10 +294,12 @@
 				let _this = this;
 				this.datalist.forEach(function(item){
 					if(id==item.Id){
-						_this.videoContext=uni.createVideoContext('video'+item.Id);
 						_this.$set(item,'play',true);
 						_this.$set(item,'fixed',false);
-						_this.videoContext.play();
+						setTimeout(()=>{
+							_this.videoContext=uni.createVideoContext('video'+item.Id);
+							_this.videoContext.play();
+						},500)
 					}else{
 						_this.$set(item,'play',false);
 					}
@@ -345,6 +354,24 @@
 		onPullDownRefresh(){
 			this.VideoList();
 			uni.stopPullDownRefresh();
+		},
+		onPageScroll(e){
+			let _this=this;
+			const query = uni.createSelectorQuery().in(_this);
+			if(_this.onplayIndex>-1){
+				query.select('#box'+_this.onplayId).boundingClientRect(data => {
+				  // console.log("得到布局位置信息" + JSON.stringify(data));
+				  // console.log("节点离页面顶部的距离为" + data.top);
+				  _this.onplayHeight=data.top;
+				}).exec();
+				if(_this.onplayHeight<80){
+					_this.$set(_this.datalist[_this.onplayIndex],'fixed',true);
+					_this.videoContext.pause();
+				}else{
+					_this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
+					_this.videoContext.play();
+				}
+			}
 		}
 	}
 </script>

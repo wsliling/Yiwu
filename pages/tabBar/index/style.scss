@@ -46,6 +46,14 @@
 		overflow-y: auto;
 	}
 }
+.index-item-2,.index-item-3{
+	/* #ifdef MP-WEIXIN||APP-PLUS */
+	min-height: calc(100vh - 80px);
+	/* #endif */
+	/* #ifdef H5 */
+	min-height: calc(100vh - 130px);
+	/* #endif */
+}
 .Yi-mechanism{
 	width: 100%;
 	white-space: nowrap;
