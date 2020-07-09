@@ -110,7 +110,7 @@
 		},
 		onLoad(e){
 			// #ifdef APP-PLUS
-			this.ShopId=e.ShopId
+			this.ShopId=e.id
 			// #endif
 		},
 		onShow() {
@@ -119,7 +119,7 @@
 			this.token = uni.getStorageSync("token");
 			this.height=res.windowHeight
 			// #ifndef APP-PLUS
-			this.ShopId = this.$mp.query.ShopId
+			this.ShopId = this.$mp.query.id
 			// #endif
 			console.log(this.ShopId)
 			this.play()
