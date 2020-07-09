@@ -50,7 +50,7 @@
 								<view class="btnbuy" @click="tobuy">购买</view>
 							</view>
 						</view>
-						<view class="line-item">
+						<view class="line-item" v-if="false">
 							<view class="line-item-l flex-start">
 								<image class="iconimg" src="/static/play_next.png" mode="widthFix"></image>
 								<text class="txt">播放下一首</text>
