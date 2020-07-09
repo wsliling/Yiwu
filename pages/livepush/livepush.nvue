@@ -4,7 +4,7 @@
 		<view>
 			<view @click="returns" class="arrow-box"><text class="jiesu">结束直播</text></view>
 			<view class="arrow-boxs">
-				<image class="user-img" src="/static/logo.png"></image>
+				<image class="user-img" src="http://yw.wtvxin.com/static/logo.png"></image>
 				<view>
 					<text class="text-box">8 关注</text>
 				</view>
@@ -25,7 +25,7 @@
 				<view class="goodsbox" v-if="showgoodsbox">
 					<view class="item">
 						<view class="imgbox">
-							<image src="/static/logo.png" class="spimg"></image>
+							<image src="http://yw.wtvxin.com/static/logo.png" class="spimg"></image>
 						</view>
 						<view class="txtBox">
 							<text class="title">"90分户外防水便携桶包"</text>

@@ -12,7 +12,7 @@
 				<view class="uni-comment-list" v-for="(item,index) in replylist" :key="index">
 					<view class="uni-comment-face" @click="gotoUserhome(item.MemberId)">
 						<image class="img" v-if="item.MemberHead" :src="item.MemberHead" mode="aspectFill"></image>
-						<image class="img" v-else src="/static/default.png" mode="aspectFill"></image>
+						<image class="img" v-else src="http://yw.wtvxin.com/static/default.png" mode="aspectFill"></image>
 					</view>
 					<view class="uni-comment-body">
 						<view class="uni-comment-top">
@@ -385,18 +385,18 @@
 	}
 	.comment {
 		padding-left: 40upx;
-		background: url(http://www.sc-mall.net/static/pl_icon.png) left center no-repeat;
+		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/pl_icon.png) left center no-repeat;
 		background-size: 32upx;
 	}
 
 	.zan {
 		padding-left: 40upx;
-		background: url(http://www.sc-mall.net/static/zan.png) left top no-repeat;
+		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/zan.png) left top no-repeat;
 		background-size: 32upx;
 	}
 
 	.zan.active {
-		background: url(http://www.sc-mall.net/static/zan2.png) left top no-repeat;
+		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/zan2.png) left top no-repeat;
 		background-size: 32upx;
 	}
 	.uni-comment .comment-date uni-view,.uni-comment .comment-date view {

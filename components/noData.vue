@@ -2,7 +2,7 @@
 	<view class="emptybox" v-if="isShow">
 		<view class="iconimg">
 			<view class="iconfont icon-wushuju"></view>
-			<!-- <image class="img" src="http://www.sc-mall.nethttp://shop.dadanyipin.com/static/noCart.png" mode="aspectFill"></image> -->
+			<!-- <image class="img" src="http://www.sc-mall.net/static/noCart.png" mode="aspectFill"></image> -->
 		</view>
 		<view class="tips uni-center">暂无数据</view>
 	</view>

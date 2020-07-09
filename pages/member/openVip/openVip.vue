@@ -3,7 +3,7 @@
 		<view class="topbox">
 			<view class="userbox flex-start">
 				<view class="tx">
-					<image src="/static/my/user.png" mode="aspectFill" v-if="!info.avatar"></image>
+					<image src="http://yw.wtvxin.com/static/my/user.png" mode="aspectFill" v-if="!info.avatar"></image>
 					<image :src="info.avatar" mode="aspectFill" v-else></image>
 				</view>
 				<view class="info">
@@ -16,19 +16,19 @@
 			</view>
 			<view class="icon-menu">
 				 <view class="item">
-					 <image class="icon" src="/static/my/v1.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/my/v1.png"></image>
 					 <text class="txt">开直播</text>
 				 </view>
 				 <view class="item">
-					 <image class="icon" src="/static/my/v2.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/my/v2.png"></image>
 					 <text class="txt">开课程</text>
 				 </view>
 				 <view class="item">
-					<image class="icon" src="/static/my/v3.png"></image>
+					<image class="icon" src="http://yw.wtvxin.com/static/my/v3.png"></image>
 					<text class="txt">上传舞曲</text>
 				 </view>
 				 <view class="item">
-					 <image class="icon" src="/static/my/v4.png"></image>
+					 <image class="icon" src="http://yw.wtvxin.com/static/my/v4.png"></image>
 					 <text class="txt">优先权</text>
 				 </view>
 			</view>

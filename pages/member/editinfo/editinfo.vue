@@ -4,7 +4,7 @@
 	  	<view class="line-item line-arrow-r">
 	  		<view class="lab">头像</view>
 			<view class="item_r avatar" @click="uplLoadImg">
-			    <image class="img" :src="Avatar||'/static/default.png'" mode="aspectFill"></image>
+			    <image class="img" :src="Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 			</view>
 	  	</view>
 		<view class="line-item line-arrow-r" @click="tolink('/pages/member/editNickName/editNickName?text='+info.NickName)">

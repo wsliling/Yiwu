@@ -89,10 +89,6 @@
 //            payType---  Number支付类型；0--微信支付.1--余额支付,2--支付宝
 //            password--- string支付密码
 
-import wxIcon from '@/static/pay_weixin.png';
-import alipayIcon from '@/static/pay_alipay.png';
-import balanceIcon from '@/static/pay_yue.png';
-import jfIcon from '@/static/pay_jf.png';
 import { post } from "@/common/util";
 export default {
   props: {
@@ -123,28 +119,28 @@ export default {
       payTypeList:[
         {
           name:'微信',
-          icon:wxIcon,
+          icon:'http://yw.wtvxin.com/static/pay_weixin.png',
           id:0,
           code:'wx',
           status:true,
         },
         // {
         //   name:'支付宝',
-        //   icon:alipayIcon,
+        //   icon:'http://yw.wtvxin.com/static/pay_alipay.png',
         //   id:2,
         //   code:'alipay',
         //   status:false,
         // },
         {
           name:'余额',
-          icon:balanceIcon,
+          icon:'http://yw.wtvxin.com/static/pay_yue.png',
           id:1,
           code:'balance',
           status:true,
         },
         {
           name:'积分',
-          icon:jfIcon,
+          icon:'http://yw.wtvxin.com/static/pay_jf.png',
           id:3,
           code:'integral',
           status:false,

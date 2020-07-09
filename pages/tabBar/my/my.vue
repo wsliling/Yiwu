@@ -2,19 +2,19 @@
 	<view class="pd15">
 		<view class="header" :style="{'padding-top':barHeight+'px'}">
 			<view class="editor" @click="tolink('/pages/member/editinfo/editinfo')">
-				<image class="img30" src="@/static/my/editor.png"></image>
+				<image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>
 			</view>
 			<view class="user">
 				<view class="user-left" @click="tolink('/pages/member/editinfo/editinfo')">
 					<view class="user-img">
 						<view>
 							<image v-if="memberInfo.Avatar" :src="memberInfo.Avatar" mode="aspectFill"></image>
-							<image v-else src="@/static/my/user.png" mode="aspectFill"></image>
+							<image v-else src="http://yw.wtvxin.com/static/my/user.png" mode="aspectFill"></image>
 						</view>
 					</view>
 					<view class="user-name">
 						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}
-							<image class="vip" src="@/static/V.png" v-if="memberInfo.IsPlus" 
+							<image class="vip" src="http://yw.wtvxin.com/static/V.png" v-if="memberInfo.IsPlus" 
 								@click.stop="navigate('member/openVip/openVip',{
 									avatar:memberInfo.Avatar,
 									name:memberInfo.NickName,
@@ -26,7 +26,7 @@
 					</view>
 				</view>
 				<view class="user-right">
-					<image src="@/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
+					<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
 				</view>
 			</view>
 		</view>
@@ -54,24 +54,24 @@
 		</view>
 		<view class="info1 uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
-				<image src="@/static/my/icon1.png" mode="aspectFit"></image>
+				<image src="http://yw.wtvxin.com/static/my/icon1.png" mode="aspectFit"></image>
 				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
-				<image src="@/static/my/icon2.png" mode="aspectFit"></image>
+				<image src="http://yw.wtvxin.com/static/my/icon2.png" mode="aspectFit"></image>
 				<view>我的积分<span>{{memberInfo.SumScore||0}}</span></view>
 				
 			</view>
 			<view class="item" @click="tolink('/pages/member/livebi/livebi')">
-				<image src="@/static/my/icon3.png" mode="aspectFit"></image>
+				<image src="http://yw.wtvxin.com/static/my/icon3.png" mode="aspectFit"></image>
 				<view>
 					直播币
 					<span>{{memberInfo.LiveStreamMoney||0}}</span>
 				</view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/order/order')">
-				<image src="@/static/my/icon4.png" mode="aspectFit"></image>
+				<image src="http://yw.wtvxin.com/static/my/icon4.png" mode="aspectFit"></image>
 				<view>我的订单
 				<span>{{memberInfo.orderNum||0}}</span>
 				</view>
@@ -80,14 +80,14 @@
 		<view class="sevice">
 			<view class="item" @click="tolink('/pages/member/cart/cart')">
 				<view class="item-left">
-					<image  src="@/static/my/icon5.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon5.png" mode="aspectFit"></image>
 					<view>购物车</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="openAttestation">
 				<view class="item-left">
-					<image  src="@/static/my/icon6.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon6.png" mode="aspectFit"></image>
 					<view>认证中心</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
@@ -104,35 +104,35 @@
 			</uni-popup>
 			<view class="item" @click="tolink('/pages/member/myWorks/myWorks')">
 				<view class="item-left">
-					<image  src="@/static/my/icon7.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon7.png" mode="aspectFit"></image>
 					<view>我的作品</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/myMusic/myMusic')">
 				<view class="item-left">
-					<image  src="@/static/my/icon8.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon8.png" mode="aspectFit"></image>
 					<view>我的舞曲</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/collect/collect')">
 				<view class="item-left">
-					<image  src="@/static/my/icon9.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon9.png" mode="aspectFit"></image>
 					<view>我的收藏</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/myBuy/myBuy')">
 				<view class="item-left">
-					<image  src="@/static/my/icon10.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon10.png" mode="aspectFit"></image>
 					<view>我购买的</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/message/messageClass/messageClass')">
 				<view class="item-left">
-					<image  src="@/static/my/icon15.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon15.png" mode="aspectFit"></image>
 					<view>我的消息</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
@@ -140,7 +140,7 @@
 			<!-- #ifdef APP-PLUS -->
 			<view class="item">
 				<view class="item-left">
-					<image  src="@/static/my/icon16.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon16.png" mode="aspectFit"></image>
 					<view>分享app</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
@@ -149,35 +149,35 @@
 			<!-- 我的下载先不做，苹果的下载和多端下载很难实现 -->
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')" v-if="false">
 				<view class="item-left">
-					<image  src="@/static/my/icon18.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon18.png" mode="aspectFit"></image>
 					<view>我的下载</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/interflow/interflow')">
 				<view class="item-left">
-					<image  src="@/static/my/icon11.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon11.png" mode="aspectFit"></image>
 					<view>加入官方交流</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/kefu/kefu')">
 				<view class="item-left">
-					<image  src="@/static/my/icon12.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon12.png" mode="aspectFit"></image>
 					<view>客服服务</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
 				<view class="item-left">
-					<image  src="@/static/my/icon13.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon13.png" mode="aspectFit"></image>
 					<view>关于我们</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
 			<view class="item" @click="tolink('/pages/member/set/set')">
 				<view class="item-left">
-					<image  src="@/static/my/icon14.png" mode="aspectFit"></image>
+					<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
 					<view>设置</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>

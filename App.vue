@@ -8,10 +8,10 @@
 			s2.src = "//imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer-2.3.2.js";
 			document.body.appendChild(s2);
 			// #endif
+			uni.setStorageSync("playID","");
 		},
 		onShow: function() {
 			console.log('App Show')
-			uni.setStorageSync("playID","");
 			uni.setStorageSync("fileName","");//舞曲文件名
 			uni.setStorageSync("filePath","");//舞曲服务器地址
 			uni.setStorageSync("VfileName","");//视频文件名

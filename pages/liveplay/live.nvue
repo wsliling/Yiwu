@@ -211,20 +211,20 @@
 			},
 			//发送数据处理
 			MsgData(MsgType, Id, Info, Pic, AddTime, Lat, Lng) {
-			    var data = new Object();
+			    var data = new Object();
 				var msg =new Object()
-			    data.MsgType = MsgType;
+			    data.MsgType = MsgType;
 				var fixInt = function (num, n) { return (Array(n).join(0) + num).slice(-n); };
-				    var newdate = function () {
-				        var now = new Date();
-				        var yy = now.getFullYear();      //年
-				        var mm = now.getMonth() + 1;     //月
-				        var dd = now.getDate();          //日
-				        var hh = now.getHours();         //时
-				        var ii = now.getMinutes();       //分
-				        var ss = now.getSeconds();
-				        return yy + "-" + fixInt(mm, 2) + "-" + fixInt(dd, 2) + " " + fixInt(hh, 2) + ":" + fixInt(ii, 2) + ":" + fixInt(ss, 2)
-				    }
+				    var newdate = function () {
+				        var now = new Date();
+				        var yy = now.getFullYear();      //年
+				        var mm = now.getMonth() + 1;     //月
+				        var dd = now.getDate();          //日
+				        var hh = now.getHours();         //时
+				        var ii = now.getMinutes();       //分
+				        var ss = now.getSeconds();
+				        return yy + "-" + fixInt(mm, 2) + "-" + fixInt(dd, 2) + " " + fixInt(hh, 2) + ":" + fixInt(ii, 2) + ":" + fixInt(ss, 2)
+				    }
 				if(uni.getStorageSync('name')){
 					msg.name=uni.getStorageSync('name')
 				}else{
@@ -235,12 +235,12 @@
 				msg.AddTime = AddTime == undefined ? newdate() : AddTime;
 				msg=JSON.stringify(msg)
 				data.Id=msg
-			    data.Info = Info == undefined ? "" : Info;
-			    data.Pic = Pic == undefined ? "" : Pic;
-			    data.AddTime = AddTime == undefined ? newdate() : AddTime;
-			    data.Lat = Lat == undefined ? 0 : Lat;
-			    data.Lng = Lng == undefined ? 0 : Lng;
-			    return data;
+			    data.Info = Info == undefined ? "" : Info;
+			    data.Pic = Pic == undefined ? "" : Pic;
+			    data.AddTime = AddTime == undefined ? newdate() : AddTime;
+			    data.Lat = Lat == undefined ? 0 : Lat;
+			    data.Lng = Lng == undefined ? 0 : Lng;
+			    return data;
 			},
 			async play(){
 				let res = await post('TencentCloud/PlayURL',{

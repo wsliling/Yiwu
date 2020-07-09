@@ -18,7 +18,6 @@
 			</scroll-view>
 		</view>
 		<view :style="{'height':(80+barHeight)+'px'}"></view>
-	
 		<!-- 首页 -->
 		<view class="index-item index-item-0" v-if="tabIndex==0">
 			<!-- 达人 -->
@@ -26,7 +25,7 @@
 				<scroll-view class="Daren-swiper-tab" scroll-x>
 					<view class="item" v-for="(item,index) in TeacherUserList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 						<view class="tx">
-							<image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image>
+							<image :src="item.Avatar||'http://yw.wtvxin.com/default.png'" mode="aspectFill"></image>
 						</view>
 						<view class="name uni-ellipsis">
 							{{item.Name}}
@@ -48,7 +47,7 @@
 								<view class="item" v-for="(e,i) in recuserlist" :key="i">
 									<view class="uni-icon uni-icon-closeempty close" @click="closeuser(i)"></view>
 									<view class="tx" @click="tolink('/pages/homepage/homepage?id='+e.Id)">
-										<image :src="e.Avatar||'/static/default.png'" mode="aspectFill"></image>
+										<image :src="e.Avatar||'http://yw.wtvxin.com/default.png'" mode="aspectFill"></image>
 									</view>
 									<view class="name uni-ellipsis">
 										{{e.NickName||'壹舞用户'}}
@@ -63,9 +62,9 @@
 					<view class="Yi-media">
 						<view class="media-hd flex-between">
 							<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
-								<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+								<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/default.png'" mode="aspectFill"></image></view>
 								<view class="name uni-ellipsis">{{item.NickName}}</view>
-								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="/static/chat.png"></image></view>
+								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://yw.wtvxin.com/chat.png"></image></view>
 							</view>
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
@@ -146,7 +145,7 @@
 				<view class="user-item uni-bg-white uni-mb10" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 					<view class="flex-between">
 						<view class="author flex-start">
-							<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/default.png'" mode="aspectFill"></image></view>
 							<view class="info">
 								<view class="name uni-ellipsis">{{item.Name}}</view>
 								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
@@ -170,7 +169,7 @@
 				<view class="mechanism-item uni-bg-white uni-mb10" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 					<view class="flex-between">
 						<view class="author flex-start">
-							<view class="tx"><image :src="item.Avatar||'/static/default.png'" mode="aspectFill"></image></view>
+							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/default.png'" mode="aspectFill"></image></view>
 							<view class="info">
 								<view class="name uni-ellipsis">{{item.Name}}</view>
 								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>

@@ -10,32 +10,32 @@
 		<view class="line-list">
 			<view class="line-item line-arrow-r" v-if="IsShop == 1" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=0')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/shop.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://yw.wtvxin.com/static/my/shop.png" mode="widthFix"></image>
 					<text class="txt">店铺收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=1')">
 				
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/zb.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://yw.wtvxin.com/static/my/zb.png" mode="widthFix"></image>
 					<text class="txt">直播收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=2')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/kc.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://yw.wtvxin.com/static/my/kc.png" mode="widthFix"></image>
 					<text class="txt">课程收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/incomeDetails/incomeDetails?type=3')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/wq.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://yw.wtvxin.com/static/my/wq.png" mode="widthFix"></image>
 					<text class="txt">舞曲收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/transDetails/transDetails?type=3')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="/static/my/mx.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://yw.wtvxin.com/static/my/mx.png" mode="widthFix"></image>
 					<text class="txt">提现记录</text>
 				</view>
 			</view>
@@ -99,7 +99,7 @@
 			width: 100%;
 			height: 300upx;
 			border-radius:30upx;
-			background:url(/static/my/bg2.png);
+			background:url(http://yw.wtvxin.com/static/my/bg2.png);
 			background-size: cover;
 			font-family:PingFang;
 			font-weight:bold;

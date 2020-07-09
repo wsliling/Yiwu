@@ -3,7 +3,7 @@
 		<view class="pd15 heade">
 			<view class="user">
 				<view class="left">
-					<image  :src="PersonInfo.Avatar||'/static/default.png'"></image>
+					<image  :src="PersonInfo.Avatar||'http://yw.wtvxin.com/static/default.png'"></image>
 					<view class="islive" v-if="PersonInfo.Flag" @click="navigate('liveplay/live',{id:memberId})">
 						<view class="line line1"></view>
 						<view class="line line2"></view>
@@ -14,7 +14,7 @@
 				<view class="right">
 					<view class="name">
 						<view>{{PersonInfo.NickName}}</view>
-						<image v-if="PersonInfo.IsPlus==1" src="@/static/V.png" mode="widthFix"></image>
+						<image v-if="PersonInfo.IsPlus==1" src="http://yw.wtvxin.com/static/V.png" mode="widthFix"></image>
 					</view>
 					<view class="list">
 						<view class="item">
@@ -39,7 +39,13 @@
 				<view :style="'width:'+tabWidth+'%'" :class="['item',tabId==tab.id ? 'active' : '']" @click="tapTab(tab.id,index)">{{tab.taptitle}}
 				</view>
 			</block>
-			<view class="bb_line" :style="'left:'+tabStyle+'upx'"></view>
+			<!-- <view class="bb_line" :style="'left:'+tabStyle+'upx'"></view> -->
+			<!-- #ifndef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'upx'}"></view>
+			<!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<view class="bb_line" :style="{'left':tabStyle+'rpx'}"></view>
+			<!-- #endif -->
 		</scroll-view>
 		<view class="tabCon">
 			<view class="profile item-box"  v-if="tabId==0&&PersonInfo.IsJiGou==1">
@@ -70,7 +76,7 @@
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index" @click="playmusic(item.Id,index)">
-					<image :src="item.PicImg||'/static/default_music.png'" mode="aspectFill"></image>
+					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
@@ -98,11 +104,11 @@
 		<view class="bottom-box" v-if="PersonInfo.IsMy==0">
 			<view class="box flex-between">
 				<view @click="flow">
-					<image src="@/static/attention.png"></image>
+					<image src="http://yw.wtvxin.com/static/attention.png"></image>
 					<span>{{PersonInfo.IsFollow==1?'已关注':'关注'}}</span>
 				</view>
 				<view @click="tolink('/pages/chat/chat?id='+memberId,'login')">
-					<image src="@/static/chat1.png"></image>
+					<image src="http://yw.wtvxin.com/static/chat1.png"></image>
 					<span>极速联系</span>
 				</view>
 			</view>
