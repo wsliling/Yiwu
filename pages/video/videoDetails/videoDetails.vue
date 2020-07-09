@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bg_fff">
 		<view class="videobox">
 			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover"></video>
 			<view class="tipbox" v-if="CourseInfo.IsShowBuy==1">
@@ -325,8 +325,6 @@
 				const downloadTask = uni.downloadFile({
 					url: that.durl, 
 					success: (res) => {
-						console.log(res)
-						console.log("res")
 						if (res.statusCode === 200) {
 							uni.showToast({
 								title: "下载成功"
@@ -337,13 +335,12 @@
 						// #ifndef H5
 						uni.saveFile({
 							tempFilePath: res.tempFilePath,
-								success: function(red) {
-									that.luj = red.savedFilePath
-									console.log(red)
-									console.log("red")
-								}
-							});
-						}
+							success: function(red) {
+								that.luj = red.savedFilePath
+								console.log(red)
+								console.log("red")
+							}
+						});
 						// #endif
 						// #ifdef H5
 						 this.saveH5(res.tempFilePath)
@@ -352,10 +349,10 @@
 				});			
 				downloadTask.onProgressUpdate((res) => {
 					this.dsize=res.totalBytesExpectedToWrite;
-					console.log('下载进度' + res.progress);
-					console.log('已经下载的数据长度' + res.totalBytesWritten);
-					console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
-				});
+					// console.log('下载进度' + res.progress);
+					// console.log('已经下载的数据长度' + res.totalBytesWritten);
+					// console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+				})
 			},	
 			saveH5(url){
 				let oA = document.createElement("a");

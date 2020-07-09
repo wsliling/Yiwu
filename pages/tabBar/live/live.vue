@@ -1,6 +1,6 @@
 <template>
-	<view class="content">
-		<view class="head autotop">
+	<view class="content bg_fff">
+		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
 				<view class="head_l">
 					<image src="@/static/live.png" class="iconimg"></image>
@@ -25,9 +25,10 @@
 		<view class="videolist" v-if="hasData">
 			<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
 				<view class="media-bd">
-					<view :class="['maxpic',IsEdit?'dis':'']" v-if="item.VideoUrl">
-						<image v-if="IsEdit" class="postpic" :src="item.PicImg" mode="aspectFill"></image>
-						<video :src="item.VideoUrl" controls @play="onplayvideo" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+					<view :class="['maxpic',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl">
+						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
+						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
+						<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 					</view>
 					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 						{{item.Title}}
@@ -117,9 +118,8 @@
 				isLoad: false,
 				hasData: false,
 				datalist:[],
-				videoContext:[],
-				onplayId:-1,//当前播放
-				IsEdit:false
+				videoContext:null,
+				IsEdit:false,
 			}
 		},
 		onLoad() {
@@ -139,14 +139,19 @@
 		   }
 		 },
 		methods: {
-			onplayvideo(e){
-				let id=e.currentTarget.id;
+			pauseVideo(id){
 				for(let i=0; i<this.datalist.length;i++){
-					let _id='video'+this.datalist[i].Id;
+					let _id=this.datalist[i].Id;
 					if(_id==id){
-						this.onplayId=i;
-					}else{
-						this.videoContext[i].pause();
+						this.$set(this.datalist[i],'fixed',true);
+					}
+				}
+			},
+			playVideo(id){
+				for(let i=0; i<this.datalist.length;i++){
+					let _id=this.datalist[i].Id;
+					if(_id==id){
+						this.$set(this.datalist[i],'fixed',false);
 					}
 				}
 			},
@@ -191,11 +196,8 @@
 				}
 			},
 			openAttestation(){
+				this.IsEdit=true;
 				if(toLogin()){
-					if(this.onplayId>=0){
-						this.videoContext[this.onplayId].pause();
-						this.IsEdit=true;
-					}
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
@@ -254,10 +256,9 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
-						this.videoContext=[];
 						for(let i=0;i<result.data.length;i++){
-							let n=result.data[i].Id;
-							this.videoContext[i]=uni.createVideoContext('video'+n);
+							this.$set(result.data[i],'play',false);
+							this.$set(result.data[i],'fixed',false);
 						}
 					}
 					if (result.data.length == 0 && this.page == 1) {
@@ -281,6 +282,19 @@
 					} 
 				}
 				uni.hideLoading();
+			},
+			playBtn(index,id){
+				let _this = this;
+				this.datalist.forEach(function(item){
+					if(id==item.Id){
+						_this.videoContext=uni.createVideoContext('video'+item.Id);
+						_this.$set(item,'play',true);
+						_this.$set(item,'fixed',false);
+						_this.videoContext.play();
+					}else{
+						_this.$set(item,'play',false);
+					}
+				})
 			},
 			//发现点赞
 			async likeBtn(id,index){
@@ -338,7 +352,7 @@
 <style lang="scss" scoped>
 	@import './style';
 	page{
-		background: #fff;
+		background: #fff !important;
 	}
 	.index-swiper-tab .item{
 		width: 16.66%;

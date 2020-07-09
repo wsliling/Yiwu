@@ -108,12 +108,18 @@
 			position: relative;
 			background-color: #e0e0e0;
 			&.maxh{
-				max-height: 400upx;
+				max-height: 450upx;
 			}
 			video{
 				width: 100%;
+				height: 450upx;
 				display: block;
+				position: absolute;
+				left: 0;
+				top: 0;
+				z-index: 2;
 			}
+			.postpic{height: 450upx;}
 			.isplay{
 				height: 88upx;
 				width: 88upx;
@@ -123,6 +129,12 @@
 				margin: -44upx 0 0 -44upx;
 				background: url(/static/play.png);
 				background-size: cover;
+				z-index: 2;
+			}
+			&.dis{
+				video{
+					left: -2000px;
+				}
 			}
 		}
 	}
