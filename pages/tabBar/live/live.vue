@@ -196,8 +196,8 @@
 				}
 			},
 			openAttestation(){
+				this.IsEdit=true;
 				if(toLogin()){
-					this.IsEdit=true;
 					let urlstr="";
 					uni.showActionSheet({
 						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
