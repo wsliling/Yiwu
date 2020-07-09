@@ -504,5 +504,8 @@
 		margin-left: 30upx;
 		font-weight: 100;
 		font-size: 12upx;
+		/* #ifdef MP-WEIXIN */
+		font-size: 24upx;
+		/* #endif */
 	}
 </style>

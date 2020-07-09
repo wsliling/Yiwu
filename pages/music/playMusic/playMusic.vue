@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="playmusic">
 		<view class="warp">
 			<view class="playimgbox">
 				<image :src="itemdata.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
@@ -379,6 +379,11 @@ page{
 .source{
 	color: #b9b8b8;text-align: center;padding-top: 30upx;font-size: 22upx;
 }
+/* #ifdef MP-WEIXIN */
+.playmusic{
+	background-color: #252b2f;height: 100vh;
+}
+/* #endif */
 .playimgbox{
 	width: 560upx;
 	height: 560upx;
