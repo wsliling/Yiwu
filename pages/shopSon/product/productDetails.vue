@@ -179,6 +179,7 @@ export default {
 			showVideo:false,
 			isfixed:false,
 			isplaynow:0,
+			isPause:true,
 		};
 	},
 	onLoad(e) {
@@ -273,6 +274,11 @@ export default {
 			console.log(type,'type')
 			this.submitBtnType = type||'';
 			this.$refs.skuWin.open();
+			if(!this.isfixed){
+				this.isPause=false;
+			}else{
+				this.isPause=true;
+			}
 			if(this.data.Video&&this.isplaynow){
 				this.isfixed=true;
 				this.videoContext.pause();
@@ -301,14 +307,14 @@ export default {
 		},
 		closePop(){
 			this.$refs.skuWin.close();
-			if(this.isplaynow){
+			if(this.isplaynow&&!this.isPause){
 				this.isfixed=false;
 				this.videoContext.play();	
 			}
 		},
 		changeClose(e){
 			if(!e.show){
-				if(this.isplaynow){
+				if(this.isplaynow&&!this.isPause){
 					this.isfixed=false;
 					this.videoContext.play();	
 				}
