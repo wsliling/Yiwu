@@ -45,7 +45,7 @@
 					 <text class="txt">最近播放</text>
 				 </view>
 			 </view>
-			 <view class="music-list pd15" v-if="hasData">
+			 <view class="music-list pd15" v-if="classifylist.length">
 				 <view class="item" v-for="(item,index) in classifylist " :key="index" @click="tolink('/pages/music/classify_list/classify_list?id='+item.Id+'&Logo='+item.Logo+'&Name='+item.Name)">
 					 <view class="img">
 						 <image v-if="item.Logo" :src="item.Logo"></image>
@@ -61,16 +61,19 @@
 					 <view class="uni-ellipsis">{{item.Name}}</view>
 				 </view>
 			 </view>
+			<noData :isShow="classifylist.length==0"></noData>
 		</view>
-		<view class="list" v-if="tabIndex==1&&hasData">
-			<block v-for="(item,index) in findlist" :key="index">
-				<media-list :datajson="item" Grid="2" @click="goDetail" @previewImg="previewImg"></media-list>
-			</block>
-		</view>
-		<view class="uni-tab-bar-loading" v-if="hasData&&tabIndex==1">
-			<uni-load-more :loadingType="loadingType"></uni-load-more>
-		</view>
-		<noData :isShow="noDataIsShow"></noData>
+		<block v-if="tabIndex==1">
+			<view class="list" v-if="hasData">
+				<block v-for="(item,index) in findlist" :key="index">
+					<media-list :datajson="item" Grid="2" @click="goDetail" @previewImg="previewImg"></media-list>
+				</block>
+			</view>
+			<view class="uni-tab-bar-loading" v-if="hasData">
+				<uni-load-more :loadingType="loadingType"></uni-load-more>
+			</view>
+			<noData :isShow="noDataIsShow"></noData>
+		</block>
 		<view v-if="tabIndex==0" @click="tolink('/pages/music/uploadMusic/uploadMusic')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 		<view v-if="tabIndex==1" @click="tolink('/pages/music/artPost/artPost')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view>
 	</view>
@@ -122,11 +125,11 @@
 			this.findlist=[];
 			this.workeslist()
 		},
-		 computed: {
-		   tabStyle(){
+		computed: {
+		    tabStyle(){
 		     return ((750/this.tabnav.length)*this.tabIndex)+(((750/this.tabnav.length)-68)/2)
-		   }
-		  },
+		    }
+		},
 		methods: {
 			getclassifyList(){
 				post('DanceMusic/DanceMusicClassList',{}).then(res=>{
