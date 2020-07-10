@@ -141,7 +141,7 @@
 			},
 			gotoPensonal(){
 				uni.navigateTo({
-					url: '/pages/Article/myCenter/myCenter?Memberid='+this.NewsInfo.MemberId
+					url: '/pages/homepage/homepage?id='+this.NewsInfo.MemberId
 				})
 			}
 		},

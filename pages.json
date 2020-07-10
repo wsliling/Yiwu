@@ -79,7 +79,14 @@
         ,{
             "path" : "pages/replylist/replylist",
             "style" : {
-				"navigationBarTitleText": "评论"
+				"navigationBarTitleText": "评论",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
@@ -108,19 +115,40 @@
 		,{
             "path" : "pages/homepage/homepage",
             "style" : {
-				"navigationBarTitleText": "主页"
+				"navigationBarTitleText": "主页",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/msgDetail/msgDetail",
             "style" : {
-				"navigationBarTitleText": "资讯详情"
+				"navigationBarTitleText": "资讯详情",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/pay2/pay2",
             "style" : {
-				"navigationBarTitleText": "确认支付"
+				"navigationBarTitleText": "确认支付",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{

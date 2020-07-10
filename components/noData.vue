@@ -4,7 +4,7 @@
 			<view class="iconfont icon-wushuju"></view>
 			<!-- <image class="img" src="http://www.sc-mall.net/static/noCart.png" mode="aspectFill"></image> -->
 		</view>
-		<view class="tips uni-center">暂无数据</view>
+		<view class="tips uni-center">{{tips}}</view>
 	</view>
 </template>
 
@@ -14,6 +14,10 @@
 			isShow:{
 				type:[Boolean,String,Number],
 				default:false,
+			},
+			tips:{
+				type:String,
+				default:'暂无数据'
 			}
 		},
 		data() {

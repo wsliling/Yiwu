@@ -83,7 +83,7 @@
 		<view class="foot-fiexd">
 			<view class="mark" v-if="IsShowReplyBox" @click="CancelReply"></view>
 			<view :class="['foot-reply',IsShowReplyBox?'active':'']">
-				<input class="ipt" type="text" v-model="Comment" @click="showReplyBox" :placeholder="placeholder"/>
+				<input class="ipt" type="text" cursor-spacing="10" v-model="Comment" @click="showReplyBox" :placeholder="placeholder"/>
 				<view class="btn-r">
 					<block v-if="IsShowReplyBox">
 						<view :class="['sendBtn',Comment==''?'dis':'']" @click="Send">发表</view>
@@ -285,7 +285,7 @@
 			},
 			gotoUserhome(mid){
 				uni.navigateTo({
-					url: '/pages/Article/myCenter/myCenter?Memberid='+mid
+					url: '/pages/homepage/homepage?id='+mid
 				})	
 			},
 			//点赞/取消点赞
@@ -380,23 +380,23 @@
 	}
 	.uni-comment-face .img{ height: 100%; width: 100%;}
 	.uni-comment-top .name {
-		color: #89674c;
+		color: #DD196D;
 		font-size: 26upx;
 	}
 	.comment {
 		padding-left: 40upx;
-		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/pl_icon.png) left center no-repeat;
+		background: url(http://www.sc-mall.net/static/pl_icon.png) left center no-repeat;
 		background-size: 32upx;
 	}
 
 	.zan {
 		padding-left: 40upx;
-		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/zan.png) left top no-repeat;
+		background: url(http://www.sc-mall.net/static/zan.png) left top no-repeat;
 		background-size: 32upx;
 	}
 
 	.zan.active {
-		background: url(http://www.sc-mall.nethttp://yw.wtvxin.com/static/zan2.png) left top no-repeat;
+		background: url(http://www.sc-mall.net/static/zan2.png) left top no-repeat;
 		background-size: 32upx;
 	}
 	.uni-comment .comment-date uni-view,.uni-comment .comment-date view {
@@ -407,7 +407,7 @@
 	}
 
 	.uni-comment .comment-date .replay-btn {
-		color: #89674c;
+		color: #DD196D;
 	}
 
 	.uni-comment-top .zan {
@@ -427,7 +427,7 @@
 
 	.replaybox .name {
 		float: left;
-		color: #89674c;
+		color: #DD196D;
 		font-size: 26upx;
 	}
 
@@ -437,7 +437,7 @@
 	}
 
 	.replaybox .morereply {
-		color: #89674c;
+		color: #DD196D;
 		font-size: 26upx;
 	}
 
@@ -445,7 +445,7 @@
 		display: inline-block;
 		height: 60upx;
 		line-height: 60upx;
-		color: #89674c;
+		color: #DD196D;
 		background: #fcf4e3;
 		border-radius: 30upx;
 		padding: 0 20upx;
@@ -477,8 +477,8 @@
 		justify-content: space-between;
 		border-top: 1px solid #eee;
 	}
-	.foot-reply .ipt{ width: 520upx; padding: 0 20upx; height: 60upx; font-size: 24upx; color: #999; background: #f6f8f7; border-radius: 6px; margin: 20upx 0 20upx 20upx;}
-	.foot-reply.active .ipt{ width: 554upx;}
+	.foot-reply .ipt{ width: 520upx; padding: 0 20upx; height: 60upx; font-size: 24upx; color: #999; background: #f6f8f7; border-radius: 6px; margin: 20upx 0 20upx;}
+	.foot-reply.active .ipt{ width: 580upx;}
 	.foot-reply .btn-r{
 		display: flex;
 		flex-direction: row;
@@ -489,7 +489,7 @@
 		background-position: center 14upx;
 	}
 	.foot-reply .btn-r .zan{ background-position: center 14upx;}
-	.foot-reply .sendBtn{ background: #89674c; color: #fff; border-radius: 6px; height: 60upx; line-height: 60upx; padding: 0 20upx; margin: 20upx 20upx 20upx 0;}
+	.foot-reply .sendBtn{ background: #DD196D; color: #fff; border-radius: 6px; height: 60upx; line-height: 60upx; padding: 0 20upx; margin: 20upx 0 20upx 0;}
 	.foot-reply .sendBtn.dis{opacity: .4;}
 	.image-section {
 		margin-top: 20upx;
