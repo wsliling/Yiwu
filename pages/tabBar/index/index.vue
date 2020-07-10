@@ -792,8 +792,8 @@
 					_this.$set(_this.datalist[_this.onplayIndex],'fixed',true);
 					_this.videoContext.pause();
 				}else{
-					_this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
-					_this.videoContext.play();
+					// _this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
+					// _this.videoContext.play();
 				}
 			}
 		},
