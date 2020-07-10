@@ -4,7 +4,7 @@
 			<view class="logo">
 				<view class="img">
 					<image src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
-					<view class="Title">水连动氢力氧</view>
+					<view class="Title">壹舞</view>
 				</view>
 			</view>
 			<view class="from pd10">
@@ -25,7 +25,7 @@
 					<view class="iconfont icon-mima"></view>
 					<input type="password" class="ipt" value="" v-model="pwd2" placeholder="请再次输入密码" />
 				</view>
-				<view class="from-line" style="position: relative;">
+				<view class="from-line" style="position: relative;display: none;">
 					<view class="iconfont icon-mima"></view>
 					<input type="text" class="ipt" :disabled="disabled" v-model="inviteCode" placeholder="好友邀请码(选填)" />
 					<text class="inviteTips" v-if="disabled">好友邀请码</text>
