@@ -80,10 +80,10 @@
 				<view class="uni-modal__hd pd15">下载</view>
 				<view class="uni-modal__bd text_left pd15">
 					<view class="name">
-						文件名：
+						已下载：{{Downinfo.totalBytesWritten||0}}kb({{Downinfo.progress||0}}%)
 					</view>
 					<view class="name">
-						大小：{{dsize}}kb
+						大小：{{Downinfo.totalBytesExpectedToWrite||0}}kb
 					</view>
 				</view>
 				<view class="btns flex-between">
@@ -93,7 +93,7 @@
 			</view>
 		</uni-popup>
 	</view>
-</template>
+</template> 
 
 <script>
 	import {post,get,dateUtils,toLogin} from '@/common/util.js';
@@ -135,8 +135,7 @@
 				Comment:"",//评论内容
 				PCommentname:"",//上级评论名
 				isShowDowninfo:false,
-				luj:"",//保存的路径
-				dsize:"",//下载文件大小
+				Downinfo:{},//下载信息
 				durl:"",//下载的路径
 			}
 		},
@@ -298,6 +297,7 @@
 			},
 			//获取下载路径
 			async DownloadCourse(type){
+				let that = this;
 				if(toLogin()){
 					if(type==1){
 						uni.showToast({
@@ -312,8 +312,8 @@
 							"CourseId":this.Courseid
 						});
 						if(result.code==0){
-							this.durl=result.data;
-							this.isShowDowninfo=true;
+							that.durl=result.data;
+							that.isShowDowninfo=true;
 						}
 					}
 				}
@@ -322,37 +322,36 @@
 			// 下载
 			Downloadfun(){
 				let that = this;
+				// #ifdef H5
+				 this.saveH5(that.durl)
+				// #endif
+				// #ifndef H5
 				const downloadTask = uni.downloadFile({
 					url: that.durl, 
 					success: (res) => {
 						if (res.statusCode === 200) {
-							uni.showToast({
-								title: "下载成功"
-							})
-							that.AddDownloadRecord();
+							uni.saveVideoToPhotosAlbum({
+								filePath: res.tempFilePath,
+								success: function(red) {
+									that.isShowDowninfo=false;
+									console.log(red)
+									that.AddDownloadRecord();
+									console.log("red")
+								}
+							});
+							// uni.hideLoading();
+							
 						}
-					
-						// #ifndef H5
-						uni.saveFile({
-							tempFilePath: res.tempFilePath,
-							success: function(red) {
-								that.luj = red.savedFilePath
-								console.log(red)
-								console.log("red")
-							}
-						});
-						// #endif
-						// #ifdef H5
-						 this.saveH5(res.tempFilePath)
-						// #endif
 					}
 				});			
 				downloadTask.onProgressUpdate((res) => {
-					this.dsize=res.totalBytesExpectedToWrite;
-					// console.log('下载进度' + res.progress);
-					// console.log('已经下载的数据长度' + res.totalBytesWritten);
-					// console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+					this.Downinfo=res;
+					// uni.showLoading({
+					//   title: '已下载'+res.progress //数据请求前loading
+					// })
 				})
+			// #endif
+				
 			},	
 			saveH5(url){
 				let oA = document.createElement("a");

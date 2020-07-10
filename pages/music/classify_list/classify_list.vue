@@ -335,7 +335,13 @@
 		}
 	}
 </script>
-
+<style>
+	/* #ifdef APP-PLUS */
+	page{
+		background: #fff;
+	}	
+	/* #endif */
+</style>
 <style lang="scss" scoped>
 	page{
 		background: #fff;
@@ -393,6 +399,9 @@
 					height: 40upx;
 				}
 			}
+		}
+		&:last-child{
+			border-bottom: none;
 		}
 	}
 }

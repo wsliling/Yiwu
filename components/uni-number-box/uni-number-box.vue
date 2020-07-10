@@ -126,17 +126,16 @@
 
 	.uni-numbox:after {
 		content: '';
+		width: 100%;
+		height: 100%;
 		position: absolute;
 		transform-origin: center;
 		box-sizing: border-box;
 		pointer-events: none;
-		top: -50%;
-		left: -50%;
-		right: -50%;
-		bottom: -50%;
-		border: 1px solid #c8c7cc;
+		top: 0;
+		left: 0;
+		border: 1px solid #ededee;
 		border-radius: 12upx;
-		transform: scale(.5)
 	}
 
 	.uni-numbox__minus,

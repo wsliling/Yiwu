@@ -24,11 +24,19 @@
 			// #ifndef MP-WEIXIN
 			this.webSrc="/hybrid/html/index.html?type="+this.type+"&userId="+this.userId+"&token="+this.token
 			// #endif
-			console.log(uni.getStorageSync("fileAddress"));
 		},
 		methods: {
 			message(event){
-				console.log(event.detail.data);
+				let data=event.detail.data;console.log(data[0])
+				if(data.length>0){
+					if(this.type==0){
+						uni.setStorageSync("fileName",data[0].fileName)
+						uni.setStorageSync("filePath",data[0].filePath)
+					}else{
+						uni.setStorageSync("VfileName",data[0].fileName)
+						uni.setStorageSync("VfilePath",data[0].filePath)
+					}
+				}
 			}
 		}
 	}

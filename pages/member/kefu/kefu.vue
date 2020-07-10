@@ -59,7 +59,7 @@
 .kefu_top{
 	display: flex;justify-content: flex-start;align-items: center;
 	padding:30upx;
-	background: #ffffff;border-bottom:1upx solid #f2f2f2;
+	background: #ffffff;
 }
 .kefu_detail{
 	display: flex;justify-content: flex-start;align-items: center;

@@ -23,7 +23,8 @@
 .pages-member-transDetails-transDetails .uni-page-head,
 .pages-member-incomeDetails-incomeDetails .uni-page-head,
 .pages-member-myBuy-myBuy .uni-page-head,
-.pages-music-list-list .uni-page-head{border-bottom: none;}
+.pages-music-list-list .uni-page-head,
+.pages-tabBar-my-my .uni-page-head{border-bottom: none;}
 .pages-tabBar-index-index .uni-page-head-transparent .uni-page-head-btn{
 	justify-content: center;
 }
