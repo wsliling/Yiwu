@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<block v-if="step===1">
-			<div class="plr30 protophone pl30">向{{protoPhone}}手机号发送验证码</div>
+			<div class="protophone pd15">向{{protoPhone}}手机号发送验证码</div>
 			<view class="item bg_fff flex flexAlignCenter justifyContentBetween mt2">
 				<input type="text" placeholder="请输入验证码" class="flex1 font26" v-model="protoPhoneCode">
 				<text class="color_red" @click="sendCode(0)">{{codeMsg}}</text>
@@ -52,7 +52,7 @@ export default {
 	onShow(){
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
-		this.getProtoPhone();
+		//this.getProtoPhone();
 		if(this.timer){
 			clearInterval(this.timer);
 		}

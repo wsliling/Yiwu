@@ -15,7 +15,19 @@
 		  </view>
 		  <view class="for_bd">
 			<view class="proList flex flexWrap justifyContentBetween">
-				<shopItem  v-for="(val,key) in list" :key="key" :item="val"></shopItem>
+				<view class="item" v-for="(item,index) in list" :key="index" @click="navigate('shopSon/product/productDetails',{proId:item.Id})">
+					<image :src="item.PicNo" class="item_img" mode="aspectFill"></image>
+					<view class="item_info">
+						<view class="item_title uni-ellipsis">{{item.Name}}</view>
+						<view class="flex flexAlignEnd justifyContentBetween item_total">
+							<view class="flex flexAlignEnd">
+								<span class="item_price">￥{{item.Price}}</span>
+							</view>
+							<view class="item_market">{{item.SalesVolume}}人付款</view>
+						</view>
+					</view>
+				</view>
+				<!-- <shopItem  v-for="(val,key) in list" :key="key" :item="val"></shopItem> -->
 			</view>
 		  </view>
 		</view>
@@ -25,7 +37,7 @@
 </template>
 
 <script>
-	import {post,get} from '@/common/util.js';
+	import {post,get,navigate} from '@/common/util.js';
 	import noData from '@/components/notData.vue';
 	import uniLoadMore from '@/components/uni-load-more.vue';
 	import shopItem from '@/components/shop/shopItem.vue';
@@ -35,6 +47,7 @@
 			return {
 				userId: "",
 				token: "",
+				navigate,
 				orderNo:"",
 				Noarr:[],
 				GroupId:0,//大于0 是拼团
@@ -47,8 +60,9 @@
 			}
 		},
 		onLoad(e) {
+			console.log(e)
 			// #ifdef APP-PLUS
-			this.GroupId=e.query.GroupId;
+			this.GroupId=e.GroupId||0;
 			// #endif
 			this.status = e.status;
 			this.orderNo=e.orderNo;
@@ -64,8 +78,6 @@
 			// this.orderNo=this.$root.$mp.query.orderNo;
 			// this.GroupId=this.$root.$mp.query.GroupId;
 			// #endif
-			
-			console.log()
 		},
 		methods: {
 			//跳转
@@ -95,7 +107,7 @@
 			},
 			async getList(){
 				this.loadMore =1;
-				const res = await post('Goods/YWHomeGoodsList',{
+				const res = await post('Goods/GoodsList',{
 					UserId:this.userId,
 					Token:this.token,
 					Page:this.page,
@@ -125,7 +137,6 @@
 </script>
 
 <style scoped lang="scss">
-	// @import "../../common/product.scss";
   .payinfo{background: $primary; text-align: center; color: #fff; padding: 20upx 0 40upx;}
   .payinfo .p1{font-size: 42upx;justify-content: center;}
   .payinfo .p1 .iconfont{ margin-right: 20upx;}
@@ -134,7 +145,6 @@
   .payinfo .p2 .yuan{ font-size: 32upx}
   .payinfo .btns{ display:flex;align-items:center;justify-content:center;}
   .payinfo .btns .btn{ width: 200upx; padding: 6upx 0; margin: 0 20upx; border-radius: 100px; border: 1px solid #fff;}
-  .foryouCon{background: #f2f2f2;}
   .for_hd{ padding: 40upx 20upx;
   display: -webkit-box;
   display: -webkit-flex;
@@ -151,5 +161,34 @@
   .for_hd .icon_r {
       background: url(http://shop.dadanyipin.com/static/icons/tit_r.png) center center no-repeat;
       background-size: cover;
+  }
+  .proList{
+  	padding:0 30upx;
+  	.item{
+  		width:49%;margin-bottom:20upx;
+  		background: #ffffff;
+		border-radius: 12upx;
+		overflow: hidden;
+  		.item_info{
+  			padding:20upx 10upx;
+  		}
+  		.item_total{
+  			width:100%;
+  		}
+  		.item_img{
+  			width:100%;height:335upx;
+  		}
+  		.item_title{
+  			font-size:30upx;font-weight:600;
+  		}
+  		.item_price{
+  			color:$primary;font-size:35upx;
+  		}
+  		.item_market{
+  			color:#999;font-size:24upx;
+  		}
+  		
+  	}
+  	
   }
 </style>

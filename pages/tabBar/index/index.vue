@@ -778,6 +778,7 @@
 			this['Page'+index]++;
 			this.fun(index);
 		},
+		//监听页面滚动
 		onPageScroll(e){
 			let _this=this;
 			const query = uni.createSelectorQuery().in(_this);

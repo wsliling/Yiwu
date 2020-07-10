@@ -183,11 +183,12 @@
 		}
 	}
 </script>
-
-<style lang="scss" scoped>
+<style>
 	page{
 		background: #fff;
-	}
+	}	
+</style>
+<style lang="scss" scoped>	
 .head {
 	height: 44px;
 	border-bottom: 1px solid #eee;

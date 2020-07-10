@@ -309,7 +309,7 @@
 	padding: 20rpx 30rpx!important;
 	display:flex;align-items:center;
 	background:#fff;
-	border-bottom:1upx solid #ececec;
+	border-bottom:1upx solid #f7f7f7;
 }
 .msgListContent{
   width:100%;

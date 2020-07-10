@@ -25,7 +25,7 @@
 				<span class="red" v-if="Wallet > 0 || Income > 0" @click="Allwithdraw">全部提现</span>
 			</div>
 		</div>
-		<div class="btns">
+		<div class="btns pd15">
 			<div class="btn boxSize bg_ff952e color_fff center" @click="submitWithdraw">预计{{ CashWithdrawalTime }}小时处理，确认提现</div>
 		</div>
 	</div>

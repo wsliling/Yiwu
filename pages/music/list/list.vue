@@ -33,10 +33,10 @@
 					</view>
 				</view>
 			</view>
-			<view class="uni-tab-bar-loading" v-if="hasData">
-				<uni-load-more :loadingType="loadingType"></uni-load-more>
-			</view>
 			<noData :isShow="noDataIsShow"></noData>
+		</view>
+		<view class="uni-tab-bar-loading" v-if="hasData">
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</view>
 		<!-- 更多操作	 -->
 		<uni-popup mode="fixed" :show="isShowOperation" :h5Top="true" position="bottom" @hidePopup="hidePopup">
@@ -374,7 +374,13 @@
 		}
 	}
 </script>
-
+<style>
+	/* #ifdef APP-PLUS */
+	page{
+		background: #fff;
+	}	
+	/* #endif */
+</style>
 <style lang="scss" scoped>
 	@import './style'
 </style>
