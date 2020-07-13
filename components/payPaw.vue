@@ -5,7 +5,7 @@
 			<view class="pay-money" v-if="isJifen">{{allprice}}<text class="fz12">积分</text></view>
             <view class="pay-money" v-else>￥{{allprice}}</view>
             <view class="pay-password">
-				<input type="number" maxlength="6" class="real-ipt" v-model="Password">
+				<input type="number" maxlength="6" class="real-ipt" v-model="Password" :focus="true">
                 <view class="surface-ipts">
                     <view class="surface-ipt">
                         <input type="password" disabled=true v-model="PasswordArr[0]">
