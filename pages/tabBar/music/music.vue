@@ -61,7 +61,7 @@
 					 <view class="uni-ellipsis">{{item.Name}}</view>
 				 </view>
 			 </view>
-			<noData :isShow="classifylist.length==0"></noData>
+			<noData :isShow="classifylist.length==0" v-if="classifylist.length==0"></noData>
 		</view>
 		<block v-if="tabIndex==1">
 			<view class="list" v-if="hasData">

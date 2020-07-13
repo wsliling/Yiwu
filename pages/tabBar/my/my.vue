@@ -26,7 +26,13 @@
 					</view>
 				</view>
 				<view class="user-right">
-					<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click="tolink('/pages/member/openVip/openVip')"></image>
+					<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" 
+						@click.stop="navigate('member/openVip/openVip',{
+							avatar:memberInfo.Avatar,
+							name:memberInfo.NickName,
+							endTime:memberInfo.PlusEndTime
+						},true)">
+					</image>
 				</view>
 			</view>
 		</view>
