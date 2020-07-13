@@ -19,7 +19,7 @@
 		<view class="search bg_fff">
 			<view class="seachbox">
 				<text class="uni-icon uni-icon-search"></text>
-				<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear"></ans-input>
+				<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="searchClear" class="flex1"></ans-input>
 			</view>
 		</view>
 		<view class="videolist bg_fff" v-if="hasData">

@@ -141,6 +141,7 @@
     height: 200upx;
 	margin:0 auto;
 	border-radius: 46upx;
+	overflow: hidden;
 }
 .MP-login .logoimg .img_bb{
 	width:100%;height:100%
