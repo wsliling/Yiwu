@@ -330,7 +330,7 @@ export default {
 				Count:this.selectSku.buyNum,
 				SpecText:this.selectSku.text
 			})
-			if(res.code) return;
+			if(res.code) return; 
 			toast('添加成功',{icon:true})
 		},
 		// 立即购买
