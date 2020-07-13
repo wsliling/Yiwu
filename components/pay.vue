@@ -387,7 +387,7 @@ export default {
 .payPasswordComponent {
   background: rgba(0, 0, 0, 0.4);
   position: fixed;
-  top: -350px;
+  top: -400px;
   left: 0;
   z-index: 102;
   height: 100vh;

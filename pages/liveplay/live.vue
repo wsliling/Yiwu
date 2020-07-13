@@ -1,102 +1,127 @@
 <template>
 	<view class="swiper">
 		<swiper :vertical="true" :current="swiperIndex" class="playSwiper">
-			<swiper-item v-for="(liveItem,liveIndex) in liveList" :key="liveIndex">
-				<!-- #ifdef H5 -->
-				<div class="H5video" id="H5video" :style="{ height: height + 'px' }"></div>
-				<!-- #endif -->
-				<!-- 底部信息 -->
-				<view class="header-btn">
-					<div class="left">
-						<img src="http://www.sc-mall.net/static/icons/icon_goods.png" alt="" mode="aspectFill" />
-						<div class="name">
-							<p>你好，用户名</p>
-							<p>123人观看</p>
+			<block v-for="(liveItem, liveIndex) in liveList" :key="liveIndex">
+				<swiper-item v-if="liveItem.Flag" class="swiperItem">
+					<!-- #ifdef H5 -->
+					<div class="H5video" :id="liveItem.MemberId" :style="{ height: height + 'px' }"></div>
+					<!-- #endif -->
+					<!-- #ifdef APP-PLUS -->
+					<video :src="liveItem.RTMP" :controls="false" :loop="true" :show-center-play-btn="false"></video>
+					<!-- #endif -->
+					<!-- 底部信息 -->
+					<view class="header-btn">
+						<div class="left">
+							<img :src="liveItem.Avatar" alt="" mode="aspectFill" />
+							<div class="name">
+								<p>{{ liveItem.NickName }}</p>
+								<p>{{ liveItem.ViewNum+1 }}人观看</p>
+							</div>
+							<div class="btn" :class="{ active: liveItem.IsFollow }" @click="onFollow(liveItem)">{{ liveItem.IsFollow ? '已关注' : '关注' }}</div>
 						</div>
-						<div class="btn">关注</div>
-					</div>
-					<div class="close">×</div>
-				</view>
-				<view class="nlv-footToolbar">
-					<!-- 滚动msg信息 -->
-					<scroll-view class="nlv-rollMsgPanel" scroll-y show-scrollbar="false" :scroll-top="scrollTop">
-						<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
-							<view class="nlv-msglist">
-								<view class="msg_bg">
-									<text class="msg_name">{{ msgitem.name }}</text>
-									<text class="msg_text">{{ msgitem.Info }}</text>
+						<div class="close">×</div>
+					</view>
+					<view class="nlv-footToolbar">
+						<!-- 滚动msg信息 -->
+						<scroll-view class="nlv-rollMsgPanel" scroll-y show-scrollbar="false" :scroll-top="scrollTop">
+							<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
+								<view class="nlv-msglist">
+									<view class="msg_bg">
+										<text class="msg_name">{{ msgitem.name }}</text>
+										<text class="msg_text">{{ msgitem.Info }}</text>
+									</view>
+								</view>
+							</block>
+						</scroll-view>
+						<view class="nlv-infobox">
+							<view class="nlv_btntool" v-if="liveItem.ShopId && proList.length">
+								<view class="btn-toolitem" @click="showGoods">
+									<image src="/static/icons/product-icon.png" class="icon_goods"></image>
+									<span>{{ proList.length }}</span>
 								</view>
 							</view>
-						</block>
-					</scroll-view>
-					<!-- <view class="goodsbox" v-if="showgoodsbox">
-				<view class="item">
-					<view class="imgbox">
-						<image :src="PicNo" mode="widthFix"></image>
-					</view>
-					<view class="txtBox">
-						<view class="title uni-ellipsis">
-							{{Name}}
-						</view>
-						<view class="price red">
-							￥{{Price}}
-						</view>
-					</view>
-				</view>
-			</view> -->
-					<view class="nlv-infobox">
-						<view class="nlv_btntool" v-if="liveItem.ShopId&&proList.length">
-							<view class="btn-toolitem" @click="showGoods">
-								<image src="/static/icons/product-icon.png" class="icon_goods"></image>
-								<span>123</span>
+							<view class="nlv_reply" @click="Repliy">
+								<image src="http://www.sc-mall.net/static/icons/icon_bianji.png" class="icon_bianji"></image>
+								<text class="nlv_reply_text">跟主播聊点什么？</text>
 							</view>
+							<div class="btn-box">
+								<share :h5Url="'/pages/liveplay/live?id='+liveItem.MemberId"
+								:wxUrl="'/pages/liveplay/live?id='+liveItem.MemberId"
+								>
+									<img src="/static/icons/share.png" alt="" mode="widthFix" />
+								</share>
+								
+								<img @click="showGift" src="/static/icons/gift.png" alt="" mode="widthFix" />
+								<div class="like" @click="onLike(liveItem)">
+									<img src="http://yw.wtvxin.com/static/like2.png" alt="" mode="widthFix" />
+									<div class="num active">
+										{{likeNum(liveItem.LikeNum)}}
+									</div>
+								</div>
+							</div>
 						</view>
-						<view class="nlv_reply" @click="Repliy">
-							<image src="http://www.sc-mall.net/static/icons/icon_bianji.png" class="icon_bianji"></image>
-							<text class="nlv_reply_text">跟主播聊点什么？</text>
-						</view>
-						<div class="btn-box">
-							<img src="/static/icons/share.png" alt="" mode="widthFix" />
-							<img src="/static/icons/gift.png" alt="" mode="widthFix" />
-							<img src="/static/icons/xin.png" alt="" mode="widthFix" />
-						</div>
 					</view>
-				</view>
-				
-					</swiper-item>
-				</swiper>
-				<uni-popup type="bottom" ref="proList" >
-					<proList :list="[1,2,3,4]"></proList>
-				</uni-popup>
-				<view class="bottomicon" v-if="isshowInput">
-					<view class="inputbtn">
-						<input
-							type="text"
-							placeholder="说点什么..."
-							class="input_text"
-							v-model="sendInfo"
-							confirm-type="send"
-							confirm-hold
-							@blur="blurFocus"
-							:focus="inputFocusStatus"
-							@confirm="sendMessage"
-							:cursor-spacing="10"
-						/>
-						<!-- <view class="rightbtn" @click="sendMessage(sendInfo)">
+				</swiper-item>
+			</block>
+		</swiper>
+		<view class="bottomicon" v-if="isshowInput">
+			<view class="inputbtn">
+				<input
+					type="text"
+					placeholder="说点什么..."
+					class="input_text"
+					v-model="sendInfo"
+					confirm-type="send"
+					confirm-hold
+					@blur="blurFocus"
+					:focus="inputFocusStatus"
+					@confirm="sendMessage"
+					:cursor-spacing="10"
+				/>
+				<!-- <view class="rightbtn" @click="sendMessage(sendInfo)">
 							<image src="http://www.sc-mall.net/static/icons/icon_Send.png" class="sendBtn"></image>
 						</view> -->
-					</view>
-				</view>
+			</view>
+		</view>
+		<!-- 产品 -->
+		<uni-popup type="bottom" ref="proList">
+			<proListConponent :list="proList" @confirm="proBuy"></proListConponent>
+		</uni-popup>
+		<!-- 礼物 -->
+		<uni-popup type="bottom" ref="gift">
+			<div class="giftBox">
+				<div class="gift-list">
+					<div class="gift-item" @click="sendGift"
+						v-for="(item,index) in giftList" :key="index"
+						>
+						<img :src="item.Img" alt="" mode="aspectFill">
+						<div class="name">
+							<div class="price">{{item.Cost}}
+								<span class="bi">币</span>
+							</div>
+							{{item.Name}}
+						</div>
+					</div>
+				</div>
+				<div class="total">
+					<div>{{myMoney}}
+						<span class="bi">币</span>
+					</div>
+					<div class="btn" @click="payTo">充值</div>
+				</div>
+			</div>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
-import { host, post, get, wssPath } from '@/common/util.js';
+import { host, post, get, wssPath, toLogin } from '@/common/util.js';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
-import proList from './proList.vue';
+import proListConponent from './proList.vue';
 export default {
 	components: {
-		uniPopup,proList
+		uniPopup,
+		proListConponent
 	},
 	data() {
 		return {
@@ -124,18 +149,22 @@ export default {
 			SecretKey: '',
 			scrollTop: 2000, //滚动到底部
 
-			memberId:'',
-			swiperIndex: 0 ,//轮播的index
-			liveList:[],//直播列表
-			proList:[],//产品列表
+			memberId: '',
+			swiperIndex: 0, //轮播的index
+			liveList: [], //直播列表
+			proList: [], //产品列表
+			giftList: [], //礼物列表
+			myMoney:0,//我的直播币
 		};
 	},
 	onLoad(e) {
 		// #ifdef APP-PLUS
 		// #endif
-		this.memberId = e.id;
+		this.memberId = e.id || '';
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
+		this.play();
+		this.getGiftList();//获取礼物列表
 	},
 	onShow() {
 		let res = uni.getSystemInfoSync();
@@ -145,11 +174,10 @@ export default {
 		// #ifndef APP-PLUS
 		// this.ShopId = this.$mp.query.ShopId
 		// #endif
-		console.log(this.ShopId);
-		this.play();
+		this.getMyMoney();//获取我的直播币
 		this.showgoodsbox = true;
-		this.countTime();
-		this.livemessage();
+		// this.countTime();
+		// this.livemessage();
 	},
 	onHide() {
 		this.SocketTask.close();
@@ -254,30 +282,35 @@ export default {
 			return data;
 		},
 		async play() {
-			// let res = await post('TencentCloud/PlayURL',{
-			// 	UserId: this.userId,
-			// 	Token: this.token,
-			// 	MemberId:this.ShopId
-			// })
 			let res = await post('TencentCloud/PlayListURL', {
-				UserId: this.userId,
-				Token: this.token,
 				MemberId: this.memberId
 			});
-			if (res.code == 0) {
-				const data = res.data;
-				if(data[0].ShopId){
-					this.getProList(data[0].ShopId)
+			if (res.code) return;
+			const data = res.data;
+			if (data.length > 0) {
+				if (data[0].fType) {
+					this.getProList(data[0].ShopId);
 				}
-				this.liveList = res.data;
-				console.log(res.data);
+				this.liveList = data;
+				this.data = data[0];
+				console.log(this.data);
 				// #ifdef H5
-				this.playH5();
+				this.$nextTick(()=>{
+					this.playH5();
+				})
 				// #endif
+			} else {
+				uni.showToast({
+					title: '当前没人在直播哦~请晚点再来',
+					icon: 'none'
+				});
+				setTimeout(() => {
+					uni.navigateBack();
+				}, 2000);
 			}
 		},
 		playH5() {
-			var player = new TcPlayer('H5video', {
+			var player = new TcPlayer('B01CB6B8403E951F', {
 				m3u8: this.data.HLS, //请替换成实际可用的播放地址
 				flv: this.data.FLV,
 				autoplay: true, //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
@@ -350,43 +383,106 @@ export default {
 			// this.isshowInput=false;
 			this.isshowInput = false;
 		},
-		//商品倒计时隐藏
-		countTime() {
-			let TIME_COUNT = 10;
-			this.countNum = TIME_COUNT;
-			let timer = setInterval(() => {
-				if (this.countNum > 0 && this.countNum <= TIME_COUNT) {
-					this.countNum--;
-					this.showgoodsbox = true;
-				} else {
-					clearInterval(timer);
-					timer = null;
-					this.showgoodsbox = false;
-				}
-			}, 1000);
-		},
 		//链接跳转
 		goUrl(url) {
 			uni.navigateTo({
 				url: url
 			});
 		},
+		// 关注
+		async onFollow(item) {
+			if(!toLogin()) return;
+			const res = await post('Find/FollowOperation', {
+				ToMemberId: item.MemberId,
+				Token: this.token,
+				UserId: this.userId
+			});
+			if (res.code) return;
+			item.IsFollow ? (item.IsFollow = 0) : (item.IsFollow = 1);
+			uni.showToast({
+				title: res.msg
+			});
+		},
+		// 点赞
+		onLike(item){
+			if(!toLogin()) return;
+			post('TencentCloud/LiveRoomLikes',{
+				Token: this.token,
+				UserId: this.userId,
+				StreamName:item.StreamName,
+				pType:item.fType,
+				MemberId:item.MemberId||'',
+				ShopId:item.ShopId||''
+			})
+			item.LikeNum+=1;
+		},
+		// 格式化点赞数量
+		likeNum(num){
+			if(num>10000){
+				return parseInt(num/10000) + '万'
+			}else if(num>1000){
+				return parseInt(num/1000) + '千'
+			}else{
+				return num;
+			}
+		},
 		//***************商品***************
 		// 获取产品列表
-		async getProList(shopId){
-			const res = await post('Goods/GetGoodsListByM',{
-				UserId:this.userId,
-				Token:this.token,
-				ShopId:shopId,
-				IsRecommend:1
-			})
-			if(!toLogin())return;
-			if(res.code)return;
-			res.data.map(item=>{
-				item.confirmText='推荐商品';
-			})
+		async getProList(shopId) {
+			const res = await post('Goods/GetGoodsListByM', {
+				ShopId: shopId,
+				IsRecommend: 1
+			});
+			if (res.code) return;
 			this.proList = res.data;
+			console.log(this.proList, 'prolist');
 		},
+		// 立即购买
+		proBuy(item) {
+			if(!toLogin()) return;
+			uni.navigateTo({
+				url: '/pages/shopSon/product/productDetails?proId=' + item.Id
+			});
+		},
+		//**************礼物********
+		// 打开礼物
+		showGift(){
+			this.$refs.gift.open();
+		},
+		// 获取礼物列表
+		async getGiftList() {
+			const res = await post('TencentCloud/GiftList',{t:1});
+			if (res.code) return;
+			this.giftList = res.data;
+			console.log('gift',this.giftList)
+		},
+		// 送礼
+		sendGift(){
+			if(!toLogin()) return;
+		},
+		// 充值
+		payTo(){
+			if(!toLogin()) return;
+			// uni.setStorageSync('livePayMemberId',)
+			uni.navigateTo({
+				url:'/pages/member/livebi/livebi'
+			})
+		},
+		// 获取我的直播币
+		getMyMoney(){
+			if(!this.userId||!this.token)return;
+			post('User/GetMyIncome',{
+				UserId:this.userId,
+				Token:this.token
+			}).then(res=>{
+				if (res.code==2){
+					uni.setStorageSync('token','')
+					uni.setStorageSync('userId','')
+				}
+				if(res.code)return;
+				this.myMoney = res.data.LiveStreamMoney*1;
+			})
+		}
 	}
 };
 </script>
@@ -412,9 +508,9 @@ export default {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	padding: 20upx;
 	.nlv-rollMsgPanel {
 		height: 35vh;
+		padding:0 20upx;
 		.nlv-msglist {
 			// margin-bottom: 20upx;
 			flex-direction: row;
@@ -422,10 +518,10 @@ export default {
 				flex-direction: row;
 				flex-wrap: wrap;
 				background: rgba(0, 0, 0, 0.4);
-				border-radius: 12upx;
+				border-radius: 30upx;
 				padding: 10upx;
 				line-height: 1.2;
-				font-size:24upx;
+				font-size: 24upx;
 				max-width: 64%;
 				text {
 					display: inline-block;
@@ -445,34 +541,14 @@ export default {
 			}
 		}
 	}
-	.goodsbox {
-		width: 420upx;
-		margin-top: 20upx;
-		.item {
-			display: flex;
-			background: #fff;
-			flex-direction: row;
-			justify-content: flex-start;
-			.imgbox {
-				width: 100upx;
-				height: 100upx;
-				margin-right: 20upx;
-			}
-			.txtBox {
-				width: 300upx;
-			}
-			.title {
-				display: block;
-			}
-		}
-	}
 	.nlv-infobox {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
 		margin-top: 20upx;
-		padding: 0 10upx;
+		padding:20upx;
+		
 		.nlv_reply {
 			flex-direction: row;
 			display: flex;
@@ -498,8 +574,27 @@ export default {
 			justify-content: space-between;
 			width: 215upx;
 			img {
-				width: 45upx;
-				height: 45upx;
+				width: 50upx;
+				height: 50upx;
+			}
+			.like{
+				position:relative;
+				font-size:0;
+				.num{
+					position:absolute;
+					top:0;left:0;
+					line-height:2.4;
+					font-size:18upx;
+					color:#dd196d;
+					text-align:center;width:100%;
+					&.active{
+						color:#fff;
+					}
+				}
+				img{
+					width: 65upx;
+					height: 65upx;
+				}
 			}
 		}
 		.btn-toolitem {
@@ -566,14 +661,14 @@ export default {
 	justify-content: space-between;
 	width: 100%;
 	color: #fff;
-	position: fixed;
+	position: absolute;
 	top: 30upx;
 	left: 0;
 	padding: 0 30upx;
 	.left {
 		background: rgba(0, 0, 0, 0.4);
-		padding: 10upx;
-		border-radius: 30upx;
+		padding: 8upx 12upx;
+		border-radius: 50upx;
 		display: flex;
 		align-items: center;
 		img {
@@ -584,8 +679,8 @@ export default {
 		.name {
 			color: #fff;
 			line-height: 1.5;
-			margin: 0 10upx;
-			min-width: 200upx;
+			margin-left: 10upx;
+			margin-right: 20upx;
 			font-size: 20upx;
 		}
 		.btn {
@@ -593,6 +688,10 @@ export default {
 			border-radius: 20upx;
 			padding: 0 15upx;
 			line-height: 43upx;
+			&.active {
+				color: #dd196d;
+				background: #fff;
+			}
 		}
 	}
 	.close {
@@ -603,5 +702,61 @@ export default {
 }
 .playSwiper {
 	height: 100%;
+	.swiperItem{
+		position:relative;
+	}
+}
+.giftBox{
+	background:#fff;
+	padding-top:20upx;
+	.gift-list{
+		display:flex;
+		align-items:center;
+		flex-flow:row wrap;
+		.gift-item{
+			display:flex;
+			justify-content:space-between;
+			align-items:center;
+			flex-flow:column nowrap;
+			width:170upx;
+			margin:30upx 0;
+			font-size:28upx;
+			text-align:center;
+			.price{
+				color:#dd196d;
+				font-size:20upx;
+			}
+			img{
+				width:100upx;height:100upx;
+			}
+		}
+	}
+	.total{
+		display:flex;
+		justify-content:space-between;
+		align-items:center;
+		padding:0 30upx;
+		line-height:3.5;
+		border-top:1upx solid #e8e8e8;
+		color:#dd196d;
+		font-size:28upx;
+		.btn{
+			background: #dd196d;
+			border-radius: 30upx;
+			padding: 0 30upx;
+			line-height: 2;
+			color:#fff;
+		}
+	}
+	.bi{
+		width:40upx;height:40upx;border-radius:50%;
+		background:rgb(251, 213, 68);
+		font-size:16upx;
+		line-height:40upx;
+		color:#fff;
+		text-align:center;
+		display:inline-block;
+		margin:0 5upx;
+	}
 }
 </style>

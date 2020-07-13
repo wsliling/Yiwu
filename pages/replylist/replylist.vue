@@ -13,10 +13,20 @@
 				<view class="desc">
 					{{NewsInfo.Title}}
 				</view>
-				<view :class="['maxpic',NewsInfo.Type==0?'maxh':'']" v-if="NewsInfo.PicImg||NewsInfo.VideoUrl">
-					<view v-if="NewsInfo.VideoUrl" class="isplay"></view>
-					<video v-if="NewsInfo.Type==1" :src="NewsInfo.VideoUrl" controls :show-mute-btn="true" :poster="NewsInfo.PicImg"></video>
-					<image v-if="NewsInfo.Type==0" :src="NewsInfo.PicImg" mode="widthFix"></image>
+				<view :class="['maxpic',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
+					<view v-if="!NewsInfo.play||NewsInfo.fixed" class="isplay" @click="playBtn"></view>
+					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" controls autoplay @play="playVideo" @pause="pauseVideo" id="video" :show-mute-btn="true" :poster="NewsInfo.PicImg" object-fit="cover"></video>
+					<image class="postpic" :src="NewsInfo.PicImg" mode="aspectFill"></image>
+				</view>
+				<!-- <view class="maxpic maxh" v-if="NewsInfo.Type==0&&NewsInfo.PicImg">
+					<image :src="NewsInfo.PicImg" mode="widthFix"></image>
+				</view> -->
+				<view v-if="NewsInfo.Type==0&&imgArr.length" :class="['image-section Grid3',imgArr.length==1?'image-section-one':'']">
+					<view class="image-list" v-if="imgArr&&i<3" v-for="(source, i) in imgArr" :key="i" >
+						<image class="img" :src="source" v-if="imgArr.length==1" mode="widthFix" @click="previewImg(imgArr,i)" />
+						<image class="img" :src="source" v-else mode="aspectFill" @click="previewImg(imgArr,i)" />
+					</view>
+					<view v-if="imgArr.length>3" class="count">{{imgArr.length}}</view>
 				</view>
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
@@ -43,12 +53,12 @@
 		<view class="uni-tab-bar-loading" v-if="hasData">
 			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</view>
-		<noData :isShow="noDataIsShow"></noData>
+		<noData :isShow="noDataIsShow" :tips="'暂无评论'"></noData>
 		<!-- 底部发表按钮 -->
 		<view class="foot-fiexd">
 			<view class="mark" v-if="IsShowReplyBox" @click="CancelReply"></view>
 			<view :class="['foot-reply flex-between',IsShowReplyBox?'active':'']">
-				<input class="ipt" type="text" v-model="Comment" @click="showReplyBox" :placeholder="placeholder"/>
+				<input class="ipt" type="text" cursor-spacing="10" v-model="Comment" @click="showReplyBox" :placeholder="placeholder"/>
 				<view class="btn-r" v-if="IsShowReplyBox">
 					<view :class="['sendBtn',Comment==''?'dis':'']" @click="Send">发布</view>
 				</view>
@@ -86,6 +96,9 @@
 				Comment:"",//评论内容
 				PCommentname:"",//上级评论名
 				NewsInfo:{},
+				imgArr:[],
+				videoContext:null,
+				onplayHeight:0,//当前播放视频距离顶部的高度
 			}
 		},
 		onLoad(e){
@@ -96,6 +109,21 @@
 			this.FindNewsInfo()
 		},
 		methods: {
+			pauseVideo(){
+				this.$set(this.NewsInfo,'fixed',true);
+			},
+			playVideo(){
+				this.$set(this.NewsInfo,'fixed',false);
+			},
+			playBtn(){
+				let _this = this;
+				_this.$set(_this.NewsInfo,'play',true);
+				_this.$set(_this.NewsInfo,'fixed',false);
+				setTimeout(()=>{
+					_this.videoContext=uni.createVideoContext('video');
+					_this.videoContext.play();
+				},500)
+			},
 			//跳转
 			tolink(Url) {
 				uni.navigateTo({
@@ -241,8 +269,19 @@
 					FindId: this.Findid
 				});
 				if (result.code === 0) {
+					this.$set(result.data,'play',false);
+					this.$set(result.data,'fixed',false);
+					this.imgArr=result.data.ImgList.split(",");
 					this.NewsInfo = result.data;
 				}
+			},
+			//预览图片
+			previewImg(imgurls,index){
+				uni.previewImage({
+					current:imgurls[index],
+					urls: imgurls,
+					indicator:imgurls.length
+				});
 			},
 			//关注取消关注 followtype 1推荐视频用户
 			async flow(id,index,followtype){
@@ -367,5 +406,73 @@
 	.inwith{
 		width: 350upx;
 		overflow: hidden;
+	}
+	.image-section {
+		margin-top: 20upx;
+		margin-right: -12upx;
+		margin-bottom: -12upx;
+		flex-direction: row;
+		justify-content: space-between;
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.image-section .image-list {
+		height: 230upx;
+		width: 33.3%;
+		float: left;
+		padding-right: 12upx;
+		margin-bottom: 12upx;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+	
+	.image-section .image-list .img {
+		width: 100%;
+		height: 100%;
+		border-radius: 6px;
+	}
+	
+	.image-section .count {
+		position: absolute;
+		right: 30upx;
+		bottom: 16upx;
+		font-size: 40upx;
+		color: #fff;
+	}
+	/*3列样式*/
+	.Grid3.image-section {
+		margin-top: 20upx;
+		margin-right: -12upx;
+		margin-bottom: -12upx;
+		flex-direction: row;
+		justify-content: space-between;
+		position: relative;
+		overflow: hidden;
+	}
+	
+	.Grid3.image-section .image-list {
+		height: 230upx;
+		width: 33.3%;
+		float: left;
+		padding-right: 12upx;
+		margin-bottom: 12upx;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+	
+	.Grid3.image-section.image-section-one {
+		display: block;
+	}
+	
+	.Grid3.image-section.image-section-one .image-list {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	
+	.Grid3.image-section.image-section-one .image-list .img {
+		display: block;
+		height: auto;
 	}
 </style>

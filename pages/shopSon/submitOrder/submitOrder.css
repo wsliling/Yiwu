@@ -9,7 +9,6 @@
 	width: 750upx;
 	overflow-x: hidden!important;
 	position:relative;
-	background: #f2f2f2;
 }
 .wrap::before{
 	display: block;

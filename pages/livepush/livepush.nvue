@@ -100,10 +100,10 @@ export default {
 		};
 	},
 	onLoad(e){
-		this.liveType = e.type;
+		this.liveType = e.type; //直播类型。0--舞者;1--店铺
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
-		this.getProList();
+		this.getProList();//获取产品列表，判断是否为店铺直播
 	},
 	onShow() {
 		this.userId = uni.getStorageSync('userId');
@@ -111,8 +111,6 @@ export default {
 		let res = uni.getSystemInfoSync();
 		this.width = res.windowWidth;
 		this.height = res.windowHeight;
-		
-		this.context = uni.createLivePusherContext('livePusher', this);
 		//权限设置,获取权限后开启直播
 		this.quanxian();
 	},
@@ -382,6 +380,7 @@ export default {
 		//******************产品*******************************
 		// 获取产品列表
 		async getProList(){
+			if(!this.liveType)return;
 			const res = await post('Goods/GetGoodsListByM',{
 				UserId:this.userId,
 				Token:this.token
@@ -407,6 +406,10 @@ export default {
 				proId:item.Id,
 				})
 			if(res.code)return;
+			uni.showToast({
+				title:res.msg,
+				icon:'none'
+			})
 			if(item.confirmText=='取消推荐'){
 				item.confirmText ='推荐商品';
 			}else{
@@ -417,13 +420,13 @@ export default {
 	// 页面卸载
 	onUnload(){
 		const that = this;
-		post('TencentCloud/PushCallBack',{
-			UserId: this.userId,
-			Token: this.token
-		})
 		that.context.stop({
 			success: a => {
 				console.log(JSON.stringify(a),'页面卸载');
+				post('TencentCloud/PushCallBack',{
+					UserId: this.userId,
+					Token: this.token
+				})
 			}
 		});
 	}

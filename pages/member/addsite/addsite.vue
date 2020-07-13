@@ -32,19 +32,19 @@
 						<label class="weui-label">详细地址</label>
 					</view>
 					<view class="weui-cell__bd">
-						<input type="text" class="weui-Area" v-model="fullAddress" placeholder="道路、门牌号、小区、楼栋号、单元、室等" />
-						</view>
+						<textarea class="weui-Area" v-model="fullAddress" placeholder="道路、门牌号、小区、楼栋号、单元、室等" />
+					</view>
 				</view>
 				<view class="weui-cell">
 					<view class="weui-cell__bd">
 						设为默认地址
 					</view>
 					<view class="weui-cell__ft text_r">
-						<switch :checked="checked" @change="change" color="#89674c"/>
+						<switch :checked="checked" @change="change" color="#DD196D"/>
 					</view>
 				</view>
 			</view>
-			<view class="btnBox" style="padding:100upx 20upx">
+			<view class="btnBox" style="padding:100upx 30upx">
 				<button type="primary" class="btn_bb cocor" @click="submit">{{buttonText}}</button>
 			</view>
 			<mpvue-city-picker v-if="hasData" :province="province" ref="mpvueCityPicker" :pickerValueDefault="cityPickerValueDefault" @onconfirm="onconfirm"></mpvue-city-picker>
@@ -292,9 +292,6 @@
 <style lang="scss">
 .content{
 	height: 100%;
-	.bg_89674c{
-		background: #cc9f68;
-	}
 }
 /* 收货地址 */
 .addressList .item {
@@ -365,7 +362,7 @@
 	line-height: 1.8;
 }
 .cocor{
-	background: #dd196d;
+	background: #dd196d !important;
 }
 
 </style>

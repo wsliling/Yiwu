@@ -201,7 +201,8 @@
 			goDetail(e) {
 				if(e.artType==0){//用户发布详情
 					uni.navigateTo({
-						url: '/pages/music/artDetail/artDetail?id='+e.id
+						// url: '/pages/music/artDetail/artDetail?id='+e.id
+						url:'/pages/replylist/replylist?id='+e.id
 					})
 				}
 				// else{//资讯详情、店铺

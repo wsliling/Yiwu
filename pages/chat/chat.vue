@@ -53,7 +53,7 @@
 		<view class="foot-fiexd">
 			<view class="mark" v-if="IsShowReplyBox" @click="CancelReply"></view>
 			<view :class="['foot-reply flex-between',IsShowReplyBox?'active':'']">
-				<input class="ipt" type="text" v-model="Comment" @click="showReplyBox" 
+				<input class="ipt" type="text" v-model="Comment" cursor-spacing="10" @click="showReplyBox" 
 					placeholder="请输入" confirm-type="send" @confirm="send"
 					/>
 				<view class="btn-r" v-if="IsShowReplyBox">

@@ -79,7 +79,14 @@
         ,{
             "path" : "pages/replylist/replylist",
             "style" : {
-				"navigationBarTitleText": "评论"
+				"navigationBarTitleText": "评论",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
@@ -108,19 +115,40 @@
 		,{
             "path" : "pages/homepage/homepage",
             "style" : {
-				"navigationBarTitleText": "主页"
+				"navigationBarTitleText": "主页",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/msgDetail/msgDetail",
             "style" : {
-				"navigationBarTitleText": "资讯详情"
+				"navigationBarTitleText": "资讯详情",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/pay2/pay2",
             "style" : {
-				"navigationBarTitleText": "确认支付"
+				"navigationBarTitleText": "确认支付",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
@@ -160,19 +188,40 @@
 				{
 					"path":"editinfo/editinfo",
 					"style": {
-						"navigationBarTitleText": "编辑资料"
+						"navigationBarTitleText": "编辑资料",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 			    ,{
                     "path" : "editNickName/editNickName",
                     "style" : {
-						"navigationBarTitleText": "修改昵称"
+						"navigationBarTitleText": "修改昵称",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "editintro/editintro",
                     "style" : {
-						"navigationBarTitleText": "修改简介"
+						"navigationBarTitleText": "修改简介",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
@@ -243,25 +292,53 @@
                 ,{
                     "path" : "wallet/wallet",
                     "style" : {
-						"navigationBarTitleText":"我的钱包"
+						"navigationBarTitleText":"我的钱包",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "myIncome/myIncome",
                     "style" : {
-						"navigationBarTitleText":"我的收入"
+						"navigationBarTitleText":"我的收入",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "myIntegral/myIntegral",
                     "style" : {
-						"navigationBarTitleText":"我的积分"
+						"navigationBarTitleText":"我的积分",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "livebi/livebi",
                     "style" : {
-						"navigationBarTitleText":"直播币"
+						"navigationBarTitleText":"直播币",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
@@ -303,10 +380,14 @@
                 ,{
                     "path" : "myMusic/myMusic",
                     "style" : {
-                    	"navigationBarTitleText":"我的舞曲"
-                    	// ,"app-plus": {
-                    	// 	"titleNView": false
-                    	// }
+                    	"navigationBarTitleText":"我的舞曲",
+                    	"app-plus": {
+                    		 "titleNView": {    
+                    			"splitLine": {  
+                    			  "color":"#eee"  
+                    			}    
+                    		 }
+                    	}
                     }
                 }
 				,{
@@ -318,7 +399,14 @@
                 ,{
                     "path" : "accountSafe/accountSafe",
                     "style" : {
-						"navigationBarTitleText":"账户安全"
+						"navigationBarTitleText":"账户安全",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
 				,{
@@ -330,19 +418,40 @@
                 ,{
                     "path" : "set/set",
                     "style" : {
-						"navigationBarTitleText":"设置"
+						"navigationBarTitleText":"设置",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "changeLoginPwd/changeLoginPwd",
                     "style" : {
-						"navigationBarTitleText":"修改登录密码"
+						"navigationBarTitleText":"修改登录密码",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
                     "path" : "setpwd/setpwd",
                     "style" : {
-						"navigationBarTitleText":"设置支付密码"
+						"navigationBarTitleText":"设置支付密码",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
                 ,{
@@ -360,7 +469,14 @@
 				,{
 				    "path" : "interflow/interflow",
 				    "style" : {
-						"navigationBarTitleText":"加入官方交流"
+						"navigationBarTitleText":"加入官方交流",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 				,{
@@ -372,7 +488,14 @@
 				,{
 				    "path" : "bankCard/bankCard",
 				    "style" : {
-						"navigationBarTitleText":"我的银行卡"
+						"navigationBarTitleText":"我的银行卡",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 				,{
@@ -405,14 +528,28 @@
 				,{
 				    "path" : "aboutUs/aboutUs",
 				    "style" : {
-						"navigationBarTitleText":"关于我们"
+						"navigationBarTitleText":"关于我们",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 				,{
 					"path":"kefu/kefu",
 					"style": {
 						"navigationBarTitleText": "在线客服",
-						"navigationBarBackgroundColor": "#ffffff"
+						"navigationBarBackgroundColor": "#ffffff",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
             ]
@@ -423,19 +560,40 @@
 				{
 				    "path" : "uploadMusic/uploadMusic",
 				    "style" : {
-						"navigationBarTitleText": "上传舞曲"
+						"navigationBarTitleText": "上传舞曲",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 			    ,{
                     "path" : "artPost/artPost",
                     "style" : {
-						"navigationBarTitleText": "发布动态"
+						"navigationBarTitleText": "发布动态",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
                 }
 				,{
 				    "path" : "artDetail/artDetail",
 				    "style" : {
-						"navigationBarTitleText": "动态详情"
+						"navigationBarTitleText": "动态详情",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
                 ,{
@@ -451,13 +609,27 @@
 				,{
 				    "path" : "classify_list/classify_list",
 				    "style" : {
-				    	"navigationBarTitleText":"曲单"
+				    	"navigationBarTitleText":"曲单",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }    
+						}
 				    }
 				}
                 ,{
                     "path" : "recently/recently",
                     "style" : {
-						"navigationBarTitleText": "最近播放"
+						"navigationBarTitleText": "最近播放",
+						"app-plus": {    
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }    
+						}
 					}
                 }
                 ,{
@@ -555,20 +727,41 @@
 				,{
 					"path" : "chatList/chatList",
 					"style" : {
-						"enablePullDownRefresh":true
+						"enablePullDownRefresh":true,
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 					
 				}
 				,{
 					"path" : "msgDetail/msgDetail",
 					"style" : {
-						"navigationBarTitleText": "详情"
+						"navigationBarTitleText": "详情",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
 				,{
 					"path" : "agreement/agreement",
 					"style" : {
-						"navigationBarTitleText": "用户协议"
+						"navigationBarTitleText": "用户协议",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
 					}
 				}
             ]

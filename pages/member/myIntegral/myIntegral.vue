@@ -17,8 +17,8 @@
 				</view>
 			</view>
 		</view>
-		<view class="jf_hd pd15">积分明细</view>
-		<view class="tabList flex p_re">
+		<view class="jf_hd pd15 uni-bg-white">积分明细</view>
+		<view class="tabList flex p_re uni-bg-white">
 			<view class="item" :class="{'active':tabIndex==0}"  @click="cliTab(0)">普通积分</view>
 			<view class="item" :class="{'active':tabIndex==1}"  @click="cliTab(1)">返佣积分</view>
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
@@ -37,7 +37,7 @@
 			</block>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
-		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType" v-if="noDataIsShow == false"></uni-load-more></view>
+		<view class="uni-tab-bar-loading" v-if="hasData"><uni-load-more :loadingType="loadingType"></uni-load-more></view>
 	</view>
 </template>
 
@@ -184,7 +184,7 @@
 	.Integral{
 		.jf_hd{
 			font-size: 32upx;
-			margin-bottom: 20upx;
+			padding-bottom: 20upx;
 			display: flex;
 			align-items: center;
 			&::before{

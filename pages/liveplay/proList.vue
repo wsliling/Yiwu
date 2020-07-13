@@ -2,7 +2,10 @@
 	<view class="bottom-content">
 		<scroll-view scroll-y class="scroll">
 			<view class="item" v-for="(item, index) in list" :key="index">
-				<view class="imgbox"><image class="img" :src="item.PicNo" mode="aspectFill"></image></view>
+				<view class="imgbox">
+					<image class="img" :src="item.PicNo" mode="aspectFill"></image>
+					<view class="num">{{index}}</view>
+				</view>
 				<view class="right">
 					<text class="title">{{item.Name}}</text>
 					<view class="txtBox">
@@ -57,11 +60,19 @@ export default {
 .imgbox {
 	width: 200upx;
 	height: 200upx;
+	position:relative;
 }
 .img{
 	width: 200upx;
 	height: 200upx;
 	border-radius:15upx;
+}
+.num{
+	background:rgba(0,0,0,.5);
+	padding:0 15upx;line-height:1.5;
+	color:#ffffff;text-align:center;
+	position:absolute;
+	top:0;left:0;
 }
 .right{
 	height:200upx;width:510upx;

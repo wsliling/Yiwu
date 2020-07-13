@@ -2,7 +2,7 @@
 	<!-- 关于我们 -->
 	<view class="">
 		<view class="">
-			<view class="auoutimg"><image src="/static/http://yw.wtvxin.com/static/g" mode=""></image></view>
+			<view class="auoutimg"><image src="http://yw.wtvxin.com/static/logo.png" mode=""></image></view>
 			<view class="txt">{{ Content }}</view>
 		</view>
 	</view>
@@ -43,4 +43,11 @@ image {
 	padding: 40upx 30upx 100upx;
 	font-size: 32upx;
 }
+</style>
+<style>
+	/* #ifdef APP-PLUS */
+	page{
+		background: #fff;
+	}	
+	/* #endif */
 </style>
