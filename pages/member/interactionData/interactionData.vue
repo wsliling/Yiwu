@@ -69,15 +69,18 @@
 		     return ((470/this.tabList.length)*this.tabIndex)+(((470/this.tabList.length)-80)/2)
 		   }
 		 },
-		 onLoad() {
+		 onLoad(e) {
 		 	// #ifdef APP-PLUS
 		 	this.barHeight = plus.navigator.getStatusbarHeight();
+			this.tabIndex = e.type;
 		 	// #endif
 		 },
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			// #ifndef APP-PLUS
 			this.tabIndex = this.$mp.query.type;
+			// #endif
 			this.myType=this.tabList[this.tabIndex].id
 			this.getList(this.myType)
 		},
