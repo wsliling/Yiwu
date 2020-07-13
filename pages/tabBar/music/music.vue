@@ -120,7 +120,7 @@
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			this.hasData=true;
+			this.hasData=false;
 			this.page=1;
 			this.findlist=[];
 			this.workeslist()
@@ -220,6 +220,20 @@
 				});
 			},
 		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			if(this.tabIndex==1){
+				this.hasData=false;
+				this.page=1;
+				this.findlist=[];
+				this.workeslist();
+			}else{
+				this.classifylist=[];
+				this.getclassifyList();
+			}
+			uni.stopPullDownRefresh();
+		},
+		//上拉加载
 		onReachBottom(){
 			if(this.tabIndex==1){
 				if (this.isLoad) {

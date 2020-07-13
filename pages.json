@@ -36,6 +36,7 @@
             "path" : "pages/tabBar/music/music",
             "style" : {
 				"navigationBarTitleText": "舞曲",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",

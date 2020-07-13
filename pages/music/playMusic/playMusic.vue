@@ -132,8 +132,7 @@
 				let playID=uni.getStorageSync("playID");
 				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
-				//audio.obeyMuteSwitch = false
-				audio.autoplay =true
+				//audio.autoplay =true
 				if(playID==this.musicID){
 					//音频进度更新事件
 					audio.onTimeUpdate(() => {
@@ -161,7 +160,9 @@
 				})
 				//音频结束事件
 				audio.onEnded(() => {
-					this.next()
+					if(this.playType!=1){
+						this.next()
+					}
 				})
 				//音频完成更改进度事件
 				audio.onSeeked(() => {
@@ -260,12 +261,18 @@
 			//切换播放顺序
 			tabPlayType(){
 				this.playType++
+				if(this.playType==1){
+					audio.loop = true;
+				}else{
+					audio.loop = false;
+				}
 				if(this.playType==3){
 					this.playType=0
 				}
 			},
 			//下一曲
-			next(){console.log(this.playType)
+			next(){
+				console.log("this.playType"+this.playType)
 				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
