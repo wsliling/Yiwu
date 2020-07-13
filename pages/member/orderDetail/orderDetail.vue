@@ -21,7 +21,7 @@
             <image src="http://jyy.wtvxin.com/static/images/icons/lc.png" mode="widthFix" alt="" class="icon_lc"></image>
             <div class="flex1">
                 <p>
-                    <span>{{info.ContactName}}</span><span class="mr5">{{info.Tel}}</span>
+                    <span class="mr5">{{info.ContactName}}</span><span>{{info.Tel}}</span>
                 </p>
                 <p class="font24 cg mt1">{{info.Addr}}</p>
             </div>
@@ -647,5 +647,8 @@ methods: {
   }
   button::after{
   		border:none;
+  }
+  .mr5{
+  	margin-right: 10upx;
   }
 </style>

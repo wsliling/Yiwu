@@ -249,6 +249,7 @@ export default {
                      img{
                         width:30upx;
                         height:30upx;
+						display: block;
                      }
                 }
                 p{

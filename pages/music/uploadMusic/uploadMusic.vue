@@ -17,11 +17,11 @@
 			</view>
 			<view class="line-item line-arrow-r" @click="isShowSelect = true">
 				<view class="lab">类型选择</view>
-				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="musictype" /></view>
+				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="musictype" disabled="true"/></view>
 			</view>
 			<view class="line-item line-arrow-r" @click="isShowSource = true">
 				<view class="lab">舞曲来源</view>
-				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" /></view>
+				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" disabled="true"/></view>
 			</view>
 			<view class="line-item" @click="chooseMusic">
 				<view class="filebtn">{{ musicFile ? '已选择' : '请选择舞曲' }}</view>
@@ -112,6 +112,18 @@ export default {
 		this.fileName = uni.getStorageSync('fileName');
 		this.musicFile = uni.getStorageSync('filePath');
 		console.log(uni.getStorageSync("fileName"), this.musicFile, 'this.musicFile');
+		uni.uploadFile({
+			url: 'http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio', //仅为示例，非真实的接口地址
+			filePath: this.fileName,
+			name: 'file',
+			formData: {
+				'UserId': uni.getStorageSync('userId'),
+				'Token': uni.getStorageSync('token')
+			},
+			success: (uploadFileRes) => {
+				console.log(uploadFileRes.data);
+			}
+		});
 	},
 	methods: {
 		//取消（统一关闭弹窗）

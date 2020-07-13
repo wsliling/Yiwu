@@ -281,7 +281,7 @@
                 ,{
                     "path" : "interactionData/interactionData",
                     "style" : {
-						"navigationStyle":"custom",
+						// "navigationStyle":"custom",
 						"app-plus": {
 							"titleNView": false, //首页去除原生导航
 							"bounce": "none",

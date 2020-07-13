@@ -7,7 +7,7 @@
 				
 				<uni-icons color="#ccc" class="my-close" size="20" type="search" />
 				<ans-input placeholder="请输入你想搜索的产品" @confirm="searchConfirm" @clear="searchConfirm"
-				:value="searchText"></ans-input>
+				:value="searchText" class="flex1"></ans-input>
 			</view>
 		</view>
 		<div class="sort">
