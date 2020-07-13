@@ -1,5 +1,16 @@
 <template>
 	<view class="pd15">
+		<!-- #ifdef APP-PLUS -->
+		<view class="head" v-if="showHead" :style="{'padding-top':barHeight+'px'}">
+			<view class="flex-between" style="height: 44px;">
+				<view class="head_l" style="width: 44px; height: 44px;"></view>
+				<view class="title" style="font-size: 16px; font-weight: bold;">我的</view>
+				<view class="head_r editor pd15" @click="tolink('/pages/member/editinfo/editinfo')">
+					<image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>
+				</view>
+			</view>
+		</view>
+		<!-- #endif -->
 		<view class="header" :style="{'padding-top':barHeight+'px'}">
 			<view class="editor" @click="tolink('/pages/member/editinfo/editinfo')">
 				<image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>
@@ -206,6 +217,7 @@
 				wallet:[],
 				newscount:0,
 				myIncome:{},
+				showHead:false
 			}
 		},
 		onLoad() {
@@ -294,6 +306,13 @@
 					this.myIncome = result.data;
 				} 
 			},
+		},
+		onPageScroll(e){
+			if(e.scrollTop>100){
+				this.showHead=true;
+			}else{
+				this.showHead=false;
+			}
 		}
 	}
 </script>

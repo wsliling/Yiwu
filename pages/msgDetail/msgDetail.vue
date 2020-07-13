@@ -10,7 +10,7 @@
 		<view class="artInfo-desc" v-if="dataInfo.Intro">
 			{{dataInfo.Intro}}
 		</view>
-		<view class="arthtmlbox" v-if="dataInfo.Content !==''">
+		<view class="arthtmlbox" v-if="dataInfo.Content">
 			<uParse :content="dataInfo.Content"></uParse>
 		</view> 
 	</view>
