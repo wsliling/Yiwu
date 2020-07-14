@@ -140,8 +140,6 @@
 				let result = await post('DanceMusic/DancePlayList', {
 					UserId: this.userId,
 					Token: this.token,
-					page: this.page,
-					pageSize: this.pageSize
 				});
 				if (result.code === 0) {
 					let _this=this;
@@ -149,38 +147,14 @@
 						this.hasData = true;
 						this.noDataIsShow = false;
 					}
-					if (result.data.length == 0 && this.page == 1) {
+					if (result.data.length == 0) {
 						this.noDataIsShow = true;
 						this.hasData = false;
 					}
-					if (this.page === 1) {
-						this.datalist = result.data;
-					}
-					if (this.page > 1) {
-						this.datalist = this.datalist.concat(
-							result.data
-						);
-					}
-					if (result.data.length <this.pageSize) {
-						this.isLoad = false;
-						this.loadingType = 2;
-					} else {
-						this.isLoad = true;
-						this.loadingType = 0
-					}
+					this.datalist = result.data;
 				}
 			},
 		},
-		// 上拉加载
-		onReachBottom: function() {
-			if (this.isLoad) {
-				this.loadingType = 1;
-				this.page++;
-				this.workeslist();
-			} else {
-				this.loadingType = 2;
-			}
-		}
 	}
 </script>
 <style>

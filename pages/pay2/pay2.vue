@@ -359,10 +359,12 @@
 					  provider:"wxpay",
 					  orderInfo:result.data.JsParam,
 					  success(res) {
-						  console.log(res)
-						  _this.type = "";
+							console.log(res)
+							_this.type = "";
 							_this.showPay=false;
-							uni.navigateBack()
+							setTimeout(()=>{
+								uni.navigateBack();
+							},1500)
 						},
 					  fail(err) {console.log(err)
 						  uni.showToast({
@@ -462,9 +464,9 @@
 					//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
 						// 舞曲更新购买的舞曲数据
 						this.updateMusic();
-					  uni.redirectTo({
-						url: "/pages/payresult/payresult?allprice="+_this.orderInfo.TotalPrice+"&orderNo="+_this.orderNo
-					  })
+						setTimeout(()=>{
+							uni.navigateBack();
+						},1500)
 					}else{
 						uni.showToast({
 							title: "支付失败",

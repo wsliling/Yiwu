@@ -1,6 +1,13 @@
 .cu-chat {
     display: flex;
     flex-direction: column;
+	/* #ifdef H5 */
+	height: calc(100vh - 100upx - 44px);
+	/* #endif */
+	/* #ifndef H5 */
+	height: calc(100vh - 100upx);
+	/* #endif */
+	width: 100%;
 	.cu-item {
 	    display: flex;
 	    padding: 30upx 30upx 50upx;
@@ -95,7 +102,7 @@
 }
 .radius{ border-radius: 12upx;}
 .cu-chat .cu-info {
-    display: inline-block;
+    display: block;
     margin: 20upx auto;
     font-size: 24upx;
     padding: 8upx 12upx;
@@ -103,4 +110,6 @@
     border-radius: 6upx;
     color: #ffffff;
     line-height: 1.4;
+	width: 240upx;
+	text-align: center;
 }

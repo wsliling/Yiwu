@@ -113,8 +113,7 @@
 						$(".showFileName").html("内容不能为空");
 						return
 					}
-					alert(1)
-					// $('.modal').show()
+					$('.modal').show()
 					setTimeout(()=>{
 						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
 						var formdata = new FormData(); // 创建一个form类型的数据

@@ -3,9 +3,16 @@
 		<view class="head">
 			<view :style="{height:barHeight+'px'}"></view>
 			<view class="tab_head flex-between">
+				<!-- #ifndef MP-WEIXIN -->
 				<view class="head_l" @click="backUrl">
 					<text class="uni-icon uni-icon-arrowleft"></text>
 				</view>
+				<!-- #endif -->
+				<!-- #ifdef MP-WEIXIN -->
+				<view class="head_l">
+					<text class="uni-icon"></text>
+				</view>
+				<!-- #endif -->
 				<view class="tabList flex p_re">
 					<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':index==tabIndex}"  @click="cliTab(index,item.id)">{{item.name}}</view>
 					<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>

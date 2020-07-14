@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="cu-chat">
+		<scroll-view scroll-y :scroll-top="scrolltop" scroll-with-animation="true" class="cu-chat">
 			<block v-for="item in list" :key="item.Id">
 				<block v-if="item.IsMy">
 					<uni-view class="cu-info round" v-if="item.AddTime">{{item.AddTime}}</uni-view>
@@ -47,7 +47,7 @@
 					<!-1- #endif --1>
 				</view>
 			</view> -->
-		</view>
+		</scroll-view>
 
 		<!-- 底部发表按钮 -->
 		<view class="foot-fiexd">
@@ -76,6 +76,7 @@
 				IsShowReplyBox:false,//是否显示发布按钮
 				Comment:"",//发布内容
 				list:[],
+				scrolltop:99999
 			};
 		},
 		onLoad(e){
@@ -170,12 +171,14 @@
 					time = nowTime;
 				})
 				this.list = data;
+				let that=this
 				this.$nextTick(function(){	
+					that.scrolltop=that.scrolltop*1+30
 					// 滚动至页面底部
-					uni.pageScrollTo({
-						scrollTop: 99999999999,
-						duration:100
-					})
+					// uni.pageScrollTo({
+					// 	scrollTop: 99999999999,
+					// 	duration:100
+					// })
 				})
 			},
 			//显示评论按钮
