@@ -203,6 +203,7 @@
 				}
 			},
 			openAttestation(){
+				if(!this.userId||!this.token) return;
 				this.IsEdit=true;
 				if(toLogin()){
 					let urlstr="";
@@ -225,7 +226,15 @@
 								urlstr="/pages/livepush/livepush?type=0";
 								// #endif
 							}else if(e.tapIndex==3){
+								// #ifndef APP-PLUS
+								uni.showToast({
+									title:'APP端才能开启直播哦~',
+									icon:'none'
+								})
+								// #endif
+								// #ifdef APP-PLUS
 								urlstr="/pages/livepush/livepush?type=1";
+								// #endif
 							}
 							uni.navigateTo({
 								url: urlstr
