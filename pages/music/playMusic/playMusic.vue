@@ -231,8 +231,10 @@
 						uni.setNavigationBarTitle({
 							title: this.itemdata.Name
 						})
-						this.operation();
-						this.init();
+						playMusic(this.nowIndex,this.musicID)
+						this.init()
+						// this.operation();
+						// this.init();
 					}else{
 						let _this=this;
 						uni.showModal({
