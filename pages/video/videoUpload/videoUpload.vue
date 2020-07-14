@@ -17,7 +17,7 @@
 		<view class="listbox" @click="isShowSource = true">
 			<view class="">视频/课程的来源</view>
 			<view class="listdis">
-				<input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" />
+				<input type="text" disabled placeholder="请选择" class="flex1" v-model="sourcetype" />
 				<image src="http://yw.wtvxin.com/static/my/icon-right.png" mode=""></image>
 			</view>
 		</view>
@@ -112,7 +112,9 @@
 						title:"发布成功",
 					})
 					uni.setStorageSync("fileName","");//清空缓存
-					uni.setStorageSync("filePath","")
+					uni.setStorageSync("filePath","");
+					uni.setStorageSync("VfilePath","");
+					uni.setStorageSync("VfileName","");
 					setTimeout(()=>{
 						uni.navigateBack({
 						    delta: 1
