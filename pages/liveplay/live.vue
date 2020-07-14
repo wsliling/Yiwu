@@ -7,9 +7,6 @@
 					<!-- #ifdef H5 -->
 					<div class="H5video" :id="liveItem.StreamName" :style="{ height: height + 'px' }"></div>
 					<!-- #endif -->
-					<!-- #ifdef APP-PLUS -->
-					<video :src="liveItem.RTMP" :controls="false" :loop="true" :show-center-play-btn="false"></video>
-					<!-- #endif -->
 					<!-- 底部信息 -->
 					<view class="header-btn">
 						<div class="left">
@@ -286,7 +283,9 @@ export default {
 		},
 		async play() {
 			let res = await post('TencentCloud/PlayListURL', {
-				MemberId: this.memberId
+				MemberId: this.memberId,
+				UserId:this.userId,
+				Token:this.token
 			});
 			if (res.code) return;
 			const data = res.data;
@@ -351,22 +350,17 @@ export default {
 		//发送消息
 		async sendMessage(e) {
 			let that = this;
-			let time = new Date().getTime();
-			this.Id = +new Date();
-			console.log(this.Id);
-			console.log(e, 'eeee');
-			// let data = this.MsgData(3, this.Id, e.detail.value, '', time, 0, 0);
 			let data = {
 				MsgType:3,
 				Id:JSON.stringify({
-					Id:time,
+					Id:new Date().getTime(),
 					Info:e.detail.value,
 					name:this.userInfo.NickName
 				}),
 				Info:e.detail.value,
 			}
-			console.log(data, 'data');
 			this.SocketTask.send({ data: JSON.stringify(data) });
+			console.log(data, 'data');
 			this.onMessage();
 			this.sendInfo = '';
 		},
@@ -378,6 +372,16 @@ export default {
 				msg = JSON.parse(r.data);
 				console.log(msg,'收到的数据')
 				if (msg.code == 1) {
+					let sendData = {
+						MsgType:3,
+						Id:JSON.stringify({
+							Id:new Date().getTime(),
+							Info:that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间',
+							name:'系统提示'
+						}),
+						Info:'1',
+					}
+					that.SocketTask.send({ data: JSON.stringify(sendData) });
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
 					console.log(obj, 987);
@@ -410,6 +414,7 @@ export default {
 		},
 		//弹出输入框获取焦点
 		Repliy() {
+			if(!toLogin()) return;
 			this.isshowInput = true;
 			this.inputFocusStatus = true;
 		},
@@ -505,7 +510,19 @@ export default {
 				StreamName:data.StreamName
 			})
 			if(res.code)return;
-			this.myMoney -= item.Cost
+			this.myMoney -= item.Cost;
+			
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:this.userInfo.NickName+'赠送了'+item.Name,
+					name:'系统提示'
+				}),
+				Info:'',
+			}
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
+			
 			uni.showToast({
 				title:'赠送成功！'
 			})
