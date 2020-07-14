@@ -2,7 +2,7 @@
 
 const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
-const webUrl = 'http://yw.wtvxin.com';  //后台地址
+const webUrl = 'http://yw.wtvxin.com';
 const wssPath = 'ws://ywapi.wtvxin.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'ws://ywapi.wtvxin.com';  //wss接口地址
 

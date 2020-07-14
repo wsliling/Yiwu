@@ -253,6 +253,7 @@
 				if(result.code===0){
 					uni.setStorageSync('token', result.data.Token);
 					uni.setStorageSync('userId', result.data.UserId);
+					uni.setStorageSync('myInviteCode', result.data.ReferralCode);
 					let _this = this;
 					uni.showToast({
 					     title: "登录成功",
