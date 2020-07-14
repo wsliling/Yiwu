@@ -267,7 +267,7 @@
 							result.data
 						);
 					}
-					if (result.data.length <this.pageSize) {
+					if (!result.isok) {
 						this.isLoad = false;
 						this.loadingType = 2;
 					} else {

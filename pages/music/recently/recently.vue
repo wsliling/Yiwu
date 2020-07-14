@@ -100,7 +100,7 @@
 				hasData: false,
 				noDataIsShow: false,
 				page: 1,
-				pageSize: 8,
+				pageSize: 12,
 				datalist:[],
 				isShowOperation:false,
 				isShowSelect:false,
@@ -143,7 +143,11 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
-						this.datalist.splice(this.pageSize,this.pageSize);
+						if(result.data.length){
+							this.datalist.splice(this.pageSize,this.pageSize);
+						}else{
+							this.page--;
+						}
 						this.datalist = this.datalist.concat(
 							result.data
 						);
