@@ -143,6 +143,11 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
+						if(result.data.length){
+							this.datalist.splice(this.pageSize,this.pageSize);
+						}else{
+							this.page--;
+						}
 						this.datalist = this.datalist.concat(
 							result.data
 						);

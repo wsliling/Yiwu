@@ -797,10 +797,8 @@
 			},
 			// 关闭支付弹窗时
 			closePay(){
-				redirect('shopSon/submitOrder/submitStatus',{
-					status:'fail',
-					orderNo:this.OrderNo,
-					allprice:this.info.AllPrice
+				uni.redirectTo({
+					url:'/pages/shopSon/submitOrder/submitStatus?status=fail&orderNo='+this.OrderNo+'&allprice='+this.info.AllPrice
 				})
 				this.$refs.payWin.close();
 			},

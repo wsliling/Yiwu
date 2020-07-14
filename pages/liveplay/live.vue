@@ -1,13 +1,11 @@
 <template>
 	<view class="swiper">
-		<swiper :vertical="true" :current="swiperIndex" class="playSwiper">
+		<swiper :vertical="true" :current="swiperIndex" class="playSwiper"
+			@change="swiperChange">
 			<block v-for="(liveItem, liveIndex) in liveList" :key="liveIndex">
 				<swiper-item v-if="liveItem.Flag" class="swiperItem">
 					<!-- #ifdef H5 -->
-					<div class="H5video" :id="liveItem.MemberId" :style="{ height: height + 'px' }"></div>
-					<!-- #endif -->
-					<!-- #ifdef APP-PLUS -->
-					<video :src="liveItem.RTMP" :controls="false" :loop="true" :show-center-play-btn="false"></video>
+					<div class="H5video" :id="liveItem.StreamName" :style="{ height: height + 'px' }"></div>
 					<!-- #endif -->
 					<!-- 底部信息 -->
 					<view class="header-btn">
@@ -27,7 +25,7 @@
 							<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
 								<view class="nlv-msglist">
 									<view class="msg_bg">
-										<text class="msg_name">{{ msgitem.name }}</text>
+										<text class="msg_name">{{ msgitem.name }}:</text>
 										<text class="msg_text">{{ msgitem.Info }}</text>
 									</view>
 								</view>
@@ -91,7 +89,7 @@
 		<uni-popup type="bottom" ref="gift">
 			<div class="giftBox">
 				<div class="gift-list">
-					<div class="gift-item" @click="sendGift"
+					<div class="gift-item" @click="sendGift(item)"
 						v-for="(item,index) in giftList" :key="index"
 						>
 						<img :src="item.Img" alt="" mode="aspectFill">
@@ -115,9 +113,10 @@
 </template>
 
 <script>
-import { host, post, get, wssPath, toLogin } from '@/common/util.js';
+import { host, post, get, toLogin,wssHost } from '@/common/util.js';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
 import proListConponent from './proList.vue';
+var player = null;
 export default {
 	components: {
 		uniPopup,
@@ -138,7 +137,6 @@ export default {
 			countNum: 0,
 			type: 0,
 			SocketTask: null,
-			socketStatus: false,
 			strArr: [{ name: '系统提示', Info: '欢迎进入直播间' }],
 			Id: 0,
 			PicNo: '',
@@ -155,6 +153,7 @@ export default {
 			proList: [], //产品列表
 			giftList: [], //礼物列表
 			myMoney:0,//我的直播币
+			userInfo:{},
 		};
 	},
 	onLoad(e) {
@@ -170,19 +169,26 @@ export default {
 		let res = uni.getSystemInfoSync();
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
+		console.log('this.userId',this.userId)
 		this.height = res.windowHeight;
 		// #ifndef APP-PLUS
 		// this.ShopId = this.$mp.query.ShopId
 		// #endif
 		this.getMyMoney();//获取我的直播币
 		this.showgoodsbox = true;
-		// this.countTime();
-		// this.livemessage();
+		
+		// 每次跳转页面都释放聊天socket,重新打开时,如果存在memberId就重新连接,(比如充值)
+		if(!this.SocketTask&&this.data.MemberId){
+			
+			this.livemessage();
+		}
 	},
 	onHide() {
+		if(!this.SocketTask)return;
 		this.SocketTask.close();
 	},
 	onUnload() {
+		if(!this.SocketTask)return;
 		this.SocketTask.close();
 	},
 	methods: {
@@ -200,10 +206,10 @@ export default {
 		// 获取WebSocketId 用于身份验证
 		async livemessage() {
 			let res = await post('User/GetWebSocketId', {
-				UserId: this.userId,
-				Token: this.token,
-				Type: 0,
-				FriendId: this.ShopId
+				UserId: this.userId||'',
+				Token: this.token||'',
+				ToMemberId: this.data.MemberId,
+				Type:''
 			});
 			console.log(res);
 			this.Signature = res.data.Signature;
@@ -215,13 +221,13 @@ export default {
 		async connectSocket() {
 			let that = this;
 			this.SocketTask = uni.connectSocket({
-				url: wssPath + '?Signature=' + this.Signature,
-				success: () => {}
+				url: wssHost + '/LiveRoomServer.ashx?Signature=' + this.Signature,
+				complete(err){
+					console.log(err)
+				}
 			});
-
 			this.SocketTask.onOpen(res => {
-				// console.log("open", res);
-				that.socketStatus = true;
+				console.log("open", res);
 				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
 				that.SocketTask.send({ data: JSON.stringify(data) });
 				console.log('发送数据', res);
@@ -229,11 +235,11 @@ export default {
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
-				console.log('WebSocket连接打开失败，请检查！');
+				console.log('WebSocket连接打开失败，请检查！',res);
 			});
 			this.SocketTask.onClose(close => {
+				this.SocketTask=null;
 				console.log('close', close);
-				this.socketStatus = false;
 			});
 		},
 		//WebSocket连接请求数据
@@ -246,44 +252,24 @@ export default {
 			// console.log(data)
 			return data;
 		},
-		//发送数据处理
-		MsgData(MsgType, Id, Info, Pic, AddTime, Lat, Lng) {
-			var data = new Object();
-			var msg = new Object();
-			data.MsgType = MsgType;
-			var fixInt = function(num, n) {
-				return (Array(n).join(0) + num).slice(-n);
-			};
-			var newdate = function() {
-				var now = new Date();
-				var yy = now.getFullYear(); //年
-				var mm = now.getMonth() + 1; //月
-				var dd = now.getDate(); //日
-				var hh = now.getHours(); //时
-				var ii = now.getMinutes(); //分
-				var ss = now.getSeconds();
-				return yy + '-' + fixInt(mm, 2) + '-' + fixInt(dd, 2) + ' ' + fixInt(hh, 2) + ':' + fixInt(ii, 2) + ':' + fixInt(ss, 2);
-			};
-			if (uni.getStorageSync('name')) {
-				msg.name = uni.getStorageSync('name');
-			} else {
-				msg.name = '匿名用户';
+		// 推送一条消息
+		pushMsg(text,name=''){
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:text,
+					name:name||'系统提示'
+				}),
+				Info:text,
 			}
-			msg.Info = Info == undefined ? '' : Info;
-			msg.Id = Id;
-			msg.AddTime = AddTime == undefined ? newdate() : AddTime;
-			msg = JSON.stringify(msg);
-			data.Id = msg;
-			data.Info = Info == undefined ? '' : Info;
-			data.Pic = Pic == undefined ? '' : Pic;
-			data.AddTime = AddTime == undefined ? newdate() : AddTime;
-			data.Lat = Lat == undefined ? 0 : Lat;
-			data.Lng = Lng == undefined ? 0 : Lng;
-			return data;
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
 		async play() {
 			let res = await post('TencentCloud/PlayListURL', {
-				MemberId: this.memberId
+				MemberId: this.memberId,
+				UserId:this.userId,
+				Token:this.token
 			});
 			if (res.code) return;
 			const data = res.data;
@@ -293,6 +279,7 @@ export default {
 				}
 				this.liveList = data;
 				this.data = data[0];
+				this.livemessage();//打开聊天室
 				console.log(this.data);
 				// #ifdef H5
 				this.$nextTick(()=>{
@@ -309,8 +296,23 @@ export default {
 				}, 2000);
 			}
 		},
+		// 切换直播
+		swiperChange(e){
+			console.log(e.detail.current,'eee')
+			const index = e.detail.current
+			this.data = this.liveList[index];
+			this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
+			player.pause();
+			player.destroy();
+			console.log('player',player)
+			this.playH5();
+			if(this.data.fType){
+				this.getProList(this.data.ShopId)
+			}
+		},
 		playH5() {
-			var player = new TcPlayer('B01CB6B8403E951F', {
+			player = new TcPlayer(this.data.StreamName, {
+				RTMP:this.data.RTMP,
 				m3u8: this.data.HLS, //请替换成实际可用的播放地址
 				flv: this.data.FLV,
 				autoplay: true, //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
@@ -320,19 +322,30 @@ export default {
 				width: '480', //视频的显示宽度，请尽量使用视频分辨率宽度
 				height: this.height //视频的显示高度，请尽量使用视频分辨率高度
 			});
+			document.onload = function(e){
+				console.log('load',e)
+			}
+			document.onerror = function(e){
+				console.log('error',e)
+			}
+			console.log(player,'play')
 			player.play();
 		},
 		//发送消息
 		async sendMessage(e) {
-			console.log(e, 'eee');
-			return;
 			let that = this;
-			let time = new Date();
-			console.log(this.Id);
-			this.Id = +new Date();
-			let data = this.MsgData(3, this.Id, e, '', time, 0, 0);
+			let data = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:e.detail.value,
+					name:this.userInfo.NickName
+				}),
+				Info:e.detail.value,
+			}
 			this.SocketTask.send({ data: JSON.stringify(data) });
-			this.onMessage();
+			console.log(data, 'data');
+			// this.onMessage();
 			this.sendInfo = '';
 		},
 		//接收消息
@@ -341,8 +354,10 @@ export default {
 			let that = this;
 			this.SocketTask.onMessage(r => {
 				msg = JSON.parse(r.data);
-				// console.log(msg,55555)
+				console.log(msg,'收到的数据')
 				if (msg.code == 1) {
+					this.pushMsg(that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间')
+					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
 					console.log(obj, 987);
@@ -375,6 +390,7 @@ export default {
 		},
 		//弹出输入框获取焦点
 		Repliy() {
+			if(!toLogin()) return;
 			this.isshowInput = true;
 			this.inputFocusStatus = true;
 		},
@@ -457,8 +473,25 @@ export default {
 			console.log('gift',this.giftList)
 		},
 		// 送礼
-		sendGift(){
+		async sendGift(item){
 			if(!toLogin()) return;
+			const data = this.data;
+			const res = await post('TencentCloud/SendGifts',{
+				UserId:this.userId,
+				Token:this.token,
+				GiftId:item.Id,
+				pType:data.fType,
+				ShopId:data.ShopId,
+				MemberId:data.MemberId,
+				StreamName:data.StreamName
+			})
+			if(res.code)return;
+			this.myMoney -= item.Cost;
+			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name)
+			uni.showToast({
+				title:'赠送成功！'
+			})
+			this.$refs.gift.close();
 		},
 		// 充值
 		payTo(){
@@ -471,6 +504,7 @@ export default {
 		// 获取我的直播币
 		getMyMoney(){
 			if(!this.userId||!this.token)return;
+			// 直播币
 			post('User/GetMyIncome',{
 				UserId:this.userId,
 				Token:this.token
@@ -481,6 +515,14 @@ export default {
 				}
 				if(res.code)return;
 				this.myMoney = res.data.LiveStreamMoney*1;
+			})
+			// 用户信息
+			post('User/GetCenterInfo',{
+				UserId:this.userId,
+				Token:this.token
+			}).then(res=>{
+				if(res.code)return;
+				this.userInfo = res.data;
 			})
 		}
 	}
@@ -512,7 +554,7 @@ export default {
 		height: 35vh;
 		padding:0 20upx;
 		.nlv-msglist {
-			// margin-bottom: 20upx;
+			margin-bottom: 5upx;
 			flex-direction: row;
 			.msg_bg {
 				flex-direction: row;

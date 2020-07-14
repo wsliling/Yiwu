@@ -74,8 +74,8 @@
 			</view>
 			<noData :isShow="noDataIsShow"></noData>
 		</block>
-		<view v-if="tabIndex==0" @click="tolink('/pages/music/uploadMusic/uploadMusic')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
-		<view v-if="tabIndex==1" @click="tolink('/pages/music/artPost/artPost')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view>
+		<view v-if="tabIndex==0" @click="tolink('/pages/music/uploadMusic/uploadMusic','login')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
+		<view v-if="tabIndex==1" @click="tolink('/pages/music/artPost/artPost','login')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view>
 	</view>
 </template>
 
@@ -182,10 +182,18 @@
 				}
 			},
 			//跳转
-			tolink(Url) {
-				uni.navigateTo({
-					url: Url
-				})
+			tolink(Url,islogin) {
+				if(islogin=="login"){
+					if(toLogin()){
+						uni.navigateTo({
+							url: Url
+						})
+					}
+				}else{
+					uni.navigateTo({
+						url: Url
+					})
+				}
 			},
 			tapTab(index,id) { //点击tab-bar
 				if (this.tabIndex === index) {

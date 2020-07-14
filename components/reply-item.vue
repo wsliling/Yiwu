@@ -2,27 +2,27 @@
 	<view class="comment-item">
 		<view class="comment-hd flex-between">
 			<view class="flex-start">
-				<view class="tx" @click="tolink('/pages/homepage/homepage?id='+itemData.MemberId)">
-					<image :src="itemData.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+				<view class="tx" @click="tolink('/pages/homepage/homepage?id='+dataitem.MemberId)">
+					<image :src="dataitem.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info">
-					<view class="name">{{itemData.MemberName||'匿名用户'}}</view>
-					<view class="time">{{itemData.AddTime}}</view>
+					<view class="name">{{dataitem.MemberName||'匿名用户'}}</view>
+					<view class="time">{{dataitem.AddTime}}</view>
 				</view>
 			</view>
 			<view class="flex-end">
-				<view class="txt_info reply" @click="Sendreplay(itemData.Id,itemData.MemberName,false)">
+				<view class="txt_info reply" @click="Sendreplay(dataitem.Id,dataitem.MemberName,false)">
 					<image class="icon" src="http://yw.wtvxin.com/static/reply2.png"></image>
-					{{itemData.MyCommnetList.length>0?itemData.MyCommnetList.length:'回复'}}
+					{{dataitem.MyCommnetList.length>0?dataitem.MyCommnetList.length:'回复'}}
 				</view>
-				<view :class="['txt_info zan',itemData.IsLike==1?'active':'']" @click="like(itemData.Id,1)"><image class="icon" :src="itemData.IsLike==1?'http://yw.wtvxin.com/static/zan2.png':'http://yw.wtvxin.com/static/zan.png'"></image>{{itemData.LikeNum>0?itemData.LikeNum:"点赞"}}</view>
+				<view :class="['txt_info zan',dataitem.IsLike==1?'active':'']" @click="like(dataitem.Id,1)"><image class="icon" :src="dataitem.IsLike==1?'http://yw.wtvxin.com/static/zan2.png':'http://yw.wtvxin.com/static/zan.png'"></image>{{dataitem.LikeNum>0?dataitem.LikeNum:"点赞"}}</view>
 			</view>
 		</view>
 		<view class="comment-con">
-			{{itemData.Comment}}
+			{{dataitem.Comment}}
 		</view>
-		<view class="comment-reply" v-if="itemData.MyCommnetList.length>0">
-			<view class="item" v-if="itemData.isSHOW?index>-1:index<3" v-for="(item,index) in itemData.MyCommnetList" :key="index">
+		<view class="comment-reply" v-if="dataitem.MyCommnetList.length>0">
+			<view class="item" v-if="dataitem.isSHOW?index>-1:index<3" v-for="(item,index) in dataitem.MyCommnetList" :key="index">
 				<view class="reply-hd flex-between">
 					<view class="flex-start">
 						<view class="tx" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
@@ -41,10 +41,10 @@
 					<text class="c_999" @click="Sendreplay(item.ParentCommentId,item.MemberName,true)">回复<text style="color: #0A98D5;">{{item.pname}}</text>：</text>{{item.Comment}}
 				</view>
 			</view>
-			<view class="morereply c_999" v-if="itemData.MyCommnetList.length>3" @click="showAll">
-				<block v-if="itemData.isSHOW">收起回复</block>
+			<view class="morereply c_999" v-if="dataitem.MyCommnetList.length>3" @click="showAll">
+				<block v-if="dataitem.isSHOW">收起回复</block>
 				<block v-else>
-				—查看全部回复{{itemData.MyCommnetList.length}}条
+				—查看全部回复{{dataitem.MyCommnetList.length}}条
 				</block>
 			</view>
 		</view>
@@ -67,11 +67,13 @@
 			return {
 				userId: "",
 				token: "",
+				dataitem:{}
 			};
 		},
 		created() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			this.dataitem=this.itemData;
 		},
 		methods: {
 			//跳转
@@ -82,7 +84,7 @@
 			},
 			//显示全部回复
 			showAll(){
-				this.itemData.isSHOW=!this.itemData.isSHOW;
+				this.dataitem.isSHOW=!this.dataitem.isSHOW;
 			},
 			Sendreplay(mid,name,isPname) {
 				this.$emit('Sendreplay',[mid,name,isPname]);
@@ -96,26 +98,27 @@
 					"TypeStatu":2
 				});
 				if (result.code === 0) {
+					let _this=this;
 					uni.showToast({
 						title: result.msg,
 						icon: "none",
 						duration: 2000
 					});
 					if(level==1){
-						if(this.itemData.IsLike==1){
-							this.itemData.IsLike=0;
-							this.itemData.LikeNum--;
+						if(this.dataitem.IsLike==1){
+							this.dataitem.IsLike=0;
+							this.dataitem.LikeNum--;
 						}else{
-							this.itemData.IsLike=1;
-							this.itemData.LikeNum++;
+							this.dataitem.IsLike=1;
+							this.dataitem.LikeNum++;
 						}
 					}else if(level==2){
-						if(this.itemData.MyCommnetList[index].IsLike==1){
-							this.itemData.MyCommnetList[index].IsLike=0;
-							this.itemData.MyCommnetList[index].LikeNum--;
+						if(this.dataitem.MyCommnetList[index].IsLike==1){
+							this.dataitem.MyCommnetList[index].IsLike=0;
+							this.dataitem.MyCommnetList[index].LikeNum--;
 						}else{
-							this.itemData.MyCommnetList[index].IsLike=1;
-							this.itemData.MyCommnetList[index].LikeNum++;
+							this.dataitem.MyCommnetList[index].IsLike=1;
+							this.dataitem.MyCommnetList[index].LikeNum++;
 						}
 					}
 					

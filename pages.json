@@ -187,6 +187,19 @@
 			"root":"pages/member",
 			"pages":[
 				{
+					"path":"share/share",
+					"style": {
+						"navigationBarTitleText": "分享APP",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+				},
+				{
 					"path":"editinfo/editinfo",
 					"style": {
 						"navigationBarTitleText": "编辑资料",
@@ -553,6 +566,10 @@
 						}
 					}
 				}
+                ,{
+                    "path" : "team/team",
+                    "style" : {}
+                }
             ]
 		},
 		{

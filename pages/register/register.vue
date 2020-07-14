@@ -25,10 +25,10 @@
 					<view class="iconfont icon-mima"></view>
 					<input type="password" class="ipt" value="" v-model="pwd2" placeholder="请再次输入密码" />
 				</view>
-				<view class="from-line" style="position: relative;display: none;">
+				<view class="from-line">
 					<view class="iconfont icon-mima"></view>
-					<input type="text" class="ipt" :disabled="disabled" v-model="inviteCode" placeholder="好友邀请码(选填)" />
-					<text class="inviteTips" v-if="disabled">好友邀请码</text>
+					<input type="text" class="ipt" v-model="inviteCode" placeholder="好友邀请码(选填)" />
+					<text class="inviteTips">好友邀请码</text>
 				</view>
 				<view class="from-txt">
 					<view  @click="shiftAgree" style="display: inline-block;vertical-align: middle;"><view class="IconsCK IconsCK-radio" :class="{'checked':isAgree}" style="margin-right: 8upx;"></view><text>我已阅读并同意</text></view>
@@ -51,7 +51,10 @@
 	} from '@/common/util.js';
 	export default {
 		onLoad(e) {
-			this.inviteCode=e.inviteCode;
+			if(e.inviteCode){
+				this.inviteCode=e.inviteCode;
+				uni.setStorageSync('inviteCode',e.inviteCode)
+			}
 			this.type = e.type
 			console.log(this.type,"type999999999999")
 		},
@@ -61,11 +64,6 @@
 				this.inviteCode=uni.getStorageSync('inviteCode')
 			}
 			// #endif
-			if(this.inviteCode){
-				this.disabled=true
-			}else{
-				this.disabled=false
-			}
 		},
 		data() {
 			return {
@@ -80,7 +78,6 @@
 				TIME_COUNT: 60,
 				has_click: false,
 				isAgree:true,
-				disabled: false,
 				type:0,//1小程序绑定手机号
 			};
 		},

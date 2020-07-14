@@ -64,11 +64,11 @@
 			// #ifdef APP-PLUS
 			this.GroupId=e.GroupId||0;
 			// #endif
-			this.status = e.status;
+			this.status = e.status||'fail';
 			this.orderNo=e.orderNo;
 			this.TotalPrice = e.allprice
 			this.Noarr=this.orderNo.split(",");
-			console.log(e.allprice)
+			console.log(e.status)
 			this.getList()
 		},
 		onShow(){
