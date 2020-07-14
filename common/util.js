@@ -2,7 +2,7 @@
 
 const host = 'http://ywapi.wtvxin.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
-const webUrl = 'http://yw.wtvxin.com';  //后台地址
+const webUrl = 'http://yw.wtvxin.com';
 const wssPath = 'ws://ywapi.wtvxin.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'ws://ywapi.wtvxin.com';  //wss接口地址
 
@@ -215,7 +215,7 @@ var hasplay=true  //是否播放过
 export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞曲id
 	var musicList=uni.getStorageSync("musicList"),//音乐列表
 	playID=uni.getStorageSync("playID");
-	console.log("playID"+playID);
+	console.log("playID和id"+playID+"--"+id);
     if(playID!=""&&playID!="undefined"){
 		if(playID==id){//暂停
 			if(hasplay){

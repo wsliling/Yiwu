@@ -154,15 +154,20 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
-			<!-- #ifdef APP-PLUS -->
-			<view class="item">
+			<view class="item" @click="tolink('/pages/message/team/team')">
 				<view class="item-left">
-					<image  src="http://yw.wtvxin.com/static/my/icon16.png" mode="aspectFit"></image>
-					<view>分享app</view>
+					<image  src="/static/icons/team.png" mode="aspectFit"></image>
+					<view>我的团队</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<!-- #endif -->
+			<view class="item" @click="tolink('/pages/member/share/share')">
+				<view class="item-left">
+					<image  src="http://yw.wtvxin.com/static/my/icon16.png" mode="aspectFit"></image>
+					<view>分享</view>
+				</view>
+				<view class="arrowr uni-icon uni-icon-arrowright"></view>
+			</view>
 			<!-- 我的下载先不做，苹果的下载和多端下载很难实现 -->
 			<view class="item" @click="tolink('/pages/member/myDownload/myDownload')" v-if="false">
 				<view class="item-left">

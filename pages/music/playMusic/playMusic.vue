@@ -131,6 +131,7 @@
 		},
 		methods: {
 			init(){
+				audio.offEnded()
 				let playID=uni.getStorageSync("playID");
 				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
@@ -165,6 +166,7 @@
 				//音频结束事件
 				audio.onEnded(() => {
 					if(this.playType!=1){
+						console.log("结束事件")
 						this.next()
 					}
 				})
@@ -216,6 +218,7 @@
 			},
 			//选择播放
 			slectplay(index){
+				// console.log("选择播放index:"+index)
 				post('DanceMusic/Music_xq',{
 					UserId:this.userId,
 					Token:this.token,
@@ -275,7 +278,7 @@
 			},
 			//下一曲
 			next(){
-				console.log("this.playType"+this.playType)
+				// console.log("this.playType"+this.playType)
 				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
