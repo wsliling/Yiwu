@@ -142,6 +142,7 @@
 							data: formdata,
 							dataType: "json",
 							success: function(res) {
+								alert(JSON.stringify(res))
 								console.log(JSON.stringify(res))
 								if (res.code == 0) {
 									if(isH5){
@@ -174,6 +175,7 @@
 								$(".modal").hide();
 							},
 							error: function(err) {
+								alert(JSON.stringify(err))
 								console.log("这是请求失败的");
 								$(".modal").hide();
 							}

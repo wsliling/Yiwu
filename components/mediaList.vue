@@ -47,7 +47,7 @@
 				</view>
 				<view class="media-info-r">
 					<text class="info-text"><text class="iconfont icon-eye"></text>{{dataitem.BrowseNum}}</text>
-					<text class="info-text" @click.stop="gotocommentlist"><text class="iconfont icon-pinglun1"></text>{{dataitem.CommentNum}}</text>
+					<text class="info-text"><text class="iconfont icon-pinglun1"></text>{{dataitem.CommentNum}}</text>
 					<text class="info-text" @click.stop="like(dataitem.Id)"><text :class="['iconfont',dataitem.IsLike==1?'icon-zan1':'icon-zan']"></text>{{dataitem.LikeNum}}</text>
 				</view>
 			</view>

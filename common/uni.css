@@ -120,9 +120,6 @@ image{ width: 100%;}
 	display: block;
 	position: absolute;
 	bottom: 0;
-	/* #ifdef MP-WEIXIN */
-	bottom: 40upx;
-	/* #endif */
 	transition: all .2s;
 	height: 2px;
 	width:68upx;

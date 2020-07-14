@@ -69,7 +69,12 @@
             maxlength="6"
           />
           <div class="boxItem flex-content" v-for="i in 6" :key="i">
-            <div class="item" v-if="i<password.length+1"></div>
+			  <!-- #ifndef MP-WEIXIN -->
+			  <div class="item" v-if="i<password.length*1+1"></div>
+			  <!-- #endif -->
+			<!-- #ifdef MP-WEIXIN -->
+			<div class="item" v-if="i<password.length*1"></div>
+			<!-- #endif -->
           </div>
         </div>
       </div>
@@ -222,6 +227,7 @@ export default {
     },
     // 输入密码
     editPaw(e) {
+		console.log('password',this.password)
       if (this.password.length === 6) {
         this.success();
         this.focusflag = false;
@@ -394,6 +400,7 @@ export default {
   width: 100%;
   overflow: hidden;
 }
+/* #ifndef MP-WEIXIN */
 .payPasswordComponent input {
   position: absolute;
   opacity:0;
@@ -401,6 +408,16 @@ export default {
   left: 80upx;
   width:480upx;height:80upx;
 }
+/* #endif */
+/* #ifdef MP-WEIXIN */
+.payPasswordComponent input {
+  position: absolute;
+  opacity:0;
+  top: 60upx;
+  right: 80upx;
+  width:1080upx;height:80upx;
+}
+/* #endif */
 
 .payPasswordComponent .box {
   width: 85%;

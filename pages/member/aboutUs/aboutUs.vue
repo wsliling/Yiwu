@@ -37,6 +37,7 @@ export default {
 image {
 	width: 200upx;
 	height: 200upx;
+	border-radius: 46upx;
 }
 .txt {
 	background: #fff;

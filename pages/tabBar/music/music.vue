@@ -61,7 +61,7 @@
 					 <view class="uni-ellipsis">{{item.Name}}</view>
 				 </view>
 			 </view>
-			<noData :isShow="classifylist.length==0"></noData>
+			<noData :isShow="classifylist.length==0" v-if="classifylist.length==0"></noData>
 		</view>
 		<block v-if="tabIndex==1">
 			<view class="list" v-if="hasData">
@@ -120,7 +120,7 @@
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			this.hasData=true;
+			this.hasData=false;
 			this.page=1;
 			this.findlist=[];
 			this.workeslist()
@@ -201,7 +201,8 @@
 			goDetail(e) {
 				if(e.artType==0){//用户发布详情
 					uni.navigateTo({
-						url: '/pages/music/artDetail/artDetail?id='+e.id
+						// url: '/pages/music/artDetail/artDetail?id='+e.id
+						url:'/pages/replylist/replylist?id='+e.id
 					})
 				}
 				// else{//资讯详情、店铺
@@ -219,6 +220,20 @@
 				});
 			},
 		},
+		// 下拉刷新
+		onPullDownRefresh(){
+			if(this.tabIndex==1){
+				this.hasData=false;
+				this.page=1;
+				this.findlist=[];
+				this.workeslist();
+			}else{
+				this.classifylist=[];
+				this.getclassifyList();
+			}
+			uni.stopPullDownRefresh();
+		},
+		//上拉加载
 		onReachBottom(){
 			if(this.tabIndex==1){
 				if (this.isLoad) {

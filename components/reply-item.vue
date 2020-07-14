@@ -2,7 +2,7 @@
 	<view class="comment-item">
 		<view class="comment-hd flex-between">
 			<view class="flex-start">
-				<view class="tx">
+				<view class="tx" @click="tolink('/pages/homepage/homepage?id='+itemData.MemberId)">
 					<image :src="itemData.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info">
@@ -22,10 +22,10 @@
 			{{itemData.Comment}}
 		</view>
 		<view class="comment-reply" v-if="itemData.MyCommnetList.length>0">
-			<view class="item" v-if="itemData.isSHOW?index>-1:index<3" v-for="(item,index) in itemData.MyCommnetList">
+			<view class="item" v-if="itemData.isSHOW?index>-1:index<3" v-for="(item,index) in itemData.MyCommnetList" :key="index">
 				<view class="reply-hd flex-between">
 					<view class="flex-start">
-						<view class="tx">
+						<view class="tx" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 							<image :src="item.MemberHead||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
 						</view>
 						<view class="info">

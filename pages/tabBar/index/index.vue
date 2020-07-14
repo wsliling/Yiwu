@@ -4,7 +4,7 @@
 			<view class="index_head flex-between">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
-					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm"></ans-input>
+					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" class="flex1"></ans-input>
 				</view>
 				<!-- #ifndef H5 -->
 				<view class="head_r" @click="scanCode">
@@ -69,7 +69,7 @@
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
 						<view class="media-bd">
-							<view class="desc" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+							<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
@@ -792,8 +792,8 @@
 					_this.$set(_this.datalist[_this.onplayIndex],'fixed',true);
 					_this.videoContext.pause();
 				}else{
-					_this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
-					_this.videoContext.play();
+					// _this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
+					// _this.videoContext.play();
 				}
 			}
 		},

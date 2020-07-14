@@ -36,6 +36,7 @@
             "path" : "pages/tabBar/music/music",
             "style" : {
 				"navigationBarTitleText": "舞曲",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
@@ -79,7 +80,14 @@
         ,{
             "path" : "pages/replylist/replylist",
             "style" : {
-				"navigationBarTitleText": "评论"
+				"navigationBarTitleText": "评论",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
@@ -108,19 +116,40 @@
 		,{
             "path" : "pages/homepage/homepage",
             "style" : {
-				"navigationBarTitleText": "主页"
+				"navigationBarTitleText": "主页",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/msgDetail/msgDetail",
             "style" : {
-				"navigationBarTitleText": "资讯详情"
+				"navigationBarTitleText": "资讯详情",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
             "path" : "pages/pay2/pay2",
             "style" : {
-				"navigationBarTitleText": "确认支付"
+				"navigationBarTitleText": "确认支付",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
 			}
         }
         ,{
@@ -253,7 +282,7 @@
                 ,{
                     "path" : "interactionData/interactionData",
                     "style" : {
-						"navigationStyle":"custom",
+						// "navigationStyle":"custom",
 						"app-plus": {
 							"titleNView": false, //首页去除原生导航
 							"bounce": "none",

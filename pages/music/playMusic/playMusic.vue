@@ -12,9 +12,9 @@
 		<view class="playbox">
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
-			 		<view class="audio-control audio-control-prev" @click="prev">&#xe601;</view>
-			 		<view class="audio-control audio-control-switch" :class="{audioLoading:loading}" @click="operation">{{loading?'&#xe600;':(paused?'&#xe865;':'&#xe612;')}}</view>
-			 		<view class="audio-control audio-control-next" @click="next">&#xe601;</view>
+			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
+			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
+			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
 			 		<view class="audio-number">{{currentTime}}</view>
@@ -23,7 +23,7 @@
 			 		<view class="audio-number">{{durationTime}}</view>
 			 	</view>
 			 </view>
-			 <view class="playicon">
+			<view class="playicon">
 				 <view class="item" @click="Collect">
 				 	<image :src="isCollect==0?'http://yw.wtvxin.com/static/collect3.png':'http://yw.wtvxin.com/static/collect2.png'" mode="widthFix" class="addwidth"></image>
 				 </view>
@@ -38,7 +38,7 @@
 				<view class="item" @click="ShowPlaylist">
 					<image src="http://yw.wtvxin.com/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
-			 </view>
+			</view>
 		</view>
 		<!-- 播放列表	 -->
 		<uni-popup mode="fixed" :show="isShowPlaylist" :h5Top="true" position="bottom" @hidePopup="hidePopup">
@@ -132,8 +132,7 @@
 				let playID=uni.getStorageSync("playID");
 				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
-				audio.obeyMuteSwitch = false
-				audio.autoplay =true
+				//audio.autoplay =true
 				if(playID==this.musicID){
 					//音频进度更新事件
 					audio.onTimeUpdate(() => {
@@ -161,7 +160,9 @@
 				})
 				//音频结束事件
 				audio.onEnded(() => {
-					this.next()
+					if(this.playType!=1){
+						this.next()
+					}
 				})
 				//音频完成更改进度事件
 				audio.onSeeked(() => {
@@ -230,8 +231,10 @@
 						uni.setNavigationBarTitle({
 							title: this.itemdata.Name
 						})
-						this.operation();
-						this.init();
+						playMusic(this.nowIndex,this.musicID)
+						this.init()
+						// this.operation();
+						// this.init();
 					}else{
 						let _this=this;
 						uni.showModal({
@@ -260,12 +263,18 @@
 			//切换播放顺序
 			tabPlayType(){
 				this.playType++
+				if(this.playType==1){
+					audio.loop = true;
+				}else{
+					audio.loop = false;
+				}
 				if(this.playType==3){
 					this.playType=0
 				}
 			},
 			//下一曲
-			next(){console.log(this.playType)
+			next(){
+				console.log("this.playType"+this.playType)
 				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
@@ -368,7 +377,7 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 page{
 	background-color: #252b2f;
 	min-height: 100%;
@@ -384,80 +393,62 @@ page{
 	background-color: #252b2f;height: 100vh;
 }
 /* #endif */
-.playimgbox{
-	width: 560upx;
-	height: 560upx;
-	margin: auto;
-	border-radius: 50%;
-	border: #191b1c 30upx solid;
-	position: relative;
-	background-color: transparent;
-	image{
+	.playimgbox{
+		width: 560upx;
+		height: 560upx;
+		margin: auto;
 		border-radius: 50%;
-		display: block;
-		width: 500upx;
-		height: 500upx;
-		position: absolute;
-		left: 0;
-		top: 0;
-		z-index: 0;
-	}
-	.border2{
-		position: absolute;
-		left: 0;
-		top: 0;
-		border-radius: 50%;
-		width: 460upx;
-		height: 460upx;
-		border: #e32a76 4upx solid;
-		margin: 20upx;
-		.border1{
-			border-radius: 50%;
-			width: 126upx;
-			height: 126upx;
-			border: #e32a76 30upx solid;
-			background-color: #1c2227;
-			margin: 167upx auto;
-		}
-	}
-}
-.playLoading {
-	animation: loading 40s;
-	animation-iteration-count: infinite;
-	animation-timing-function: linear;
-}
-.playicon{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	.item{
-		padding: 40upx;
+		border: #191b1c 30upx solid;
+		position: relative;
+		background-color: transparent;
 		image{
-			width: 46upx;
+			border-radius: 50%;
+			display: block;
+			width: 500upx;
+			height: 500upx;
+			position: absolute;
+			left: 0;
+			top: 0;
+			z-index: 0;
 		}
-		.addwidth{
-			width: 54upx;
+		.border2{
+			position: absolute;
+			left: 0;
+			top: 0;
+			border-radius: 50%;
+			width: 460upx;
+			height: 460upx;
+			border: #e32a76 4upx solid;
+			margin: 20upx;
+			.border1{
+				border-radius: 50%;
+				width: 126upx;
+				height: 126upx;
+				border: #e32a76 30upx solid;
+				background-color: #1c2227;
+				margin: 167upx auto;
+			}
 		}
 	}
-}
-
-
-
-
-
-
-
-
-@font-face {
-		font-family: 'icon';
-		src: url('//at.alicdn.com/t/font_1104838_fxzimc34xw.eot');
-		src: url('//at.alicdn.com/t/font_1104838_fxzimc34xw.eot?#iefix') format('embedded-opentype'),
-			url('//at.alicdn.com/t/font_1104838_fxzimc34xw.woff2') format('woff2'),
-			url('//at.alicdn.com/t/font_1104838_fxzimc34xw.woff') format('woff'),
-			url('//at.alicdn.com/t/font_1104838_fxzimc34xw.ttf') format('truetype'),
-			url('//at.alicdn.com/t/font_1104838_fxzimc34xw.svg#iconfont') format('svg');
+	.playLoading {
+		animation: loading 40s;
+		animation-iteration-count: infinite;
+		animation-timing-function: linear;
 	}
-
+	.playicon{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.item{
+			padding: 40upx;
+			image{
+				width: 46upx;
+			}
+			.addwidth{
+				width: 54upx;
+			}
+		}
+	}
 	.imt-audio {
 		padding: 30upx;
 		border-radius: 20upx;
@@ -489,10 +480,8 @@ page{
 	}
 
 	.audio-control {
-		font-size: 32upx;
+		font-size: 40upx;
 		line-height: 1;
-/* 		border: 4upx solid;
-		border-radius: 50%; */
 		padding: 16upx;
 	}
 
@@ -510,10 +499,11 @@ page{
 		animation-iteration-count: infinite;
 		animation-timing-function: linear;
 	}
-
+ 
 	@keyframes loading {
 		to {
 			transform: rotate(360deg);
 		}
 	}
+
 </style>

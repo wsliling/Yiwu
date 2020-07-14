@@ -35,10 +35,7 @@
 		</view>
 		<view class="mainbox">
 			<view class="pricelist flex-center" v-if="data.length">
-				<view class="item flex-column" :class="{'active':setmeal==item.Id}" 
-					v-for="(item,index) in data" :key="index"
-					@click="setmeal = item.Id"
-					>
+				<view class="item flex-column" :class="{'active':setmeal==item.Id}" v-for="(item,index) in data" :key="index" @click="chooseitem(item.Id)">
 					<view class="txt_1">
 						<text class="yuan">￥</text>{{item.PlusPrice}}
 					</view>
@@ -101,6 +98,9 @@
 			
 		},
 		methods: {
+			chooseitem(id){
+				this.setmeal=id
+			},
 			async getData(){
 				const res = await post('User/GetPlusMemberList',{
 					UserId:this.userId,
