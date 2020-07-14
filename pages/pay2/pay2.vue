@@ -167,18 +167,6 @@
 			hidePay(e){
 				this.showPay=false;
 			},
-			// 舞曲更新购买的舞曲数据
-			updateMusic(){
-					if(this.proType==1){
-						let musicList=uni.getStorageSync("musicList");//音乐列表
-						musicList.map(item=>{
-							if(item.Id==this.proID){
-								item.IsShowBuy=0;
-							}
-						})
-						uni.setStorageSync("musicList",musicList);//音乐列表
-					}
-			},
 			//课程订单提交（余额积分提交订单并支付）
 			async CourseBuy(Password){
 				uni.showLoading();
@@ -211,8 +199,6 @@
 					uni.showToast({
 						title: result.msg
 					})
-					// 舞曲更新购买的舞曲数据
-					this.updateMusic();
 					setTimeout(()=>{
 						uni.navigateBack();
 					},1500)
@@ -222,8 +208,6 @@
 					uni.showToast({
 						title: result.msg
 					})
-					// 舞曲更新购买的舞曲数据
-					this.updateMusic();
 					setTimeout(function(){
 						uni.navigateBack()
 					},1500)
@@ -462,8 +446,6 @@
 					if(res.err_msg == "get_brand_wcpay_request:ok" ){
 					// 使用以上方式判断前端返回,微信团队郑重提示：
 					//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-						// 舞曲更新购买的舞曲数据
-						this.updateMusic();
 						setTimeout(()=>{
 							uni.navigateBack();
 						},1500)

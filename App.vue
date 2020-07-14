@@ -9,13 +9,13 @@
 			document.body.appendChild(s2);
 			// #endif
 			uni.setStorageSync("playID","");
-		},
-		onShow: function() {
-			console.log('App Show')
 			uni.setStorageSync("fileName","");//舞曲文件名
 			uni.setStorageSync("filePath","");//舞曲服务器地址
 			uni.setStorageSync("VfileName","");//视频文件名
 			uni.setStorageSync("VfilePath","");//视频服务器地址
+		},
+		onShow: function() {
+			console.log('App Show')
 		},
 		onHide: function() {
 			console.log('App Hide')

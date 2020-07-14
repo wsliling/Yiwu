@@ -218,6 +218,7 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
+						this.datalist.splice(this.pageSize+1,this.pageSize);
 						this.datalist = this.datalist.concat(
 							result.data
 						);
@@ -327,6 +328,7 @@
 					uni.navigateTo({
 						url:'/pages/pay2/pay2?type=1&id='+this.MusicId
 					})
+					this.isShowOperation=false;
 				}
 			},
 			/*获取列表*/
