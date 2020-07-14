@@ -176,7 +176,12 @@ export default {
 		// #endif
 		this.getMyMoney();//获取我的直播币
 		this.showgoodsbox = true;
-		// this.countTime();
+		
+		// 每次跳转页面都释放聊天socket,重新打开时,如果存在memberId就重新连接,(比如充值)
+		if(!this.SocketTask&&this.data.MemberId){
+			
+			this.livemessage();
+		}
 	},
 	onHide() {
 		if(!this.SocketTask)return;
@@ -233,6 +238,7 @@ export default {
 				console.log('WebSocket连接打开失败，请检查！',res);
 			});
 			this.SocketTask.onClose(close => {
+				this.SocketTask=null;
 				console.log('close', close);
 			});
 		},
@@ -246,40 +252,18 @@ export default {
 			// console.log(data)
 			return data;
 		},
-		//发送数据处理
-		MsgData(MsgType, Id, Info, Pic, AddTime, Lat, Lng) {
-			var data = {};
-			var msg = {};
-			data.MsgType = MsgType;
-			var fixInt = function(num, n) {
-				return (Array(n).join(0) + num).slice(-n);
-			};
-			var newdate = function() {
-				var now = new Date();
-				var yy = now.getFullYear(); //年
-				var mm = now.getMonth() + 1; //月
-				var dd = now.getDate(); //日
-				var hh = now.getHours(); //时
-				var ii = now.getMinutes(); //分
-				var ss = now.getSeconds();
-				return yy + '-' + fixInt(mm, 2) + '-' + fixInt(dd, 2) + ' ' + fixInt(hh, 2) + ':' + fixInt(ii, 2) + ':' + fixInt(ss, 2);
-			};
-			if (uni.getStorageSync('name')) {
-				msg.name = uni.getStorageSync('name');
-			} else {
-				msg.name = '匿名用户';
+		// 推送一条消息
+		pushMsg(text,name=''){
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:text,
+					name:name||'系统提示'
+				}),
+				Info:text,
 			}
-			msg.Info = Info == undefined ? '' : Info;
-			msg.Id = Id;
-			msg.AddTime = AddTime == undefined ? newdate() : AddTime;
-			msg = JSON.parse(JSON.stringify(msg));
-			data.Id = msg.Id;
-			data.Info = Info == undefined ? '' : Info;
-			data.Pic = Pic == undefined ? '' : Pic;
-			data.AddTime = AddTime == undefined ? newdate() : AddTime;
-			data.Lat = Lat == undefined ? 0 : Lat;
-			data.Lng = Lng == undefined ? 0 : Lng;
-			return data;
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
 		async play() {
 			let res = await post('TencentCloud/PlayListURL', {
@@ -361,7 +345,7 @@ export default {
 			}
 			this.SocketTask.send({ data: JSON.stringify(data) });
 			console.log(data, 'data');
-			this.onMessage();
+			// this.onMessage();
 			this.sendInfo = '';
 		},
 		//接收消息
@@ -372,16 +356,8 @@ export default {
 				msg = JSON.parse(r.data);
 				console.log(msg,'收到的数据')
 				if (msg.code == 1) {
-					let sendData = {
-						MsgType:3,
-						Id:JSON.stringify({
-							Id:new Date().getTime(),
-							Info:that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间',
-							name:'系统提示'
-						}),
-						Info:'1',
-					}
-					that.SocketTask.send({ data: JSON.stringify(sendData) });
+					this.pushMsg(that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间')
+					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
 					console.log(obj, 987);
@@ -511,18 +487,7 @@ export default {
 			})
 			if(res.code)return;
 			this.myMoney -= item.Cost;
-			
-			let sendData = {
-				MsgType:3,
-				Id:JSON.stringify({
-					Id:new Date().getTime(),
-					Info:this.userInfo.NickName+'赠送了'+item.Name,
-					name:'系统提示'
-				}),
-				Info:'',
-			}
-			this.SocketTask.send({ data: JSON.stringify(sendData) });
-			
+			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name)
 			uni.showToast({
 				title:'赠送成功！'
 			})
