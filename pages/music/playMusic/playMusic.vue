@@ -89,6 +89,7 @@
 				playType:0,//0:顺序播放 1:单曲 2:随机
 				h5Url:'',
 				type:'',
+				nowSrc:'',
 			}
 		},
 		watch: {
@@ -117,14 +118,15 @@
 				return;
 			}
 			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined){
-				this.isCollect=this.musicList[this.nowIndex].IsCollect;
-				this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
-				this.itemdata=this.musicList[this.nowIndex];
-				this.duration=this.itemdata.ADuration
-				uni.setNavigationBarTitle({
-					title: this.itemdata.Name
-				})
-				this.init()
+				// this.isCollect=this.musicList[this.nowIndex].IsCollect;
+				// this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
+				// this.itemdata=this.musicList[this.nowIndex];
+				// this.duration=this.itemdata.ADuration
+				// uni.setNavigationBarTitle({
+				// 	title: this.itemdata.Name
+				// })
+				// this.init()
+				this.getSoleMusic()
 			}
 		},
 		methods: {
@@ -145,14 +147,16 @@
 				}else{
 					this.current = 0
 				}
-				//音频加载中
-				audio.onWaiting(()=>{
-					this.loading=true
-				})
 				//音频播放事件
 				audio.onPlay(() => {
+					console.log("播放")
 					this.paused = false
 					this.loading = false
+				})
+				//音频加载中
+				audio.onWaiting(()=>{
+					console.log("加载")
+					this.loading=true
 				})
 				//音频暂停事件
 				audio.onPause(() => {
@@ -175,38 +179,32 @@
 			},
 			//播放/暂停操作
 			operation() {
-				post('DanceMusic/Music_xq',{
-					UserId:this.userId,
-					Token:this.token,
-					MusicId:this.musicID
-				}).then(res=>{
-					if(res.data.IsShowBuy==0){
-						playMusic(this.nowIndex,this.musicID)
-						this.init()
-					}else{
-						let _this=this;
-						if(!toLogin())return;
-						uni.showModal({
-							content: "该舞曲需付费,去付费？",
-							success(res) {
-								if (res.confirm) {
-									if(toLogin()){
-										let buyInfo={
-											PicImg:_this.itemdata.PicImg,
-											name:_this.itemdata.Name,
-											price:_this.itemdata.Price
-										}
-										uni.setStorageSync('buyInfo', buyInfo);
-										uni.navigateTo({
-											url:'/pages/pay2/pay2?type=1&id='+_this.musicID
-										})
+				if(this.isbuy==0){
+					playMusic(this.nowIndex,this.musicID,this.nowSrc)
+					this.init()
+				}else{
+					let _this=this;
+					if(!toLogin())return;
+					uni.showModal({
+						content: "该舞曲需付费,去付费？",
+						success(res) {
+							if (res.confirm) {
+								if(toLogin()){
+									let buyInfo={
+										PicImg:_this.itemdata.PicImg,
+										name:_this.itemdata.Name,
+										price:_this.itemdata.Price
 									}
-								} else if (res.cancel) {
+									uni.setStorageSync('buyInfo', buyInfo);
+									uni.navigateTo({
+										url:'/pages/pay2/pay2?type=1&id='+_this.musicID
+									})
 								}
+							} else if (res.cancel) {
 							}
-						});
-					}
-				})
+						}
+					});
+				}
 			},
 			//完成拖动事件
 			change(e) {
@@ -224,14 +222,17 @@
 					MusicId:this.musicList[index].Id
 				}).then(res=>{
 					if(res.data.IsShowBuy==0){
+						this.nowSrc=res.data.Audio;
 						this.nowIndex=index;
-						this.itemdata=this.musicList[index];
-						this.musicID=this.musicList[index].Id;
-						this.isbuy=this.musicList[index].IsShowBuy;
+						this.itemdata=res.data;
+						this.musicID=res.data.Id;
+						this.isbuy=res.data.IsShowBuy;
 						uni.setNavigationBarTitle({
 							title: this.itemdata.Name
 						})
-						playMusic(this.nowIndex,this.musicID)
+						console.log("this.nowIndex"+this.nowIndex)
+						console.log("this.musicID"+this.musicID)
+						playMusic(this.nowIndex,this.musicID,this.nowSrc)
 						this.init()
 						// this.operation();
 						// this.init();
@@ -360,8 +361,11 @@
 					MusicId:this.musicID
 				}).then(res=>{
 					const data = res.data;
-					this.musicList=[];
-					this.musicList.push(data)
+					if(this.type==='share'){
+						this.musicList=[];
+						this.musicList.push(data)
+					}
+					this.nowSrc=data.Audio;
 					this.isCollect=data.IsCollect;
 					this.isbuy=data.IsShowBuy;
 					this.duration=data.ADuration

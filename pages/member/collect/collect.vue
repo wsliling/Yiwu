@@ -125,9 +125,17 @@ export default {
 					url: '/pages/shopSon/product/productDetails?proId=' + ProId,
 				})
 			}else if(Type ==5){
-				uni.setStorageSync("musicList",this.datalist);
+				let jsonArr=[];
+				this.datalist.forEach(function(item){
+					let json={
+						Id:item.AssociationId,
+						Name:item.Name
+					}
+					jsonArr.push(json)
+				})
+				uni.setStorageSync("musicList",jsonArr);
 				uni.navigateTo({
-					url: '/pages/music/playMusic/playMusic?nowIndex=0'+ '&id=' + AssociationId,
+					url: '/pages/music/playMusic/playMusic?nowIndex='+index+'&id=' + AssociationId,
 				})
 			}else if(Type ==6){
 				uni.navigateTo({
