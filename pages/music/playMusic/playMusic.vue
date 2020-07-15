@@ -7,7 +7,7 @@
 					<view class="border1"></view>
 				</view>
 			</view>
-			<view class="source">来源{{itemdata.Source}}</view>
+			<view class="source">来源{{itemdata.Source||'未知'}}</view>
 		</view>
 		<view class="playbox">
 			 <view class="imt-audio">
@@ -90,6 +90,7 @@
 				h5Url:'',
 				type:'',
 				nowSrc:'',
+				waitFlag:false
 			}
 		},
 		watch: {
@@ -111,7 +112,7 @@
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			console.log(this.musicList,'list')
+			//console.log(this.musicList,'list')
 			// 获取一条音乐，用户分享的页面
 			if(this.type==='share'){
 				this.getSoleMusic();
@@ -131,11 +132,11 @@
 		},
 		methods: {
 			init(){
-				audio.offEnded()
+				//audio.offEnded()
 				let playID=uni.getStorageSync("playID");
 				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
-				//audio.autoplay =true
+				// audio.autoplay =true
 				if(playID==this.musicID){
 					//音频进度更新事件
 					audio.onTimeUpdate(() => {
@@ -148,16 +149,11 @@
 				}else{
 					this.current = 0
 				}
-				//音频播放事件
-				audio.onPlay(() => {
-					console.log("播放")
-					this.paused = false
-					this.loading = false
-				})
 				//音频加载中
 				audio.onWaiting(()=>{
-					console.log("加载")
-					this.loading=true
+					this.loading=true;
+					audio.pause();
+					this.waitFlag=true;// 标明是onWaiting触发的暂停
 				})
 				//音频暂停事件
 				audio.onPause(() => {
@@ -166,7 +162,6 @@
 				//音频结束事件
 				audio.onEnded(() => {
 					if(this.playType!=1){
-						console.log("结束事件")
 						this.next()
 					}
 				})
@@ -174,12 +169,24 @@
 				audio.onSeeked(() => {
 					this.seek = false
 				})
+				audio.onCanplay(() => {
+					if(this.waitFlag){
+						audio.play()
+					}
+					this.waitFlag=false; 
+				})
+				//音频播放事件
+				audio.onPlay(() => {
+					this.paused = false
+					this.loading = false
+				})
 			},
 			//格式化时长
 			format(num) {
 				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
 			},
 			//播放/暂停操作
+			
 			operation() {
 				if(this.isbuy==0){
 					playMusic(this.nowIndex,this.musicID,this.nowSrc)

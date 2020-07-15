@@ -4,8 +4,8 @@
 			<view class="item flex-between">
 				<view class="imgbox"><image src="http://yw.wtvxin.com/static/default_music.png" mode="aspectFill"></image></view>
 				<view class="info flex1">
-					<view class="name uni-ellipsis">{{Id==-1?'我上传的舞曲':datalist.Name}}</view>
-					<view class="fz12 c_999 uni-mt10">{{Id==-1?datalist.length:datalist.Num}}</view>
+					<view class="name uni-ellipsis">{{menuName}}</view>
+					<view class="fz12 c_999 uni-mt10">{{menuLen}}</view>
 				</view>
 			</view>
 		</view>
@@ -24,7 +24,7 @@
 			</view>
 		</view>
 		<view class="musiclist pd15" v-else>
-			<view class="item flex-between" v-for="(item,index) in datalist.DanceMusicList" :key="index" @click="toplaylist(item.Id,index)">
+			<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 				<view class="imgbox">
 					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
@@ -37,6 +37,10 @@
 				</view>
 			</view>
 		</view>
+		<view class="uni-tab-bar-loading" v-if="hasData">
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
+		</view>
+		<noData :isShow="noDataIsShow"></noData>
 		<!-- 更多操作	 -->
 		<uni-popup mode="fixed" :show="isShowOperation" :h5Top="true" position="bottom" @hidePopup="hidePopup">
 			<view class="uni-modal-music Operation__modal">
@@ -84,7 +88,7 @@
 				<view class="uni-modal__hd pd15">选择曲单</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
+						<view class="line-item" v-if="item.Id!=-1" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
 							<view class="line-item-l text_left">
 								<text class="txt">{{item.Name}}</text>
 							</view>
@@ -117,7 +121,7 @@
 				isLoad: false,
 				hasData: false,
 				noDataIsShow: false,
-				datalist: {}, //列表
+				datalist: [], //列表
 				isShowOperation:false,
 				isShowSelect:false,
 				isCollect:false,//是否收藏
@@ -127,6 +131,8 @@
 				itemdata:{},
 				DancePlayList:[],//曲单列表
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+				menuName:"",//曲单名称
+				menuLen:0,//曲单数量
 			}
 		},
 		components: {
@@ -173,11 +179,7 @@
 			//播放
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
-					if(this.Id==-1){
-						uni.setStorageSync("musicList",this.datalist)
-					}else{
-						uni.setStorageSync("musicList",this.datalist.DanceMusicList)
-					}
+					uni.setStorageSync("musicList",this.datalist)
 					if(this.playID==id){
 						this.playID="";
 					}else{
@@ -193,11 +195,7 @@
 				}
 			},
 			toplaylist(id,index){
-				if(this.Id==-1){
-					uni.setStorageSync("musicList",this.datalist)
-				}else{
-					uni.setStorageSync("musicList",this.datalist.DanceMusicList)
-				}
+				uni.setStorageSync("musicList",this.datalist)
 				uni.navigateTo({
 					url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
 				})	
@@ -277,23 +275,34 @@
 				}
 				if (result.code === 0) {
 					let _this=this;
-					if (result.data.length > 0) {
+					let list=[];
+					if(this.Id==-1){
+						this.menuName="我上传的舞曲";
+						this.menuLen=result.count+'首';
+						list=result.data;
+					}else{
+						this.menuName=result.data.Name;
+						this.menuLen=result.data.Num;
+						list=result.data.DanceMusicList;
+					}
+					if (list.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
 					}
-					if (result.data.length == 0 && this.page == 1) {
+					if (list.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;
 						this.hasData = false;
 					}
 					if (this.page === 1) {
-						this.datalist = result.data;
+						this.datalist = list;
 					}
 					if (this.page > 1) {
+						this.datalist.splice(this.pageSize,this.pageSize);
 						this.datalist = this.datalist.concat(
-							result.data
+							list
 						);
 					}
-					if (result.data.length <this.pageSize) {
+					if (!result.isok) {
 						this.isLoad = false;
 						this.loadingType = 2;
 					} else {

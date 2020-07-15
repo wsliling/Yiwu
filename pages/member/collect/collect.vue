@@ -440,8 +440,8 @@ export default {
 	justify-content: center;
 	.uni-icon{
 		position: absolute;
-		right: 20upx;
-		top: 20upx;
+		right: 30upx;
+		top: 60upx;
 		color: #FFF;
 		font-size: 72upx;
 		line-height: 1;
