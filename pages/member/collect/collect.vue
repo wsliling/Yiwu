@@ -142,9 +142,12 @@ export default {
 					url: '/pages/video/videoDetails/videoDetails?id=' + AssociationId,
 				})
 			}else if(Type ==4){
-				this.isShowvideo=true;
-				this.videoSrc=this.datalist[index].Video;
-				this.videoPoster=this.datalist[index].PicImg;
+				uni.navigateTo({
+					url: '/pages/replylist/replylist?id=' + AssociationId,
+				})
+				// this.isShowvideo=true;
+				// this.videoSrc=this.datalist[index].Video;
+				// this.videoPoster=this.datalist[index].PicImg;
 			}
 			
 		},

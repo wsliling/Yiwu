@@ -68,8 +68,8 @@
 							</view>
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
-						<view class="media-bd" @click="toRec(item.Type,item.Id)">
-							<view class="desc uni-ellipsis2" v-if="item.Type!=3">
+						<view class="media-bd">
+							<view class="desc uni-ellipsis2" v-if="item.Type!=3" @click="toRec(item.Type,item.Id)">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
@@ -77,11 +77,11 @@
 								<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
-							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
+							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
 								<view v-if="item.Type==2" class="tag">课程</view>
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
-							<view class="maxpic audio" v-if="item.Type==3&&item.PicImg">
+							<view class="maxpic audio" v-if="item.Type==3&&item.PicImg" @click="toRec(item.Type,item.Id)">
 								<image :src="item.PicImg" mode="aspectFill"></image>
 								<view class="audioinfo uni-ellipsis2">
 									{{item.Title}}
