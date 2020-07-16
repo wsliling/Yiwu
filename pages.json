@@ -318,7 +318,7 @@
                 ,{
                     "path" : "wallet/wallet",
                     "style" : {
-						"navigationBarTitleText":"我的钱包",
+						"navigationBarTitleText":"我的零钱",
 						"app-plus": {
 							 "titleNView": {    
 								"splitLine": {  
@@ -581,6 +581,45 @@
                 ,{
                     "path" : "team/team",
                     "style" : {}
+                }
+                ,{
+                    "path" : "myAssets/myAssets",
+                    "style" : {
+						"navigationBarTitleText": "钱包",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
+                ,{
+                    "path" : "ordertype/ordertype",
+                    "style" : {
+                    	"navigationBarTitleText": "订单列表",
+                    	"app-plus": {
+                    		 "titleNView": {    
+                    			"splitLine": {  
+                    			  "color":"#eee"  
+                    			}    
+                    		 }
+                    	}
+                    }
+                }
+                ,{
+                    "path" : "addUser/addUser",
+                    "style" : {
+						"navigationBarTitleText": "推荐关注",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
                 }
             ]
 		},

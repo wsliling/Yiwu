@@ -40,7 +40,7 @@
 					<view class="Yi-recomUser uni-mb10" v-if="index==3&&recuserlist.length>0">
 						<view class="Yi-hd flex-between">
 							<view class="title">推荐用户</view>
-							<!-- <view class="more">查看全部</view> -->
+							<view class="more" @click="tolink('/pages/member/addUser/addUser')">查看全部</view>
 						</view>
 						<view class="Yi-bd">
 							<scroll-view class="User-swiper-tab" scroll-x>
@@ -68,29 +68,41 @@
 							</view>
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
-						<view class="media-bd">
-							<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+						<view class="media-bd" @click="toRec(item.Type,item.Id)">
+							<view class="desc uni-ellipsis2" v-if="item.Type!=3">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
-								<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
+								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
-							<view class="maxpic maxh" v-if="item.Type==0&&item.PicImg">
+							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
+								<view v-if="item.Type==2" class="tag">课程</view>
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
-							<view class="media-ft flex-between">
-								<view class="ft_l flex-start">
-									<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-									<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-									<share wxUrl="/pages/tabBar/index/index" :h5Url="'/pages/replylist/replylist?id='+item.Id">
-										<view class="txt_info share"></view>
-									</share>
+							<view class="maxpic audio" v-if="item.Type==3&&item.PicImg">
+								<image :src="item.PicImg" mode="aspectFill"></image>
+								<view class="audioinfo uni-ellipsis2">
+									{{item.Title}}
 								</view>
-								<view class="ft_r">
-									<view @click="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+								<view class="islive">
+									<view class="line line1"></view>
+									<view class="line line2"></view>
+									<view class="line line3"></view>
 								</view>
+							</view>
+						</view>
+						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
+							<view class="ft_l flex-start">
+								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
+								<view class="txt_info reply">{{item.CommentNum}}</view>
+								<share wxUrl="/pages/tabBar/index/index" :h5Url="xqUrl[item.Type].url+item.Id">
+									<view class="txt_info share"></view>
+								</share>
+							</view>
+							<view class="ft_r">
+								<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 							</view>
 						</view>
 						<view class="media-comment" v-if="item.CommentNum>0">
@@ -102,7 +114,7 @@
 									</text>
 								</view>
 							</block>
-							<view class="more c_999" v-if="item.CommentNum>4" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+							<view class="more c_999" v-if="item.CommentNum>4" @click="toRec(item.Type,item.Id)">
 								查看全部评论
 							</view>
 						</view>
@@ -216,7 +228,29 @@
 				onplayHeight:0,//当前播放视频距离顶部的高度
 				index0:0,
 				index1:0,
-				IsEdit:false
+				IsEdit:false,
+				xqUrl:[
+					{
+						type:0,
+						url:'/pages/replylist/replylist?id='
+					},
+					{
+						type:1,
+						url:'/pages/replylist/replylist?id='
+					},
+					{
+						type:2,
+						url:'/pages/video/videoDetails/videoDetails?id='
+					},
+					{
+						type:3,
+						url:'/pages/music/playMusic/playMusic?type=share&id='
+					},
+					{
+						type:4,
+						url:'/pages/shopSon/product/productDetails?proId='
+					}
+				],//详情链接
 			}
 		},
 		onLoad() {
@@ -331,6 +365,12 @@
 						url: Url
 					})
 				}
+			},
+			toRec(type,id){
+				let _this=this;
+				uni.navigateTo({
+					url: _this.xqUrl[type].url+id
+				})
 			},
 			tapTab(index) { //点击tab-bar
 				let _this = this;
@@ -549,12 +589,21 @@
 				}
 			},
 			//发现收藏和取消收藏
-			async CollectBtn(id,index){
-				let result = await post("Find/CollectOperation", {
-					"UserId": this.userId,
-					"Token": this.token,
-					"FindId":id
-				});
+			async CollectBtn(id,index,type){
+				let result;
+				if(type==2){
+					result = await post("Course/CourseCollection", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"OutlineId":id
+					});
+				}else{
+					result = await post("Find/CollectOperation", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"FindId":id
+					});
+				}
 				if(result.code==0){
 					let _this=this;
 					uni.showToast({
@@ -580,31 +629,49 @@
 				}
 			},
 			//发现点赞
-			async likeBtn(id,index){
-				let result = await post("Find/FindlikeOperation", {
-					"UserId": this.userId,
-					"Token": this.token,
-					"FindId":id
-				});
+			async likeBtn(id,index,type){
+				let result;
+				if(type==2){
+					result = await post("Course/CourseOutlineLikes", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"CourseId":id
+					});
+				}else{
+					result = await post("Find/FindlikeOperation", {
+						"UserId": this.userId,
+						"Token": this.token,
+						"FindId":id
+					});
+				}
 				if(result.code==0){
 					let _this=this;
 					let num=0;
 					uni.showToast({
 						title: result.msg
 					})
-					let datalist=[]
 					if(this.tabIndex==0){
-						datalist=this.datalist
+						num=_this.datalist[index].LikeNum;
+						if(this.datalist[index].IsLike==0){
+							num++
+							this.$set(_this.datalist[index],"IsLike",1)
+						}else{
+							num--
+							this.$set(_this.datalist[index],"IsLike",0)
+						}
+						this.$set(_this.datalist[index],"LikeNum",num)
 					}else{
-						datalist=this.NewsList
+						num=_this.NewsList[index].LikeNum;
+						if(this.NewsList[index].IsLike==0){
+							num++
+							this.$set(_this.NewsList[index],"IsLike",1)
+						}else{
+							num--
+							this.$set(_this.NewsList[index],"IsLike",0)
+						}
+						this.$set(_this.NewsList[index],"LikeNum",num)
 					}
-					if(datalist[index].IsLike==0){
-						this.$set(datalist[index],"IsLike",1)
-						this.$set(datalist[index],"LikeNum",datalist[index].LikeNum++)
-					}else{
-						this.$set(datalist[index],"IsLike",0)
-						this.$set(datalist[index],"LikeNum",datalist[index].LikeNum--)
-					}
+					
 				}else if(result.code==2){
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",

@@ -1,10 +1,5 @@
-.img30{
-	width: 30upx;
-	height: 30upx;
-}
 .header{
-	margin-top: 30upx;
-	margin-bottom: 50upx;
+	margin: 30upx 0;
 	.editor{
 		display: flex;
 		align-items: center;
@@ -15,13 +10,13 @@
 	}
 	.user{
 		margin-top: 15upx;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+		position: relative;
+		// display: flex;
+		// align-items: center;
+		// justify-content: space-between;
 		.user-left{
 			display: flex;
-			align-items: center;
-			justify-content: center;
+			align-items: flex-start;
 			.user-img{
 				width: 116upx;
 				height: 116upx;
@@ -42,29 +37,58 @@
 				}
 			}
 			.user-name{
+				flex: 1;
 				margin-left: 25upx;
 				.name{
 					font-size: 34upx;
 					color: #333333;
 					display:flex;
 					align-items:center;
+					view{font-size: 34upx; max-width: 240upx;}
 				}
 				.vip{
 					width:40upx;height:40upx;
 					// padding:0 20upx;
 				}
 				.text{
-					font-size: 22upx;
-					color: #999;
-					border-radius: 40upx;
-					border: 1px solid #ddd;
-					padding: 5upx 10upx;
-					display: inline-block;
+					font-size: 24upx;
 					overflow:hidden;
 					white-space:nowrap;
 					text-overflow:ellipsis;
-					width: 300upx;
-					margin-top: 10upx;
+					color: #666;
+				}
+				.btns{
+					.btn{
+						float: left;
+						display:flex;
+						align-items:center;
+						justify-content: center;
+						background: #fff;
+						border-radius: 100px;
+						box-shadow: 0 6upx 12upx rgba(0,0,0,.2);
+						margin-right: 20upx;
+						line-height: 1;
+						padding: 10upx 20upx;
+						font-size: 24upx;
+						color: #666;
+						.img30{
+							width: 28upx;
+							height: 28upx;
+							margin-right: 8upx;
+						}
+					}
+				}
+				.icos{
+					.ico{
+						display: inline-block;
+						border: 1px solid #e6e6e6; border-radius: 100px;
+						color: #888;
+						line-height: 1.1;
+						font-size: 24upx;
+						padding: 4upx 20upx;
+						margin-right: 20upx;
+						margin-bottom: 20upx;
+					}
 				}
 			}
 			image{
@@ -72,6 +96,9 @@
 			}
 		}
 		.user-right{
+			position: absolute;
+			right: 0;
+			top: 28upx;
 			width: 200upx;
 			height: 60upx;
 			text-align:right;
