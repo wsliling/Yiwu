@@ -12,6 +12,18 @@
 				}
 			}
 		}
+		,{
+			"path": "pages/tabBar/live/new",
+			"style": {
+				"navigationBarTitleText": "壹舞",
+				"enablePullDownRefresh":true,
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
+			}
+		}
         ,{
             "path" : "pages/tabBar/live/live",
             "style" : {
@@ -804,9 +816,9 @@
 				"selectedIconPath": "static/tabbar/ft1_in.png"
 			},
 			{
-				"pagePath": "pages/tabBar/live/live",
-				"iconPath": "static/tabbar/ft2.png",
-				"selectedIconPath": "static/tabbar/ft2_in.png"
+				"pagePath": "pages/tabBar/live/new",
+				"iconPath": "static/tabbar/ft6.png",
+				"selectedIconPath": "static/tabbar/ft6_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/shop/shop",
