@@ -203,7 +203,6 @@
 				}
 			},
 			openAttestation(){
-				if(!this.userId||!this.token) return;
 				this.IsEdit=true;
 				if(toLogin()){
 					let urlstr="";

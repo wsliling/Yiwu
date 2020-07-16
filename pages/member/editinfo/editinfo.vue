@@ -19,13 +19,39 @@
 			  <input type="text" placeholder="去设置" disabled class="flex1 text_right" :value="info.Introduction">
 			</view>
 		</view>
+		<view class="line-item line-arrow-r">
+			<view class="lab">生日</view>
+			<view class="item_r flex1" style="margin-left: 20upx;">
+			  <!-- <input type="text" placeholder="去设置" disabled class="flex1 text_right" :value="info.Birthday"> -->
+			  <picker mode="date" :value="info.Birthday" :start="startDate" :end="endDate" @change="bindDateChange">
+			  	{{info.Birthday}}
+			  </picker>
+			</view>
+		</view>
+		<view class="line-item line-arrow-r" @click="showMulLinkageTwoPicker">
+			<view class="lab">地区</view>
+			<view class="item_r flex1" style="margin-left: 20upx;">
+			  <input type="text" placeholder="去设置" disabled class="flex1 text_right" v-model="pickerText">
+			</view>
+		</view>
+		<view class="line-item line-arrow-r">
+			<view class="lab">自定义</view>
+			<view class="item_r flex1" style="margin-left: 20upx;">
+			  <input type="text" placeholder="去添加" class="flex1 text_right"  v-model="info.UserDefined">
+			</view>
+		</view>
 	  </view>
+	  <view class="btnbox" @click="submint">确定</view>
+	  <mpvue-picker :themeColor="themeColor" ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
+	   @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
   </view>
 </template>
 
 <script>
 import {post} from '@/common/util'
 import { pathToBase64, base64ToPath } from '@/common/image-tools.js';
+import mpvuePicker from '@/components/mpvue-picker/mpvuePicker.vue';
+import cityData from '@/common/city.data.js';
 export default {
   data () {
     return {
@@ -34,17 +60,31 @@ export default {
       info:{},
       Avatar:"",
 	  mysign:"",//个性签名
+	  pickerText:"",
+	  popuptype:"",
+	  mulLinkageTwoPicker: cityData,
+	  themeColor: '#007aff',
+	  mode: '',
+	  deepLength: 1,
+	  pickerValueDefault: [0],
+	  pickerValueArray:[]
     }
   },
   components: {
-    
-  },
-  onLoad(){
-    this.userId = uni.getStorageSync("userId")
-    this.token = uni.getStorageSync("token")
+    mpvuePicker
   },
   onShow(){
+	  this.userId = uni.getStorageSync("userId")
+	  this.token = uni.getStorageSync("token")
     this.GetMemInfo()
+  },
+  computed: {
+  	startDate() {
+  		return this.getDate('start');
+  	},
+  	endDate() {
+  		return this.getDate('end');
+  	}
   },
   methods: {
     tolink(url){
@@ -59,8 +99,36 @@ export default {
       }).then(res=>{
         this.info = res.data;
         this.Avatar=this.info.Avatar;
+		this.pickerText=this.info.Province+" "+this.info.City;
       })
     },
+	async submint(){
+		let result = await post("User/EditUserInfo", {
+			"UserId": this.userId,
+			"Token": this.token,
+			"Birthday": this.info.Birthday,
+			"City":this.info.City,
+			"Province":this.info.Province,
+			"UserDefined":this.info.UserDefined
+		});
+		if (result.code === 0) {
+			let _this=this;
+			uni.showToast({
+				title: result.msg,
+				icon: "none",
+				duration: 1500
+			});
+			setTimeout(function() {
+				uni.navigateBack()
+			},1800)
+		}else {
+			uni.showToast({
+				title: result.msg,
+				icon: "none",
+				duration: 2000
+			});
+		}
+	},
     //上传头像
     uplLoadImg(){
 		uni.chooseImage({
@@ -91,7 +159,41 @@ export default {
 			})
 		})
     },
-	
+	// 二级联动选择
+	showMulLinkageTwoPicker() {
+		this.pickerValueArray = this.mulLinkageTwoPicker
+		this.mode = 'multiLinkageSelector'
+		this.deepLength = 2
+		this.pickerValueDefault = [0, 0]
+		this.$refs.mpvuePicker.show()
+		console.log(this.pickerValueArray)
+	},
+	onConfirm(e) {
+		let arr=e.label.split('-');
+		this.info.City=arr[1];
+		this.info.Province=arr[0];
+		this.pickerText=e.label.replace("-"," ");
+	},
+	onCancel(e) {
+		console.log(e)
+	},
+	bindDateChange: function(e) {
+		this.info.Birthday = e.target.value
+	},
+	getDate(type) {
+		const date = new Date();
+		let year = date.getFullYear();
+		let month = date.getMonth() + 1;
+		let day = date.getDate();
+		if (type === 'start') {
+			year = year - 60;
+		} else if (type === 'end') {
+			year = year + 2;
+		}
+		month = month > 9 ? month : '0' + month;;
+		day = day > 9 ? day : '0' + day;
+		return `${year}-${month}-${day}`;
+	},
   },
 }
 </script>
@@ -108,5 +210,18 @@ export default {
 	input{
 	width:515upx;
 	}
+}
+.btnbox{
+	width: 690upx;
+	height: 88upx;
+	line-height: 88upx;
+	border-radius: 44upx;
+	text-align: center;
+	font-size: 32upx;
+	color: #fff;
+	background-color: #de1b6e;
+	position: fixed;
+	left: 30upx;
+	bottom: 60upx;
 }
 </style>

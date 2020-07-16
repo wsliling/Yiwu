@@ -108,7 +108,7 @@
 		}
 	}
 	.media-bd{
-		.desc{ line-height: 1.5;font-weight: bold;font-size: 30upx;}
+		.desc{ line-height: 1.5;font-size: 30upx;}
 		.maxpic{
 			margin-top: 20upx;
 			border-radius: 12upx;
@@ -116,7 +116,7 @@
 			position: relative;
 			background-color: #e0e0e0;
 			&.maxh{
-				max-height: 450upx;
+				max-height: 1000upx;
 			}
 			video{
 				width: 100%;
