@@ -272,9 +272,9 @@
 	.media-hd .flow-btn {
 		float: right;
 		margin-top: 10upx;
-		color: #fff;
-		background: #dd196d;
-		border: 1px solid #dd196d;
+		color: #dd196d;
+		background: #fff;
+		border: 1px solid #ddd;
 		border-radius: 100px;
 		width: 120upx;
 		text-align: center;
@@ -283,7 +283,6 @@
 	.media-hd .flow-btn.flowed {
 		background: #fff;
 		color: #dd196d;
-		border-color: #ddd;
 	}
 
 	.media-title {
