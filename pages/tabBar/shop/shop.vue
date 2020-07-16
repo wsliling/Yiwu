@@ -32,13 +32,6 @@
 				<text class="txt">全部</text>
 			</view> 
 		</view>
-		<!-- 品牌 -->
-		<view class="brand">
-			<view class="brand-img flex-column" v-for="(item,index) in shopList" :key="index" 
-				 @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})">
-				<image class="icon" :src="item.Logo" mode="aspectFill"></image>
-			</view>
-		</view>
 		<!-- 热卖推荐 -->
 		<view class="best">
 			<view :class="['letter',{'active':item.id===indexs}]" 
@@ -52,7 +45,19 @@
 		<!-- 正在直播 -->
 		<block v-for="(val,key) in proList" :key="key" >		
 			<shopItem v-if="val.ProductList.length" :item="val"></shopItem>
-
+			<!-- 品牌 -->
+			<view class="brand" v-if="key==2">
+				<view class="brand-img flex-column" v-for="(item,index) in shopList" :key="index" 
+					 @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})" v-if="index<4">
+					<image class="icon" :src="item.Logo" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="brand" v-if="key==5">
+				<view class="brand-img flex-column" v-for="(item,index) in shopList" :key="index" 
+					 @click="navigate('shopSon/mywu/wu',{brandId:item.Id,title:item.Name})" v-if="index>=4">
+					<image class="icon" :src="item.Logo" mode="aspectFill"></image>
+				</view>
+			</view>
 		</block>
 		<uni-load-more :loadingType="loadingType"></uni-load-more>
 	</view>
