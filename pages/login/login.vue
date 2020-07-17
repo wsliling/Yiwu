@@ -251,9 +251,16 @@
 					})
 				}
 				if(result.code===0){
-					uni.setStorageSync('token', result.data.Token);
-					uni.setStorageSync('userId', result.data.UserId);
-					uni.setStorageSync('myInviteCode', result.data.ReferralCode);
+					const data = result.data;
+					uni.setStorageSync('token', data.Token);
+					uni.setStorageSync('userId', data.UserId);
+					uni.setStorageSync('myInviteCode', data.ReferralCode);//邀请码
+					//认证
+					uni.setStorageSync('attestation', {
+						IsDancer:data.IsDancer,//舞者
+						IsOrganization:data.IsOrganization,//机构
+						IsShop:data.IsShop//店铺
+					});
 					let _this = this;
 					uni.showToast({
 					     title: "登录成功",

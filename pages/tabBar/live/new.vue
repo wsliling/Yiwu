@@ -209,7 +209,7 @@
 			</view>
 			<noData v-if="!CourseList.length"></noData>
 		</view>
-		<view class="uploadbtn flex-column" @click="openAttestation"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
+		<view class="uploadbtn flex-column" @click="openAttestation"><text class="uni-icon uni-icon-plusempty"></text></view>
 	</view>
 </template>
 
@@ -868,7 +868,7 @@
 		z-index: 9;
 		.uni-icon{
 			font-weight: bold;
-			font-size: 52upx;
+			font-size: 64upx;
 			line-height: .8;
 		}
 		.icon{

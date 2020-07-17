@@ -40,7 +40,7 @@ page{
 			display: block;
 			width: 12upx;
 			height: 60upx;
-			box-shadow: 0 0 40upx rgba(0,0,0,.4);
+			box-shadow: 0 0 30upx rgba(0,0,0,.3);
 			position: absolute;
 			top: 50%;
 			margin-top: -30upx;
@@ -166,7 +166,7 @@ page{
 	z-index: 9;
 	.uni-icon{
 		font-weight: bold;
-		font-size: 52upx;
+		font-size: 64upx;
 		line-height: .8;
 	}
 	.icon{
