@@ -39,6 +39,7 @@
 			.user-name{
 				flex: 1;
 				margin-left: 25upx;
+				overflow: hidden;
 				.name{
 					font-size: 34upx;
 					color: #333333;
@@ -257,7 +258,10 @@
 
 .ac{
 	padding:0 30upx;
-	/* #ifndef MP-WEIXIN */
+	/* #ifndef H5 */
+	margin-bottom:30upx;
+	/* #endif */
+	/* #ifdef H5 */
 	margin-bottom:120upx;
 	/* #endif */
 	line-height:2.8;

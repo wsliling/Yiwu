@@ -231,11 +231,7 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 			playID=id
 			uni.setStorageSync("playID",playID)
 			uni.setStorageSync("playIDtype",1)
-			if(nowSrc){
-				audio.src = nowSrc;
-			}else{
-				audio.src = musicList[index].Audio
-			}
+			audio.src = musicList[index].Audio||nowSrc;
 			audio.play()
 			MemberPaly(id)
 		}
@@ -243,11 +239,7 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 		playID=id
 		uni.setStorageSync("playID",playID)
 		uni.setStorageSync("playIDtype",1)
-		if(nowSrc){
-			audio.src = nowSrc;
-		}else{
-			audio.src = musicList[index].Audio
-		}
+		audio.src = musicList[index].Audio||nowSrc;
 		audio.play()
 		MemberPaly(id)
 	}
