@@ -25,7 +25,8 @@
 								@click.stop="navigate('member/openVip/openVip',{
 									avatar:memberInfo.Avatar,
 									name:memberInfo.NickName,
-									endTime:memberInfo.PlusEndTime
+									endTime:memberInfo.PlusEndTime,
+									isVIP:memberInfo.IsPlus
 								},true)">
 							</image>
 						</view>

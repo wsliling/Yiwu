@@ -43,7 +43,7 @@
 				</view>
 			</view>
 			<view class="btn_open flex-column uni-bold" @click="VipOrder">
-				立即开通
+				{{info.isVIP?'立即续费':'立即开通'}}
 			</view>
 		</view>
 		<!--放弃付款弹窗 -->
@@ -85,12 +85,14 @@
 			}
 		},
 		onLoad(option){
+			console.log(option)
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.info ={
 				avatar:option.avatar,
 				name:option.name,
 				endTime:option.endTime.slice(0,option.endTime.lastIndexOf(':')),
+				isVIP:option.isVIP
 			} 
 			this.getData();
 		},
