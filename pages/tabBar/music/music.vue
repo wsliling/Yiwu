@@ -138,7 +138,7 @@
 			</uni-popup>
 			
 		</view>
-		<view @click="openAttestation" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
+		<view @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<!-- <view v-if="tabIndex>0" @click="tolink('/pages/music/uploadMusic/uploadMusic','login')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 		<view v-if="tabIndex==0" @click="tolink('/pages/music/artPost/artPost','login')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view> -->
 	</view>
