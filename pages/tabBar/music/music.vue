@@ -138,7 +138,7 @@
 			</uni-popup>
 			
 		</view>
-		<view @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view>
+		<view @click="openAttestation" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 		<!-- <view v-if="tabIndex>0" @click="tolink('/pages/music/uploadMusic/uploadMusic','login')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 		<view v-if="tabIndex==0" @click="tolink('/pages/music/artPost/artPost','login')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view> -->
 	</view>
@@ -259,7 +259,7 @@
 				if(toLogin()){
 					let urlstr="";
 					uni.showActionSheet({
-						itemList: ['发布动态','发布舞曲'],
+						itemList: ['发布动态','上传舞曲'],
 						success: (e) => {
 							if(e.tapIndex==0){
 								urlstr="/pages/music/artPost/artPost";

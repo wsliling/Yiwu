@@ -37,9 +37,10 @@
 							</view>
 							<view class="text uni-mt10">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 							<view class="icos flex-center-start uni-mt10">
-								<text class="ico"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
-								<text class="ico">{{memberInfo.Area}}</text>
-								<text class="ico">{{memberInfo.UserDefined||'+自定义'}}</text>
+								<text class="ico" v-if="memberInfo.Age"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
+								<text class="ico" v-if="memberInfo.Area">{{memberInfo.Area}}</text>
+								<text class="ico" v-if="memberInfo.UserDefined">{{memberInfo.UserDefined}}</text>
+								<text class="ico" @click="tolink('/pages/member/editinfo/editinfo')">+自定义</text>
 							</view>
 						</block>
 					</view>

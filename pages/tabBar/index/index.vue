@@ -69,7 +69,7 @@
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
 						<view class="media-bd">
-							<view class="desc uni-ellipsis2" v-if="item.Type!=3" @click="toRec(item.Type,item.Id)">
+							<view class="desc uni-ellipsis2" @click="toRec(item.Type,item.Id)">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
@@ -81,12 +81,12 @@
 								<view v-if="item.Type==2" class="tag">课程</view>
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
-							<view class="maxpic audio" v-if="item.Type==3&&item.PicImg" @click="toRec(item.Type,item.Id)">
-								<image :src="item.PicImg" mode="aspectFill"></image>
-								<view class="audioinfo uni-ellipsis2">
+							<view class="maxpic audio" v-if="item.Type==3" @click="toRec(item.Type,item.Id)">
+								<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+								<!-- <view class="audioinfo uni-ellipsis2">
 									{{item.Title}}
-								</view>
-								<view class="islive">
+								</view> -->
+								<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playAudio(item.Id,item.VideoUrl)">
 									<view class="line line1"></view>
 									<view class="line line2"></view>
 									<view class="line line3"></view>
@@ -95,8 +95,8 @@
 						</view>
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
-								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-								<view class="txt_info reply">{{item.CommentNum}}</view>
+								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum+'人赞过':'点赞'}}</view>
+								<view class="txt_info reply">{{item.CommentNum}}人评论</view>
 								<share wxUrl="/pages/tabBar/index/index" :h5Url="xqUrl[item.Type].url+item.Id">
 									<view class="txt_info share"></view>
 								</share>
@@ -173,7 +173,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,navigate} from '@/common/util.js';
+	import {post,get,toLogin,navigate,audio,playMusic} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -229,6 +229,8 @@
 				index0:0,
 				index1:0,
 				IsEdit:false,
+				playID:"",//当前播放
+				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 				xqUrl:[
 					{
 						type:0,
@@ -264,6 +266,8 @@
 		onShow(){
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
+			this.playID=uni.getStorageSync("playID");
+			this.playIDtype=uni.getStorageSync("playIDtype");
 		},
 		computed: {
 		   tabStyle(){
@@ -482,6 +486,16 @@
 					}else{
 						_this.$set(item,'play',false);
 					}
+				})
+			},
+			playAudio(id,nowSrc){
+				playMusic('',id,nowSrc);
+				this.playID=uni.getStorageSync("playID");
+				this.playIDtype=uni.getStorageSync("playIDtype");
+				//音频结束事件
+				audio.onEnded(() => {
+					uni.setStorageSync("playIDtype",0)
+					this.playIDtype=0;
 				})
 			},
 			//分页视频
