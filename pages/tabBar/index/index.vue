@@ -768,7 +768,7 @@
 			}
 			.media-bd{
 				.maxpic{
-					border-radius: 12upx;
+					// border-radius: 12upx;
 					overflow: hidden;
 					position: relative;
 					background-color: #e0e0e0;
