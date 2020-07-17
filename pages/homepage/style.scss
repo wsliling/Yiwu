@@ -100,6 +100,75 @@
 	border-radius: 100%;
 
 }
+@keyframes myanimation{
+	0%{
+		height: 0%;
+	}
+	20%{
+		height: 10upx;
+	}
+	50%{
+		height: 24upx;
+	}
+	80%{
+		height: 10upx;
+	}
+	100%{
+		height: 0%;
+	}
+}	
+.audiobox{
+	position: relative;
+	.islive{
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-top: -35upx;
+		margin-left: -35upx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 70upx;
+		border-radius: 50%;
+		height: 70upx;
+		background: rgba(225,225,225,.5);
+		color: #fff;
+		z-index: 2;
+		image{
+			width: 40upx;
+			height: 40upx;
+			background-color: transparent;
+		}
+		.line{
+			width: 4upx;
+			background: #fff;
+			margin-right: 6upx;
+		}
+		.line1{ 
+			height: 24upx;
+		}
+		.line2{ 
+			height: 10upx;
+		}
+		.line3{ 
+			height: 14upx;
+		}
+		// &.active{
+		// 	.line1{
+		// 		animation:myanimation 0.6s infinite 0.5s;
+		// 		-webkit-animation:myanimation 0.6s infinite 0.5s;
+		// 	}
+		// 	.line2{ 
+		// 		animation:myanimation 0.6s infinite 1s;
+		// 		-webkit-animation:myanimation 0.6s infinite 1s;
+		// 	}
+		// 	.line3{ 
+		// 		animation:myanimation 0.6s infinite 1.5s;
+		// 		-webkit-animation:myanimation 0.6s infinite 1.5s;
+		// 	}
+		// }
+	}
+}
 .product-box{
 	background-color: #f5f5f5;
 	padding: 30upx 0 0;
@@ -187,6 +256,7 @@
 	border-top: 1upx solid #eee;
 	padding: 15upx 25upx;
 	background: #fff;
+	z-index: 9;
 	.box{
 		border-radius: 10upx;
 		height: 64upx;
@@ -245,7 +315,7 @@
 	}
 }
 
-.islive{
+.user.islive{
 	display: flex;
 	justify-content: center;
 	align-items: center;
