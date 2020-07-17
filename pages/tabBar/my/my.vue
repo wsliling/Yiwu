@@ -13,7 +13,7 @@
 		<view class="header" :style="{'padding-top':barHeight+'px'}">
 			<view class="user">
 				<view class="user-left">
-					<view class="user-img" @click="tolink('/pages/member/editinfo/editinfo')">
+					<view class="user-img" @click="tolink('/pages/homepage/homepage?id='+memberInfo.Id)">
 						<view>
 							<image :src="memberInfo.Avatar||'http://yw.wtvxin.com/static/my/user.png'" mode="aspectFill"></image>
 						</view>
@@ -35,11 +35,12 @@
 								<view class="btn" @click="tolink('/pages/member/editinfo/editinfo')"><image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>编辑资料</view>
 								<view class="btn" @click="tolink('/pages/member/addUser/addUser')"><image class="img30" src="http://yw.wtvxin.com/static/my/add_min.png"></image>关注</view>
 							</view>
-							<view class="text uni-mt10">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
+							<view class="text uni-mt10"><label v-if="!memberInfo.Introduction">简介：</label>{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 							<view class="icos flex-center-start uni-mt10">
-								<text class="ico"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
-								<text class="ico">{{memberInfo.Area}}</text>
-								<text class="ico">{{memberInfo.UserDefined||'+自定义'}}</text>
+								<text class="ico" v-if="memberInfo.Age"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
+								<text class="ico" v-if="memberInfo.Area">{{memberInfo.Area}}</text>
+								<text class="ico" v-if="memberInfo.UserDefined">{{memberInfo.UserDefined}}</text>
+								<text class="ico" @click="tolink('/pages/member/editinfo/editinfo')">+自定义</text>
 							</view>
 						</block>
 					</view>

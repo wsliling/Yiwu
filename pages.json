@@ -40,7 +40,7 @@
 		,{
 		    "path" : "pages/tabBar/shop/shop",
 		    "style" : {
-				"navigationBarTitleText": "商城",
+				"navigationBarTitleText": "Dance mall",
 				"enablePullDownRefresh" : true
 			}
 		}

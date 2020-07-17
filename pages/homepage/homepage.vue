@@ -75,7 +75,10 @@
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
-				<view class="item" v-for="(item,index) in datalist" :key="index" @click="playmusic(item.Id,index)">
+				<view class="item audiobox" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
+					<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playBtn(index,item.Id,item.IsShowBuy)">
+						<image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
+					</view>
 					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -117,7 +120,7 @@
 </template>
 
 <script>
-import {post,get,toLogin,navigate,playMusic} from '@/common/util.js';
+import {post,get,toLogin,navigate,audio,playMusic} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
@@ -167,8 +170,8 @@ export default {
 					taptitle: '产品'
 				}
 			],
-			nowIndex:-1,
-			musicID:"",
+			playID:"",//当前播放
+			playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 		};
 	},
 	 onLoad(e){
@@ -182,10 +185,8 @@ export default {
 	 onShow() {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
-		if(this.nowIndex>-1&&this.musicID){
-			console.log("this.nowIndex"+this.nowIndex)
-			playMusic(this.nowIndex,this.musicID);//暂停音乐
-		}
+		this.playID=uni.getStorageSync("playID");
+		this.playIDtype=uni.getStorageSync("playIDtype");
 	 },
 	 methods:{
 		 //跳转
@@ -338,14 +339,45 @@ export default {
 				} 
 			 }
 		 },
-		 playmusic(id,index){
-			 this.musicID=id;
-			 this.nowIndex=index;
+		toplaylist(id,index){
 			uni.setStorageSync("musicList",this.datalist)
-		 	uni.navigateTo({
-		 		url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
-		 	})	
-		 },
+			uni.navigateTo({
+				url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
+			})	
+		},
+		playBtn(index,id,isbuy){
+			if(isbuy==0){
+				uni.setStorageSync("musicList",this.datalist)
+				if(this.playID==id){
+					this.playID="";
+				}else{
+					this.playID=id;
+				}
+				playMusic(index,id)
+				this.playID=uni.getStorageSync("playID")
+				this.playIDtype=uni.getStorageSync("playIDtype")
+			}else{
+				uni.showModal({
+					content: "该舞曲需付费,去付费？",
+					success(res) {
+						if (res.confirm) {
+							if(toLogin()){
+								let buyInfo={
+									PicImg:_this.datalist[index].PicImg,
+									name:_this.datalist[index].Name,
+									price:_this.datalist[index].Price
+								}
+								uni.setStorageSync('buyInfo', buyInfo);
+								uni.navigateTo({
+									url:'/pages/pay2/pay2?type=1&id='+id
+								})
+							}
+						} else if (res.cancel) {
+						}
+					}
+				});
+			}
+		},
 		//预览图片
 		previewImg(index){
 			let _this=this;

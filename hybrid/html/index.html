@@ -120,7 +120,7 @@
 					}	
 					$('.modal').show()
 					setTimeout(()=>{
-						alert(filePath)
+						// alert(filePath)
 						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
 						var formdata = new FormData(); // 创建一个form类型的数据
 						var url = ""
@@ -149,7 +149,7 @@
 							data: formdata,
 							dataType: "json",
 							success: function(res) {
-								alert(JSON.stringify(res))
+								// alert(JSON.stringify(res))
 								console.log(JSON.stringify(res))
 								if (res.code == 0) {
 									if(isH5){
@@ -182,7 +182,7 @@
 								$(".modal").hide();
 							},
 							error: function(err) {
-								alert(JSON.stringify(err))
+								// alert(JSON.stringify(err))
 								console.log("这是请求失败的");
 								$(".modal").hide();
 							}

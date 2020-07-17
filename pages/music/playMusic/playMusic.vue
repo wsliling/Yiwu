@@ -92,6 +92,7 @@
 				nowSrc:'',
 				waitFlag:false,
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+				playnum:0
 			}
 		},
 		watch: {
@@ -114,6 +115,7 @@
 			this.token = uni.getStorageSync('token');
 			this.playIDtype=uni.getStorageSync("playIDtype")
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
+			this.playnum=0;
 			//console.log(this.musicList,'list')
 			// 获取一条音乐，用户分享的页面
 			if(this.type==='share'){
@@ -140,7 +142,8 @@
 				this.currentTime = this.format(this.current);
 				// audio.autoplay =true
 				if(playID==this.musicID){
-					if(this.playIDtype==1){
+					if(this.playnum==0){
+						this.playnum++
 						audio.play()
 					}
 					//音频进度更新事件
@@ -185,6 +188,7 @@
 					this.paused = false
 					this.loading = false
 				})
+				
 			},
 			//格式化时长
 			format(num) {

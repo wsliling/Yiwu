@@ -797,8 +797,14 @@
 			},
 			// 关闭支付弹窗时
 			closePay(){
+				let allprice=""
+				if(this.orderSType==0){
+					allprice=this.info.AllPrice
+				}else{//购物测
+					allprice=this.info.PayAmount
+				}
 				uni.redirectTo({
-					url:'/pages/shopSon/submitOrder/submitStatus?status=fail&orderNo='+this.OrderNo+'&allprice='+this.info.AllPrice
+					url:'/pages/shopSon/submitOrder/submitStatus?status=fail&orderNo='+this.OrderNo+'&allprice='+allprice
 				})
 				this.$refs.payWin.close();
 			},

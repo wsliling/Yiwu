@@ -19,7 +19,10 @@
 			</view>
 		</view>
 		<!-- 快捷导航 -->
-		<view class="icon-menu">
+		<view class="showMenuBtn" @click="isshowMenu=!isshowMenu">
+			分类<text :class="['iconfont icon-arrow_down-copy',isshowMenu?'up':'']"></text>
+		</view>
+		<view class="icon-menu" v-if="isshowMenu">
 			<block v-for="(item,index) in classify" :key="index">
 				<view class="item" v-if="index<4" @click="navigate('shopSon/mywu/wu',{classId:item.Id,title:item.Name})"
 					>
@@ -86,6 +89,7 @@
 				page:1,
 				pageSize:5,
 				loadingType:0,//0-loading前；1-loading中；2-没有更多了
+				isshowMenu:false
 			}
 		},
 		onLoad() {
@@ -173,4 +177,23 @@
 
 <style lang="scss" scoped>
 	@import './style';
+	.showMenuBtn{
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding: 0 30upx;
+		font-size: 30upx;
+		.iconfont{
+			margin-left: 4upx;
+			font-size: 26upx;
+			font-weight: bold;
+			line-height: 1;
+			display: block;
+			margin-top: 6upx;
+			&.up{
+				transform:rotate(180deg);
+				margin-top: -6upx;
+			}
+		}
+	}
 </style>
