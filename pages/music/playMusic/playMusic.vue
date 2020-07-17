@@ -160,11 +160,13 @@
 				//音频加载中
 				audio.onWaiting(()=>{
 					this.loading=true;
+					console.log("加载中")
 					audio.pause();
 					this.waitFlag=true;// 标明是onWaiting触发的暂停
 				})
 				//音频暂停事件
 				audio.onPause(() => {
+					console.log("暂停状态")
 					this.paused = true
 				})
 				//音频结束事件
@@ -185,6 +187,7 @@
 				})
 				//音频播放事件
 				audio.onPlay(() => {
+					console.log("播放状态")
 					this.paused = false
 					this.loading = false
 				})

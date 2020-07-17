@@ -30,7 +30,7 @@
 				</view>
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
-						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum}}</view>
+						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum+'人赞过':'点赞'}}</view>
 						<share :h5Url="'/pages/replylist/replylist?id='+Findid" :wxUrl="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
