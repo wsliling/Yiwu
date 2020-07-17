@@ -307,16 +307,16 @@ export default {
 			});
 		},
 		statechange(e){
-			console.log('状态变化事件',e)
-			if(e.detail.code==1008){
-				this.returns();
-			}
+			console.log('状态变化事件',JSON.stringify(e))
+			// if(e.detail.code==1008){
+			// 	this.returns();
+			// }
 		},
 		netstatus(e){
-			console.log('网络状态通知',e)
+			console.log('网络状态通知',JSON.stringify(e))
 		},
 		errror(e){
-			console.log('渲染错误事件',e)
+			console.log('渲染错误事件',JSON.stringify(e))
 		},
 		
 		// *****************直播end*****************
