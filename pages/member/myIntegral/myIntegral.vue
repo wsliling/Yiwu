@@ -4,14 +4,14 @@
 		<view class="Integralbox uni-bg-white">
 			<view class="reveal">
 				<image class="bg" src="http://yw.wtvxin.com/static/my/bg3.png" alt="" />
-				<view class="jf">我的积分{{integralList.SumScore}}</view>
+				<view class="jf">我的积分{{SumScore}}</view>
 				<view class="flex-between">
 					<view class="item flex-column">
-						<view class="symbol">{{integralList.Score}}</view>
+						<view class="symbol">{{Score}}</view>
 						<view class="balance">普通积分</view>
 					</view>
 					<view class="item flex-column">
-						<view class="symbol">{{integralList.Amount}}</view>
+						<view class="symbol">{{Amount}}</view>
 						<view class="balance">返佣积分</view>
 					</view>
 				</view>
@@ -24,7 +24,7 @@
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 		</view>
 		<view class="line-list">
-			<block v-for="(item,index) in integralList.list" :key="index">
+			<block v-for="(item,index) in integralList" :key="index">
 			<view class="line-item">
 				<view class="line-item-l">
 					<view class="txt">{{item.Title}}</view>
@@ -54,11 +54,14 @@
 				Page:1,
 				PageSize:8,
 				Type:5,  //5:普通积分 6:返佣积分
-				integralList:{},
+				integralList:[],
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
 				noDataIsShow: false,
+				Amount:'',
+				Score:'',
+				SumScore:'',
 			}
 		},
 		components: {
@@ -88,6 +91,7 @@
 			  this.tabIndex = index
 			  if(index == 1) {
 				  this.Type = 6
+				  this.Page = 1
 			  }else{
 				  this.Type = 5
 				  this.noDataIsShow = false;
@@ -104,19 +108,27 @@
 					Type: this.Type,
 				}).then( result =>{
 					if (result.code === 0) {
-						if (result.data.list.length == 0 && this.Page == 1) {
+						this.Amount = result.data.Amount
+						this.Score = result.data.Score
+						this.SumScore = result.data.SumScore
+						let len = result.data.list.length;
+						if (len > 0) {
+							this.hasData = true;
+							this.noDataIsShow = false;
+						}
+						if (len == 0 && this.Page == 1) {
 							this.noDataIsShow = true;
 							this.hasData = false;
 						}
 						if (this.Page === 1) {
-							this.integralList = result.data;
+							this.integralList = result.data.list;
 						}
 						if (this.Page > 1) {
 							this.integralList = this.integralList.concat(
-								result.data
+								result.data.list
 							);
 						}
-						if (result.data.list.length <this.PageSize) {
+						if (len < this.PageSize) {
 							this.isLoad = false;
 							this.loadingType = 2;
 						} else {
@@ -131,7 +143,7 @@
 		onReachBottom: function() {
 			if (this.isLoad) {
 				this.loadingType = 1;
-				this.page++;
+				this.Page++;
 				this.getIntegral();
 			} else {
 				this.loadingType = 2;

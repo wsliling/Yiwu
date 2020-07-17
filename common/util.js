@@ -212,10 +212,10 @@ function uncodeUtf16(str){
 const audio = uni.createInnerAudioContext(); //创建音频
 var playID="" //当前播放的舞曲id
 var hasplay=true  //是否播放过
-export function playMusic(index,id){//index:当前列表的索引，舞曲id
+export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞曲id
 	var musicList=uni.getStorageSync("musicList"),//音乐列表
 	playID=uni.getStorageSync("playID");
-	console.log("playID"+playID);
+	console.log("playID和id"+playID+"--"+id);
     if(playID!=""&&playID!="undefined"){
 		if(playID==id){//暂停
 			if(hasplay){
@@ -231,7 +231,7 @@ export function playMusic(index,id){//index:当前列表的索引，舞曲id
 			playID=id
 			uni.setStorageSync("playID",playID)
 			uni.setStorageSync("playIDtype",1)
-			audio.src = musicList[index].Audio;
+			audio.src = musicList[index].Audio||nowSrc;
 			audio.play()
 			MemberPaly(id)
 		}
@@ -239,7 +239,7 @@ export function playMusic(index,id){//index:当前列表的索引，舞曲id
 		playID=id
 		uni.setStorageSync("playID",playID)
 		uni.setStorageSync("playIDtype",1)
-		audio.src = musicList[index].Audio;
+		audio.src = musicList[index].Audio||nowSrc;
 		audio.play()
 		MemberPaly(id)
 	}

@@ -12,6 +12,18 @@
 				}
 			}
 		}
+		,{
+			"path": "pages/tabBar/live/new",
+			"style": {
+				"navigationBarTitleText": "壹舞",
+				"enablePullDownRefresh":true,
+				"app-plus": {
+					"titleNView": false, //首页去除原生导航
+					"bounce": "none",
+					"scrollIndicator": "none" //不显示滚动条
+				}
+			}
+		}
         ,{
             "path" : "pages/tabBar/live/live",
             "style" : {
@@ -306,7 +318,7 @@
                 ,{
                     "path" : "wallet/wallet",
                     "style" : {
-						"navigationBarTitleText":"我的钱包",
+						"navigationBarTitleText":"我的零钱",
 						"app-plus": {
 							 "titleNView": {    
 								"splitLine": {  
@@ -570,6 +582,45 @@
                     "path" : "team/team",
                     "style" : {}
                 }
+                ,{
+                    "path" : "myAssets/myAssets",
+                    "style" : {
+						"navigationBarTitleText": "钱包",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
+                ,{
+                    "path" : "ordertype/ordertype",
+                    "style" : {
+                    	"navigationBarTitleText": "订单列表",
+                    	"app-plus": {
+                    		 "titleNView": {    
+                    			"splitLine": {  
+                    			  "color":"#eee"  
+                    			}    
+                    		 }
+                    	}
+                    }
+                }
+                ,{
+                    "path" : "addUser/addUser",
+                    "style" : {
+						"navigationBarTitleText": "推荐关注",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
             ]
 		},
 		{
@@ -804,9 +855,9 @@
 				"selectedIconPath": "static/tabbar/ft1_in.png"
 			},
 			{
-				"pagePath": "pages/tabBar/live/live",
-				"iconPath": "static/tabbar/ft2.png",
-				"selectedIconPath": "static/tabbar/ft2_in.png"
+				"pagePath": "pages/tabBar/live/new",
+				"iconPath": "static/tabbar/ft6.png",
+				"selectedIconPath": "static/tabbar/ft6_in.png"
 			},
 			{
 				"pagePath": "pages/tabBar/shop/shop",

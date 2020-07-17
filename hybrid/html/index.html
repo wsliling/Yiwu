@@ -75,6 +75,11 @@
 			var type = getQuery("type");
 			var filePath = ""; //选择的文件地址
 			console.log(userId + "参数" + type + "参数" + token);
+			if(type == 0){
+				$('#uploadFile').attr('accept','audio/*');
+			}else{
+				$('#uploadFile').attr('accept','video/*');
+			}
 			//取url中的参数值
 			function getQuery(id) {
 				// 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
@@ -112,19 +117,20 @@
 					if(filePath == '') {
 						$(".showFileName").html("内容不能为空");
 						return
-					}
+					}	
 					$('.modal').show()
 					setTimeout(()=>{
+						alert(filePath)
 						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
 						var formdata = new FormData(); // 创建一个form类型的数据
 						var url = ""
 						if (type == 0) { // 上传舞曲
-							if(nameSuffix == ".mp3" || nameSuffix == ".wma" || nameSuffix == ".wav" || nameSuffix ==".asf" || nameSuffix ==".aac" || nameSuffix ==".flac" || nameSuffix ==".vqf" || nameSuffix ==".ape" || nameSuffix ==".mid"){
+							//if(nameSuffix == ".mp3" || nameSuffix == ".wma" || nameSuffix == ".wav" || nameSuffix ==".asf" || nameSuffix ==".aac" || nameSuffix ==".flac" || nameSuffix ==".vqf" || nameSuffix ==".ape" || nameSuffix ==".mid"){
 								formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
 								formdata.append("UserId", userId);
 								formdata.append("Token", token);
 								url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
-							}
+							//}
 						} else { // 上传视频
 							if(nameSuffix == ".avi" || nameSuffix == ".mp4" || nameSuffix == ".wma" || nameSuffix == ".rmvb" || nameSuffix == ".rm" || nameSuffix == ".flash" || nameSuffix == ".3gp" || nameSuffix == ".flv"){
 								formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
@@ -133,6 +139,7 @@
 								url = "http://ywapi.wtvxin.com/api/Find/UploadVideo"
 							}
 						}
+						
 						$.ajax({
 							url: url,
 							type: "POST",

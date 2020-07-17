@@ -167,7 +167,7 @@ export default {
 					taptitle: '产品'
 				}
 			],
-			nowIndex:"",
+			nowIndex:-1,
 			musicID:"",
 		};
 	},
@@ -182,7 +182,8 @@ export default {
 	 onShow() {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
-		if(this.nowIndex&&this.musicID){
+		if(this.nowIndex>-1&&this.musicID){
+			console.log("this.nowIndex"+this.nowIndex)
 			playMusic(this.nowIndex,this.musicID);//暂停音乐
 		}
 	 },

@@ -1,7 +1,7 @@
 <template>
 	<view class="content bg_fff">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
-			<view class="index_head flex-between" v-if="false">
+			<view class="index_head flex-between">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
 					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" class="flex1"></ans-input>
@@ -13,11 +13,11 @@
 				<!-- #endif -->
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
-				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index)" style="width: 25%;">{{tab.TypeName}}</view>
+				<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==tab.Id ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(tab.Id)" style="width: 25%;">{{tab.TypeName}}</view>
 				<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
 			</scroll-view>
 		</view>
-		<view :style="{'height':(40+barHeight)+'px'}"></view>
+		<view :style="{'height':(80+barHeight)+'px'}"></view>
 		<!-- 首页 -->
 		<view class="index-item index-item-0" v-if="tabIndex==0">
 			<!-- 达人 -->
@@ -40,7 +40,7 @@
 					<view class="Yi-recomUser uni-mb10" v-if="index==3&&recuserlist.length>0">
 						<view class="Yi-hd flex-between">
 							<view class="title">推荐用户</view>
-							<view class="more" @click="tolink('/pages/member/addUser/addUser')">查看全部</view>
+							<!-- <view class="more">查看全部</view> -->
 						</view>
 						<view class="Yi-bd">
 							<scroll-view class="User-swiper-tab" scroll-x>
@@ -69,40 +69,28 @@
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
 						<view class="media-bd">
-							<view class="desc uni-ellipsis2" v-if="item.Type!=3" @click="toRec(item.Type,item.Id)">
+							<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
-								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
+								<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
 								<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
-							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
-								<view v-if="item.Type==2" class="tag">课程</view>
+							<view class="maxpic maxh" v-if="item.Type==0&&item.PicImg">
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
-							<view class="maxpic audio" v-if="item.Type==3&&item.PicImg" @click="toRec(item.Type,item.Id)">
-								<image :src="item.PicImg" mode="aspectFill"></image>
-								<view class="audioinfo uni-ellipsis2">
-									{{item.Title}}
+							<view class="media-ft flex-between">
+								<view class="ft_l flex-start">
+									<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
+									<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
+									<share wxUrl="/pages/tabBar/index/index" :h5Url="'/pages/replylist/replylist?id='+item.Id">
+										<view class="txt_info share"></view>
+									</share>
 								</view>
-								<view class="islive">
-									<view class="line line1"></view>
-									<view class="line line2"></view>
-									<view class="line line3"></view>
+								<view class="ft_r">
+									<view @click="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 								</view>
-							</view>
-						</view>
-						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
-							<view class="ft_l flex-start">
-								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
-								<view class="txt_info reply">{{item.CommentNum}}</view>
-								<share wxUrl="/pages/tabBar/index/index" :h5Url="xqUrl[item.Type].url+item.Id">
-									<view class="txt_info share"></view>
-								</share>
-							</view>
-							<view class="ft_r">
-								<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 							</view>
 						</view>
 						<view class="media-comment" v-if="item.CommentNum>0">
@@ -114,7 +102,7 @@
 									</text>
 								</view>
 							</block>
-							<view class="more c_999" v-if="item.CommentNum>4" @click="toRec(item.Type,item.Id)">
+							<view class="more c_999" v-if="item.CommentNum>4" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 								查看全部评论
 							</view>
 						</view>
@@ -126,54 +114,107 @@
 			</block>
 			<noData v-if="!datalist.length"></noData>
 		</view>
-		<!-- 最新、关注、视频	 -->
-		<view class="videolist bg_fff" v-if="tabIndex==1||tabIndex==2||tabIndex==3">
-			<view class="Yi-media" v-for="(item,index) in NewsList" :key="index">
-				<view class="media-bd">
-					<view :class="['maxpic',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
-						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
-						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
-						<video v-if="item.play" :src="item.VideoUrl" controls autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
-					</view>
-					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
-						{{item.Title}}
-					</view>
-					<view class="media-ft flex-between">
-						<view class="ft_l flex-start">
-							<view class="author flex-start">
-								<view class="tx">
-									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
-									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
-										<view class="line line1"></view>
-										<view class="line line2"></view>
-										<view class="line line3"></view>
-										<view class="txt">直播</view>
-									</view>
-								</view>
-								<view class="name uni-ellipsis" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">{{item.NickName}}</view>
-							</view>
+		<!-- 资讯	 -->
+		<view class="index-item index-item-1" v-if="tabIndex==4">
+			<view class="Yi-newslist" >
+				<view class="Yi-media" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
+					<view class="media-bd">
+						<view class="desc">
+							{{item.Title}}
 						</view>
-						<view class="ft_r flex-end">
-							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
-							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-							<share wxUrl="/pages/tabBar/live/live" :h5Url="'/pages/replylist/replylist?id='+item.Id">
-								<view class="txt_info share"></view>
-							</share>
+						<view class="maxpic maxh" v-if="item.Logo">
+							<image :src="item.Logo" mode="widthFix"></image>
+						</view>
+						<view class="media-ft flex-between">
+							<view class="ft_l flex-start">
+								<view class="txt_info">{{item.Source}}</view>
+								<view class="txt_info">{{item.AddTime}}</view>
+							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="uni-tab-bar-loading" v-if="NewsList.length">
 				<uni-load-more :loadingType="LoadingType1"></uni-load-more>
-			</view>
+			</view>	
 			<noData v-if="!NewsList.length"></noData>
 		</view>
-		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
+		<!-- 名师	 -->
+		<view class="index-item index-item-2" v-if="tabIndex==2" style="background: #f7f7f7;">
+			<view class="Yi-Userlist">
+				<view class="user-item uni-bg-white uni-mb10" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
+					<view class="flex-between">
+						<view class="author flex-start">
+							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+							<view class="info">
+								<view class="name uni-ellipsis">{{item.Name}}</view>
+								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
+							</view>
+						</view>
+						<view v-if="item.IsMy==0" @click.stop="flow(item.UserId,index,2)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+					</view>
+					<view class="introduce uni-mt10 uni-ellipsis2">
+						{{item.Introduction}}
+					</view>
+				</view>
+			</view>
+			<view class="uni-tab-bar-loading" v-if="TeacherList.length">
+				<uni-load-more :loadingType="LoadingType2"></uni-load-more>
+			</view>
+			<noData v-if="!TeacherList.length"></noData>
+		</view>
+		<!-- 机构	 -->
+		<view class="index-item index-item-3" v-if="tabIndex==3" style="background: #f7f7f7;">
+			<view class="Yi-mechanismlist">
+				<view class="mechanism-item uni-bg-white uni-mb10" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
+					<view class="flex-between">
+						<view class="author flex-start">
+							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+							<view class="info">
+								<view class="name uni-ellipsis">{{item.Name}}</view>
+								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
+								<view class="introduce uni-ellipsis">
+									{{item.Introduction}}
+								</view>
+							</view>
+						</view>
+						<view v-if="item.IsMy==0" @click.stop="flow(item.Id,index,3)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+					</view>
+				</view>
+			</view>
+			<view class="uni-tab-bar-loading" v-if="JiGouList.length">
+				<uni-load-more :loadingType="LoadingType3"></uni-load-more>
+			</view>
+			<noData v-if="!JiGouList.length"></noData>
+		</view>
+		<!-- 课程	 -->
+		<view class="index-item index-item-4" v-if="tabIndex==1">
+			<view class="Yi-courselist flexWrap flex-between">
+				<view class="item" v-for="(item,index) in CourseList" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
+					<view class="maxpic">
+						<image :src="item.PicImg" mode="aspectFill"></image>
+						<view class="isplay"></view>
+					</view>
+					<view class="item_info">
+						<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+						<view class="item_total">
+							<view class="item_market">{{item.Is_Charge==1?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
+							<span class="item_price">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="uni-tab-bar-loading" v-if="CourseList.length">
+				<uni-load-more :loadingType="LoadingType4"></uni-load-more>
+			</view>
+			<noData v-if="!CourseList.length"></noData>
+		</view>
+		<view class="uploadbtn flex-column" @click="openAttestation"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,navigate} from '@/common/util.js';
+	import {post,get,toLogin} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -186,30 +227,33 @@
 		},
 		data() {
 			return {
-				navigate,
 				userId: "",
 				token: "",
 				barHeight:0,
 				searchText:'',
 				scrollLeft: 0,
-				tabIndex:0,
+				tabIndex:1,
 				tabnav:[
+					// {
+					// 	Id:0,
+					// 	TypeName:"推荐"
+					// },
 					{
 						Id:1,
-						TypeName:"推荐"
+						TypeName:"课程"
 					},
 					{
 						Id:2,
-						TypeName:"最新"
+						TypeName:"名师"
 					},
 					{
 						Id:3,
-						TypeName:"关注"
+						TypeName:"机构"
 					},
 					{
 						Id:4,
-						TypeName:"视频"
-					},
+						TypeName:"资讯"
+					}
 				],
 				page:1,
 				pageSize:8,
@@ -222,35 +266,24 @@
 				NewsList:[],//资讯
 				Page1:1,
 				LoadingType1:0,//0加载前，1加载中，2没有更多了
+				TeacherList:[],//名师
+				Page2:1,
+				LoadingType2:0,//0加载前，1加载中，2没有更多了
+				JiGouList:[],//机构
+				Page3:1,
+				LoadingType3:0,//0加载前，1加载中，2没有更多了
+				CourseList:[],//课程
+				Page4:1,
+				LoadingType4:0,//0加载前，1加载中，2没有更多了
 				videoContext:null,
 				onplayId:-1,//当前播放视频id
 				onplayIndex:-1,//当前播放视频序号
 				onplayHeight:0,//当前播放视频距离顶部的高度
 				index0:0,
 				index1:0,
-				IsEdit:false,
-				xqUrl:[
-					{
-						type:0,
-						url:'/pages/replylist/replylist?id='
-					},
-					{
-						type:1,
-						url:'/pages/replylist/replylist?id='
-					},
-					{
-						type:2,
-						url:'/pages/video/videoDetails/videoDetails?id='
-					},
-					{
-						type:3,
-						url:'/pages/music/playMusic/playMusic?type=share&id='
-					},
-					{
-						type:4,
-						url:'/pages/shopSon/product/productDetails?proId='
-					}
-				],//详情链接
+				index2:0,
+				index3:0,
+				index4:0,
 			}
 		},
 		onLoad() {
@@ -259,7 +292,7 @@
 			//#endif
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			this.init(0);
+			this.init(1);
 		},
 		onShow(){
 			this.userId = uni.getStorageSync("userId");
@@ -267,7 +300,7 @@
 		},
 		computed: {
 		   tabStyle(){
-		     return ((750/this.tabnav.length)*this.tabIndex)+(((750/this.tabnav.length)-68)/2)
+		     return ((750/this.tabnav.length)*(this.tabIndex-1))+(((750/this.tabnav.length)-68)/2)
 		   }
 		 },
 		methods: {
@@ -282,42 +315,48 @@
 					this.GetReCommendMember();
 					this.getRecommendUser();
 				}
-				if(index==1||index==2||index==3){
-					this.NewsList=[];//最新视频
-					this.Page1=1;
-					this.LoadingType1=0;//0加载前，1加载中，2没有更多了
+				if(index==4){
+					this.NewsList=[];//资讯
+					this.Page4=1;
+					this.LoadingType4=0;//0加载前，1加载中，2没有更多了
 					this.YWNewsList();
+				}
+				if(index==2){
+					this.TeacherList=[];//名师
+					this.Page2=1;
+					this.LoadingType2=0;
+					this.GetTeacher();
+				}
+				if(index==3){
+					this.JiGouList=[];//机构
+					this.Page3=1;
+					this.LoadingType3=0;
+					this.GetJiGouList();
+				}
+				if(index==1){
+					this.CourseList=[];//课程
+					this.Page1=1;
+					this.LoadingType1=0;
+					this.GetCourseList();
 				}
 			},
 			pauseVideo(id){
-				let datalist=[]
-				if(this.tabIndex==0){
-					datalist=this.datalist
-				}else{
-					datalist=this.NewsList
-				}
-				for(let i=0; i<datalist.length;i++){
-					let _id=datalist[i].Id;
+				for(let i=0; i<this.datalist.length;i++){
+					let _id=this.datalist[i].Id;
 					if(_id==id){
 						this.onplayId=id;
 						this.onplayIndex=i;
-						this.$set(datalist[i],'fixed',true);
+						this.$set(this.datalist[i],'fixed',true);
 					}
 				}
 			},
 			playVideo(id){
-				let datalist=[]
-				if(this.tabIndex==0){
-					datalist=this.datalist
-				}else{
-					datalist=this.NewsList
-				}
-				for(let i=0; i<datalist.length;i++){
-					let _id=datalist[i].Id;
+				for(let i=0; i<this.datalist.length;i++){
+					let _id=this.datalist[i].Id;
 					if(_id==id){
 						this.onplayId=id;
 						this.onplayIndex=i;
-						this.$set(datalist[i],'fixed',false);
+						this.$set(this.datalist[i],'fixed',false);
 					}
 				}
 			},
@@ -333,21 +372,27 @@
 						this.IndexRecommend();
 						break;
 					case 1:
-						this.NewsList=[];//最新视频
+						this.CourseList=[];//课程
 						this.Page1=1;
-						this.LoadingType1=0;//0加载前，1加载中，2没有更多了
-						this.YWNewsList();
+						this.LoadingType1=0;
+						this.GetCourseList();
 						break;
 					case 2:
-						this.NewsList=[];//关注
-						this.Page1=1;
-						this.LoadingType1=0;//0加载前，1加载中，2没有更多了
-						this.YWNewsList();
+						this.TeacherList=[];//名师
+						this.Page2=1;
+						this.LoadingType2=0;
+						this.GetTeacher();
 						break;
 					case 3:
-						this.NewsList=[];//全部视频
-						this.Page1=1;
-						this.LoadingType1=0;//0加载前，1加载中，2没有更多了
+						this.JiGouList=[];//机构
+						this.Page3=1;
+						this.LoadingType3=0;
+						this.GetJiGouList();
+						break;
+					case 4:
+						this.NewsList=[];//资讯
+						this.Page4=1;
+						this.LoadingType4=0;//0加载前，1加载中，2没有更多了
 						this.YWNewsList();
 						break;
 				}
@@ -366,12 +411,6 @@
 					})
 				}
 			},
-			toRec(type,id){
-				let _this=this;
-				uni.navigateTo({
-					url: _this.xqUrl[type].url+id
-				})
-			},
 			tapTab(index) { //点击tab-bar
 				let _this = this;
 				if (this.tabIndex === index) {
@@ -383,7 +422,7 @@
 					}
 					this.tabIndex = index;
 					this.setScrollLeft(index);
-					if((this.index0==0&&index==0)||index==1||index==2||index==3){
+					if((this.index0==0&&index==0)||(this.index1==0&&index==1)||(this.index2==0&&index==2)||(this.index3==0&&index==3)||(this.index4==0&&index==4)){
 						this.init(index);
 					}
 				}
@@ -465,13 +504,7 @@
 			},
 			playBtn(index,id){
 				let _this = this;
-				let datalist=[]
-				if(this.tabIndex==0){
-					datalist=this.datalist
-				}else{
-					datalist=this.NewsList
-				}
-				datalist.forEach(function(item){
+				this.datalist.forEach(function(item){
 					if(id==item.Id){
 						_this.$set(item,'play',true);
 						_this.$set(item,'fixed',false);
@@ -484,30 +517,100 @@
 					}
 				})
 			},
-			//分页视频
+			//分页获取资讯
 			async YWNewsList(){
-				this.index1++;
-				var json={
-						"UserId": this.userId,
-						"Token": this.token,
-						"page": this.page1,
-						"pageSize": this.pageSize,
-						"SearchKey":this.searchText,
-					};	
-				if(this.tabIndex==1){
-					json['IsNews']=1
-				}else if(this.tabIndex==2){
-					json['IsFollow']=1
-				}else if(this.tabIndex==3){
-					json['IsALL']=1;
-				}
-				let result =await post("Find/VideoList",json);
+				this.index4++;
+				let result = await post("News/YWNewsList", {
+					UserId:this.userId,
+					Token:this.token,
+					Keywords:this.searchText,
+					page:this.Page4,
+					pageSize:this.pageSize
+				});
 				if (result.code === 0) {
-					if (this.Page1 === 1) {
+					if (this.Page4 === 1) {
 						this.NewsList = result.data;
 					}
-					if (this.Page1 > 1) {
+					if (this.Page4 > 1) {
 						this.NewsList = this.NewsList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.LoadingType4 = 2;
+					} else {
+						this.LoadingType4 = 0
+					}
+				}
+			},
+			//分页获取名师
+			async GetTeacher(){
+				this.index2++;
+				let result = await post("User/GetDancerList", {
+					UserId:this.userId,
+					Token:this.token,
+					SearchKey:this.searchText,
+					page:this.Page2,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (this.Page2 === 1) {
+						this.TeacherList = result.data;
+					}
+					if (this.Page2 > 1) {
+						this.TeacherList = this.TeacherList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.LoadingType2 = 2;
+					} else {
+						this.LoadingType2 = 0
+					}
+				}
+			},
+			//分页获取机构
+			async GetJiGouList(){
+				this.index3++;
+				let result = await post("User/GetJiGouList", {
+					UserId:this.userId,
+					Token:this.token,
+					SearchKey:this.searchText,
+					page:this.Page3,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (this.Page3 === 1) {
+						this.JiGouList = result.data;
+					}
+					if (this.Page3 > 1) {
+						this.JiGouList = this.JiGouList.concat(
+							result.data
+						);
+					}
+					if (result.data.length <this.pageSize) {
+						this.LoadingType3 = 2;
+					} else {
+						this.LoadingType3 = 0
+					}
+				}
+			},
+			//分页获取课程
+			async GetCourseList(){
+				this.index1++;
+				let result = await post("Course/GetCourseOutlineList", {
+					UserId:this.userId,
+					Token:this.token,
+					SearchKey:this.searchText,
+					page:this.Page1,
+					pageSize:this.pageSize
+				});
+				if (result.code === 0) {
+					if (this.Page1 === 1) {
+						this.CourseList = result.data;
+					}
+					if (this.Page1 > 1) {
+						this.CourseList = this.CourseList.concat(
 							result.data
 						);
 					}
@@ -522,10 +625,12 @@
 				if(index==0){
 					this.IndexRecommend();
 				}else if(index==1){
-					this.YWNewsList();
+					this.GetCourseList();
 				}else if(index==2){
-					this.YWNewsList();
+					this.GetTeacher();
 				}else if(index==3){
+					this.GetJiGouList();
+				}else if(index==4){
 					this.YWNewsList();
 				}
 			},
@@ -589,21 +694,12 @@
 				}
 			},
 			//发现收藏和取消收藏
-			async CollectBtn(id,index,type){
-				let result;
-				if(type==2){
-					result = await post("Course/CourseCollection", {
-						"UserId": this.userId,
-						"Token": this.token,
-						"OutlineId":id
-					});
-				}else{
-					result = await post("Find/CollectOperation", {
-						"UserId": this.userId,
-						"Token": this.token,
-						"FindId":id
-					});
-				}
+			async CollectBtn(id,index){
+				let result = await post("Find/CollectOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
 				if(result.code==0){
 					let _this=this;
 					uni.showToast({
@@ -629,49 +725,25 @@
 				}
 			},
 			//发现点赞
-			async likeBtn(id,index,type){
-				let result;
-				if(type==2){
-					result = await post("Course/CourseOutlineLikes", {
-						"UserId": this.userId,
-						"Token": this.token,
-						"CourseId":id
-					});
-				}else{
-					result = await post("Find/FindlikeOperation", {
-						"UserId": this.userId,
-						"Token": this.token,
-						"FindId":id
-					});
-				}
+			async likeBtn(id,index){
+				let result = await post("Find/FindlikeOperation", {
+					"UserId": this.userId,
+					"Token": this.token,
+					"FindId":id
+				});
 				if(result.code==0){
 					let _this=this;
 					let num=0;
 					uni.showToast({
 						title: result.msg
 					})
-					if(this.tabIndex==0){
-						num=_this.datalist[index].LikeNum;
-						if(this.datalist[index].IsLike==0){
-							num++
-							this.$set(_this.datalist[index],"IsLike",1)
-						}else{
-							num--
-							this.$set(_this.datalist[index],"IsLike",0)
-						}
-						this.$set(_this.datalist[index],"LikeNum",num)
+					if(this.datalist[index].IsLike==0){
+						this.$set(this.datalist[index],"IsLike",1)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum++)
 					}else{
-						num=_this.NewsList[index].LikeNum;
-						if(this.NewsList[index].IsLike==0){
-							num++
-							this.$set(_this.NewsList[index],"IsLike",1)
-						}else{
-							num--
-							this.$set(_this.NewsList[index],"IsLike",0)
-						}
-						this.$set(_this.NewsList[index],"LikeNum",num)
+						this.$set(this.datalist[index],"IsLike",0)
+						this.$set(this.datalist[index],"LikeNum",_this.datalist[index].LikeNum--)
 					}
-					
 				}else if(result.code==2){
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
@@ -693,7 +765,50 @@
 				        console.log('条码内容：' + res.result);
 				    }
 				});
-			}
+			},
+			openAttestation(){
+				this.IsEdit=true;
+				if(toLogin()){
+					let urlstr="";
+					uni.showActionSheet({
+						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
+						success: (e) => {
+							console.log(e.tapIndex);
+							if(e.tapIndex==0){
+								urlstr="/pages/video/videoUpload/videoUpload?type=0";
+							}else if(e.tapIndex==1){
+								urlstr="/pages/video/videoUpload/videoUpload?type=1";
+							}else if(e.tapIndex==2){
+								// #ifndef APP-PLUS
+								uni.showToast({
+									title:'APP端才能开启直播哦~',
+									icon:'none'
+								})
+								// #endif
+								// #ifdef APP-PLUS
+								urlstr="/pages/livepush/livepush?type=0";
+								// #endif
+							}else if(e.tapIndex==3){
+								// #ifndef APP-PLUS
+								uni.showToast({
+									title:'APP端才能开启直播哦~',
+									icon:'none'
+								})
+								// #endif
+								// #ifdef APP-PLUS
+								urlstr="/pages/livepush/livepush?type=1";
+								// #endif
+							}
+							uni.navigateTo({
+								url: urlstr
+							})
+						},
+						complete:(e)=>{
+							this.IsEdit=false;
+						}
+					})
+				}
+			},
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
@@ -703,33 +818,22 @@
 		//上拉加载
 		onReachBottom() {
 			let index=this.tabIndex;
-			if(index==3){
-				if(this['LoadingType1']===2)return;
-				this['Page1']++;
-			}else{
-				if(this['LoadingType'+index]===2)return;
-				this['Page'+index]++;
-			}
+			if(this['LoadingType'+index]===2)return;
+			this['Page'+index]++;
 			this.fun(index);
 		},
 		//监听页面滚动
 		onPageScroll(e){
 			let _this=this;
 			const query = uni.createSelectorQuery().in(_this);
-			let datalist=[]
-			if(this.tabIndex==0){
-				datalist=this.datalist
-			}else{
-				datalist=this.NewsList
-			}
-			if(_this.onplayIndex>-1){
+			if(_this.onplayIndex>-1&&_this.tabIndex==0){
 				query.select('#box'+_this.onplayId).boundingClientRect(data => {
 				  // console.log("得到布局位置信息" + JSON.stringify(data));
 				  // console.log("节点离页面顶部的距离为" + data.top);
 				  _this.onplayHeight=data.top;
 				}).exec();
-				if(_this.onplayHeight<50){console.log()
-					_this.$set(datalist[_this.onplayIndex],'fixed',true);
+				if(_this.onplayHeight<80){
+					_this.$set(_this.datalist[_this.onplayIndex],'fixed',true);
 					_this.videoContext.pause();
 				}else{
 					// _this.$set(_this.datalist[_this.onplayIndex],'fixed',false);
@@ -741,152 +845,10 @@
 </script>
 
 <style lang="scss" scoped>
-	@import './style';
+	@import '../index/style';
 	page{
 		background: #fff !important;
 		// height: 100vh;
-	}
-	.videolist{
-		.Yi-media{
-			padding: 20upx 30upx;
-			&:first-child{
-				padding-top: 0;
-			}
-			.media-bd{
-				.maxpic{
-					border-radius: 12upx;
-					overflow: hidden;
-					position: relative;
-					background-color: #e0e0e0;
-					&.maxh{
-						max-height: 450upx;
-					}
-					video{
-						width: 100%;
-						height: 450upx;
-						display: block;
-						position: absolute;
-						left: 0;
-						top: 0;
-					}
-					.postpic{height: 450upx;}
-					.isplay{
-						height: 88upx;
-						width: 88upx;
-						position: absolute;
-						left: 50%;
-						top: 50%;
-						margin: -44upx 0 0 -44upx;
-						background: url(http://yw.wtvxin.com/static/play.png);
-						background-size: cover;
-						z-index: 2;
-					}
-					&.dis{
-						video{
-							left: -2000px;
-						}
-					}
-				}
-				.desc{
-					// position: absolute;
-					// width: 100%;
-					// bottom: 0;
-					// left: 0;
-					padding: 16upx 0;
-					font-size: 30upx;
-					// color: #fff;
-					// text-align: center;
-					// overflow: hidden;
-					// white-space: nowrap;
-					// text-overflow: ellipsis;
-					// background: -moz-linear-gradient(top,rgba(0,0,0,0) 0,#000 100%);
-					// background: -webkit-linear-gradient(top,rgba(0,0,0,0) 0,#000 100%);
-					// background: linear-gradient(to bottom,rgba(0,0,0,0) 0,#000 100%);
-					// filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#000000', GradientType=0);
-				}
-			}
-			.media-ft{
-				margin-top: 20upx;
-				.author{
-					.tx{
-						width: 80upx;
-						height: 80upx;
-						padding: 4upx;
-						border: 1px solid $primary;
-						border-radius: 100%;
-						margin-right: 20upx;
-						position: relative;
-						image{
-							display: block;width: 100%; height: 100%;
-							border-radius: 100%;
-						}
-						.islive{
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							position: absolute;
-							bottom: -8upx;
-							left: 50%;
-							width: 88upx;
-							margin-left: -44upx;
-							border-radius: 6upx;
-							height: 40upx;
-							background: $primary;
-							color: #fff;
-							.line{
-								width: 4upx;
-								background: #fff;
-								margin-right: 6upx;
-							}
-							.line1{ 
-								height: 24upx;
-								animation:myanimation 0.6s infinite 0.5s;
-								-webkit-animation:myanimation 0.6s infinite 0.5s;
-							}
-							.line2{ 
-								height: 10upx;
-								animation:myanimation 0.6s infinite 1s;
-								-webkit-animation:myanimation 0.6s infinite 1s;
-							}
-							.line3{ 
-								height: 14upx;
-								animation:myanimation 0.6s infinite 1.5s;
-								-webkit-animation:myanimation 0.6s infinite 1.5s;
-							}
-							.txt{ font-size: 22upx; line-height: 1;}
-						}
-					}
-					.name{
-						max-width: 300upx;
-						font-size: 30upx;
-						margin-right: 20upx;
-					}
-				}
-				.txt_info{
-					font-size: 24upx;
-					color: #999;
-					height: 40upx;
-					line-height: 40upx;
-				}
-				.ft_r .txt_info{
-					margin-left: 40upx;
-				}
-				.like{padding-left: 50upx; background: url(http://yw.wtvxin.com/static/like.png) left center no-repeat;
-				background-size: 40upx 40upx;}
-				.like.active{ background: url(http://yw.wtvxin.com/static/like2.png) left center no-repeat;
-				background-size: 40upx 40upx;}
-				.reply{
-					padding-left: 50upx;background: url(http://yw.wtvxin.com/static/reply.png) left center no-repeat;
-					background-size: 40upx 40upx;
-				}
-				.share{
-					width: 40upx;
-					height: 40upx;
-					background: url(http://yw.wtvxin.com/static/share.png) left center no-repeat;
-					background-size: 40upx 40upx;
-				}
-			}
-		}
 	}
 	.uploadbtn{
 		position: fixed;

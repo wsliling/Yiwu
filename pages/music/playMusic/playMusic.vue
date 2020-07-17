@@ -7,7 +7,7 @@
 					<view class="border1"></view>
 				</view>
 			</view>
-			<view class="source">来源{{itemdata.Source}}</view>
+			<view class="source">来源{{itemdata.Source||'未知'}}</view>
 		</view>
 		<view class="playbox">
 			 <view class="imt-audio">
@@ -89,6 +89,9 @@
 				playType:0,//0:顺序播放 1:单曲 2:随机
 				h5Url:'',
 				type:'',
+				nowSrc:'',
+				waitFlag:false,
+				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 			}
 		},
 		watch: {
@@ -109,31 +112,37 @@
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
+			this.playIDtype=uni.getStorageSync("playIDtype")
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			console.log(this.musicList,'list')
+			//console.log(this.musicList,'list')
 			// 获取一条音乐，用户分享的页面
 			if(this.type==='share'){
 				this.getSoleMusic();
 				return;
 			}
 			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined){
-				this.isCollect=this.musicList[this.nowIndex].IsCollect;
-				this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
-				this.itemdata=this.musicList[this.nowIndex];
-				this.duration=this.itemdata.ADuration
-				uni.setNavigationBarTitle({
-					title: this.itemdata.Name
-				})
-				this.init()
+				// this.isCollect=this.musicList[this.nowIndex].IsCollect;
+				// this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
+				// this.itemdata=this.musicList[this.nowIndex];
+				// this.duration=this.itemdata.ADuration
+				// uni.setNavigationBarTitle({
+				// 	title: this.itemdata.Name
+				// })
+				// this.init()
+				this.getSoleMusic()
 			}
 		},
 		methods: {
 			init(){
+				//audio.offEnded()
 				let playID=uni.getStorageSync("playID");
 				this.durationTime = this.format(this.itemdata.ADuration);
 				this.currentTime = this.format(this.current);
-				//audio.autoplay =true
+				// audio.autoplay =true
 				if(playID==this.musicID){
+					if(this.playIDtype==1){
+						audio.play()
+					}
 					//音频进度更新事件
 					audio.onTimeUpdate(() => {
 						if (!this.seek) {
@@ -147,12 +156,9 @@
 				}
 				//音频加载中
 				audio.onWaiting(()=>{
-					this.loading=true
-				})
-				//音频播放事件
-				audio.onPlay(() => {
-					this.paused = false
-					this.loading = false
+					this.loading=true;
+					audio.pause();
+					this.waitFlag=true;// 标明是onWaiting触发的暂停
 				})
 				//音频暂停事件
 				audio.onPause(() => {
@@ -168,45 +174,51 @@
 				audio.onSeeked(() => {
 					this.seek = false
 				})
+				audio.onCanplay(() => {
+					if(this.waitFlag){
+						audio.play()
+					}
+					this.waitFlag=false; 
+				})
+				//音频播放事件
+				audio.onPlay(() => {
+					this.paused = false
+					this.loading = false
+				})
 			},
 			//格式化时长
 			format(num) {
 				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
 			},
 			//播放/暂停操作
+			
 			operation() {
-				post('DanceMusic/Music_xq',{
-					UserId:this.userId,
-					Token:this.token,
-					MusicId:this.musicID
-				}).then(res=>{
-					if(res.data.IsShowBuy==0){
-						playMusic(this.nowIndex,this.musicID)
-						this.init()
-					}else{
-						let _this=this;
-						if(!toLogin())return;
-						uni.showModal({
-							content: "该舞曲需付费,去付费？",
-							success(res) {
-								if (res.confirm) {
-									if(toLogin()){
-										let buyInfo={
-											PicImg:_this.itemdata.PicImg,
-											name:_this.itemdata.Name,
-											price:_this.itemdata.Price
-										}
-										uni.setStorageSync('buyInfo', buyInfo);
-										uni.navigateTo({
-											url:'/pages/pay2/pay2?type=1&id='+_this.musicID
-										})
+				if(this.isbuy==0){
+					playMusic(this.nowIndex,this.musicID,this.nowSrc)
+					this.init()
+				}else{
+					let _this=this;
+					if(!toLogin())return;
+					uni.showModal({
+						content: "该舞曲需付费,去付费？",
+						success(res) {
+							if (res.confirm) {
+								if(toLogin()){
+									let buyInfo={
+										PicImg:_this.itemdata.PicImg,
+										name:_this.itemdata.Name,
+										price:_this.itemdata.Price
 									}
-								} else if (res.cancel) {
+									uni.setStorageSync('buyInfo', buyInfo);
+									uni.navigateTo({
+										url:'/pages/pay2/pay2?type=1&id='+_this.musicID
+									})
 								}
+							} else if (res.cancel) {
 							}
-						});
-					}
-				})
+						}
+					});
+				}
 			},
 			//完成拖动事件
 			change(e) {
@@ -218,20 +230,24 @@
 			},
 			//选择播放
 			slectplay(index){
+				// console.log("选择播放index:"+index)
 				post('DanceMusic/Music_xq',{
 					UserId:this.userId,
 					Token:this.token,
 					MusicId:this.musicList[index].Id
 				}).then(res=>{
 					if(res.data.IsShowBuy==0){
+						this.nowSrc=res.data.Audio;
 						this.nowIndex=index;
-						this.itemdata=this.musicList[index];
-						this.musicID=this.musicList[index].Id;
-						this.isbuy=this.musicList[index].IsShowBuy;
+						this.itemdata=res.data;
+						this.musicID=res.data.Id;
+						this.isbuy=res.data.IsShowBuy;
 						uni.setNavigationBarTitle({
 							title: this.itemdata.Name
 						})
-						playMusic(this.nowIndex,this.musicID)
+						console.log("this.nowIndex"+this.nowIndex)
+						console.log("this.musicID"+this.musicID)
+						playMusic(this.nowIndex,this.musicID,this.nowSrc)
 						this.init()
 						// this.operation();
 						// this.init();
@@ -274,7 +290,7 @@
 			},
 			//下一曲
 			next(){
-				console.log("this.playType"+this.playType)
+				// console.log("this.playType"+this.playType)
 				if(this.musicList.length<2)return;
 				if(this.playType==2){
 					let leng=this.musicList.length
@@ -352,7 +368,7 @@
 					});
 				}}
 			},
-			// 获取一条音乐，用户分享的页面
+			// 获取一条音乐详情
 			getSoleMusic(){
 				post('DanceMusic/Music_xq',{
 					UserId:this.userId,
@@ -360,8 +376,11 @@
 					MusicId:this.musicID
 				}).then(res=>{
 					const data = res.data;
-					this.musicList=[];
-					this.musicList.push(data)
+					if(this.type==='share'){
+						this.musicList=[];
+						this.musicList.push(data)
+					}
+					this.nowSrc=data.Audio;
 					this.isCollect=data.IsCollect;
 					this.isbuy=data.IsShowBuy;
 					this.duration=data.ADuration
@@ -369,7 +388,8 @@
 					uni.setNavigationBarTitle({
 						title: data.Name
 					})
-					this.init()
+					this.operation();
+					//this.init()
 					if(!toLogin())return;
 				})
 			}

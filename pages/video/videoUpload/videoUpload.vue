@@ -223,7 +223,7 @@
 	background-color: #de1b6e;
 	position: fixed;
 	left: 30upx;
-	bottom: 20upx;
+	bottom: 60upx;
 }
 .listbox{
 	display: flex;

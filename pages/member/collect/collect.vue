@@ -125,18 +125,29 @@ export default {
 					url: '/pages/shopSon/product/productDetails?proId=' + ProId,
 				})
 			}else if(Type ==5){
-				uni.setStorageSync("musicList",this.datalist);
+				let jsonArr=[];
+				this.datalist.forEach(function(item){
+					let json={
+						Id:item.AssociationId,
+						Name:item.Name
+					}
+					jsonArr.push(json)
+				})
+				uni.setStorageSync("musicList",jsonArr);
 				uni.navigateTo({
-					url: '/pages/music/playMusic/playMusic?nowIndex=0'+ '&id=' + AssociationId,
+					url: '/pages/music/playMusic/playMusic?nowIndex='+index+'&id=' + AssociationId,
 				})
 			}else if(Type ==6){
 				uni.navigateTo({
 					url: '/pages/video/videoDetails/videoDetails?id=' + AssociationId,
 				})
 			}else if(Type ==4){
-				this.isShowvideo=true;
-				this.videoSrc=this.datalist[index].Video;
-				this.videoPoster=this.datalist[index].PicImg;
+				uni.navigateTo({
+					url: '/pages/replylist/replylist?id=' + AssociationId,
+				})
+				// this.isShowvideo=true;
+				// this.videoSrc=this.datalist[index].Video;
+				// this.videoPoster=this.datalist[index].PicImg;
 			}
 			
 		},
@@ -432,8 +443,8 @@ export default {
 	justify-content: center;
 	.uni-icon{
 		position: absolute;
-		right: 20upx;
-		top: 20upx;
+		right: 30upx;
+		top: 60upx;
 		color: #FFF;
 		font-size: 72upx;
 		line-height: 1;

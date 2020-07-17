@@ -6,12 +6,13 @@
 				<!-- #ifndef MP-WEIXIN -->
 				<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
 				<view class="mine">我的作品</view>
+				<view class="redact" @click="ShowDel"><block v-if="tabIndex>0">{{isShowDel?'完成':'管理'}}</block></view>
 				<!-- #endif -->
 				<!-- #ifdef MP-WEIXIN -->
 				<view></view>
 				<view></view>
+				<view :class="['redact',tabIndex>0?'':'dis']" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
 				<!-- #endif --> 
-				<view class="redact" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x>
 				<view style="width: 33.33%;" v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.TypeName}}</view>
@@ -154,7 +155,15 @@ export default {
 		},
 		//点击编辑 完成
 		ShowDel() {
-			this.isShowDel = !this.isShowDel;
+			if(this.tabIndex>0){
+				this.isShowDel = !this.isShowDel;
+			}else{
+				uni.showToast({
+					title: '审核通过的作品无法删除哦！',
+					icon: 'none',
+					duration: 1500
+				});
+			}
 		},
 		//点击tab-bar
 		tapTab(index,id) {
@@ -321,6 +330,7 @@ export default {
 .head {
 	.tab_head{
 		height: 44px;
+		position: relative;
 	}
 	.head_l{
 		.uni-icon{ font-size: 26px; margin: 0 5px;}
@@ -330,13 +340,20 @@ export default {
 		font-family: PingFang;
 		font-weight: bold;
 		color: rgba(51, 51, 51, 1);
+		position: absolute;
+		left: 100upx;
+		right: 100upx;
+		text-align: center;
 	}
 	.redact {
 		font-size: 14px;
 		font-family: PingFang;
 		font-weight: 500;
-		color: #999;
+		color: #666;
 		padding-right: 15px;
+	}
+	.redact.dis{
+		color: #999;
 	}
 }
 

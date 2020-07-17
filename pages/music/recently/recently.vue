@@ -61,7 +61,7 @@
 				<view class="uni-modal__hd pd15">选择曲单</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
+						<view class="line-item" v-if="item.Id!=-1" v-for="(item,index) in DancePlayList" :key="index" @click="joinList(item.Id)">
 							<view class="line-item-l text_left">
 								<text class="txt">{{item.Name}}</text>
 							</view>
@@ -159,6 +159,18 @@
 						this.isLoad = true;
 						this.loadingType = 0
 					}
+				}else if(result.code==2){
+					uni.showModal({
+						content: "您还没有登录，是否重新登录？",
+						success(res) {
+							if (res.confirm) {
+								uni.navigateTo({
+								  url: "/pages/login/login"
+								});
+							} else if (res.cancel) {
+							}
+						}
+					});
 				}
 			},
 			//播放

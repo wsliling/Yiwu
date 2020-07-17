@@ -5,26 +5,22 @@
 			<view class="flex-between" style="height: 44px;">
 				<view class="head_l" style="width: 44px; height: 44px;"></view>
 				<view class="title" style="font-size: 16px; font-weight: bold;">我的</view>
-				<view class="head_r editor pd15" @click="tolink('/pages/member/editinfo/editinfo')">
-					<image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>
+				<view class="head_r editor pd15">
 				</view>
 			</view>
 		</view>
 		<!-- #endif -->
 		<view class="header" :style="{'padding-top':barHeight+'px'}">
-			<view class="editor" @click="tolink('/pages/member/editinfo/editinfo')">
-				<image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>
-			</view>
 			<view class="user">
-				<view class="user-left" @click="tolink('/pages/member/editinfo/editinfo')">
-					<view class="user-img">
+				<view class="user-left">
+					<view class="user-img" @click="tolink('/pages/member/editinfo/editinfo')">
 						<view>
-							<image v-if="memberInfo.Avatar" :src="memberInfo.Avatar" mode="aspectFill"></image>
-							<image v-else src="http://yw.wtvxin.com/static/my/user.png" mode="aspectFill"></image>
+							<image :src="memberInfo.Avatar||'http://yw.wtvxin.com/static/my/user.png'" mode="aspectFill"></image>
 						</view>
 					</view>
 					<view class="user-name">
-						<view class="name">{{memberInfo.NickName||'您未登录，请先登录'}}
+						<view class="name" v-if="memberInfo.NickName">
+						    <view class="uni-ellipsis">{{memberInfo.NickName}}</view>
 							<image class="vip" src="http://yw.wtvxin.com/static/V.png" v-if="memberInfo.IsPlus" 
 								@click.stop="navigate('member/openVip/openVip',{
 									avatar:memberInfo.Avatar,
@@ -33,12 +29,23 @@
 								},true)">
 							</image>
 						</view>
-						<view class="text">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
+						<view class="name" v-else style="margin-top: 28upx;">您未登录，请先登录</view>
+						<block v-if="isLogin">
+							<view class="btns clear uni-mt10">
+								<view class="btn" @click="tolink('/pages/member/editinfo/editinfo')"><image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>编辑资料</view>
+								<view class="btn" @click="tolink('/pages/member/addUser/addUser')"><image class="img30" src="http://yw.wtvxin.com/static/my/add_min.png"></image>关注</view>
+							</view>
+							<view class="text uni-mt10">简介：{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
+							<view class="icos flex-center-start uni-mt10">
+								<text class="ico"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
+								<text class="ico">{{memberInfo.Area}}</text>
+								<text class="ico">{{memberInfo.UserDefined||'+自定义'}}</text>
+							</view>
+						</block>
 					</view>
 				</view>
 				<view class="user-right">
-					<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" 
-						@click.stop="navigate('member/openVip/openVip',{
+					<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click.stop="navigate('member/openVip/openVip',{
 							avatar:memberInfo.Avatar,
 							name:memberInfo.NickName,
 							endTime:memberInfo.PlusEndTime
@@ -48,12 +55,12 @@
 			</view>
 		</view>
 		<view class="info uni-mb10">
-			<view class="item" @click="tolink('/pages/member/wallet/wallet')">
+			<view class="item" @click="tolink('/pages/member/myAssets/myAssets')">
 				<view>
 					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
 				</view>
 				<span class="text">
-					零钱(元)
+					钱包(元)
 				</span>
 			</view>
 			<view class="item" @click="tolink('/pages/member/interactionData/interactionData?type=0')">
@@ -67,31 +74,6 @@
 			<view class="item" @click="tolink('/pages/member/interactionData/interactionData?type=2')">
 				<view>{{memberInfo.FollowNum||0}}</view>
 				<span class="text">关注</span>
-			</view>
-		</view>
-		<view class="info1 uni-mb10">
-			<view class="item" @click="tolink('/pages/member/myIncome/myIncome')">
-				<image src="http://yw.wtvxin.com/static/my/icon1.png" mode="aspectFit"></image>
-				<view>我的收入<span>{{memberInfo.Income||0}}</span></view>
-				
-			</view>
-			<view class="item" @click="tolink('/pages/member/myIntegral/myIntegral')">
-				<image src="http://yw.wtvxin.com/static/my/icon2.png" mode="aspectFit"></image>
-				<view>我的积分<span>{{memberInfo.SumScore||0}}</span></view>
-				
-			</view>
-			<view class="item" @click="tolink('/pages/member/livebi/livebi')">
-				<image src="http://yw.wtvxin.com/static/my/icon3.png" mode="aspectFit"></image>
-				<view>
-					直播币
-					<span>{{memberInfo.LiveStreamMoney||0}}</span>
-				</view>
-			</view>
-			<view class="item" @click="tolink('/pages/member/order/order')">
-				<image src="http://yw.wtvxin.com/static/my/icon4.png" mode="aspectFit"></image>
-				<view>我的订单
-				<span>{{memberInfo.orderNum||0}}</span>
-				</view>
 			</view>
 		</view>
 		<view class="sevice">
@@ -140,10 +122,10 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item" @click="tolink('/pages/member/myBuy/myBuy')">
+			<view class="item" @click="tolink('/pages/member/ordertype/ordertype')">
 				<view class="item-left">
 					<image  src="http://yw.wtvxin.com/static/my/icon10.png" mode="aspectFit"></image>
-					<view>我购买的</view>
+					<view>订单列表</view>
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
@@ -214,15 +196,14 @@
 	export default {
 		data() {
 			return {
-				userId: "",
-				token: "",
 				barHeight:0,
 				navigate,
 				memberInfo:{},//用户信息
 				wallet:[],
 				newscount:0,
 				myIncome:{},
-				showHead:false
+				showHead:false,
+				isLogin:false
 			}
 		},
 		onLoad() {
@@ -232,7 +213,7 @@
 		},
 		onShow(){
 			this.getMemberInfo();
-			this.getMyIncome();
+			//this.getMyIncome();
 		},
 		methods: {
 			async getMemberInfo() {
@@ -241,6 +222,7 @@
 					"Token": uni.getStorageSync("token")
 				})
 				if (result.code === 0) {
+					this.isLogin=true;
 					this.memberInfo = result.data;
 					uni.setStorageSync("MemberId",result.data.Id)
 					this.wallet=result.data.Wallet.split('.');
@@ -249,6 +231,11 @@
 					}); 
 					 this.NewsCount();
 				} else if (result.code === 2) {
+					this.isLogin=false;
+					uni.getStorageSync("userId","")
+					uni.getStorageSync("token","")
+					this.memberInfo={};
+					this.newscount=0;
 					let _this = this;
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",

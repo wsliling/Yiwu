@@ -581,8 +581,8 @@ a {
 		text-align: center;
 		.icon{ 
 			display: block;
-			width: 72upx; 
-			height: 72upx;
+			width: 52upx; 
+			height: 52upx;
 			margin: 0 auto 8upx;
 		 }
 		 .txt{ color: #666; font-size: 24upx;}
@@ -736,6 +736,7 @@ a {
 	.uni-modal__hd{
 		font-size: 32upx;
 	}
+	.line-list{display: block; }
 	.btns{
 		border-top: 1px solid #eee;
 		.btn{
@@ -751,7 +752,7 @@ a {
 			height: 56upx;
 			margin-right: 20upx;
 		}
-		.txt{font-size: 30upx;}
+		.txt{font-size: 30upx; }
 	}
 }
 .Operation__modal{

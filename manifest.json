@@ -17,7 +17,12 @@
             "delay" : 0
         },
         /* 模块配置 */
-        "modules" : {},
+        "modules" : {
+            "VideoPlayer" : {},
+            "LivePusher" : {},
+            "Payment" : {},
+            "Share" : {}
+        },
         /* 应用发布信息 */
         "distribute" : {
             /* android打包配置 */
@@ -49,6 +54,27 @@
             "sdkConfigs" : {
                 "share" : {},
                 "ad" : {}
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "E:/liu项目/A壹舞/APP_logo配置/安卓/72x72.png",
+                    "xhdpi" : "E:/liu项目/A壹舞/APP_logo配置/安卓/96x96.png",
+                    "xxhdpi" : "E:/liu项目/A壹舞/APP_logo配置/安卓/144x144.png",
+                    "xxxhdpi" : "E:/liu项目/A壹舞/APP_logo配置/安卓/192x192.png"
+                },
+                "ios" : {
+                    "appstore" : "E:/liu项目/A壹舞/APP_logo配置/ios/1024.png",
+                    "iphone" : {
+                        "app@2x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-120x120.png",
+                        "app@3x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-180x180.png",
+                        "spotlight@2x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-80x80.png",
+                        "spotlight@3x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-120x120.png",
+                        "settings@2x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-58x58.png",
+                        "settings@3x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-87x87.png",
+                        "notification@2x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-40x40.png",
+                        "notification@3x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-60x60.png"
+                    }
+                }
             }
         }
     },
