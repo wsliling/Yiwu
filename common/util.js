@@ -218,6 +218,7 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 	console.log("playID和id"+playID+"--"+id);
     if(playID!=""&&playID!="undefined"){
 		if(playID==id){//暂停
+		console.log(hasplay)
 			if(hasplay){
 				audio.pause()
 				hasplay=false
@@ -245,12 +246,12 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 	}
 	//音频播放事件
 	audio.onPlay(() => {
-		hasplay=true
+		// hasplay=true
 		uni.setStorageSync("playIDtype",1)
 	})
 	//音频暂停事件
 	audio.onPause(() => {
-		hasplay=false
+		// hasplay=false
 		uni.setStorageSync("playIDtype",0)
 	})
 }
