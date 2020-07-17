@@ -785,7 +785,15 @@
 									icon:'none'
 								})
 								// #endif
+								
 								// #ifdef APP-PLUS
+								if(!uni.getStorageSync('attestation').IsDancer){
+									uni.showToast({
+										title:'需要先认证舞者哦~',
+										icon:'none'
+									})
+									return;
+								}
 								urlstr="/pages/livepush/livepush?type=0";
 								// #endif
 							}else if(e.tapIndex==3){
@@ -796,6 +804,13 @@
 								})
 								// #endif
 								// #ifdef APP-PLUS
+								if(!uni.getStorageSync('attestation').IsShop){
+									uni.showToast({
+										title:'需要先认证店铺哦~',
+										icon:'none'
+									})
+									return;
+								}
 								urlstr="/pages/livepush/livepush?type=1";
 								// #endif
 							}

@@ -33,7 +33,7 @@
 
 			<!-- 这是功能按钮 -->
 			<view :style="{ width: width + 'px' }" class="but">
-				<view class="meiyanbut" v-if="liveType" @click="showProList">
+				<view class="meiyanbut" v-if="liveType*1" @click="showProList">
 					<image class="but-img pro" src="/static/icons/product-icon.png" mode="widthFix"></image>
 					<text class="but-text">宝贝</text>
 				</view>
@@ -219,6 +219,7 @@ export default {
 			if (res.code == 0) {console.log(res)
 				this.url = res.data.RTMP;
 				this.context = uni.createLivePusherContext('livePusher', this);
+				console.log('准备开启直播',JSON.stringify(this.context))
 				setTimeout(() => {
 					this.startLive();
 				}, 1000);
@@ -265,24 +266,33 @@ export default {
 		},
 		// 结束直播
 		returns() {
-			const that = this;
-			if(!that.context) return;
-			that.context.stop({
+			console.log('准备关闭直播',JSON.stringify(this.context));
+			if(!this.context) return;
+			console.log('准备关闭直播2',JSON.stringify({
+				UserId: this.userId,
+				Token: this.token
+			}));
+			// post('TencentCloud/PushCallBack').then(res=>{
+			// 	console.log('关闭直播请求成功res',JSON.stringify(res))
+			// }).catch(err=>{
+			// 	console.log('关闭直播请求成功err',JSON.stringify(err))
+			// })
+			this.context.stop({
 				success: a => {
 					console.log(JSON.stringify(a),'页面卸载');
-					post('TencentCloud/PushCallBack',{
-						UserId: this.userId,
-						Token: this.token
-					})
+				},fail:(e)=>{
+					console.log('关闭直播请求err',JSON.stringify(e))
 				}
 			});
 		},
 		// 结束直播
 		stopLive() {
+			const that = this;
 			uni.showModal({
 				title:'是否结束直播！',
 				success(res){
 					if(res.confirm){
+						// that.returns()
 						uni.navigateBack();
 					}
 				}
@@ -447,7 +457,11 @@ export default {
 	},
 	// 页面卸载
 	onUnload(){
+		console.log('直播onUnload')
 		this.returns();
+	},
+	onHide(){
+		console.log('直播onHide')
 	}
 };
 </script>
@@ -552,7 +566,7 @@ export default {
 	margin-bottom:5upx;
 }
 .msg_bg{
-	display: flex;
+	display: inline-block;
 	flex-direction: row;
 	flex-wrap:wrap;
 	align-items:flex-start;
@@ -564,10 +578,16 @@ export default {
 	max-width:500upx;
 	height: auto;
 }
-.msg_name{ color:#F0AD4E;  margin-right: 10upx;font-size: 28upx;}
-.msg_text{ color:#fff;font-size: 28upx;word-wrap: break-word;
-    word-break: normal;display:inline-block;
-	max-width:490upx;}
+.msg_name{ color:#F0AD4E;  margin-right: 10upx;font-size: 28upx;
+	display:inline-block;
+}
+.msg_text{ color:#fff;font-size: 28upx;
+	word-wrap: break-word;
+	word-break: break-all;
+    word-break: normal;
+	display:inline-block;
+	max-width:490upx;
+	}
 .nlv-msglist::after{
 	display: block;
 	content:"";
