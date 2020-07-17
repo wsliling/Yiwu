@@ -565,8 +565,10 @@ export default {
 				line-height: 1.2;
 				font-size: 24upx;
 				max-width: 64%;
+				display:inline-block;
 				text {
 					display: inline-block;
+					word-break: break-all;
 				}
 				.msg_name {
 					color: #f5d916;
