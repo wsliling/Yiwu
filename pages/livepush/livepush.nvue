@@ -418,7 +418,7 @@ export default {
 		//******************产品*******************************
 		// 获取产品列表
 		async getProList(){
-			if(!this.liveType)return;
+			if(!this.liveType*1)return;
 			const res = await post('Goods/GetGoodsListByM',{
 				UserId:this.userId,
 				Token:this.token
