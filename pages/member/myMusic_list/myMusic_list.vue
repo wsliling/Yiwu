@@ -2,7 +2,7 @@
 	<view>
 		<view class="menulist">
 			<view class="item flex-between">
-				<view class="imgbox"><image src="http://yw.wtvxin.com/static/default_music.png" mode="aspectFill"></image></view>
+				<view class="imgbox"><image :src="datalist[0].PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image></view>
 				<view class="info flex1">
 					<view class="name uni-ellipsis">{{menuName}}</view>
 					<view class="fz12 c_999 uni-mt10">{{menuLen}}</view>
