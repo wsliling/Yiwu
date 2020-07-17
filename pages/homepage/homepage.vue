@@ -85,7 +85,7 @@
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index">
-					<image :src="item.Logo" @click="previewImg(index)"></image>
+					<image :src="item.Logo" @click="previewImg(index)" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="product-box item-box"  v-if="tabId==4&&hasData">
