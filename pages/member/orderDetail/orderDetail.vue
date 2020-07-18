@@ -27,7 +27,7 @@
             </div>
         </div>
         <div class="or_item bg_fff radius">
-            <div class="pp3 flex bor_tit" v-for="(item, index) in info.OrderDetails" :key="index" @click.stop="goUrl('/pages/homePage/details?id='+item.ProductId)">
+            <div class="pp3 flex bor_tit" v-for="(item, index) in info.OrderDetails" :key="index" @click="goUrl('/pages/shopSon/product/productDetails?proId='+item.ProductId)">
                 <image mode="aspectFill" :src="item.PicNo" alt="" class="shop mr2" />
                 <div class="flex1 flex  mr2">
                     <div class="or_left flex flexColumn justifyContentBetween">
