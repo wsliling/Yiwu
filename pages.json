@@ -580,7 +580,16 @@
 				}
                 ,{
                     "path" : "team/team",
-                    "style" : {}
+                    "style" : {
+						"navigationBarTitleText": "我的团队",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
                 }
                 ,{
                     "path" : "myAssets/myAssets",
@@ -612,6 +621,32 @@
                     "path" : "addUser/addUser",
                     "style" : {
 						"navigationBarTitleText": "推荐关注",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
+                ,{
+                    "path" : "question/question",
+                    "style" : {
+						"navigationBarTitleText": "常见问题",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
+                ,{
+                    "path" : "feedback/feedback",
+                    "style" : {
+						"navigationBarTitleText": "意见反馈",
 						"app-plus": {
 							 "titleNView": {    
 								"splitLine": {  
@@ -833,6 +868,19 @@
 						}
 					}
 				}
+                ,{
+                    "path" : "agreement2/agreement2",
+                    "style" : {
+						"navigationBarTitleText": "隐私政策",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
             ]
 		}
 		

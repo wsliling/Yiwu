@@ -5,11 +5,11 @@
 			<div class="code">
 				<img :src="inviteCode" alt="">
 				<div class="number">
-					<span>邀请码:</span>123456
+					<span>邀请码:</span>{{myInviteCode}}
 				</div>
 				<div class="btn" @click="copy">复制</div>
 			</div>
-			<share :url="'/pages/register/register?inviteCode='+this.myInviteCode">
+			<share :url="'/pages/register/register?inviteCode='+myInviteCode">
 			<div class="shareBtn" >分享</div>
 			</share>
 		</div>

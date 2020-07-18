@@ -40,18 +40,36 @@
 			  <input type="text" placeholder="去添加" class="flex1 text_right"  v-model="info.UserDefined">
 			</view>
 		</view>
+		<view :class="['line-item',info.IsBind?'line-arrow-r':'']" @click="BindRelation(info.IsBind)">
+			<view class="lab">邀请人</view>
+			<view class="item_r flex1" style="margin-left: 20upx;">
+			  <input type="text" placeholder="未绑定" disabled class="flex1 text_right" v-model="info.Inviter">
+			</view>
+		</view>
 	  </view>
 	  <view class="btnbox" @click="submint">确定</view>
 	  <mpvue-picker :themeColor="themeColor" ref="mpvuePicker" :mode="mode" :deepLength="deepLength" :pickerValueDefault="pickerValueDefault"
 	   @onConfirm="onConfirm" @onCancel="onCancel" :pickerValueArray="pickerValueArray"></mpvue-picker>
+	<!-- 弹出输入邀请人 -->
+	<uni-popup :show="showPopupBind" v-on:hidePopup="hidePopup">
+	  <div class="modal-head">填写邀请人</div>
+	  <div class="modal-content">
+		  <input type='text' placeholder="请输入您的邀请人" v-model="inviteCode" auto-focus/>
+	  </div>
+	  <div class="modal-footer flex justifyContentBetween">
+		<div class="btn-cancel" @click="hidePopup">取消</div>
+		<div class="btn-confirm" @click="onConfirmBind">确定</div> 
+	  </div>
+	</uni-popup>
   </view>
 </template>
 
 <script>
-import {post} from '@/common/util'
+import {post,valPhone} from '@/common/util'
 import { pathToBase64, base64ToPath } from '@/common/image-tools.js';
 import mpvuePicker from '@/components/mpvue-picker/mpvuePicker.vue';
 import cityData from '@/common/city.data.js';
+import uniPopup from '@/components/uni-popup.vue';
 export default {
   data () {
     return {
@@ -67,11 +85,14 @@ export default {
 	  mode: '',
 	  deepLength: 1,
 	  pickerValueDefault: [0],
-	  pickerValueArray:[]
+	  pickerValueArray:[],
+	  showPopupBind:false,
+	  inviteCode:""
     }
   },
   components: {
-    mpvuePicker
+    mpvuePicker,
+	uniPopup
   },
   onShow(){
 	  this.userId = uni.getStorageSync("userId")
@@ -194,6 +215,38 @@ export default {
 		day = day > 9 ? day : '0' + day;
 		return `${year}-${month}-${day}`;
 	},
+	//绑定推荐关系（无推荐关系可绑定）
+	BindRelation(e){
+	  if(e==1){
+		this.inviteCode="";
+		this.showPopupBind=true;
+	  }
+	},
+	//统一的关闭popup方法
+	hidePopup: function() {
+	  this.showPopupBind = false;
+	},
+	//确认绑定推荐人
+	onConfirmBind(){
+	  if(valPhone(this.inviteCode)){
+		this.BindRelationMobile()
+	  }
+	},
+	BindRelationMobile(){
+	  post('Login/BindRelationMobile',{
+		UserId:this.userId,
+		Token:this.token,
+		mobile:this.inviteCode
+	  }).then(res=>{
+		wx.showToast({
+		  title: res.msg,
+		  icon: "none"
+		})
+		this.hidePopup();
+		this.GetMemInfo();
+	  })
+	},
+	
   },
 }
 </script>
@@ -223,5 +276,28 @@ export default {
 	position: fixed;
 	left: 30upx;
 	bottom: 60upx;
+}
+.editpage /deep/ .uni-popup-middle{
+  padding: 0 !important;
+  width: 480upx;
+  .modal-head{
+    font-size: 32upx;
+    padding: 20upx;
+  }
+  .modal-content{ 
+    padding: 0 20upx 20upx;
+    input{
+      height: 80upx; width: 100%;
+    }
+  }
+  .modal-footer{
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid #eee;
+    div{ width: 50%; height: 80upx; line-height: 80upx; font-size: 30upx}
+    div:hover{ background: #f5f5f5}
+    .btn-cancel{ border-right: 1px solid #eee;}
+    .btn-confirm{color: #ff3333}
+  }
 }
 </style>
