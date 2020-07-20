@@ -4,7 +4,7 @@
 			<view class="index_head flex-between">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
-					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" class="flex1"></ans-input>
+					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="clearText" class="flex1"></ans-input>
 				</view>
 				<!-- #ifndef H5 -->
 				<view class="head_r" @click="scanCode">
@@ -396,6 +396,10 @@
 						this.YWNewsList();
 						break;
 				}
+			},
+			clearText(){
+				this.searchText="";
+				this.init(this.tabIndex);
 			},
 			//跳转
 			tolink(Url,islogin) {
