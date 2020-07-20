@@ -239,6 +239,7 @@
 					this.newscount=0;
 					let _this = this;
 					uni.showModal({
+						title:"登录提示",
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
 							if (res.confirm) {
