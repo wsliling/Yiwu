@@ -8,7 +8,7 @@
 		<view class="list pp3">
 			<view class="order_item bg_fff" v-for="(item,index) in list" :key="index" @click="goUrl('/pages/member/orderDetail/orderDetail?id='+item.OrderNumber)">
 				<view class="flex-between">
-					<view class="shopbox flex-start">
+					<view class="shopbox flex-start" @click.stop="goUrl('/pages/shopSon/shopHome/shopHome?shopId='+item.ShopId)">
 						<view class="iconfont icon-dianpu"></view>
 						<text class="shopName uni-ellipsis">{{item.ShopName}}</text>
 						<view class="iconfont icon-arrow_r"></view>

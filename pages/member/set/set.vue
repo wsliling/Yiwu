@@ -21,6 +21,26 @@
 					<text class="txt">收货地址</text>
 				</view>
 			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/feedback/feedback')">
+				<view class="line-item-l">
+					<text class="txt">意见反馈</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/member/question/question')">
+				<view class="line-item-l">
+					<text class="txt">常见问题</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/message/agreement/agreement')">
+				<view class="line-item-l">
+					<text class="txt">用户协议</text>
+				</view>
+			</view>
+			<view class="line-item line-arrow-r" @click="tolink('/pages/message/agreement2/agreement2')">
+				<view class="line-item-l">
+					<text class="txt">隐私政策</text>
+				</view>
+			</view>
 			<!-- #ifdef APP-PLUS -->
 			<view class="line-item line-arrow-r">
 				<view class="line-item-l">
@@ -32,11 +52,11 @@
 			</view>
 			<!-- #endif -->
 		</view>
-		<view style="text-align: center;padding-top: 80px;color: #ccc;">
+		<view style="text-align: center;padding: 40px 0 40upx;color: #ccc;">
 			<view class="">Copyright© 2020</view>
 			<view class="">	壹舞有限责任公司 版本所有</view>
 		</view>
-		<view class="fixedbtn" style="background: #f8f8f8;">
+		<view class="fixedbtn" style="background: #f7f7f7;">
 			<view class="btn" @click="logOut">退出登录</view>
 		</view>
 	</view>

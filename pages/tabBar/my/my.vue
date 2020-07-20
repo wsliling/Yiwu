@@ -25,7 +25,8 @@
 								@click.stop="navigate('member/openVip/openVip',{
 									avatar:memberInfo.Avatar,
 									name:memberInfo.NickName,
-									endTime:memberInfo.PlusEndTime
+									endTime:memberInfo.PlusEndTime,
+									isVIP:memberInfo.IsPlus
 								},true)">
 							</image>
 						</view>
@@ -137,7 +138,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
 			</view>
-			<view class="item" @click="tolink('/pages/message/team/team')">
+			<view class="item" @click="tolink('/pages/member/team/team')">
 				<view class="item-left">
 					<image  src="/static/icons/team.png" mode="aspectFit"></image>
 					<view>我的团队</view>

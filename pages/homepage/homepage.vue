@@ -69,9 +69,10 @@
 				</view>
 			</view>
 			<view class="play-box item-box"  v-if="tabId==1&&hasData">
-				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/video/videoDetails/videoDetails?id='+item.Id)">
+				<view class="item" v-for="(item,index) in datalist" :key="index" @click="tovideo(item.Type,item.Id)">
 					<image :src="item.Logo" mode="aspectFill"></image>
 					<view class="playbtn"></view>
+					<view class="tag" v-if="item.Type==1">课程</view>
 				</view>
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
@@ -84,7 +85,7 @@
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
 				<view class="item" v-for="(item,index) in datalist" :key="index">
-					<image :src="item.Logo" @click="previewImg(index)"></image>
+					<image :src="item.Logo" @click="previewImg(index)" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="product-box item-box"  v-if="tabId==4&&hasData">
@@ -202,6 +203,17 @@ export default {
 		 			url: Url
 		 		})
 		 	}
+		},
+		tovideo(type,id){
+			if(type==1){
+				uni.navigateTo({
+					url: '/pages/video/videoDetails/videoDetails?id='+id
+				})
+			}else{
+				uni.navigateTo({
+					url: '/pages/replylist/replylist?id='+id
+				})
+			}
 		},
 		tapTab(id,index) { //点击tab-bar
 		 	if (this.tabId === id) {

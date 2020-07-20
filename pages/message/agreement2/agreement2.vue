@@ -23,7 +23,7 @@
 		},
 		methods: {
 			async getinfo(){
-				let res=await get('system/GetUserNotice',{})
+				let res=await get('system/GetUserAuth',{})
 				if(res.code==0){
 					this.Content=res.data.Content.replace(/(\r\n|\n|\r)/gm, "<br />")
 				}

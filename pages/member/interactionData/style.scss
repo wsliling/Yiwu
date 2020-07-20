@@ -60,15 +60,18 @@
 	}
 }
 .flow{
-	color: #fff;
-	background: $primary;
-	border: 1px solid $primary;
+	// color: #fff;
+	// background: $primary;
+	// border: 1px solid $primary;
+	color: $primary;
+	background: #fff;
+	border: 1px solid #ddd;
 	border-radius: 100px;
 	width: 120upx;
 	text-align: center;
 	&.active{
-		color: $primary;
-		background: #fff;
-		border: 1px solid #ddd;
+		// color: $primary;
+		// background: #fff;
+		// border: 1px solid #ddd;
 	}
 }

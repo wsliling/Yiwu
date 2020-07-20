@@ -36,6 +36,9 @@ form {
 	width: 100%;
 }
 image{ width: 100%;}
+[v-cloak] {
+    display: none;
+}
 .fl{ float: left;}
 .fr{ float: right;}
 .clear:after,.clear:before {
