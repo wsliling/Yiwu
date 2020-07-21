@@ -80,10 +80,10 @@
 				<view class="uni-modal__hd pd15">下载</view>
 				<view class="uni-modal__bd text_left pd15">
 					<view class="name">
-						已下载：{{Downinfo.totalBytesWritten||0}}kb({{Downinfo.progress||0}}%)
+						已下载：{{totalBytesWritten}}({{Downinfo.progress||0}}%)
 					</view>
 					<view class="name">
-						大小：{{Downinfo.totalBytesExpectedToWrite||0}}kb
+						大小：{{DownSize}}
 					</view>
 				</view>
 				<view class="btns flex-between">
@@ -137,6 +137,8 @@
 				isShowDowninfo:false,
 				Downinfo:{},//下载信息
 				durl:"",//下载的路径
+				totalBytesWritten:'0kb',
+				DownSize:""//下载文件大小
 			}
 		},
 		onLoad(e) {
@@ -312,7 +314,8 @@
 							"CourseId":this.Courseid
 						});
 						if(result.code==0){
-							that.durl=result.data;
+							that.durl=result.data.Video;
+							that.DownSize=result.data.Size;
 							that.isShowDowninfo=true;
 						}
 					}
@@ -330,6 +333,7 @@
 					url: that.durl, 
 					success: (res) => {
 						if (res.statusCode === 200) {
+							that.totalBytesWritten=that.DownSize;
 							uni.saveVideoToPhotosAlbum({
 								filePath: res.tempFilePath,
 								success: function(red) {
@@ -346,6 +350,7 @@
 				});			
 				downloadTask.onProgressUpdate((res) => {
 					this.Downinfo=res;
+					this.totalBytesWritten=res.totalBytesWritten+'kb'
 					// uni.showLoading({
 					//   title: '已下载'+res.progress //数据请求前loading
 					// })
