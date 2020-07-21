@@ -2,7 +2,7 @@
 	<view>
 		<view class="menulist">
 			<view class="item flex-between">
-				<view class="imgbox"><image :src="datalist[0].PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image></view>
+				<view class="imgbox"><image :src="menupost||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image></view>
 				<view class="info flex1">
 					<view class="name uni-ellipsis">{{menuName}}</view>
 					<view class="fz12 c_999 uni-mt10">{{menuLen}}</view>
@@ -133,6 +133,7 @@
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 				menuName:"",//曲单名称
 				menuLen:0,//曲单数量
+				menupost:""
 			}
 		},
 		components: {
@@ -284,6 +285,9 @@
 						this.menuName=result.data.Name;
 						this.menuLen=result.data.Num;
 						list=result.data.DanceMusicList;
+						if(list.length){
+							this.menupost=list[0].PicImg
+						}
 					}
 					if (list.length > 0) {
 						this.hasData = true;
