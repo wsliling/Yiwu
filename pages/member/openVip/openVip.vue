@@ -166,10 +166,11 @@
 		}
 	}
 </script>
-
+<style>
+	page{
+		 background: #fff;
+	}
+</style>
 <style lang="scss" scoped>
  @import './style';
- page{ 
-	 background: #fff;
- }
 </style>
