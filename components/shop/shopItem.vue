@@ -1,7 +1,7 @@
 <template>
     <view class="live">
         <view class="live-img">
-            <view class="islive">
+            <view class="islive" v-if="item.IsLive==1">
                 <view class="line line1"></view>
                 <view class="line line2"></view>
                 <view class="line line3"></view>

@@ -43,9 +43,7 @@
 								<text class="nlv_reply_text">跟主播聊点什么？</text>
 							</view>
 							<div class="btn-box">
-								<share :h5Url="'/pages/liveplay/live?id='+liveItem.MemberId"
-								:wxUrl="'/pages/liveplay/live?id='+liveItem.MemberId"
-								>
+								<share :url="'/pages/liveplay/live?id='+liveItem.MemberId">
 									<img src="/static/icons/share.png" alt="" mode="widthFix" />
 								</share>
 								

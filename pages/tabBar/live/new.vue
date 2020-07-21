@@ -4,7 +4,7 @@
 			<view class="index_head flex-between">
 				<view class="seachbox">
 					<text class="uni-icon uni-icon-search"></text>
-					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" class="flex1"></ans-input>
+					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" @clear="clearText" class="flex1"></ans-input>
 				</view>
 				<!-- #ifndef H5 -->
 				<view class="head_r" @click="scanCode">
@@ -84,7 +84,7 @@
 								<view class="ft_l flex-start">
 									<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 									<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-									<share wxUrl="/pages/tabBar/index/index" :h5Url="'/pages/replylist/replylist?id='+item.Id">
+									<share :url="'/pages/replylist/replylist?id='+item.Id">
 										<view class="txt_info share"></view>
 									</share>
 								</view>
@@ -396,6 +396,10 @@
 						this.YWNewsList();
 						break;
 				}
+			},
+			clearText(){
+				this.searchText="";
+				this.init(this.tabIndex);
 			},
 			//跳转
 			tolink(Url,islogin) {
