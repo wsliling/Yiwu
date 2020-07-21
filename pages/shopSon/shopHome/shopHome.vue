@@ -8,14 +8,14 @@
           <div class="title">
             <div class="name flex-center-start">
               <h4>{{data.ShopNick}}</h4>
-              <!-- <img src="http://hxjp.wtvxin.com/static/images/map.png" alt /> -->
+              <!-- <img src="http://yw.wtvxin.com/static/images/map.png" alt /> -->
               <!-- <p>14km</p> -->
             </div>
             <div class="address">{{data.Address}}</div>
           </div>
           <div class="phone" @click="call(data.Phone)">
-              <div class="phone-icon">
-                    <img src="http://hxjp.wtvxin.com/static/images/o2o/phone.png" alt />
+              <div class="phone-icon flex-column">
+				  <text class="iconfont icon-phone" style="font-size: 48upx; line-height: 1;"></text>
               </div>
             <p>联系卖家</p>
           </div>
@@ -242,7 +242,7 @@ export default {
                 .phone-icon{
                     width:60upx;
                     height:60upx;
-                    padding:15upx;
+                    // padding:15upx;
                     background:#f5f5f5;
                     border-radius:50%;
                     // margin-bottom:10upx;

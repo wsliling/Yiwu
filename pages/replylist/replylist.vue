@@ -31,10 +31,10 @@
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
 						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum+'人赞过':'点赞'}}</view>
-						<share :h5Url="'/pages/replylist/replylist?id='+Findid" :wxUrl="'/pages/replylist/replylist?id='+Findid">
+						<share :url="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
-						<view class="txt_info inwith">来源{{NewsInfo.Source}}</view>
+						<view class="txt_info inwith" v-if="NewsInfo.Source">来源{{NewsInfo.Source}}</view>
 					</view>
 					
 					<view class="ft_r">
@@ -72,11 +72,13 @@
 	import replyItem from '@/components/reply-item.vue'; //评论组件
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
+	import share from '@/components/share/share.vue';
 	export default {
 		components: {
 			replyItem,
 			noData,
-			uniLoadMore
+			uniLoadMore,
+			share
 		},
 		data() {
 			return {
@@ -211,6 +213,7 @@
 					});
 					//更新评论列表，并清空评论内容
 					this.page=1;
+					this.datalist=[];
 					this.CommnetList();
 					this.placeholder="写评论~";
 					this.PCommentname="";

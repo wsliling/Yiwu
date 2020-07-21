@@ -30,7 +30,7 @@
 				<view class="ft_l flex-start">
 					<view @click="likeBtn" :class="['txt_info like',CourseInfo.IsLike==1?'active':'']">{{CourseInfo.LikeNum}}</view>
 					<view class="txt_info reply">{{CourseInfo.CommentNum}}</view>
-					<share :wxUrl="'/pages/video/videoDetails/videoDetails?id='+Courseid">
+					<share :url="'/pages/video/videoDetails/videoDetails?id='+Courseid">
 						<view class="txt_info share"></view>
 					</share>
 				</view>

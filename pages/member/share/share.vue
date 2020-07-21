@@ -1,12 +1,16 @@
 <template>
 	<view class="share">
-		<img src="/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
+		<img src="http://yw.wtvxin.com/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
 		<div class="content">
 			<div class="code">
 				<img :src="inviteCode" alt="">
 				<div class="number">
 					<span>邀请码:</span>{{myInviteCode}}
 				</div>
+				<!-- #ifdef H5 -->
+				<input type="text" @focus="blur()" :disabled="disabled" 
+				 v-model="myInviteCode" style="opacity: 0;position: fixed;top: -10000px;">
+				<!-- #endif -->
 				<div class="btn" @click="copy">复制</div>
 			</div>
 			<share :url="'/pages/register/register?inviteCode='+myInviteCode">
@@ -18,12 +22,12 @@
 
 <script>
 	import {webUrl,post} from '@/common/util'
-import h5Copy from '@/common/junyi-h5-copy'
 	export default {
 		data() {
 			return {
 				myInviteCode:'',
 				inviteCode:'',
+				disabled:false
 			};
 		},
 		onLoad(){
@@ -39,13 +43,35 @@ import h5Copy from '@/common/junyi-h5-copy'
 					this.myInviteCode = res.data.ReferralCode;
 				})
 			},
+			blur() {
+				this.disabled = true;
+			},
 			copy(){
-				const status = h5Copy(this.myInviteCode)
-				if(status){
-				    uni.showToast({title:'复制成功'})
-				}else{
-				    uni.showToast({title:'复制失败',icon:'none'})
-				}
+				// #ifdef  H5
+				let url = document.getElementsByTagName("input")[0];
+				url.select(); // 选择对象
+				document.execCommand("Copy");
+				 uni.showToast({title:'复制成功'})
+				// #endif
+				// #ifdef  MP-WEIXIN
+				let _this = this;
+				uni.setClipboardData({
+					data: _this.myInviteCode,
+					success: function() {
+						 uni.showToast({title:'复制成功'})
+					}
+				});
+				// #endif
+				uni.setClipboardData({
+				  data: this.myInviteCode,
+				  success: function (res) {
+				    uni.getClipboardData({ 
+				      success: function (res) {
+				        console.log(res.data) // data
+				      }
+				    })
+				  }
+				})
 			},
 			onShare(){
 				uni.share({

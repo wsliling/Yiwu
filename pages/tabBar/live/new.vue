@@ -84,7 +84,7 @@
 								<view class="ft_l flex-start">
 									<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 									<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-									<share wxUrl="/pages/tabBar/index/index" :h5Url="'/pages/replylist/replylist?id='+item.Id">
+									<share :url="'/pages/replylist/replylist?id='+item.Id">
 										<view class="txt_info share"></view>
 									</share>
 								</view>

@@ -8,6 +8,7 @@
 </div>
 </template>
 <script>
+import {webUrl} from '@/common/util'
 import h5Copy from '@/common/junyi-h5-copy'
 export default {
     props:{
@@ -37,12 +38,11 @@ export default {
         // h5复制链接，app调用分享api
         share(e){
             // #ifdef APP-PLUS
-            console.log(window.location.origin)
 				uni.share({
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
-				    href: this.appUrl?window.location.origin+'/#'+this.appUrl:window.location.origin+'/#'+this.url,
+				    href: this.appUrl?webUrl+'/#'+this.appUrl:webUrl+'/#'+this.url,
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },

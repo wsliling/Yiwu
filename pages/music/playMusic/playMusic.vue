@@ -12,9 +12,9 @@
 		<view class="playbox">
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
-			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
+			 		<view :class="['audio-control iconfont icon-prev',musicList.length>1?'':'c_999']" @click="prev"></view>
 			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
-			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
+			 		<view :class="['audio-control iconfont icon-prev audio-control-next',musicList.length>1?'':'c_999']" @click="next"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
 			 		<view class="audio-number">{{currentTime}}</view>
@@ -32,7 +32,7 @@
 					<image src="http://yw.wtvxin.com/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
 					<image src="http://yw.wtvxin.com/static/music/playicon3.png" mode="widthFix" v-else></image>
 			 	</view>
-				<share class="item" :h5Url="'/pages/music/playMusic/playMusic?type=share&id='+musicID" :wxUrl="'/pages/music/playMusic/playMusic?type=share&id='+musicID">
+				<share class="item" :url="'/pages/music/playMusic/playMusic?type=share&id='+musicID">
 					<image src="http://yw.wtvxin.com/static/music/playicon4.png" mode="widthFix"></image>
 				</share>
 				<view class="item" @click="ShowPlaylist">
