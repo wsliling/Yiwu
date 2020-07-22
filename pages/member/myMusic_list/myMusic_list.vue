@@ -162,9 +162,9 @@
 			this.playID=uni.getStorageSync("playID")
 			this.playIDtype=uni.getStorageSync("playIDtype");
 		},
-		onUnload() {
-			audio.pause()
-		},
+		// onUnload() {
+		// 	audio.pause()
+		// },
 		methods: {
 			//跳转
 			tolink(Url) {
@@ -375,11 +375,12 @@
 		}
 	}
 </script>
-
-<style lang="scss" scoped>
+<style>
 	page{
 		background: #fff;
 	}
+</style>
+<style lang="scss" scoped>
 .Menulist__modal{
 	.line-list{
 		max-height: 700upx;

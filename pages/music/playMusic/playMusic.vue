@@ -92,7 +92,8 @@
 				nowSrc:'',
 				waitFlag:false,
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
-				playnum:0
+				playnum:0,
+				pagetype:"",//页面来源
 			}
 		},
 		watch: {
@@ -107,8 +108,9 @@
 		},
 		onLoad(e) {
 			this.nowIndex=e.nowIndex||0
-			this.musicID=e.id;
+			this.musicID=e.id||'';
 			this.type = e.type||'';
+			this.pagetype=e.pagetype||'';
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
@@ -122,7 +124,7 @@
 				this.getSoleMusic();
 				return;
 			}
-			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined){
+			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined&&!this.pagetype){
 				// this.isCollect=this.musicList[this.nowIndex].IsCollect;
 				// this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
 				// this.itemdata=this.musicList[this.nowIndex];
@@ -132,6 +134,16 @@
 				// })
 				// this.init()
 				this.getSoleMusic()
+			}
+			if(this.pagetype){
+				if(uni.getStorageSync("playID")){
+					this.musicID=uni.getStorageSync("playID")
+					this.getSoleMusic();
+				}else{
+					this.musicID=this.musicList[0].Id;
+					this.getSoleMusic(1);
+				}
+				
 			}
 		},
 		methods: {
@@ -376,7 +388,7 @@
 				}}
 			},
 			// 获取一条音乐详情
-			getSoleMusic(){
+			getSoleMusic(noplay){
 				post('DanceMusic/Music_xq',{
 					UserId:this.userId,
 					Token:this.token,
@@ -395,7 +407,9 @@
 					uni.setNavigationBarTitle({
 						title: data.Name
 					})
-					this.operation();
+					if(!noplay){
+						this.operation();
+					}
 					//this.init()
 					if(!toLogin())return;
 				})
