@@ -4,7 +4,7 @@
 			<view class="item" v-for="(item, index) in list" :key="index">
 				<view class="imgbox">
 					<image class="img" :src="item.PicNo" mode="aspectFill"></image>
-					<view class="num">{{index}}</view>
+					<text class="num">{{index+1}}</text>
 				</view>
 				<view class="right">
 					<text class="title">{{item.Name}}</text>
@@ -68,11 +68,14 @@ export default {
 	border-radius:15upx;
 }
 .num{
-	background:rgba(0,0,0,.5);
-	padding:0 15upx;line-height:1.5;
-	color:#ffffff;text-align:center;
+	background-color:rgba(0,0,0,.5);
+	padding:0 15upx;
+	color:#fff;
+	text-align:center;
 	position:absolute;
 	top:0;left:0;
+	font-size:24upx;
+	line-height:30upx;
 }
 .right{
 	height:200upx;width:510upx;
@@ -80,6 +83,9 @@ export default {
 	flex:1;
 	flex-flow:column nowrap;
 	justify-content: space-between;
+}
+.title{
+	font-size:28upx;
 }
 .txtBox {
 	width: 510upx;

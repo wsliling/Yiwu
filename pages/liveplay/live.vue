@@ -7,7 +7,7 @@
 					<!-- #ifdef H5 -->
 					<div class="H5video" :id="liveItem.StreamName" :style="{ height: height + 'px' }"></div>
 					<!-- #endif -->
-					<!-- 底部信息 -->
+					<!-- 顶部信息 -->
 					<view class="header-btn">
 						<div class="left">
 							<img :src="liveItem.Avatar" alt="" mode="aspectFill" />
@@ -17,7 +17,7 @@
 							</div>
 							<div class="btn" :class="{ active: liveItem.IsFollow }" @click="onFollow(liveItem)">{{ liveItem.IsFollow ? '已关注' : '关注' }}</div>
 						</div>
-						<div class="close">×</div>
+						<div class="close" @click="closePlay">×</div>
 					</view>
 					<view class="nlv-footToolbar">
 						<!-- 滚动msg信息 -->
@@ -522,6 +522,9 @@ export default {
 				if(res.code)return;
 				this.userInfo = res.data;
 			})
+		},
+		closePlay(){
+			uni.navigateBack();
 		}
 	}
 };

@@ -1,42 +1,44 @@
 <template>
-	<view class="swiper">
+	<view class="swiper" :style="`margin-top:${statusBarHeight}px`">
 		<swiper :vertical="true" :current="swiperIndex" class="playSwiper"
+			:style="`height:${screenHeight}px`"
 			@change="swiperChange">
 				<swiper-item v-if="liveItem.Flag" class="swiperItem" 
 					v-for="(liveItem, liveIndex) in liveList" :key="liveIndex">
-					<video class="H5video" :src="liveItem.HLS" controls="false" :style="{ height: height + 'px' }"></video>
+					<video class="H5video" :src="liveItem.HLS" controls="false" 
+						:style="`height:${screenHeight}px`" autoplay>
+					</video>
 					
-					<!-- 底部信息 -->
+					<!-- 顶部信息 -->
+					<!-- <view class="header-btn" :style="`padding-top:${statusBarHeight}px`"> -->
 					<view class="header-btn">
 						<div class="header-left">
 							<image class="header-left-img" :src="liveItem.Avatar" alt="" mode="aspectFill" />
 							<div class="header-name">
-								<text class="text">{{ liveItem.NickName }}</text>
-								<text class="text">{{ liveItem.ViewNum+1 }}人观看</text>
+								<text class="header-text">{{ liveItem.NickName }}</text>
+								<text class="header-text">{{ liveItem.ViewNum+1 }}人观看</text>
 							</div>
-							<text class="header-btn-btn" :class="{ active: liveItem.IsFollow }" @click="onFollow(liveItem)">
-								{{ liveItem.IsFollow ? '已关注' : '关注' }}
-							</text>
+							<text class="header-btn-btn" :class="{ 'header-btn-active': liveItem.IsFollow }" @click="onFollow(liveItem)"
+								>{{ liveItem.IsFollow ? '已关注' : '关注' }}</text>
 						</div>
-						<div class="close">×</div>
+						<text class="header-close" @click="navigateBack()">×</text>
 					</view>
 					<view class="nlv-footToolbar">
-						<!-- 滚动msg信息 -->
-						<scroll-view class="nlv-rollMsgPanel" scroll-y show-scrollbar="false" :scroll-top="scrollTop">
-							<block v-for="(msgitem, msgidx) in strArr" :key="msgidx">
-								<view class="nlv-msglist">
-									<view class="msg_bg">
-										<text class="msg_name">{{ msgitem.name }}:</text>
-										<text class="msg_text">{{ msgitem.Info }}</text>
-									</view>
+						<!-- 滚动msg信息 :scroll-top="scrollTop"-->
+						<scroll-view class="nlv-rollMsgPanel" :scroll-y="true" >
+							<view class="nlv-msglist" v-for="(msgitem, msgidx) in strArr" :key="msgidx">
+								<view class="msg_bg">
+									<text class="msg_name">{{ msgitem.name }}:</text>
+									<text class="msg_text">{{ msgitem.Info }}</text>
 								</view>
-							</block>
+							</view>
 						</scroll-view>
 						<view class="nlv-infobox">
-							<view class="nlv_btntool" v-if="liveItem.ShopId && proList.length">
+							<!-- <view class="nlv_btntool" v-if="liveItem.ShopId && proList.length"> -->
+							<view class="nlv_btntool">
 								<view class="btn-toolitem" @click="showGoods">
 									<image src="/static/icons/product-icon.png" class="icon_goods"></image>
-									<span>{{ proList.length }}</span>
+									<text class="btn-toolitem-text">{{ proList.length }}</text>
 								</view>
 							</view>
 							<view class="nlv_reply" @click="Repliy">
@@ -47,15 +49,13 @@
 								<share :h5Url="'/pages/liveplay/live?id='+liveItem.MemberId"
 								:wxUrl="'/pages/liveplay/live?id='+liveItem.MemberId"
 								>
-									<img src="/static/icons/share.png" alt="" mode="widthFix" />
+									<image class="img share-icon" src="/static/icons/share.png" alt="" mode="widthFix" />
 								</share>
 								
-								<img @click="showGift" src="/static/icons/gift.png" alt="" mode="widthFix" />
+								<image class="img gift-icon" @click="showGift" src="/static/icons/gift.png" alt="" mode="widthFix" />
 								<div class="like" @click="onLike(liveItem)">
-									<img src="http://yw.wtvxin.com/static/like2.png" alt="" mode="widthFix" />
-									<div class="num active">
-										{{likeNum(liveItem.LikeNum)}}
-									</div>
+									<image class="img like-icon" src="http://yw.wtvxin.com/static/like2.png" alt="" mode="widthFix" />
+									<text class="num">{{likeNum(liveItem.LikeNum)}}</text>
 								</div>
 							</div>
 						</view>
@@ -93,20 +93,22 @@
 					<div class="gift-item" @click="sendGift(item)"
 						v-for="(item,index) in giftList" :key="index"
 						>
-						<img :src="item.Img" alt="" mode="aspectFill">
-						<div class="name">
-							<div class="price">{{item.Cost}}
-								<span class="bi">币</span>
+						<image class="gift-img" :src="item.Img" alt="" mode="aspectFill">
+						<div class="gift-name">
+							<div class="gift-price">
+								<text class="gift-price-num">{{item.Cost}}</text>
+								<text class="bi">币</text>
 							</div>
-							{{item.Name}}
+							<text class="gift-name-name">{{item.Name}}</text>
 						</div>
 					</div>
 				</div>
 				<div class="total">
-					<div>{{myMoney}}
-						<span class="bi">币</span>
+					<div class="total-val">
+						<text class="total-num">{{myMoney}}</text>
+						<text class="bi">币</text>
 					</div>
-					<div class="btn" @click="payTo">充值</div>
+					<text class="btn" @click="payTo">充值</text>
 				</div>
 			</div>
 		</uni-popup>
@@ -155,9 +157,19 @@ export default {
 			giftList: [], //礼物列表
 			myMoney:0,//我的直播币
 			userInfo:{},
+			
+			screenHeight:700,//屏幕高度
+			screenHeight:0,//状态栏高度
 		};
 	},
 	onLoad(e) {
+		const that = this;
+		uni.getSystemInfo({
+		    success(res){
+				that.screenHeight = res.screenHeight-res.statusBarHeight;
+				that.statusBarHeight = res.statusBarHeight;
+		    }
+		});
 		// #ifdef APP-PLUS
 		// #endif
 		this.memberId = e.id || '';
@@ -184,6 +196,8 @@ export default {
 			this.livemessage();
 		}
 	},
+	computed:{
+	},
 	onHide() {
 		if(!this.SocketTask)return;
 		this.SocketTask.close();
@@ -200,6 +214,7 @@ export default {
 		},
 		//展示商品
 		showGoods: function() {
+			if(!this.proList.length)return;
 			this.$refs.proList.open();
 			// this.hidePopup();
 			// this.showPopupGoods = true;
@@ -435,6 +450,7 @@ export default {
 		},
 		// 格式化点赞数量
 		likeNum(num){
+			console.log(num)
 			if(num>10000){
 				return parseInt(num/10000) + '万'
 			}else if(num>1000){
@@ -525,16 +541,21 @@ export default {
 				if(res.code)return;
 				this.userInfo = res.data;
 			})
+		},
+		navigateBack(){
+			uni.navigateBack();
 		}
 	}
 };
 </script>
 
 <style scoped lang="scss">
+	pages{
+		background-color:red;
+	}
 .swiper {
 	height: 1500upx;
 	width: 750upx;
-	background-color:#000;
 }
 video {
 	width: 750upx;
@@ -547,12 +568,10 @@ video {
 	width: 750upx;
 }
 .playSwiper {
-	height: 1000upx;
-	background-color:#ff3333;
+	height: 1500upx;
 }
 .swiperItem{
 	position:relative;
-	background-color:#000;
 	
 }
 
@@ -568,7 +587,6 @@ video {
 	top: 30upx;
 	left: 0;
 	padding: 0 30upx;
-	background-color: red;
 }
 .header-left {
 	background-color: rgba(0, 0, 0, 0.4);
@@ -584,34 +602,34 @@ video {
 	border-radius: 50%;
 }
 .header-name {
+	// height: 50upx;
+	
 }
-.text{
+.header-text{
 	color: #fff;
-	height: 40upx;
-	line-height:25upx;
+	line-height:30upx;
 	margin-left: 10upx;
 	margin-right: 20upx;
 	font-size:20upx;
-	background-color: red;
 }
 .header-btn-btn {
 	background-color: #dd196d;
-	border-radius: 20upx;
-	// padding: 0 15upx;
-	height: 70upx;
-	line-height:15upx;
+	border-radius: 40upx;
+	padding: 0 15upx;
+	height: 50upx;
+	line-height:50upx;
 	color:#fff;
-	margin:0;padding:0;
-	width:100upx;
+	// width:100upx;
 	text-align:center;
+	font-size:28upx;
 }
-.header-btn .left .btn.active {
+.header-btn-active {
 		color: #dd196d;
-		background: #fff;
+		background-color: #fff;
 }
-.header-btn .close {
+.header-close{
+	color:#fff;
 	font-size: 60upx;
-	line-height: 1;
 	// transform:rotate(45deg);
 }
 // 顶部直播头像信息end
@@ -621,125 +639,140 @@ video {
 
 .nlv-footToolbar {
 	position: absolute;
-	bottom: 0;
+	bottom:0;
 	left: 0;
 	right: 0;
-	.nlv-rollMsgPanel {
-		height: 35vh;
-		padding:0 20upx;
-		.nlv-msglist {
-			margin-bottom: 5upx;
-			flex-direction: row;
-			.msg_bg {
-				flex-direction: row;
-				flex-wrap: wrap;
-				background: rgba(0, 0, 0, 0.4);
-				border-radius: 30upx;
-				padding: 10upx;
-				line-height: 1.2;
-				font-size: 24upx;
-				max-width: 64%;
-				display:inline-block;
-				text {
-					display: inline-block;
-					word-break: break-all;
-				}
-				.msg_name {
-					color: #f5d916;
-					margin-right: 10upx;
-				}
-				.msg_text {
-					color: #fff;
-				}
-			}
-			.nlv-msglist::after {
-				display: block;
-				content: '';
-				width: 100%;
-			}
-		}
-	}
+	width:750upx;
+	height:800upx;
+}
+// 滚动消息
+.nlv-rollMsgPanel {
+	height: 650upx;
+	width:750upx;
+	padding:0 20upx;
+}
+.nlv-msglist {
+	margin-bottom: 5upx;
+}
+.msg_bg {
+	display:flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	background-color: rgba(0, 0, 0, 0.4);
+	border-radius: 30upx;
+	padding: 10upx;
+	height:50upx;
+	max-width:500upx;
+	
+}
+.msg_name,.msg_text {
+	// word-break: break-all;
+	font-size: 24upx;
+	line-height: 30upx;
+	height:30upx;
+}
+.msg_name {
+	color: #f5d916;
+	margin-right: 10upx;
+}
+.msg_text {
+	color: #fff;
+}
+.nlv-msglist::after {
+	display: block;
+	content: '';
+	width: 100%;
+}
+
+// 底部按钮
 	.nlv-infobox {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: space-between;
-		margin-top: 20upx;
-		padding:20upx;
-		
-		.nlv_reply {
-			flex-direction: row;
-			display: flex;
-			align-items: center;
-			justify-content: flex-start;
-			border-bottom: 1upx solid #fff;
-			height: 80upx;
-			margin: 0 10upx;
-			width: 50%;
-			padding: 0 20upx;
-			.icon_bianji {
-				width: 46upx;
-				height: 46upx;
-				margin-right: 7upx;
-			}
-			.nlv_reply_text {
-				color: #fff;
-			}
-		}
-		.btn-box {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			width: 215upx;
-			img {
-				width: 50upx;
-				height: 50upx;
-			}
-			.like{
-				position:relative;
-				font-size:0;
-				.num{
-					position:absolute;
-					top:0;left:0;
-					line-height:2.4;
-					font-size:18upx;
-					color:#dd196d;
-					text-align:center;width:100%;
-					&.active{
-						color:#fff;
-					}
-				}
-				img{
-					width: 65upx;
-					height: 65upx;
-				}
-			}
-		}
-		.btn-toolitem {
-			height: 72upx;
-			width: 76upx;
-			box-sizing: border-box;
-			position: relative;
-			.icon_goods {
-				width: 100%;
-				height: 100%;
-				display: block;
-			}
-			span {
-				position: absolute;
-				bottom: 0;
-				left: 0;
-				width: 100%;
-				line-height: 2;
-				color: #fff;
-				text-align: center;
-				font-size: 20upx;
-			}
-		}
+		// margin-top: 20upx;
+		padding:0 30upx;
+		background-color:rgba(0,0,0,.5);
 	}
-}
+	// 店铺产品icon
+	.btn-toolitem {
+		height: 72upx;
+		width: 76upx;
+		box-sizing: border-box;
+		position: relative;
+	}
+	.icon_goods {
+		height: 72upx;
+		width: 76upx;
+		display: block;
+	}
+	.btn-toolitem-text {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 76upx;
+		line-height: 50upx;;
+		color: #fff;
+		text-align: center;
+		font-size: 20upx;
+	}
+	// 店铺产品icon-end
+	.nlv_reply {
+		flex-direction: row;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		// border-bottom: 1upx solid #fff;
+		border-bottom-width: 1px;
+		border-bottom-style: solid;
+		border-bottom-color: #fff;
+		height: 80upx;
+		margin: 0 10upx;
+		width: 320upx;
+		padding: 0 20upx;
+	}
+	.icon_bianji {
+		width: 46upx;
+		height: 46upx;
+		margin-right: 7upx;
+	}
+	.nlv_reply_text {
+		color: #fff;
+		font-size: 26upx;
+	}
+	.btn-box {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		width: 230upx;
+	}	
+	.img {
+		width: 50upx;
+		height: 50upx;
+	}
+	.like{
+		position:relative;
+		font-size:0;
+	}
+	.num{
+		position:absolute;
+		top:0;left:0;
+		line-height:60upx;
+		width:65upx;
+		font-size:18upx;
+		color:#fff;
+		text-align:center;
+	}
+	.active{
+	}
+	.gift-icon,.like-icon{
+		width: 65upx;
+		height: 65upx;
+	}
+// 聊天输入框
 .bottomicon {
-	background: #fff;
+	background-color: #fff;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -747,83 +780,110 @@ video {
 	padding: 20upx;
 	z-index: 9999;
 	box-sizing: border-box;
-	.inputbtn {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		.input_text {
-			border: 1px solid #ddd;
-			border-radius: 8upx;
-			padding: 0 20upx;
-			min-height: 60upx;
-			display: block;
-			width: 100%;
-			background: #f5f5f5;
-		}
-		.rightbtn {
-			flex-direction: row;
-			.sendBtn {
-				display: block;
-				width: 52upx;
-				height: 52upx;
-				margin-left: 4upx;
-				padding: 0 20upx;
-			}
-		}
-	}
 }
+.inputbtn {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+.input_text {
+	border: 1px solid #ddd;
+	border-radius: 8upx;
+	padding: 0 20upx;
+	min-height: 80upx;
+	font-size:26upx;
+	display: block;
+	width:750upx;
+	background-color: #f5f5f5;
+}
+.rightbtn {
+	flex-direction: row;
+}
+.sendBtn {
+	display: block;
+	width: 52upx;
+	height: 52upx;
+	margin-left: 4upx;
+	padding: 0 20upx;
+}
+// 聊天输入框end
 .giftBox{
-	background:#fff;
+	background-color:#fff;
 	padding-top:20upx;
+}
 	.gift-list{
 		display:flex;
 		align-items:center;
 		flex-flow:row wrap;
-		.gift-item{
-			display:flex;
-			justify-content:space-between;
-			align-items:center;
-			flex-flow:column nowrap;
-			width:170upx;
-			margin:30upx 0;
-			font-size:28upx;
-			text-align:center;
-			.price{
-				color:#dd196d;
-				font-size:20upx;
-			}
-			img{
-				width:100upx;height:100upx;
-			}
-		}
+		flex-direction: row;
+		
 	}
-	.total{
+	.gift-item{
 		display:flex;
 		justify-content:space-between;
 		align-items:center;
-		padding:0 30upx;
-		line-height:3.5;
-		border-top:1upx solid #e8e8e8;
+		flex-flow:column nowrap;
+		width:170upx;
+		margin:30upx 0;
+		font-size:28upx;
+		text-align:center;
+	}
+	.gift-img{
+		width:100upx;height:100upx;
+	}
+	.gift-name{
+		display:flex;
+		align-items:center;
+	}
+	.gift-price{
+		display:flex;
+		flex-direction: row;
+		align-items:center;
+	}
+	.gift-price-num{
+		color:#dd196d;
+		font-size:20upx;
+	}
+	.gift-name-name{
+		font-size:25upx;
+		line-height:40upx;
+	}
+	.total{
+		display:flex;
+		flex-direction: row;
+		justify-content:space-between;
+		align-items:center;
+		padding:30upx;
+		border-top-width:1upx;
+		border-top-style:solid;
+		border-top-color:#e8e8e8;
+	}
+	.total-val{
+		display:flex;
+		flex-direction: row;
+		align-items:center;
+	}
+	.total-num{
 		color:#dd196d;
 		font-size:28upx;
+	}
 		.btn{
-			background: #dd196d;
+			background-color: #dd196d;
 			border-radius: 30upx;
 			padding: 0 30upx;
-			line-height: 2;
+			line-height: 60upx;
 			color:#fff;
+			font-size:28upx;
 		}
-	}
 	.bi{
-		width:40upx;height:40upx;border-radius:50%;
-		background:rgb(251, 213, 68);
+		width:30upx;height:30upx;border-radius:40upx;
+		background-color:rgb(251, 213, 68);
 		font-size:16upx;
-		line-height:40upx;
+		line-height:30upx;
 		color:#fff;
 		text-align:center;
 		display:inline-block;
 		margin:0 5upx;
 	}
-}
 </style>

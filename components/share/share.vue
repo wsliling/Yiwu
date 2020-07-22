@@ -84,9 +84,14 @@ export default {
     padding-right:0;
     line-height:1;
     border-radius: 0;
-    &::after{
-        border:0;
-        border:none;
-    }
+	border-width: 0;
+	border-style: none;
+	border-color: transparent;
+}
+.button::after{
+	border-width: 0;
+	border-style: none;
+	border-color: transparent;
+	border:none;
 }
 </style>
