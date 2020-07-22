@@ -12,9 +12,9 @@
 		<view class="playbox">
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
-			 		<view :class="['audio-control iconfont icon-prev',musicList.length>1?'':'c_999']" @click="prev"></view>
-			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
-			 		<view :class="['audio-control iconfont icon-prev audio-control-next',musicList.length>1?'':'c_999']" @click="next"></view>
+			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
+			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="reOperation"></view>
+			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
 			 		<view class="audio-number">{{currentTime}}</view>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-	import {post,audio,toLogin,playMusic} from '@/common/util.js';
+	import {post,audio,toLogin,debounce,playMusic} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	export default {
 		components: {
@@ -104,7 +104,7 @@
 			//监听当前进度改变
 			current(e) {
 				this.currentTime = this.format(e)
-			}
+			},
 		},
 		onLoad(e) {
 			this.nowIndex=e.nowIndex||0
@@ -118,7 +118,7 @@
 			this.playIDtype=uni.getStorageSync("playIDtype")
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
 			this.playnum=0;
-			//console.log(this.musicList,'list')
+			console.log(this.musicList.length,'list')
 			// 获取一条音乐，用户分享的页面
 			if(this.type==='share'){
 				this.getSoleMusic();
@@ -163,7 +163,6 @@
 						if (!this.seek) {
 							this.current = audio.currentTime;
 						}
-						this.paused = false
 						this.loading=false
 					})
 				}else{
@@ -210,7 +209,13 @@
 				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
 			},
 			//播放/暂停操作
-			
+			reOperation(){
+				let _this=this;
+				debounce(function(){
+					console.log("禁止频繁点击事件")
+					_this.operation()
+				})
+			},
 			operation() {
 				if(this.isbuy==0){
 					playMusic(this.nowIndex,this.musicID,this.nowSrc)

@@ -17,7 +17,7 @@
 				<view class="info flex1 flex-between">
 					<view :class="['name uni-ellipsis',playID==item.Id?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="playID==item.Id?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)"><image :src="playID==item.Id?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
@@ -31,7 +31,7 @@
 				<view class="info flex1 flex-between">
 					<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,playMusic,audio} from '@/common/util.js';
+	import {post,get,toLogin,debounce,playMusic,audio} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import noData from '@/components/noData.vue'; //暂无数据
@@ -178,6 +178,13 @@
 				});
 			},
 			//播放
+			rePlayBtn(index,id,isbuy){
+				let _this=this;
+				debounce(function(){
+					console.log("禁止频繁点击")
+					_this.playBtn(index,id,isbuy);
+				})
+			},
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
 					uni.setStorageSync("musicList",this.datalist)

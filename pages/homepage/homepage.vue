@@ -77,7 +77,7 @@
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
 				<view class="item audiobox" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
-					<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playBtn(index,item.Id,item.IsShowBuy)">
+					<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)">
 						<image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
 					</view>
 					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import {post,get,toLogin,navigate,audio,playMusic} from '@/common/util.js';
+import {post,get,toLogin,navigate,debounce,audio,playMusic} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
@@ -356,6 +356,14 @@ export default {
 			uni.navigateTo({
 				url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
 			})	
+		},
+		//播放舞曲
+		rePlayBtn(index,id,isbuy){
+			let _this=this;
+			debounce(function(){
+				console.log("禁止频繁点击")
+				_this.playBtn(index,id,isbuy);
+			})
 		},
 		playBtn(index,id,isbuy){
 			if(isbuy==0){

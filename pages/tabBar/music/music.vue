@@ -66,7 +66,7 @@
 					<view class="info flex1 flex-between">
 						<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
-							<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
 							<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
@@ -139,13 +139,11 @@
 		</view>
 		<view @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<!-- <view @click="tolink('/pages/music/playMusic/playMusic?pagetype=music')" class="Musicbtn flex-column"><image src="http://yw.wtvxin.com/static/playmusic.png" class="icon"></image></view> -->
-		<!-- <view v-if="tabIndex>0" @click="tolink('/pages/music/uploadMusic/uploadMusic','login')" class="uploadbtn flex-column"><image class="icon" src="http://yw.wtvxin.com/static/music/upload.png"></image>上传</view>
-		<view v-if="tabIndex==0" @click="tolink('/pages/music/artPost/artPost','login')" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text>发布</view> -->
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,playMusic} from '@/common/util.js';
+	import {post,get,toLogin,debounce,playMusic} from '@/common/util.js';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import mediaList from '@/components/mediaList.vue';//发现列表
@@ -388,6 +386,13 @@
 				}
 			},
 			//播放
+			rePlayBtn(index,id,isbuy){
+				let _this=this;
+				debounce(function(){
+					console.log("禁止频繁点击")
+					_this.playBtn(index,id,isbuy);
+				})
+			},
 			playBtn(index,id,isbuy){
 				if(isbuy==0){
 					uni.setStorageSync("musicList",this.datalist)
