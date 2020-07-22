@@ -173,7 +173,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,navigate,audio,playMusic} from '@/common/util.js';
+	import {post,get,toLogin,navigate,debounce,audio,playMusic} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -489,9 +489,21 @@
 				})
 			},
 			playAudio(id,nowSrc){
-				playMusic('',id,nowSrc);
-				this.playID=uni.getStorageSync("playID");
-				this.playIDtype=uni.getStorageSync("playIDtype");
+				debounce(function(){
+					playMusic('',id,nowSrc);
+				})
+				//音频暂停事件
+				audio.onPause(() => {
+					this.playID=uni.getStorageSync("playID");
+					this.playIDtype=0;
+				})
+				//音频播放事件
+				audio.onPlay(() => {
+					this.playID=uni.getStorageSync("playID");
+					this.playIDtype=1;
+				})
+				// this.playID=uni.getStorageSync("playID");
+				// this.playIDtype=uni.getStorageSync("playIDtype");
 				//音频结束事件
 				audio.onEnded(() => {
 					uni.setStorageSync("playIDtype",0)
@@ -742,7 +754,7 @@
 				  // console.log("节点离页面顶部的距离为" + data.top);
 				  _this.onplayHeight=data.top;
 				}).exec();
-				if(_this.onplayHeight<50){console.log()
+				if(_this.onplayHeight<50){
 					_this.$set(datalist[_this.onplayIndex],'fixed',true);
 					_this.videoContext.pause();
 				}else{

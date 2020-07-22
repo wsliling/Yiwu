@@ -12,9 +12,9 @@
 		<view class="playbox">
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
-			 		<view :class="['audio-control iconfont icon-prev',musicList.length>1?'':'c_999']" @click="prev"></view>
-			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
-			 		<view :class="['audio-control iconfont icon-prev audio-control-next',musicList.length>1?'':'c_999']" @click="next"></view>
+			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
+			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="reOperation"></view>
+			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
 			 		<view class="audio-number">{{currentTime}}</view>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-	import {post,audio,toLogin,playMusic} from '@/common/util.js';
+	import {post,audio,toLogin,debounce,playMusic} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	export default {
 		components: {
@@ -92,7 +92,8 @@
 				nowSrc:'',
 				waitFlag:false,
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
-				playnum:0
+				playnum:0,
+				pagetype:"",//页面来源
 			}
 		},
 		watch: {
@@ -103,12 +104,13 @@
 			//监听当前进度改变
 			current(e) {
 				this.currentTime = this.format(e)
-			}
+			},
 		},
 		onLoad(e) {
 			this.nowIndex=e.nowIndex||0
-			this.musicID=e.id;
+			this.musicID=e.id||'';
 			this.type = e.type||'';
+			this.pagetype=e.pagetype||'';
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
@@ -116,13 +118,13 @@
 			this.playIDtype=uni.getStorageSync("playIDtype")
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
 			this.playnum=0;
-			//console.log(this.musicList,'list')
+			console.log(this.musicList.length,'list')
 			// 获取一条音乐，用户分享的页面
 			if(this.type==='share'){
 				this.getSoleMusic();
 				return;
 			}
-			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined){
+			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined&&!this.pagetype){
 				// this.isCollect=this.musicList[this.nowIndex].IsCollect;
 				// this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
 				// this.itemdata=this.musicList[this.nowIndex];
@@ -132,6 +134,16 @@
 				// })
 				// this.init()
 				this.getSoleMusic()
+			}
+			if(this.pagetype){
+				if(uni.getStorageSync("playID")){
+					this.musicID=uni.getStorageSync("playID")
+					this.getSoleMusic();
+				}else{
+					this.musicID=this.musicList[0].Id;
+					this.getSoleMusic(1);
+				}
+				
 			}
 		},
 		methods: {
@@ -151,7 +163,6 @@
 						if (!this.seek) {
 							this.current = audio.currentTime;
 						}
-						this.paused = false
 						this.loading=false
 					})
 				}else{
@@ -198,7 +209,13 @@
 				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
 			},
 			//播放/暂停操作
-			
+			reOperation(){
+				let _this=this;
+				debounce(function(){
+					console.log("禁止频繁点击事件")
+					_this.operation()
+				})
+			},
 			operation() {
 				if(this.isbuy==0){
 					playMusic(this.nowIndex,this.musicID,this.nowSrc)
@@ -376,7 +393,7 @@
 				}}
 			},
 			// 获取一条音乐详情
-			getSoleMusic(){
+			getSoleMusic(noplay){
 				post('DanceMusic/Music_xq',{
 					UserId:this.userId,
 					Token:this.token,
@@ -395,7 +412,9 @@
 					uni.setNavigationBarTitle({
 						title: data.Name
 					})
-					this.operation();
+					if(!noplay){
+						this.operation();
+					}
 					//this.init()
 					if(!toLogin())return;
 				})
