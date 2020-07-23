@@ -515,7 +515,7 @@ export default {
 			if(!toLogin()) return;
 			// uni.setStorageSync('livePayMemberId',)
 			uni.navigateTo({
-				url:'/pages/member/livebi/livebi'
+				url:'/pages/member/recharge/recharge?type=2'
 			})
 		},
 		// 获取我的直播币

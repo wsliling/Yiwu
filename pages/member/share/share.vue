@@ -14,7 +14,7 @@
 				<div class="btn" @click="copy">复制</div>
 			</div>
 			<share :url="'/pages/register/register?inviteCode='+myInviteCode">
-			<div class="shareBtn" >分享</div>
+				<div class="shareBtn" >分享</div>
 			</share>
 		</div>
 	</view>

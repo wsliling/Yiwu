@@ -789,3 +789,57 @@ a {
 .autotop{
   padding-top:var(--status-bar-height);
 }
+
+
+.islive{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: -8upx;
+	left: 50%;
+	width: 88upx;
+	margin-left: -44upx;
+	border-radius: 6upx;
+	height: 40upx;
+	background: $primary;
+	color: #fff;
+	.line{
+		width: 4upx;
+		background: #fff;
+		margin-right: 6upx;
+	}
+	.line1{ 
+		height: 24upx;
+		animation:myanimation 0.8s infinite 1s;
+		-webkit-animation:myanimation 0.8s infinite 1s;
+	}
+	.line2{ 
+		height: 10upx;
+		animation:myanimation 1s infinite 0.5s;
+		-webkit-animation:myanimation 1s infinite 0.5s;
+	}
+	.line3{ 
+		height: 14upx;
+		animation:myanimation 0.9s infinite 1s;
+		-webkit-animation:myanimation 0.9s infinite 1s;
+	}
+	.txt{ font-size: 22upx; line-height: 1;}
+}
+@keyframes myanimation{
+	0%{
+		height: 0%;
+	}
+	20%{
+		height: 10upx;
+	}
+	50%{
+		height: 24upx;
+	}
+	80%{
+		height: 10upx;
+	}
+	100%{
+		height: 0%;
+	}
+}	

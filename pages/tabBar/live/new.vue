@@ -145,7 +145,15 @@
 				<view class="user-item uni-bg-white uni-mb10" v-for="(item,index) in TeacherList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 					<view class="flex-between">
 						<view class="author flex-start">
-							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+							<view class="tx">
+								<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+								<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.UserId})">
+									<view class="line line1"></view>
+									<view class="line line2"></view>
+									<view class="line line3"></view>
+									<view class="txt">直播</view>
+								</view>
+							</view>
 							<view class="info">
 								<view class="name uni-ellipsis">{{item.Name}}</view>
 								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
@@ -214,7 +222,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin} from '@/common/util.js';
+	import {post,get,toLogin,navigate} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -227,6 +235,7 @@
 		},
 		data() {
 			return {
+				navigate,
 				userId: "",
 				token: "",
 				barHeight:0,

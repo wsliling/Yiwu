@@ -42,6 +42,7 @@ export default {
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
+					title:'壹舞',
 				    href: this.appUrl?webUrl+'/#'+this.appUrl:webUrl+'/#'+this.url,
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));

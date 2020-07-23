@@ -143,7 +143,7 @@
 							<view class="author flex-start">
 								<view class="tx">
 									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
-									<view class="islive" v-if="item.Flag" @click="navigate('liveplay/live',{id:item.MemberId})">
+									<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
 										<view class="line line3"></view>
@@ -845,41 +845,6 @@
 						image{
 							display: block;width: 100%; height: 100%;
 							border-radius: 100%;
-						}
-						.islive{
-							display: flex;
-							justify-content: center;
-							align-items: center;
-							position: absolute;
-							bottom: -8upx;
-							left: 50%;
-							width: 88upx;
-							margin-left: -44upx;
-							border-radius: 6upx;
-							height: 40upx;
-							background: $primary;
-							color: #fff;
-							.line{
-								width: 4upx;
-								background: #fff;
-								margin-right: 6upx;
-							}
-							.line1{ 
-								height: 24upx;
-								animation:myanimation 0.6s infinite 0.5s;
-								-webkit-animation:myanimation 0.6s infinite 0.5s;
-							}
-							.line2{ 
-								height: 10upx;
-								animation:myanimation 0.6s infinite 1s;
-								-webkit-animation:myanimation 0.6s infinite 1s;
-							}
-							.line3{ 
-								height: 14upx;
-								animation:myanimation 0.6s infinite 1.5s;
-								-webkit-animation:myanimation 0.6s infinite 1.5s;
-							}
-							.txt{ font-size: 22upx; line-height: 1;}
 						}
 					}
 					.name{
