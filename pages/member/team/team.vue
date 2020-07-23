@@ -51,7 +51,6 @@ import {post} from '@/common/util.js'
 import noData from "@/components/noData"; //没有数据的通用提示
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 export default {
-
   data () {
     return {
       userId:"",
