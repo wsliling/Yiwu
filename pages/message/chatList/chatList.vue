@@ -227,7 +227,7 @@
 
 .font_four{
 	color:#999;
-	font-size:18upx;
+	font-size:24upx;
 }
 	
 .head {

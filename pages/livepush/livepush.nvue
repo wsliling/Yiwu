@@ -458,7 +458,7 @@ export default {
 	// 页面卸载
 	onUnload(){
 		console.log('直播onUnload')
-		this.returns();
+		// this.returns();
 	},
 	onHide(){
 		console.log('直播onHide')
