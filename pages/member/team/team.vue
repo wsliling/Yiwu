@@ -17,8 +17,8 @@
                     </p>
               </view>
               <view class="flex flexAlignCenter gu_ava" v-if="isFather">
-                  <img :src="info.FatherData[0].Avatar" alt="" class="ava1">
-                  <view class="mr2">
+                  <img :src="info.FatherData[0].Avatar" alt="" class="ava1 mr2">
+                  <view class="mr2" style="line-height: 1.2;">
                       <p>{{info.FatherData[0].NickName}}</p>
                       <p class="font22 mt1">我的邀请人</p>
                   </view>
@@ -33,7 +33,7 @@
       <view class="mt2 bg_fff" v-if="hasData">
           <view class="pp3 stu_item flex-between" v-for="(item,index) in datalist" :key="index">
             <view class="flex flexAlignCenter">
-              <img :src="item.Avatar" alt=""  class="ava mr2">
+              <img :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" alt=""  class="ava mr2">
               <text class="name uni-ellipsis mr2">{{item.NickName}}</text>
             </view>
             <span class="c_999 fz12">{{item.CreateTime}}</span>
