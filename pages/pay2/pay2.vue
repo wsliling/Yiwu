@@ -252,8 +252,8 @@
 			async WechatPay(OrderNo){
 				uni.showLoading();
 				let url="",param={};
-				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?OrderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
 				// #ifdef H5
+				let NewUrl=this.GetUrlRelativePath() +'/#/pages/pay2/pay2?OrderNo='+OrderNo+'&type='+this.proType+'&id='+this.proID;
 				if(isWeixin()){
 					var paytype=0
 				}else{
@@ -304,8 +304,8 @@
 					}
 				}
 				let result = await post(url, param);
+				console.log(param)
 				// #ifdef H5
-				alert(JSON.stringify(param))
 				if(isWeixin()){//微信内置H5支付
 					if(result.code == 0){console.log(result.data)
 						uni.setStorageSync('openId', result.data.openid);
@@ -358,7 +358,7 @@
 						  })
 					  }
 					})
-				}else {
+				}else {console.log(result)
 					uni.showToast({
 						title: result.msg,
 						icon: "none",
