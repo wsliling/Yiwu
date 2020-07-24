@@ -104,6 +104,8 @@
 			//监听当前进度改变
 			current(e) {
 				this.currentTime = this.format(e)
+				console.log(this.currentTime)
+				
 			},
 		},
 		onLoad(e) {
@@ -221,6 +223,9 @@
 					playMusic(this.nowIndex,this.musicID,this.nowSrc)
 					this.init()
 				}else{
+					if(uni.getStorageSync("playID")!=this.musicID){
+						audio.pause();
+					}
 					let _this=this;
 					if(!toLogin())return;
 					uni.showModal({
