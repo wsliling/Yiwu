@@ -223,6 +223,7 @@ export default {
     // 完成支付
     success(){
       console.log('password',this.password)
+		this.$emit("onClose");
         this.$emit('success',this.payType,this.password);
     },
     // 输入密码
