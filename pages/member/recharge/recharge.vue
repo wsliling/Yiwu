@@ -87,7 +87,7 @@ export default {
 			alipayCon: ''
 		};
 	},
-	onLoad() {
+	onLoad(e) {
 		// #ifdef H5
 		this.WxCode = getUrlParam('code');
 		this.WxOpenid = uni.getStorageSync('openId');
@@ -96,11 +96,14 @@ export default {
 			this.payweixin();
 		}
 		// #endif
+		this.rechargeType = e.type;
 	},
 	onShow() {
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
+		// #ifndef APP-PLUS
 		this.rechargeType = this.$mp.query.type;
+		// #endif
 		if (this.rechargeType == 2) {
 			uni.setNavigationBarTitle({
 				title: '直播币充值'

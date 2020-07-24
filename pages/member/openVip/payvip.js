@@ -88,18 +88,15 @@ async function appwxpay() {
         orderNo:params.orderNo,
         paytype:2
     })
-    if(result.code==0){console.log(result.data)
+	console.log(result)
+    if(result.code==0){
         // var payData=JSON.parse(result.data.JsParam)
         uni.requestPayment({
           provider:"wxpay",
           orderInfo:result.data.JsParam,
           success(res) {
               console.log(res)
-              _this.type = "";
-                _this.showPay=false;
-                uni.redirectTo({
-                    url: "/pages/payresult/payresult?allprice="+params.TotalPrice+"&orderNo="+params.orderNo
-                })
+              navigateBack();
             },
           fail(err) {console.log(err)
               uni.showToast({

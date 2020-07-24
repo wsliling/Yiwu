@@ -139,7 +139,7 @@
 				this.showgetout = false;
 			},
 			//确认支付
-			async paySuccess(e,payPassword){
+			async paySuccess(e,payPassword){console.log(111)
 				
 				//e.id= 0--微信支付.1--余额支付,2--支付宝
 				const res = await post('User/PlusBuyOrder',{

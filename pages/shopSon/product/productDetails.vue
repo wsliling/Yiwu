@@ -45,7 +45,7 @@
 				<view class="shipmentsbox">
 					<view class="flex">
 						<view class="">发货</view>
-						<view class="txt26">{{data.ShopData.Area}}</view>
+						<view class="txt26" v-if="data&&data.ShopData&&data.ShopData.Area">{{data.ShopData.Area}}</view>
 					</view>
 					<view class="flex">
 						<view class="">{{data.IsPinkage?'不':''}}包邮</view>
@@ -220,7 +220,7 @@ export default {
 					Id:this.proId
 			})
 			if(res.code!=0) return;
-			const data = res.data;
+			const data = res.data;console.log(data)
 			if(data.Video){
 				this.videoContext=uni.createVideoContext('proVideo');
 			}
