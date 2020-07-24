@@ -1,7 +1,7 @@
 <template>
     <view class="live">
         <view class="live-img">
-            <view class="islive" v-if="item.IsLive==1" @click="navigate('',{})">
+            <view class="islive" v-if="item.IsLive==1" @click="navigate('liveplay/live',{id:item.MemberId})">
                 <view class="line line1"></view>
                 <view class="line line2"></view>
                 <view class="line line3"></view>
@@ -71,7 +71,8 @@ export default {
 			padding: 0 20upx;
 			border-radius: 8upx;
 			height: 45upx;
-			background: rgba(52, 52, 52, 0.5);
+			width:auto;
+			margin-left:0;
 			color: #fff;
 			.txt {
 				font-size: 26upx;
