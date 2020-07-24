@@ -30,7 +30,7 @@
 						<scroll-view class="nlv-rollMsgPanel" :scroll-y="true"  :scroll-into-view="'a'+scrollId" scroll-with-animation="true">
 							<view class="nlv-msglist" v-for="(msgitem, msgidx) in strArr" :key="msgidx" :id="'a'+msgidx">
 								<view class="msg_bg">
-									<text class="msg_name">{{ msgitem.name }}:{{msgidx}}</text>
+									<text class="msg_name">{{ msgitem.name }}:</text>
 									<text class="msg_text">{{ msgitem.Info }}</text>
 								</view>
 							</view>
@@ -410,7 +410,7 @@ export default {
 						//等最新一条消息dom更新，滚动到底部
 						// that.scrollTop = that.scrollTop + 50;
 						console.log(that.strArr.length,'.length')
-						that.scrollId = that.strArr.length-2;
+						that.scrollId = that.strArr.length-1;
 						console.log(that.scrollId,'scroll')
 					});
 				} else if (msg.code == 2) {
@@ -576,7 +576,7 @@ export default {
 .swiper {
 	// height: 1500upx;
 	width: 750upx;
-	background-color:#09BB07;
+	// background-color:#09BB07;
 }
 video {
 	width: 750upx;

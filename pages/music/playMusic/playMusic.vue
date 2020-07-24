@@ -13,7 +13,7 @@
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
 			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
-			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="reOperation"></view>
+			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
 			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
@@ -38,7 +38,7 @@
 				<view class="item" @click="ShowPlaylist">
 					<image src="http://yw.wtvxin.com/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
-			</view>
+			</view>ZZ
 		</view>
 		<!-- 播放列表	 -->
 		<uni-popup mode="fixed" :show="isShowPlaylist" :h5Top="true" position="bottom" @hidePopup="hidePopup">
@@ -94,6 +94,7 @@
 				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
 				playnum:0,
 				pagetype:"",//页面来源
+				isIos:false
 			}
 		},
 		watch: {
@@ -113,6 +114,11 @@
 			this.musicID=e.id||'';
 			this.type = e.type||'';
 			this.pagetype=e.pagetype||'';
+			//#ifdef MP-WEIXIN
+			if(uni.getSystemInfoSync().platform=='ios'){
+				this.isIos=true
+			}
+			//#endif
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
@@ -174,12 +180,15 @@
 				audio.onWaiting(()=>{
 					this.loading=true;
 					console.log("加载中")
-					audio.pause();
-					this.waitFlag=true;// 标明是onWaiting触发的暂停
+					if(!this.isIos){
+						console.log("feiios加载中")
+						audio.pause();
+						this.waitFlag=true;// 标明是onWaiting触发的暂停
+					}
 				})
 				//音频暂停事件
 				audio.onPause(() => {
-					console.log("暂停状态")
+					console.log("暂停状态333")
 					this.paused = true
 				})
 				//音频结束事件
@@ -193,6 +202,7 @@
 					this.seek = false
 				})
 				audio.onCanplay(() => {
+					console.log("准备播放")
 					if(this.waitFlag){
 						audio.play()
 					}
@@ -204,7 +214,9 @@
 					this.paused = false
 					this.loading = false
 				})
-				
+				audio.onError((res)=>{
+					console.log("播放错误"+JSON.stringify(res))
+				})
 			},
 			//格式化时长
 			format(num) {

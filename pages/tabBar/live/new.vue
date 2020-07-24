@@ -147,12 +147,14 @@
 						<view class="author flex-start">
 							<view class="tx">
 								<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+								<!-- #ifdef MP-WEIXIN -->
 								<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.UserId})">
 									<view class="line line1"></view>
 									<view class="line line2"></view>
 									<view class="line line3"></view>
 									<view class="txt">直播</view>
 								</view>
+								<!-- #endif -->
 							</view>
 							<view class="info">
 								<view class="name uni-ellipsis">{{item.Name}}</view>

@@ -143,12 +143,14 @@
 							<view class="author flex-start">
 								<view class="tx">
 									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)"></image>
+									<!-- #ifdef MP-WEIXIN -->
 									<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
 										<view class="line line2"></view>
 										<view class="line line3"></view>
 										<view class="txt">直播</view>
 									</view>
+									<!-- #endif -->
 								</view>
 								<view class="name uni-ellipsis" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">{{item.NickName}}</view>
 							</view>

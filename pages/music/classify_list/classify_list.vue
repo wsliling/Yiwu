@@ -262,7 +262,7 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
-						this.datalist.splice(this.pageSize,this.pageSize);
+						this.datalist.splice(this.pageSize*(this.page-1),this.pageSize);
 						this.datalist = this.datalist.concat(
 							result.data
 						);

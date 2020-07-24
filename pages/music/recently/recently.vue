@@ -143,16 +143,12 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
-						if(result.data.length){
-							this.datalist.splice(this.pageSize,this.pageSize);
-						}else{
-							this.page--;
-						}
+						this.datalist.splice(this.pageSize*(this.page-1),this.pageSize);
 						this.datalist = this.datalist.concat(
 							result.data
 						);
 					}
-					if (result.data.length <this.pageSize) {
+					if (!result.isok) {
 						this.isLoad = false;
 						this.loadingType = 2;
 					} else {
