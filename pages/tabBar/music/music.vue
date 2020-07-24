@@ -371,7 +371,7 @@
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
-						this.datalist.splice(this.pageSize2,this.pageSize2);
+						this.datalist.splice(this.pageSize2*(this.page-1),this.pageSize2);
 						this.datalist = this.datalist.concat(
 							result.data
 						);

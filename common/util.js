@@ -207,14 +207,53 @@ function uncodeUtf16(str){
 // 		　　}).exec()
 // 		}).exec()
 //  }
-
+//#ifdef MP-WEIXIN
+const compareVersion = function(v1, v2) {
+  v1 = v1.split('.')
+  v2 = v2.split('.')
+  const len = Math.max(v1.length, v2.length)
+ 
+  while (v1.length < len) {
+    v1.push('0')
+  }
+  while (v2.length < len) {
+    v2.push('0')
+  }
+  for (let i = 0; i < len; i++) {
+    const num1 = parseInt(v1[i])
+    const num2 = parseInt(v2[i])
+ 
+    if (num1 > num2) {
+      return 1
+    } else if (num1 < num2) {
+      return -1
+    }
+  }
+ 
+  return 0
+}
+ //#endif
 //播放音频
 const audio = uni.createInnerAudioContext(); //创建音频
 var playID="" //当前播放的舞曲id
 var hasplay=true  //是否播放过
+const version = wx.getSystemInfoSync().SDKVersion;
+    
 export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞曲id
 	var musicList=uni.getStorageSync("musicList"),//音乐列表
 	playID=uni.getStorageSync("playID");
+	//#ifdef MP-WEIXIN
+	if (compareVersion(version, '2.3.0') >= 0) {
+	  wx.setInnerAudioOption({
+	    obeyMuteSwitch: false
+	  })
+	}else{
+	  wx.showModal({
+	    title: '提示',
+	    content: '当前微信版本过低，静音模式下可能会导致播放音频失败。'
+	  })
+	}
+	//#endif
 	console.log("playID和id"+playID+"--"+id);
     if(playID!=""&&playID!="undefined"){
 		if(playID==id){//暂停

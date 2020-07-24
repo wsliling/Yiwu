@@ -6,6 +6,8 @@ page{
 }
 .classifytab{
 	position: relative;
+	width: 100%;
+	overflow-x: hidden;
 	.index-swiper-tab::before{ display: none;}
 	.index-swiper-tab{
 		padding-left: 20upx;
