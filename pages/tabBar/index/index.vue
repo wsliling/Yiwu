@@ -86,7 +86,7 @@
 								<!-- <view class="audioinfo uni-ellipsis2">
 									{{item.Title}}
 								</view> -->
-								<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playAudio(item.Id,item.VideoUrl)">
+								<view :class="['isaudio',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playAudio(item.Id,item.VideoUrl)">
 									<view class="line line1"></view>
 									<view class="line line2"></view>
 									<view class="line line3"></view>

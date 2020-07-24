@@ -134,7 +134,7 @@
 					line-height: 1.5;
 					max-width: 400upx;
 				}
-				.islive{
+				.isaudio{
 					position: absolute;
 					left: 50%;
 					top: 50%;
@@ -148,6 +148,34 @@
 					height: 80upx;
 					background: rgba(221,25,109,.7);
 					color: #fff;
+					.line{
+						width: 4upx;
+						background: #fff;
+						margin-right: 6upx;
+					}
+					.line1{ 
+						height: 24upx;
+					}
+					.line2{ 
+						height: 10upx;
+					}
+					.line3{ 
+						height: 14upx;
+					}
+					&.active{
+						.line1{
+							animation:myanimation 0.8s infinite 1s;
+							-webkit-animation:myanimation 0.8s infinite 1s;
+						}
+						.line2{ 
+							animation:myanimation 1s infinite 0.5s;
+							-webkit-animation:myanimation 1s infinite 0.5s;
+						}
+						.line3{ 
+							animation:myanimation 0.9s infinite 1s;
+							-webkit-animation:myanimation 0.9s infinite 1s;
+						}
+					}
 				}
 			}
 			video{
