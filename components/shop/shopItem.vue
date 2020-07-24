@@ -1,12 +1,14 @@
 <template>
     <view class="live">
         <view class="live-img">
-            <view class="islive" v-if="item.IsLive==1">
+			<!-- #ifdef MP-WEIXIN -->
+            <view class="islive" v-if="item.IsLive==1" @click="navigate('liveplay/live',{id:item.MemberId})">
                 <view class="line line1"></view>
                 <view class="line line2"></view>
                 <view class="line line3"></view>
                 <view class="txt">正在直播</view>
             </view>
+			<!-- #endif -->
             <image :src="item.BannerPicNo" mode="aspectFill" @click="navigate('shopSon/shopHome/shopHome',{shopId:item.ShopId})"></image>
 
         </view>
@@ -71,28 +73,9 @@ export default {
 			padding: 0 20upx;
 			border-radius: 8upx;
 			height: 45upx;
-			background: rgba(52, 52, 52, 0.5);
+			width:auto;
+			margin-left:0;
 			color: #fff;
-			.line {
-				width: 4upx;
-				background: #DE1A6E;
-				margin-right: 6upx;
-			}
-			.line1 {
-				height: 24upx;
-				animation: myanimation 0.6s infinite 0.5s;
-				-webkit-animation: myanimation 0.6s infinite 0.5s;
-			}
-			.line2 {
-				height: 10upx;
-				animation: myanimation 0.6s infinite 1s;
-				-webkit-animation: myanimation 0.6s infinite 1s;
-			}
-			.line3 {
-				height: 14upx;
-				animation: myanimation 0.6s infinite 1.5s;
-				-webkit-animation: myanimation 0.6s infinite 1.5s;
-			}
 			.txt {
 				font-size: 26upx;
 				line-height: 1;

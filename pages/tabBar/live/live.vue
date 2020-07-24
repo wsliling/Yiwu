@@ -2,9 +2,11 @@
 	<view class="content">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between">
+				<!-- #ifdef MP-WEIXIN -->
 				<view class="head_l" @click="navigate('liveplay/live')">
 					<image src="http://yw.wtvxin.com/static/live.png" class="iconimg"></image>
 				</view>
+				<!-- #endif -->
 				<view class="title">视频</view>
 				<view class="head_r" @click="openAttestation">
 					<image src="http://yw.wtvxin.com/static/video.png" class="iconimg"></image>

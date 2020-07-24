@@ -45,10 +45,10 @@
 				<view class="shipmentsbox">
 					<view class="flex">
 						<view class="">发货</view>
-						<view class="txt26">{{data.Area}}</view>
+						<view class="txt26">{{data.ShopData.Area}}</view>
 					</view>
 					<view class="flex">
-						<view class="">{{data.IsPinkage?'':'不'}}包邮</view>
+						<view class="">{{data.IsPinkage?'不':''}}包邮</view>
 						<!-- <image class="exemption" src="http://shop.dadanyipin.com/static/hpicons/arrows.svg" mode=""></image> -->
 					</view>
 				</view>

@@ -300,6 +300,9 @@ export default {
 					NewUrl: NewUrl,
 					paytype: 3
 				});
+				setTimeout(res => {
+					uni.navigateBack({});
+				}, 1500);
 			}
 			if (result.code == 0) {
 				window.location.href = result.data.mweb_url;
@@ -457,7 +460,8 @@ export default {
 						icon: 'none'
 					});
 					setTimeout( ()=> {
-						this.getMyIncome();
+						// this.getMyIncome();
+						uni.navigateBack();
 					},1000)
 					
 				}

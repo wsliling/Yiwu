@@ -78,23 +78,6 @@
 		}
 	}
 }
-@keyframes myanimation{
-	0%{
-		height: 0%;
-	}
-	20%{
-		height: 10upx;
-	}
-	50%{
-		height: 24upx;
-	}
-	80%{
-		height: 10upx;
-	}
-	100%{
-		height: 0%;
-	}
-}	
 .Yi-media{
 	padding: 30upx;
 	.media-hd{
@@ -165,34 +148,6 @@
 					height: 80upx;
 					background: rgba(221,25,109,.7);
 					color: #fff;
-					.line{
-						width: 4upx;
-						background: #fff;
-						margin-right: 6upx;
-					}
-					.line1{ 
-						height: 24upx;
-					}
-					.line2{ 
-						height: 10upx;
-					}
-					.line3{ 
-						height: 14upx;
-					}
-					&.active{
-						.line1{
-							animation:myanimation 0.6s infinite 0.5s;
-							-webkit-animation:myanimation 0.6s infinite 0.5s;
-						}
-						.line2{ 
-							animation:myanimation 0.6s infinite 1s;
-							-webkit-animation:myanimation 0.6s infinite 1s;
-						}
-						.line3{ 
-							animation:myanimation 0.6s infinite 1.5s;
-							-webkit-animation:myanimation 0.6s infinite 1.5s;
-						}
-					}
 				}
 			}
 			video{
@@ -358,6 +313,7 @@
 				width: 160upx;
 				height: 160upx;
 				margin-right: 20upx;
+				position:relative;
 				image{
 					display: block;width: 100%; height: 100%;
 					border-radius: 100%;

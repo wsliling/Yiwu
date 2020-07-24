@@ -4,12 +4,14 @@
 			<view class="user">
 				<view class="left">
 					<image  :src="PersonInfo.Avatar||'http://yw.wtvxin.com/static/default.png'"></image>
+					<!-- #ifdef MP-WEIXIN -->
 					<view class="islive" v-if="PersonInfo.Flag" @click="navigate('liveplay/live',{id:memberId})">
 						<view class="line line1"></view>
 						<view class="line line2"></view>
 						<view class="line line3"></view>
 						<view class="txt">直播</view>
 					</view>
+					<!-- #endif -->
 				</view>
 				<view class="right">
 					<view class="name">
