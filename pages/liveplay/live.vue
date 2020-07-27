@@ -144,6 +144,7 @@ export default {
 			TimeStamp: '',
 			SecretKey: '',
 			scrollTop: 2000, //滚动到底部
+			liveErrNum:0,
 
 			memberId: '',
 			swiperIndex: 0, //轮播的index
@@ -233,6 +234,11 @@ export default {
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
+				// 如果没超过10次就重新连接
+				if(this.liveErrNum<20){
+					this.liveErrNum+=1;
+					this.livemessage();
+				}
 				console.log('WebSocket连接打开失败，请检查！',res);
 			});
 			this.SocketTask.onClose(close => {
@@ -272,11 +278,11 @@ export default {
 			if (res.code) return;
 			const data = res.data;
 			if (data.length > 0) {
-				if (data[0].fType) {
-					this.getProList(data[0].ShopId);
-				}
 				this.liveList = data;
 				this.data = data[0];
+				if (data[0].fType) {
+					this.getProList();
+				}
 				this.livemessage();//打开聊天室
 				console.log(this.data);
 				// #ifdef H5
@@ -299,13 +305,14 @@ export default {
 			console.log(e.detail.current,'eee')
 			const index = e.detail.current
 			this.data = this.liveList[index];
+			this.livemessage();//打开聊天室
 			this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
 			player.pause();
 			player.destroy();
 			console.log('player',player)
 			this.playH5();
 			if(this.data.fType){
-				this.getProList(this.data.ShopId)
+				this.getProList()
 			}
 		},
 		playH5() {
@@ -343,7 +350,6 @@ export default {
 			}
 			this.SocketTask.send({ data: JSON.stringify(data) });
 			console.log(data, 'data');
-			// this.onMessage();
 			this.sendInfo = '';
 		},
 		//接收消息
@@ -358,7 +364,10 @@ export default {
 					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
-					console.log(obj, 987);
+					console.log(obj, '接收到的消息');
+					if(obj.Info.indexOf('主播')!==-1){
+						this.getProList();
+					}
 					that.strArr.push(obj);
 					for (let i = 0; i < that.strArr.length; i++) {
 						for (let j = i + 1; j < that.strArr.length; j++) {
@@ -442,9 +451,9 @@ export default {
 		},
 		//***************商品***************
 		// 获取产品列表
-		async getProList(shopId) {
+		async getProList() {
 			const res = await post('Goods/GetGoodsListByM', {
-				ShopId: shopId,
+				ShopId: this.data.ShopId,
 				IsRecommend: 1
 			});
 			if (res.code) return;

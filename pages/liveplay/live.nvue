@@ -154,6 +154,7 @@ export default {
 			SecretKey: '',
 			scrollTop: 0, //滚动到底部
 
+			liveErrNum:0,//直播连接失败重新连接的次数，10次后不会重新连接
 			memberId: '',
 			swiperIndex: 0, //轮播的index
 			liveList: [], //直播列表
@@ -261,6 +262,11 @@ export default {
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
+				// 如果没超过10次就重新连接
+				if(this.liveErrNum<20){
+					this.liveErrNum+=1;
+					this.livemessage();
+				}
 				console.log('WebSocket连接打开失败，请检查！',res);
 			});
 			this.SocketTask.onClose(close => {
@@ -300,11 +306,11 @@ export default {
 			if (res.code) return;
 			const data = res.data;
 			if (data.length > 0) {
-				if (data[0].fType) {
-					this.getProList(data[0].ShopId);
-				}
 				this.liveList = data;
 				this.data = data[0];
+				if (data[0].fType) {
+					this.getProList();
+				}
 				this.livemessage();//打开聊天室
 				console.log(this.data);
 				// #ifdef H5
@@ -313,10 +319,7 @@ export default {
 				})
 				// #endif
 			} else {
-				uni.showToast({
-					title: '当前没人在直播哦~请晚点再来',
-					icon: 'none'
-				});
+				plus.nativeUI.toast("当前没人在直播哦~请晚点再来!");
 				setTimeout(() => {
 					uni.navigateBack();
 				}, 2000);
@@ -327,13 +330,13 @@ export default {
 			console.log(e.detail.current,'eee')
 			const index = e.detail.current
 			this.data = this.liveList[index];
+			this.livemessage();//打开聊天室
+			console.log(this.data);
 			this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
-			player.pause();
-			player.destroy();
-			console.log('player',player)
+			
 			this.playH5();
 			if(this.data.fType){
-				this.getProList(this.data.ShopId)
+				this.getProList()
 			}
 		},
 		playH5() {
@@ -387,13 +390,15 @@ export default {
 			let that = this;
 			this.SocketTask.onMessage(r => {
 				msg = JSON.parse(r.data);
-				console.log(msg,'收到的数据')
 				if (msg.code == 1) {
 					that.pushMsg(that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间')
 					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
-					console.log(obj, 987);
+					console.log(obj, '接收到的消息');
+					if(obj.Info.indexOf('主播')!==-1){
+						this.getProList();
+					}
 					that.strArr.push(obj);
 					for (let i = 0; i < that.strArr.length; i++) {
 						for (let j = i + 1; j < that.strArr.length; j++) {
@@ -481,9 +486,9 @@ export default {
 		},
 		//***************商品***************
 		// 获取产品列表
-		async getProList(shopId) {
+		async getProList() {
 			const res = await post('Goods/GetGoodsListByM', {
-				ShopId: shopId,
+				ShopId: this.data.ShopId,
 				IsRecommend: 1
 			});
 			if (res.code) return;
