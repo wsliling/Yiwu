@@ -112,7 +112,9 @@
 			<view class="plan">卖家服务 4.7 <span>低</span></view>
 			<view class="plan">物流服务 4.8 <span>低</span></view>
 		</view> -->
-		<div class="contentDetail" v-html="data.ContentDetail"></div>
+		<view class="contentDetail">
+			<uParse :content="data.ContentDetail" />
+		</view>
 		
 		<div class="foot ali-c jus-b">
 			<div class="left ali-c">
@@ -149,9 +151,10 @@
 <script>
 import {post,get,toLogin,navigate,toast,previewImage} from '@/common/util.js';
 import sku from '@/components/sku/popsku.vue'
+import uParse from '@/components/uParse/src/wxParse.vue';
 export default {
 	components:{
-		sku
+		sku,uParse
 	},
 	data() {
 		return {
@@ -687,5 +690,8 @@ export default {
 	}
 
 	
+}
+.contentDetail{
+	padding: 30upx;
 }
 </style>
