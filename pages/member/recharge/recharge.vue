@@ -93,9 +93,12 @@ export default {
 		this.WxOpenid = uni.getStorageSync('openId');
 		if (this.WxCode) {
 			//首次跳转获取code地址都直接调起支付
-			this.payweixin();
+			this.AddRecharge();
 		}
 		// #endif
+		if(e.money){
+			this.money=e.money
+		}
 		this.rechargeType = e.type;
 	},
 	onShow() {
@@ -241,12 +244,12 @@ export default {
 		},
 		//微信付款
 		async AddRecharge() {
-			let NewUrl = this.GetUrlRelativePath() + '/#/pages/tabBar/my/topup';
+			let NewUrl = this.GetUrlRelativePath() + '/#/pages/member/recharge/recharge?type='+this.rechargeType+'&money='+this.money;
 			let result = '';
 			if (this.rechargeType == 2) {
 				result = await post('Order/WechatPayCZZBB', {
-					UserId: this.userId,
-					Token: this.token,
+					UserId: uni.getStorageSync('userId'),
+					Token: uni.getStorageSync('token'),
 					RechargeAmount: this.money,
 					WxOpenid: this.WxOpenid,
 					WxCode: this.WxCode,
@@ -255,8 +258,8 @@ export default {
 				});
 			}else{
 				result = await post('Order/WechatPayCZYE', {
-					UserId: this.userId,
-					Token: this.token,
+					UserId: uni.getStorageSync('userId'),
+					Token: uni.getStorageSync('token'),
 					RechargeAmount: this.money,
 					WxOpenid: this.WxOpenid,
 					WxCode: this.WxCode,
@@ -283,13 +286,13 @@ export default {
 		},
 		//非微信环境 使用微信支付H5
 		async H5AddRecharge() {
-			let NewUrl = this.GetUrlRelativePath() + '/#/pages/tabBar/my/wallet';
+			let NewUrl = this.GetUrlRelativePath() + '/#/pages/member/recharge/recharge';
 			let result = '';
 			if (this.rechargeType == 2) {
 				result = await post('Order/WechatPayCZZBB', {
 					//直播币
-					UserId: this.userId,
-					Token: this.token,
+					UserId: uni.getStorageSync('userId'),
+					Token: uni.getStorageSync('token'),
 					RechargeAmount: this.money,
 					NewUrl: NewUrl,
 					paytype: 3
@@ -297,8 +300,8 @@ export default {
 			} else {
 				result = await post('Order/WechatPayCZYE', {
 					//钱包充值
-					UserId: this.userId,
-					Token: this.token,
+					UserId: uni.getStorageSync('userId'),
+					Token: uni.getStorageSync('token'),
 					RechargeAmount: this.money,
 					NewUrl: NewUrl,
 					paytype: 3
