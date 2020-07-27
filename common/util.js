@@ -267,9 +267,9 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 				uni.setStorageSync("playIDtype",1)
 			}
 		}else{
+			audio.pause()
+			hasplay=false
 			playID=id
-			uni.setStorageSync("playID",playID)
-			uni.setStorageSync("playIDtype",1)
 			if(nowSrc){
 			audio.src = nowSrc	
 			}else{
@@ -288,6 +288,8 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
 		audio.src = musicList[index].Audio	
 		}
 		audio.play()
+		uni.setStorageSync("playID",playID)
+		uni.setStorageSync("playIDtype",1)
 		MemberPaly(id)
 	}
 	//音频播放事件
