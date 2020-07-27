@@ -229,6 +229,7 @@ export default {
 			}
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
+			data.ContentDetail = data.ContentDetail.replace(/<video/g,'<video style="max-width:100%;"')
 			this.productInfo={
 				img:data.PicData[0].PicUrl,//默认产品图片
 				maxbuy:data.MaxBuyNum,//最大购买量

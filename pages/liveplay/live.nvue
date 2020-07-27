@@ -48,7 +48,7 @@
 								<text class="nlv_reply_text">跟主播聊点什么？</text>
 							</view>
 							<div class="btn-box">
-								<share :h5Url="'/pages/liveplay/live?id='+liveItem.MemberId"
+								<share :url="'/pages/liveplay/live?id='+liveItem.MemberId"
 								:wxUrl="'/pages/liveplay/live?id='+liveItem.MemberId"
 								>
 									<image class="img share-icon" src="/static/icons/share.png" alt="" mode="widthFix" />
@@ -262,6 +262,7 @@ export default {
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
+				uni.showToast({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum,icon:'none'});
 				// 如果没超过10次就重新连接
 				if(this.liveErrNum<20){
 					this.liveErrNum+=1;
