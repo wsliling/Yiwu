@@ -43,7 +43,7 @@
 		<view class="present"><view class="btn active" @click="Submit">确认充值</view></view>
 		<!-- 支付宝H5表单 -->
 		<view class="alipayfram" v-if="isshowalipay"><view id="alipayfram" v-html="alipayCon"></view></view>
-		<pay v-on:hidePay="hidePay" v-on:getPassword="getPassword" @success="CourseBuy" v-if="showPay" :allprice="allprice"></pay>
+		<pay v-on:hidePay="hidePay" v-on:getPassword="getPassword" @success="CourseBuy" v-if="showPay" :allprice="money"></pay>
 	</view>
 </template>
 
@@ -88,6 +88,10 @@ export default {
 		};
 	},
 	onLoad(e) {
+		if(e.money){
+			this.money=e.money
+		}
+		this.rechargeType = e.type;
 		// #ifdef H5
 		this.WxCode = getUrlParam('code');
 		this.WxOpenid = uni.getStorageSync('openId');
@@ -96,10 +100,6 @@ export default {
 			this.AddRecharge();
 		}
 		// #endif
-		if(e.money){
-			this.money=e.money
-		}
-		this.rechargeType = e.type;
 	},
 	onShow() {
 		this.userId = uni.getStorageSync('userId');

@@ -135,7 +135,7 @@
 				</view>
 			</view>
 			<view class="uni-tab-bar-loading" v-if="NewsList.length">
-				<uni-load-more :loadingType="LoadingType1"></uni-load-more>
+				<uni-load-more :loadingType="LoadingType4"></uni-load-more>
 			</view>	
 			<noData v-if="!NewsList.length"></noData>
 		</view>
@@ -215,7 +215,7 @@
 				</view>
 			</view>
 			<view class="uni-tab-bar-loading" v-if="CourseList.length">
-				<uni-load-more :loadingType="LoadingType4"></uni-load-more>
+				<uni-load-more :loadingType="LoadingType1"></uni-load-more>
 			</view>
 			<noData v-if="!CourseList.length"></noData>
 		</view>
