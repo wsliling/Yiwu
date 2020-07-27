@@ -179,7 +179,6 @@
 				//音频加载中
 				audio.onWaiting(()=>{
 					this.loading=true;
-					console.log("加载中")
 					if(!this.isIos){
 						console.log("feiios加载中")
 						audio.pause();
@@ -205,8 +204,8 @@
 					console.log("准备播放")
 					if(this.waitFlag){
 						audio.play()
+						this.waitFlag=false; 
 					}
-					this.waitFlag=false; 
 				})
 				//音频播放事件
 				audio.onPlay(() => {
@@ -506,6 +505,7 @@ page{
 			padding: 40upx;
 			image{
 				width: 46upx;
+				height: 46upx;
 			}
 			.addwidth{
 				width: 54upx;

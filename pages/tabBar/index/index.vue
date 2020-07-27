@@ -124,7 +124,7 @@
 					<uni-load-more :loadingType="LoadingType0"></uni-load-more>
 				</view>	
 			</block>
-			<noData v-if="!datalist.length"></noData>
+			<noData v-if="noDataIsShow0"></noData>
 		</view>
 		<!-- 最新、关注、视频	 -->
 		<view class="videolist bg_fff" v-if="tabIndex==1||tabIndex==2||tabIndex==3">
@@ -168,7 +168,7 @@
 			<view class="uni-tab-bar-loading" v-if="NewsList.length">
 				<uni-load-more :loadingType="LoadingType1"></uni-load-more>
 			</view>
-			<noData v-if="!NewsList.length"></noData>
+			<noData v-if="noDataIsShow1"></noData>
 		</view>
 		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
 	</view>
@@ -219,9 +219,11 @@
 				recuserlist:[],//推荐用户
 				TeacherUserList:[],//推荐的名师
 				datalist:[],////推荐视频
+				noDataIsShow0:false,
 				Page0:1,
 				LoadingType0:0,//0加载前，1加载中，2没有更多了
 				NewsList:[],//资讯
+				noDataIsShow1:false,
 				Page1:1,
 				LoadingType1:0,//0加载前，1加载中，2没有更多了
 				videoContext:null,
@@ -448,11 +450,15 @@
 				});
 				if (result.code === 0) {
 					if(result.data.length>0){
+						this.noDataIsShow0= false;
 						for(let i=0;i<result.data.length;i++){
 							this.$set(result.data[i],'play',false);
 							this.$set(result.data[i],'fixed',false);
 						}
 						
+					}
+					if (result.data.length == 0 && this.Page0 == 1) {
+						this.noDataIsShow0 = true;
 					}
 					if (this.Page0 === 1) {
 						this.datalist = result.data;
@@ -531,6 +537,12 @@
 				}
 				let result =await post("Find/VideoList",json);
 				if (result.code === 0) {
+					if(result.data.length>0){
+						this.noDataIsShow1= false;
+					}
+					if (result.data.length == 0 && this.page1 == 1) {
+						this.noDataIsShow1 = true;
+					}
 					if (this.Page1 === 1) {
 						this.NewsList = result.data;
 					}
