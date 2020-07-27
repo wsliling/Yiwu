@@ -38,7 +38,7 @@
 				<view class="item" @click="ShowPlaylist">
 					<image src="http://yw.wtvxin.com/static/music/playicon5.png" mode="widthFix" class="addwidth"></image>
 				</view>
-			</view>ZZ
+			</view>
 		</view>
 		<!-- 播放列表	 -->
 		<uni-popup mode="fixed" :show="isShowPlaylist" :h5Top="true" position="bottom" @hidePopup="hidePopup">
