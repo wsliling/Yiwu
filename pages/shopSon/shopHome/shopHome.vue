@@ -50,7 +50,7 @@
             <view class="wu-tet">
                 <view class="wu-name">
                     <!-- <span v-if="val.IsPlatform">自营</span> -->
-                    <span>{{val.isPlatform?'自营':val.IsHot?'超级好物':val.IsRecommend?'推荐好物':''}}</span>
+                    <span v-if="val.IsHot||val.IsRecommend">{{val.IsHot?'超级好物':val.IsRecommend?'推荐好物':''}}</span>
                     {{val.Name}}
                 </view>
                 <view class="wu-price">￥{{val.Price}}</view>
