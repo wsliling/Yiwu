@@ -154,7 +154,6 @@ export default {
 			SecretKey: '',
 			scrollTop: 0, //滚动到底部
 
-			liveErrNum:0,//直播连接失败重新连接的次数，10次后不会重新连接
 			memberId: '',
 			swiperIndex: 0, //轮播的index
 			liveList: [], //直播列表
@@ -258,11 +257,15 @@ export default {
 				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
 				that.SocketTask.send({ data: JSON.stringify(data) });
 				console.log('发送数据', res);
+				//心跳连接
+				// setInterval(()=>{ 
+				// 	this.pushMsg('ping')
+				// },10000)
 				// console.log(that.SocketTask)
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
-				uni.showToast({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum,icon:'none'});
+				uni.showToast({title:'WebSocket连接已断开，尝试重新连接'});
 				// 如果没超过10次就重新连接
 				if(this.liveErrNum<20){
 					this.liveErrNum+=1;
@@ -374,13 +377,13 @@ export default {
 				Info:e.detail.value,
 			}
 			this.SocketTask.send({ data: JSON.stringify(data) });
-			console.log(data, 'data');
-			// this.onMessage();
+			console.log(data, 'data111');
 			this.sendInfo = '';
 			this.closeInput();
 		},
 		// 关闭输入框
 		closeInput(){
+			console.log('关闭输入框')
 			this.inputFocusStatus= false;
 			this.isshowInput=false;
 			uni.hideKeyboard();
@@ -400,18 +403,21 @@ export default {
 					if(obj.Info.indexOf('主播')!==-1){
 						this.getProList();
 					}
-					that.strArr.push(obj);
-					for (let i = 0; i < that.strArr.length; i++) {
-						for (let j = i + 1; j < that.strArr.length; j++) {
-							if (that.strArr[i].Id == that.strArr[j].Id) {
-								//第一个等同于第二个，splice方法删除第二个
-								that.strArr.splice(j, 1);
-								j--;
-							}
-						}
+					if(obj.Info!=='ping'){
+						that.strArr.push(obj);
 					}
+					// for (let i = 0; i < that.strArr.length; i++) {
+					// 	for (let j = i + 1; j < that.strArr.length; j++) {
+					// 		if (that.strArr[i].Id == that.strArr[j].Id) {
+					// 			//第一个等同于第二个，splice方法删除第二个
+					// 			that.strArr.splice(j, 1);
+					// 			j--;
+					// 		}
+					// 	}
+					// }
+					
 					console.log('arr', that.strArr);
-					that.isshowInput = false;
+					// that.isshowInput = false;
 					that.$nextTick(function() {
 						//等最新一条消息dom更新，滚动到底部
 						// that.scrollTop = that.scrollTop + 50;

@@ -153,6 +153,7 @@ export default {
 			giftList: [], //礼物列表
 			myMoney:0,//我的直播币
 			userInfo:{},
+			xintiao:null,
 		};
 	},
 	onLoad(e) {
@@ -230,6 +231,12 @@ export default {
 				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
 				that.SocketTask.send({ data: JSON.stringify(data) });
 				console.log('发送数据', res);
+				this.xintiao = null;
+				//心跳连接
+				// this.xintiao = setInterval(()=>{ 
+				// 	console.log('发送了一次心跳测试')
+				// 	this.pushMsg('ping')
+				// },10000)
 				// console.log(that.SocketTask)
 			});
 			this.onMessage();
@@ -306,7 +313,8 @@ export default {
 			const index = e.detail.current
 			this.data = this.liveList[index];
 			this.livemessage();//打开聊天室
-			this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
+			this.strArr = [];//初始化消息
+			// this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
 			player.pause();
 			player.destroy();
 			console.log('player',player)
@@ -351,6 +359,14 @@ export default {
 			this.SocketTask.send({ data: JSON.stringify(data) });
 			console.log(data, 'data');
 			this.sendInfo = '';
+			this.closeInput();
+		},
+		// 关闭输入框
+		closeInput(){
+			console.log('关闭输入框')
+			this.inputFocusStatus= false;
+			this.isshowInput=false;
+			uni.hideKeyboard();
 		},
 		//接收消息
 		onMessage() {
@@ -368,18 +384,22 @@ export default {
 					if(obj.Info.indexOf('主播')!==-1){
 						this.getProList();
 					}
-					that.strArr.push(obj);
-					for (let i = 0; i < that.strArr.length; i++) {
-						for (let j = i + 1; j < that.strArr.length; j++) {
-							if (that.strArr[i].Id == that.strArr[j].Id) {
-								//第一个等同于第二个，splice方法删除第二个
-								that.strArr.splice(j, 1);
-								j--;
-							}
-						}
+					if(obj.Info!=='ping'){
+						that.strArr.push(obj);
+					}else{
+						console.log('接收了一次心跳测试',obj)
 					}
+					// for (let i = 0; i < that.strArr.length; i++) {
+					// 	for (let j = i + 1; j < that.strArr.length; j++) {
+					// 		if (that.strArr[i].Id == that.strArr[j].Id) {
+					// 			//第一个等同于第二个，splice方法删除第二个
+					// 			that.strArr.splice(j, 1);
+					// 			j--;
+					// 		}
+					// 	}
+					// }
 					console.log('arr', that.strArr);
-					this.isshowInput = false;
+					// this.isshowInput = false;
 					this.$nextTick(function() {
 						//等最新一条消息dom更新，滚动到底部
 						that.scrollTop = this.scrollTop + 50;

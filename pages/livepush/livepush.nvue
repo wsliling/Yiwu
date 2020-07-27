@@ -87,6 +87,7 @@ export default {
 			scrollTop:2000,//滚动到底部
 			liveType:0, //直播类型。0--舞者;1--店铺
 			proList:[],//产品列表
+			xintiao:null,
 		};
 	},
 	onLoad(e){
@@ -353,6 +354,12 @@ export default {
 				let data=this.LoginData(1,this.TimeStamp,this.SecretKey)
 				this.SocketTask.send({data:JSON.stringify(data)})
 				console.log("发送数据",data);
+				this.xintiao = null;
+				//心跳连接
+				this.xintiao = setInterval(()=>{ 
+					console.log('发送了一次心跳测试')
+					that.pushMsg('ping')
+				},10000)
 			});
 			this.onMessage()
 			this.SocketTask.onError(function (res) {
@@ -369,6 +376,19 @@ export default {
 				this.socketStatus = false;
 			});
 		},
+		// 推送一条消息
+		pushMsg(text,name=''){
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:text,
+					name:name||'系统提示'
+				}),
+				Info:text,
+			}
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
+		},
 		//接收消息
 		onMessage(){
 			let msg
@@ -382,7 +402,11 @@ export default {
 				}else if(msg.code==3||msg.code==0){
 					let obj=JSON.parse(msg.data.Id)
 					console.log(obj,987)
-					that.strArr.push(obj)
+					if(obj.Info!=='ping'){
+						that.strArr.push(obj);
+					}else{
+						console.log('接收了一次心跳测试')
+					}
 					// for(let i=0; i<that.strArr.length; i++){
 					//     for(let j=i+1; j<that.strArr.length; j++){
 					//         if(that.strArr[i].Id==that.strArr[j].Id){ //第一个等同于第二个，splice方法删除第二个
