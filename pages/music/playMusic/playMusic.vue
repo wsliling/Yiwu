@@ -187,7 +187,7 @@
 				})
 				//音频暂停事件
 				audio.onPause(() => {
-					console.log("暂停状态333")
+					console.log("暂停状态444")
 					this.paused = true
 				})
 				//音频结束事件
@@ -203,6 +203,7 @@
 				audio.onCanplay(() => {
 					console.log("准备播放")
 					if(this.waitFlag){
+						console.log("加载成功播放")
 						audio.play()
 						this.waitFlag=false; 
 					}

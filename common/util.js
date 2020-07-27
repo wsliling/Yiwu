@@ -258,41 +258,38 @@ export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞�
     if(playID!=""&&playID!="undefined"){
 		if(playID==id){//暂停
 			if(hasplay){
-				console.log("点击暂停")
 				audio.pause()
 				hasplay=false
 				uni.setStorageSync("playIDtype",0)
 			}else{
-				console.log("点击播放")
 				audio.play()
 				hasplay=true
 				uni.setStorageSync("playIDtype",1)
 			}
 		}else{
-			console.log("切换播放")
 			audio.stop()
 			hasplay=false
 			playID=id
+			uni.setStorageSync("playID",playID)
+			uni.setStorageSync("playIDtype",1)
 			if(nowSrc){
 			audio.src = nowSrc	
 			}else{
 			audio.src = musicList[index].Audio	
 			}
 			audio.play()
-			uni.setStorageSync("playID",playID)
-			uni.setStorageSync("playIDtype",1)
 			MemberPaly(id)
 		}
 	}else{
 		playID=id
+		uni.setStorageSync("playID",playID)
+		uni.setStorageSync("playIDtype",1)
 		if(nowSrc){
 		audio.src = nowSrc	
 		}else{
 		audio.src = musicList[index].Audio	
 		}
 		audio.play()
-		uni.setStorageSync("playID",playID)
-		uni.setStorageSync("playIDtype",1)
 		MemberPaly(id)
 	}
 	//音频播放事件
