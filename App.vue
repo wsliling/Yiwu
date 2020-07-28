@@ -1,7 +1,9 @@
 <script>
 	export default {
-		onLaunch: function() {
+		onLaunch: function(e) {
 			console.log('App Launch')
+			// 获取分享的邀请码
+			e.query.inviteCode&&uni.setStorageSync('inviteCode',e.query.inviteCode)
 			// #ifdef H5
 			const s2 = document.createElement('script');
 			s2.type = 'text/javascript';
