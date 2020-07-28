@@ -10,7 +10,10 @@
 					<video class="H5video" :src="liveItem.HLS" controls="false" 
 						:style="`height:${screenHeight}px;`" autoplay>
 					</video>
-					
+					<div class="playOut" v-if="!liveItem.isPlay" :style="`height:${screenHeight}px;`">
+						<text class="playOutText">主播已离开
+					</text>
+					</div>
 					<!-- 顶部信息 -->
 					<!-- <view class="header-btn" :style="`padding-top:${statusBarHeight}px`"> -->
 					<view class="header-btn" :style="`padding-top:${statusBarHeight}px`">
@@ -36,7 +39,7 @@
 							</view>
 						</scroll-view>
 						<view class="nlv-infobox">
-							<view class="nlv_btntool" v-if="liveItem.ShopId">
+							<view class="nlv_btntool" v-if="liveItem.ShopId&&proList.length">
 							<!-- <view class="nlv_btntool"> -->
 								<view class="btn-toolitem" @click="showGoods">
 									<image src="/static/icons/product-icon.png" class="icon_goods"></image>
@@ -164,6 +167,7 @@ export default {
 			
 			screenHeight:750,//屏幕高度
 			screenHeight:0,//状态栏高度
+			xintiaoOut:null,//没有接收到心跳包的退出定时器,用于判断是否主播已离开
 		};
 	},
 	onLoad(e) {
@@ -231,6 +235,13 @@ export default {
 		},
 		// 获取WebSocketId 用于身份验证
 		async livemessage() {
+			this.SocketTask&&this.SocketTask.close();
+			console.log( {
+				UserId: this.userId||'',
+				Token: this.token||'',
+				ToMemberId: this.data.MemberId,
+				Type:''
+			})
 			let res = await post('User/GetWebSocketId', {
 				UserId: this.userId||'',
 				Token: this.token||'',
@@ -249,7 +260,7 @@ export default {
 			this.SocketTask = uni.connectSocket({
 				url: wssHost + '/LiveRoomServer.ashx?Signature=' + this.Signature,
 				complete(err){
-					console.log(err)
+					console.log(err,'？？？')
 				}
 			});
 			this.SocketTask.onOpen(res => {
@@ -257,11 +268,9 @@ export default {
 				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
 				that.SocketTask.send({ data: JSON.stringify(data) });
 				console.log('发送数据', res);
-				//心跳连接
-				// setInterval(()=>{ 
-				// 	this.pushMsg('ping')
-				// },10000)
-				// console.log(that.SocketTask)
+				this.liveList.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
@@ -275,7 +284,7 @@ export default {
 			});
 			this.SocketTask.onClose(close => {
 				this.SocketTask=null;
-				console.log('close', close);
+				console.log('close1', close);
 			});
 		},
 		//WebSocket连接请求数据
@@ -310,12 +319,15 @@ export default {
 			if (res.code) return;
 			const data = res.data;
 			if (data.length > 0) {
-				this.liveList = data;
-				this.data = data[0];
+				data.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
 				if (data[0].fType) {
 					this.getProList();
 				}
+				this.data = data[0];
 				this.livemessage();//打开聊天室
+				this.liveList = data;
 				console.log(this.data);
 				// #ifdef H5
 				this.$nextTick(()=>{
@@ -332,13 +344,13 @@ export default {
 		// 切换直播
 		swiperChange(e){
 			console.log(e.detail.current,'eee')
+			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 			const index = e.detail.current
 			this.data = this.liveList[index];
 			this.livemessage();//打开聊天室
 			console.log(this.data);
-			this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
+			this.strArr = [];//初始化消息
 			
-			this.playH5();
 			if(this.data.fType){
 				this.getProList()
 			}
@@ -393,6 +405,7 @@ export default {
 			let msg;
 			let that = this;
 			this.SocketTask.onMessage(r => {
+				console.log('收到了消息',r)
 				msg = JSON.parse(r.data);
 				if (msg.code == 1) {
 					that.pushMsg(that.userInfo.NickName?'欢迎'+that.userInfo.NickName+'进入直播间':'欢迎匿名用户进入直播间')
@@ -405,6 +418,19 @@ export default {
 					}
 					if(obj.Info!=='ping'){
 						that.strArr.push(obj);
+					}else{
+						that.xintiaoOut&&clearTimeout(that.xintiaoOut);
+						that.xintiaoOut = setTimeout(()=>{
+							console.log('主播已离开',obj)
+							this.liveList.map(item=>{
+								console.log('主播已离开1',item.StreamName,that.data.StreamName)
+								if(that.data.StreamName === item.StreamName){
+									console.log('isPlay',item.isPlay)
+									item.isPlay = false;
+									console.log('isPlay',item.isPlay)
+								}
+							})
+						},110000)
 					}
 					// for (let i = 0; i < that.strArr.length; i++) {
 					// 	for (let j = i + 1; j < that.strArr.length; j++) {
@@ -599,6 +625,22 @@ video {
 }
 .H5video {
 	width: 750upx;
+}
+.playOut{
+	width: 750upx;
+	position:absolute;
+	top:0;left:0;
+	background-color:rgba(0,0,0,.8);
+	display:flex;
+	flex-direction: row;
+	align-items:center;
+	justify-content:center;
+	text-align:center;
+	z-index:999;
+}
+.playOutText{
+	color:#fff;
+	font-size:30upx;
 }
 .playSwiper {
 	// height: 1500upx;

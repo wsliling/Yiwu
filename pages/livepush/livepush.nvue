@@ -219,7 +219,8 @@ export default {
 				Token: this.token,
 				pType:this.liveType//0--舞者;1--店铺
 			});
-			if (res.code == 0) {console.log(res)
+			console.log(res)
+			if (res.code == 0) {
 				this.url = res.data.RTMP;
 				this.context = uni.createLivePusherContext('livePusher', this);
 				console.log('准备开启直播',JSON.stringify(this.context))
@@ -275,6 +276,7 @@ export default {
 				UserId: this.userId,
 				Token: this.token
 			}));
+			this.xintiao&&clearInterval(this.xintiao)
 			// post('TencentCloud/PushCallBack').then(res=>{
 			// 	console.log('关闭直播请求成功res',JSON.stringify(res))
 			// }).catch(err=>{
@@ -354,16 +356,16 @@ export default {
 				let data=this.LoginData(1,this.TimeStamp,this.SecretKey)
 				this.SocketTask.send({data:JSON.stringify(data)})
 				console.log("发送数据",data);
-				this.xintiao = null;
+				this.xintiao&&clearInterval(this.xintiao)
 				//心跳连接
 				this.xintiao = setInterval(()=>{ 
 					console.log('发送了一次心跳测试')
 					that.pushMsg('ping')
-				},10000)
+				},100000)
 			});
 			this.onMessage()
 			this.SocketTask.onError(function (res) {
-				uni.showToast({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum,icon:'none'});
+				uni.showModal({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum});
 				// 如果没超过10次就重新连接
 				if(this.liveErrNum<20){
 					this.liveErrNum+=1;
@@ -373,6 +375,8 @@ export default {
 			});
 			this.SocketTask.onClose(close => {
 				console.log("close", close);
+				uni.showModal({title:'WebSocket连接已断开'+this.SocketTask});
+				
 				this.socketStatus = false;
 			});
 		},
@@ -494,7 +498,8 @@ export default {
 	// 页面卸载
 	onUnload(){
 		console.log('直播onUnload')
-		// this.returns();
+		this.xintiao&&clearInterval(this.xintiao)
+		this.returns();
 	},
 	onHide(){
 		console.log('直播onHide')

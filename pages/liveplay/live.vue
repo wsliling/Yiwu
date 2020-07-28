@@ -5,9 +5,11 @@
 			<block v-for="(liveItem, liveIndex) in liveList" :key="liveIndex">
 				<swiper-item v-if="liveItem.Flag" class="swiperItem">
 					<!-- #ifdef H5 -->
-					<div class="H5video" :id="liveItem.StreamName" :style="{ height: height + 'px' }"></div>
+					<div class="H5video" :id="liveItem.StreamName" :style="{ height: height + 'px' }"
+						></div>
 					<!-- #endif -->
 					<!-- 顶部信息 -->
+					<div class="playOut" v-if="!liveItem.isPlay">主播已离开</div>
 					<view class="header-btn">
 						<div class="left">
 							<img :src="liveItem.Avatar" alt="" mode="aspectFill" />
@@ -124,7 +126,7 @@ export default {
 		return {
 			height: '',
 			mark: false,
-			data: {},
+			data: {},//正在观看的data
 			showPopupGoods: false, //弹出商品
 			isshowInput: false, //弹出输入
 			inputFocusStatus: false, //input对焦状态
@@ -153,7 +155,7 @@ export default {
 			giftList: [], //礼物列表
 			myMoney:0,//我的直播币
 			userInfo:{},
-			xintiao:null,
+			xintiaoOut:null,//没有接收到心跳包的退出定时器,用于判断是否主播已离开
 		};
 	},
 	onLoad(e) {
@@ -205,6 +207,7 @@ export default {
 		},
 		// 获取WebSocketId 用于身份验证
 		async livemessage() {
+			this.SocketTask&&this.SocketTask.close();
 			let res = await post('User/GetWebSocketId', {
 				UserId: this.userId||'',
 				Token: this.token||'',
@@ -227,17 +230,13 @@ export default {
 				}
 			});
 			this.SocketTask.onOpen(res => {
-				console.log("open", res);
 				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
+				console.log('发送数据1', that.SocketTask);
 				that.SocketTask.send({ data: JSON.stringify(data) });
 				console.log('发送数据', res);
-				this.xintiao = null;
-				//心跳连接
-				// this.xintiao = setInterval(()=>{ 
-				// 	console.log('发送了一次心跳测试')
-				// 	this.pushMsg('ping')
-				// },10000)
-				// console.log(that.SocketTask)
+				this.liveList.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
 			});
 			this.onMessage();
 			this.SocketTask.onError(function(res) {
@@ -250,7 +249,7 @@ export default {
 			});
 			this.SocketTask.onClose(close => {
 				this.SocketTask=null;
-				console.log('close', close);
+				console.log('close1', close);
 			});
 		},
 		//WebSocket连接请求数据
@@ -276,6 +275,7 @@ export default {
 			}
 			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
+		// 获取直播列表
 		async play() {
 			let res = await post('TencentCloud/PlayListURL', {
 				MemberId: this.memberId,
@@ -285,6 +285,9 @@ export default {
 			if (res.code) return;
 			const data = res.data;
 			if (data.length > 0) {
+				data.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
 				this.liveList = data;
 				this.data = data[0];
 				if (data[0].fType) {
@@ -310,14 +313,15 @@ export default {
 		// 切换直播
 		swiperChange(e){
 			console.log(e.detail.current,'eee')
+			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 			const index = e.detail.current
 			this.data = this.liveList[index];
+			console.log('player',this.data)
 			this.livemessage();//打开聊天室
 			this.strArr = [];//初始化消息
 			// this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
 			player.pause();
 			player.destroy();
-			console.log('player',player)
 			this.playH5();
 			if(this.data.fType){
 				this.getProList()
@@ -388,6 +392,18 @@ export default {
 						that.strArr.push(obj);
 					}else{
 						console.log('接收了一次心跳测试',obj)
+						that.xintiaoOut&&clearTimeout(that.xintiaoOut);
+						that.xintiaoOut = setTimeout(()=>{
+							console.log('主播已离开',obj)
+							this.liveList.map(item=>{
+								console.log('主播已离开1',item.StreamName,that.data.StreamName)
+								if(that.data.StreamName === item.StreamName){
+									console.log('isPlay',item.isPlay)
+									item.isPlay = false;
+									console.log('isPlay',item.isPlay)
+								}
+							})
+						},110000)
 					}
 					// for (let i = 0; i < that.strArr.length; i++) {
 					// 	for (let j = i + 1; j < that.strArr.length; j++) {
@@ -573,6 +589,18 @@ export default {
 }
 .H5video {
 	width: 100%;
+}
+.playOut{
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;left:0;
+	background-color:rgba(0,0,0,.8);
+	line-height:100vh;
+	text-align:center;
+	color:#fff;
+	font-size:30upx;
+	z-index:999;
 }
 
 .nlv-footToolbar {
