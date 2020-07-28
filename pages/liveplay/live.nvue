@@ -79,7 +79,7 @@
 					v-model="sendInfo"
 					confirm-type="send"
 					confirm-hold
-					@blur="blurFocus"
+					@blur="closeInput"
 					:focus="inputFocusStatus"
 					@confirm="sendMessage"
 					:cursor-spacing="10"
@@ -221,18 +221,48 @@ export default {
 		this.SocketTask.close();
 	},
 	methods: {
-		//统一的关闭popup方法
-		hidePopup: function() {
-			// this.showPopupGoods = false;
-			this.$refs.proList.close();
+		// ****************** 直播******************
+		async play() {
+			let res = await post('TencentCloud/PlayListURL', {
+				MemberId: this.memberId,
+				UserId:this.userId,
+				Token:this.token
+			});
+			if (res.code) return;
+			const data = res.data;
+			if (data.length > 0) {
+				data.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
+				if (data[0].fType) {
+					this.getProList();
+				}
+				this.data = data[0];
+				this.livemessage();//打开聊天室
+				this.liveList = data;
+				console.log(this.data);
+			} else {
+				plus.nativeUI.toast("当前没人在直播哦~请晚点再来!");
+				setTimeout(() => {
+					uni.navigateBack();
+				}, 2000);
+			}
 		},
-		//展示商品
-		showGoods: function() {
-			if(!this.proList.length)return;
-			this.$refs.proList.open();
-			// this.hidePopup();
-			// this.showPopupGoods = true;
+		// 切换直播
+		swiperChange(e){
+			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
+			const index = e.detail.current
+			this.data = this.liveList[index];
+			this.livemessage();//打开聊天室
+			console.log(this.data);
+			this.strArr = [];//初始化消息
+			
+			if(this.data.fType){
+				this.getProList()
+			}
 		},
+		// ******************直播end******************
+		//  ****************** socket******************
 		// 获取WebSocketId 用于身份验证
 		async livemessage() {
 			this.SocketTask&&this.SocketTask.close();
@@ -310,72 +340,6 @@ export default {
 			}
 			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
-		async play() {
-			let res = await post('TencentCloud/PlayListURL', {
-				MemberId: this.memberId,
-				UserId:this.userId,
-				Token:this.token
-			});
-			if (res.code) return;
-			const data = res.data;
-			if (data.length > 0) {
-				data.map(item=>{
-					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
-				})
-				if (data[0].fType) {
-					this.getProList();
-				}
-				this.data = data[0];
-				this.livemessage();//打开聊天室
-				this.liveList = data;
-				console.log(this.data);
-				// #ifdef H5
-				this.$nextTick(()=>{
-					this.playH5();
-				})
-				// #endif
-			} else {
-				plus.nativeUI.toast("当前没人在直播哦~请晚点再来!");
-				setTimeout(() => {
-					uni.navigateBack();
-				}, 2000);
-			}
-		},
-		// 切换直播
-		swiperChange(e){
-			console.log(e.detail.current,'eee')
-			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
-			const index = e.detail.current
-			this.data = this.liveList[index];
-			this.livemessage();//打开聊天室
-			console.log(this.data);
-			this.strArr = [];//初始化消息
-			
-			if(this.data.fType){
-				this.getProList()
-			}
-		},
-		playH5() {
-			player = new TcPlayer(this.data.StreamName, {
-				RTMP:this.data.RTMP,
-				m3u8: this.data.HLS, //请替换成实际可用的播放地址
-				flv: this.data.FLV,
-				autoplay: true, //iOS 下 safari 浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
-				live: true,
-				controls: 'none',
-				systemFullscreen: false,
-				width: '480', //视频的显示宽度，请尽量使用视频分辨率宽度
-				height: this.height //视频的显示高度，请尽量使用视频分辨率高度
-			});
-			document.onload = function(e){
-				console.log('load',e)
-			}
-			document.onerror = function(e){
-				console.log('error',e)
-			}
-			console.log(player,'play')
-			player.play();
-		},
 		//发送消息
 		async sendMessage(e) {
 			let that = this;
@@ -412,7 +376,6 @@ export default {
 					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
-					console.log(obj, '接收到的消息');
 					if(obj.Info.indexOf('主播')!==-1){
 						this.getProList();
 					}
@@ -432,18 +395,6 @@ export default {
 							})
 						},110000)
 					}
-					// for (let i = 0; i < that.strArr.length; i++) {
-					// 	for (let j = i + 1; j < that.strArr.length; j++) {
-					// 		if (that.strArr[i].Id == that.strArr[j].Id) {
-					// 			//第一个等同于第二个，splice方法删除第二个
-					// 			that.strArr.splice(j, 1);
-					// 			j--;
-					// 		}
-					// 	}
-					// }
-					
-					console.log('arr', that.strArr);
-					// that.isshowInput = false;
 					that.$nextTick(function() {
 						//等最新一条消息dom更新，滚动到底部
 						// that.scrollTop = that.scrollTop + 50;
@@ -468,17 +419,8 @@ export default {
 			this.isshowInput = true;
 			this.inputFocusStatus = true;
 		},
-		//失去焦点
-		blurFocus() {
-			// this.isshowInput=false;
-			this.isshowInput = false;
-		},
-		//链接跳转
-		goUrl(url) {
-			uni.navigateTo({
-				url: url
-			});
-		},
+		//****************** socket-end******************
+		
 		// 关注
 		async onFollow(item) {
 			if(!toLogin()) return;
@@ -518,6 +460,15 @@ export default {
 			}
 		},
 		//***************商品***************
+		//统一的关闭popup方法
+		hidePopup: function() {
+			this.$refs.proList.close();
+		},
+		//展示商品
+		showGoods: function() {
+			if(!this.proList.length)return;
+			this.$refs.proList.open();
+		},
 		// 获取产品列表
 		async getProList() {
 			const res = await post('Goods/GetGoodsListByM', {
