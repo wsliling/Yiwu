@@ -2,7 +2,7 @@
 	<view class="playmusic">
 		<view class="warp">
 			<view class="playimgbox">
-				<image :src="itemdata.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="" :class="{'playLoading':!paused}"></image>
+				<image :src="itemdata.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="" :class="{'playLoading':isPlay}"></image>
 				<view class="border2">
 					<view class="border1"></view>
 				</view>
@@ -13,14 +13,13 @@
 			 <view class="imt-audio">
 			 	<view class="audio-control-wrapper">
 			 		<view class="audio-control iconfont icon-prev" @click="prev"></view>
-			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':paused?'icon-audioplay':'icon-audiopuse']" @click="operation"></view>
-			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next"></view>
+			 		<view :class="['audio-control audio-control-switch iconfont',loading?'icon-loading audioLoading':isPlay?'icon-audiopuse':'icon-audioplay']" @click="operation"></view>
+			 		<view class="audio-control iconfont icon-prev audio-control-next" @click="next(false)"></view>
 			 	</view>
 			 	<view class="audio-wrapper">
-			 		<view class="audio-number">{{currentTime}}</view>
-			 		<slider class="audio-slider" activeColor="#e32a76" backgroundColor="#b9b8b8" block-size="16" :value="current" :max="itemdata.ADuration" @changing="seek=true,current=$event.detail.value"
-			 		 @change="change"></slider>
-			 		<view class="audio-number">{{durationTime}}</view>
+			 		<view class="audio-number">{{curPlayTimeNum}}</view>
+			 		<slider class="audio-slider" activeColor="#e32a76" backgroundColor="#b9b8b8" block-size="16" :value="curPlayTime" :max="playTime" @change="sliderChange"></slider>
+			 		<view class="audio-number">{{playTimeNum}}</view>
 			 	</view>
 			 </view>
 			<view class="playicon">
@@ -29,8 +28,8 @@
 				 </view>
 			 	<view class="item" @click="tabPlayType">
 			 		<image src="http://yw.wtvxin.com/static/music/playicon1.png" mode="widthFix" v-if="playType==0"></image>
-					<image src="http://yw.wtvxin.com/static/music/playicon2.png" mode="widthFix" v-else-if="playType==1"></image>
-					<image src="http://yw.wtvxin.com/static/music/playicon3.png" mode="widthFix" v-else></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon2.png" mode="widthFix" v-else-if="playType==2"></image>
+					<image src="http://yw.wtvxin.com/static/music/playicon3.png" mode="widthFix" v-else-if="playType==1"></image>
 			 	</view>
 				<share class="item" :url="'/pages/music/playMusic/playMusic?type=share&id='+musicID">
 					<image src="http://yw.wtvxin.com/static/music/playicon4.png" mode="widthFix"></image>
@@ -46,9 +45,9 @@
 				<view class="uni-modal__hd pd15">播放列表</view>
 				<view class="uni-modal__bd">
 					<view class="line-list">
-						<view class="line-item" v-for="(item,index) in musicList" :key="index" @click="slectplay(index)">
+						<view class="line-item" v-for="(item,index) in musicList" :key="index" @click="initPlay(item.Id,index)">
 							<view class="line-item-l text_left">
-								<text :class="['txt',nowIndex==index?'c_theme':'']">{{item.Name}}</text>
+								<text :class="['txt',musicID==item.Id?'c_theme':'']">{{item.Name}}</text>
 							</view>
 						</view>
 					</view>
@@ -62,8 +61,14 @@
 </template>
 
 <script>
-	import {post,audio,toLogin,debounce,playMusic} from '@/common/util.js';
+	import {post,toLogin,formatSecond} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
+	import {
+		mapGetters,
+		mapMutations
+	} from 'vuex'
+	import Vue from 'vue'
+	let update = true;
 	export default {
 		components: {
 			uniPopup
@@ -75,168 +80,93 @@
 				musicList: [],
 				nowIndex: 0,
 				musicID:"",
-				duration: 0, //总时长（单位：s）
-				currentTime: '', //当前播放时间
-				durationTime: '', //总时长
-				current: '', //slider当前进度
 				loading: false, //是否处于读取状态
-				paused: true, //是否处于暂停状态
-				seek: false, //是否处于拖动状态
 				isCollect:0,//是否收藏
 				isbuy:0,//是否需要付费
-				itemdata:{},//舞曲信息
+				itemdata:{
+					ADuration: 0,
+					Audio: "",
+					Id: '',
+					IsCollect: 0,
+					IsShowBuy: '',
+					Is_Charge: '',
+					MemberId: "",
+					Name: "",
+					PicImg: "",
+					Price: '',
+					Source: ""
+				},//舞曲信息
 				isShowPlaylist:false,//弹出播放列表
-				playType:0,//0:顺序播放 1:单曲 2:随机
+				playType:0,//0:顺序播放  1:随机 2:单曲
 				h5Url:'',
 				type:'',
-				nowSrc:'',
-				waitFlag:false,
-				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
-				playnum:0,
-				pagetype:"",//页面来源
-				isIos:false
+				isPlay: true,
+				playTime: 0,
+				curPlayTime: 0,
+				curPlayIndex: 0,
 			}
 		},
-		watch: {
-			//监听总时长改变
-			duration(e) {
-				this.durationTime = this.format(e)
+		computed:{
+			...mapGetters(['audiolist']),
+			playTimeNum() {
+				return formatSecond(this.playTime)
 			},
-			//监听当前进度改变
-			current(e) {
-				this.currentTime = this.format(e)
-				console.log(this.currentTime)
-				
-			},
+			curPlayTimeNum() {
+				return formatSecond(this.curPlayTime)
+			}
 		},
 		onLoad(e) {
-			this.nowIndex=e.nowIndex||0
+			this.nowIndex=e.nowIndex;
 			this.musicID=e.id||'';
 			this.type = e.type||'';
-			this.pagetype=e.pagetype||'';
-			//#ifdef MP-WEIXIN
-			if(uni.getSystemInfoSync().platform=='ios'){
-				this.isIos=true
+			this.musicList=uni.getStorageSync("musicList");//音乐列表
+			if(!this.nowIndex){
+				this.musicList.forEach((v,i)=>{
+					if(v.Id == this.musicID ){
+						this.nowIndex = i;
+					}
+				})
+				this.curPlayIndex = this.nowIndex;
+			}else{
+				this.curPlayIndex = Number(this.nowIndex);
 			}
-			//#endif
+			if(uni.getStorageSync("playID")==this.musicID){
+				console.log("当前播放curPlayTime"+this.$au_player.currentTime)
+				console.log("当前播放this.playTime"+this.$au_player.duration)
+				if(this.$au_player.paused){
+					this.$au_player.play();
+				}
+				this.curPlayTime=Math.floor(this.$au_player.currentTime)
+				this.playTime=Math.floor(this.$au_player.duration)
+			}else{
+				this.curPlayTime=0;
+				this.playTime=0;
+			}
+			this.setAudiolist(this.musicList);
+			this.initPlay(this.musicID);
 		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			this.playIDtype=uni.getStorageSync("playIDtype")
-			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			this.playnum=0;
-			console.log(this.musicList.length,'list')
-			// 获取一条音乐，用户分享的页面
-			if(this.type==='share'){
-				this.getSoleMusic();
-				return;
-			}
-			if(this.musicList&&this.musicList.length&&this.nowIndex!=undefined&&!this.pagetype){
-				// this.isCollect=this.musicList[this.nowIndex].IsCollect;
-				// this.isbuy=this.musicList[this.nowIndex].IsShowBuy;
-				// this.itemdata=this.musicList[this.nowIndex];
-				// this.duration=this.itemdata.ADuration
-				// uni.setNavigationBarTitle({
-				// 	title: this.itemdata.Name
-				// })
-				// this.init()
-				this.getSoleMusic()
-			}
-			if(this.pagetype){
-				if(uni.getStorageSync("playID")){
-					this.musicID=uni.getStorageSync("playID")
-					this.getSoleMusic();
-				}else{
-					this.musicID=this.musicList[0].Id;
-					this.getSoleMusic(1);
-				}
-				
-			}
 		},
 		methods: {
-			init(){
-				//audio.offEnded()
-				let playID=uni.getStorageSync("playID");
-				this.durationTime = this.format(this.itemdata.ADuration);
-				this.currentTime = this.format(this.current);
-				// audio.autoplay =true
-				if(playID==this.musicID){
-					if(this.playnum==0){
-						this.playnum++
-						audio.play()
-					}
-					//音频进度更新事件
-					audio.onTimeUpdate(() => {
-						if (!this.seek) {
-							this.current = audio.currentTime;
-						}
-						this.loading=false
-					})
-				}else{
-					this.current = 0
-				}
-				//音频加载中
-				audio.onWaiting(()=>{
-					this.loading=true;
-					if(!this.isIos){
-						console.log("feiios加载中")
-						audio.pause();
-						this.waitFlag=true;// 标明是onWaiting触发的暂停
-					}
-				})
-				//音频暂停事件
-				audio.onPause(() => {
-					console.log("暂停状态444")
-					this.paused = true
-				})
-				//音频结束事件
-				audio.onEnded(() => {
-					if(this.playType!=1){
-						this.next()
-					}
-				})
-				//音频完成更改进度事件
-				audio.onSeeked(() => {
-					this.seek = false
-				})
-				audio.onCanplay(() => {
-					console.log("准备播放")
-					if(this.waitFlag){
-						console.log("加载成功播放")
-						audio.play()
-						this.waitFlag=false; 
-					}
-				})
-				//音频播放事件
-				audio.onPlay(() => {
-					console.log("播放状态")
-					this.paused = false
-					this.loading = false
-				})
-				audio.onError((res)=>{
-					console.log("播放错误"+JSON.stringify(res))
-				})
-			},
-			//格式化时长
-			format(num) {
-				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(Math.floor(num % 60)).length) + Math.floor(num % 60)
-			},
-			//播放/暂停操作
-			reOperation(){
-				let _this=this;
-				debounce(function(){
-					console.log("禁止频繁点击事件")
-					_this.operation()
-				})
+			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
+			sliderChange(e) {
+				this.curPlayTime = e.detail.value;
+				this.$au_player.seek(this.curPlayTime)
 			},
 			operation() {
 				if(this.isbuy==0){
-					playMusic(this.nowIndex,this.musicID,this.nowSrc)
-					this.init()
+					if (this.isPlay) {
+						this.$au_player.pause();
+					} else {
+						this.$au_player.play();
+					}
+					this.isPlay = !this.isPlay;
+					this.setIsplayingmusic(this.isPlay)
 				}else{
 					if(uni.getStorageSync("playID")!=this.musicID){
-						audio.pause();
+						this.$au_player.pause();
 					}
 					let _this=this;
 					if(!toLogin())return;
@@ -261,37 +191,52 @@
 					});
 				}
 			},
-			//完成拖动事件
-			change(e) {
-				audio.seek(e.detail.value)
-			},
+			
 			//弹出播放列表
 			ShowPlaylist(){
 				this.isShowPlaylist=true;
 			},
-			//选择播放
-			slectplay(index){
-				// console.log("选择播放index:"+index)
+			initPlay(id,index){
+				if(index){
+					this.curPlayIndex = index
+				}
+				Vue.prototype.cusPlay = this.onPlayFn
+				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
+				Vue.prototype.cusEnded = this.onEndedFn
+				Vue.prototype.cusWaiting = this.onWaitingFn
 				post('DanceMusic/Music_xq',{
-					UserId:this.userId,
-					Token:this.token,
-					MusicId:this.musicList[index].Id
+					UserId:uni.getStorageSync('userId'),
+					Token:uni.getStorageSync('token'),
+					MusicId:id
 				}).then(res=>{
+					if(this.type==='share'){
+						this.musicList=[];
+						this.musicList.push(res.data)
+						this.setAudiolist(this.musicList);
+					}
+					const surl = res.data.Audio;
 					if(res.data.IsShowBuy==0){
-						this.nowSrc=res.data.Audio;
 						this.nowIndex=index;
 						this.itemdata=res.data;
 						this.musicID=res.data.Id;
 						this.isbuy=res.data.IsShowBuy;
+						this.isCollect=res.data.IsCollect;
 						uni.setNavigationBarTitle({
 							title: this.itemdata.Name
 						})
-						console.log("this.nowIndex"+this.nowIndex)
-						console.log("this.musicID"+this.musicID)
-						playMusic(this.nowIndex,this.musicID,this.nowSrc)
-						this.init()
-						// this.operation();
-						// this.init();
+						// console.log("this.nowIndex"+this.nowIndex)
+						// console.log("this.musicID"+this.musicID)
+						if(uni.getStorageSync("playID")!=id){
+							console.log("src改变了")
+							this.setPlaydetail({id,pic:res.data.PicImg});
+							this.$au_player.autoplay = true;
+							this.$au_player.title = res.data.Name;
+							//app
+							this.$au_player.src = res.data.Audio;
+						}else{
+							// this.$au_player.startTime=this.curPlayTime
+							console.log("同一首歌")
+						}
 					}else{
 						let _this=this;
 						uni.showModal({
@@ -314,61 +259,71 @@
 							}
 						});
 					}
+				}).catch(e=>{
+					this.setIsplayactive(false)
 				})
-				
 			},
 			//切换播放顺序
 			tabPlayType(){
 				this.playType++
-				if(this.playType==1){
-					audio.loop = true;
-				}else{
-					audio.loop = false;
-				}
 				if(this.playType==3){
 					this.playType=0
 				}
 			},
-			//下一曲
-			next(){
-				// console.log("this.playType"+this.playType)
-				if(this.musicList.length<2)return;
-				if(this.playType==2){
-					let leng=this.musicList.length
-					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
-					if(num==this.nowIndex){//跳过正在播放的
-						this.next()
-					}{
-						this.slectplay(num)
-					}
-				}else{
-					let leng=this.musicList.length
-					if(this.nowIndex==leng-1){
-						this.slectplay(0)
-					}else{
-						this.slectplay(this.nowIndex*1+1)
-					}
+			onPlayFn() {
+				this.playTime = this.itemdata.ADuration;
+				this.isPlay = true
+				this.loading=false
+				this.setIsplayingmusic(true)
+				this.setIsplayactive(true)
+				uni.setStorageSync("playID",this.musicID)
+				console.log('onplaying')
+			},
+			onTimeUpdateFn() { 
+				const curtime = this.$au_player.currentTime
+				this.curPlayTime = Math.floor(curtime);
+			},
+			onEndedFn() {
+				console.log('ended')
+				this.isPlay = false;
+				this.setIsplayingmusic(false)
+				this.setIsplayactive(false)
+				this.next(true);
+			},
+			onWaitingFn(){
+				console.log("加载中")
+				this.loading=true;
+			},
+			getIndex(type, isAuto) {
+				//['列表循环', '随机播放', '单曲循环']
+				let next = 0;
+				let prev = 0;
+				const cur = this.curPlayIndex;
+				const last = this.audiolist.length - 1;
+				if (this.playType === 0 || this.playType === 2) {
+					next = cur == last ? 0 : cur + 1;
+					prev = cur == 0 ? last : cur - 1;
 				}
+				if (this.playType === 1) {
+					next = Math.floor(Math.random() * (last + 1))
+					prev = Math.floor(Math.random() * (last + 1))
+				}
+				if (isAuto && this.playType === 2) {
+					next = cur
+				}
+				return type == 'next' ? next : prev
+			},
+			//下一曲
+			next(isAuto){
+				const index = this.getIndex('next', isAuto)
+				this.initPlay(this.audiolist[index].Id)
+				this.curPlayIndex = index;
 			},
 			//上一曲
 			prev(){
-				if(this.musicList.length<2)return;
-				if(this.playType==2){
-					let leng=this.musicList.length
-					let num=Math.floor(Math.random() * leng);//生成一个0~length的随机数
-					if(num==this.nowIndex){//跳过正在播放的
-						this.next()
-					}else{
-						this.slectplay(num)
-					}
-				}else{
-					let leng=this.musicList.length
-					if(this.nowIndex==0){
-						this.slectplay(leng)
-					}else{
-						this.slectplay(this.nowIndex*1-1)
-					}
-				}
+				const index = this.getIndex('prev')
+				this.initPlay(this.audiolist[index].Id)
+				this.curPlayIndex = index;
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
@@ -383,7 +338,7 @@
 					FindId: this.musicID,
 				});
 				if(result.code==0){
-					if(this.musicList[this.nowIndex].IsCollect==0){
+					if(this.isCollect==0){
 						this.isCollect=1
 					}else{
 						this.isCollect=0
@@ -392,9 +347,6 @@
 						title:result.msg,
 						icon:"none"
 					})
-					//刷新状态
-					this.musicList[this.nowIndex].IsCollect=this.isCollect;
-					uni.setStorageSync("musicList",this.musicList);
 				}else if(result.code==2){
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
@@ -409,33 +361,6 @@
 					});
 				}}
 			},
-			// 获取一条音乐详情
-			getSoleMusic(noplay){
-				post('DanceMusic/Music_xq',{
-					UserId:this.userId,
-					Token:this.token,
-					MusicId:this.musicID
-				}).then(res=>{
-					const data = res.data;
-					if(this.type==='share'){
-						this.musicList=[];
-						this.musicList.push(data)
-					}
-					this.nowSrc=data.Audio;
-					this.isCollect=data.IsCollect;
-					this.isbuy=data.IsShowBuy;
-					this.duration=data.ADuration
-					this.itemdata=data;
-					uni.setNavigationBarTitle({
-						title: data.Name
-					})
-					if(!noplay){
-						this.operation();
-					}
-					//this.init()
-					if(!toLogin())return;
-				})
-			}
 		}
 	}
 </script>

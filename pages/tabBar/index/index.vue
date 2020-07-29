@@ -86,7 +86,7 @@
 								<!-- <view class="audioinfo uni-ellipsis2">
 									{{item.Title}}
 								</view> -->
-								<view :class="['isaudio',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="playAudio(item.Id,item.VideoUrl)">
+								<view :class="['isaudio',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playAudio(item)">
 									<view class="line line1"></view>
 									<view class="line line2"></view>
 									<view class="line line3"></view>
@@ -171,15 +171,18 @@
 			<noData v-if="noDataIsShow1"></noData>
 		</view>
 		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
+		<playerMin :pagetype="'share'"></playerMin>
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,navigate,debounce,audio,playMusic} from '@/common/util.js';
+	import {post,get,toLogin,navigate} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import share from '@/components/share/share.vue'; //加载更多
+	import Vue from 'vue'
+	import {mapGetters,mapMutations} from 'vuex'
 	export default {
 		components: {
 			noData,
@@ -234,7 +237,7 @@
 				index1:0,
 				IsEdit:false,
 				playID:"",//当前播放
-				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+				playIDtype:false,//当前播放舞曲的状态false：暂停 true：播放中
 				xqUrl:[
 					{
 						type:0,
@@ -271,14 +274,16 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.playID=uni.getStorageSync("playID");
-			this.playIDtype=uni.getStorageSync("playIDtype");
+			this.playIDtype=this.$store.state.isplayingmusic;
 		},
 		computed: {
 		   tabStyle(){
 		     return ((750/this.tabnav.length)*this.tabIndex)+(((750/this.tabnav.length)-68)/2)
-		   }
+		   },
+		   ...mapGetters(['isplayingmusic'])
 		 },
 		methods: {
+			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
 			init(index){
 				if(index==0){
 					this.recuserlist=[];//推荐用户
@@ -496,27 +501,42 @@
 					}
 				})
 			},
-			playAudio(id,nowSrc){
-				debounce(function(){
-					playMusic('',id,nowSrc);
-				})
-				//音频暂停事件
-				audio.onPause(() => {
-					this.playID=uni.getStorageSync("playID");
-					this.playIDtype=0;
-				})
-				//音频播放事件
-				audio.onPlay(() => {
-					this.playID=uni.getStorageSync("playID");
-					this.playIDtype=1;
-				})
-				// this.playID=uni.getStorageSync("playID");
-				// this.playIDtype=uni.getStorageSync("playIDtype");
-				//音频结束事件
-				audio.onEnded(() => {
-					uni.setStorageSync("playIDtype",0)
-					this.playIDtype=0;
-				})
+			playAudio(item){
+				let src=item.VideoUrl,
+				    id=item.Id,
+					PicImg=item.PicImg;
+				this.setPlaydetail({id,pic:PicImg});
+				this.setIsplayactive(true)
+				this.playID=id;
+				if(id==uni.getStorageSync("playID")){
+					if (this.playIDtype) {
+						this.$au_player.pause();
+					} else {
+						this.$au_player.play();
+					}
+					this.playIDtype=!this.playIDtype;
+				}else{
+					this.playIDtype=true;
+					this.$au_player.src = src;
+					this.$au_player.play();
+				}				
+				this.setIsplayingmusic(this.playIDtype)
+				Vue.prototype.cusPlay = this.onPlayFn
+				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
+				Vue.prototype.cusEnded = this.onEndedFn
+			},
+			onPlayFn(){
+				this.setIsplayactive(true)
+				uni.setStorageSync("playID",this.playID);
+			},
+			onEndedFn() {
+				this.playIDtype = false;
+				this.setIsplayingmusic(false)
+				this.setIsplayactive(false)
+			},
+			onTimeUpdateFn() {
+				const curtime = this.$au_player.currentTime
+				return Math.floor(curtime)
 			},
 			//分页视频
 			async YWNewsList(){
