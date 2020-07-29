@@ -77,6 +77,7 @@ export default {
 			showgoodsbox: false,//商品展示
 			SocketTask:null,
 			socketStatus:false,
+			liveErrNum:0,
 			strArr:[
 				{name:'系统提示',Info:'开始直播'},
 			],//弹幕列表
@@ -86,6 +87,7 @@ export default {
 			scrollTop:2000,//滚动到底部
 			liveType:0, //直播类型。0--舞者;1--店铺
 			proList:[],//产品列表
+			xintiao:null,
 		};
 	},
 	onLoad(e){
@@ -105,6 +107,7 @@ export default {
 		this.quanxian();
 	},
 	methods: {
+		// 判断是否已开启权限
 		async quanxian() {
 			let platform = uni.getSystemInfoSync()&&uni.getSystemInfoSync().platform;
 			
@@ -211,13 +214,15 @@ export default {
 		// 开始直播
 		async getPlay() {
 			this.livemessage()// 开启实时聊天
+			// 获取直播列表
 			let res = await post('TencentCloud/PushURL', {
 				// push: '',
 				UserId: this.userId,
 				Token: this.token,
 				pType:this.liveType//0--舞者;1--店铺
 			});
-			if (res.code == 0) {console.log(res)
+			console.log(res)
+			if (res.code == 0) {
 				this.url = res.data.RTMP;
 				this.context = uni.createLivePusherContext('livePusher', this);
 				console.log('准备开启直播',JSON.stringify(this.context))
@@ -248,14 +253,6 @@ export default {
 				}, 2000);
 			}
 		},
-		// 开启美颜
-		openmeiyan() {
-			if (this.beauty == 0) {
-				this.beauty = 9;
-			} else {
-				this.beauty = 0;
-			}
-		},
 		startLive() {
 			let _this = this;
 			this.context.start({
@@ -265,6 +262,19 @@ export default {
 				}
 			});
 		},
+		// 结束直播弹窗
+		stopLive() {
+			const that = this;
+			uni.showModal({
+				title:'是否结束直播！',
+				success(res){
+					if(res.confirm){
+						// that.returns()
+						uni.navigateBack();
+					}
+				}
+			})
+		},
 		// 结束直播
 		returns() {
 			console.log('准备关闭直播',JSON.stringify(this.context));
@@ -273,6 +283,7 @@ export default {
 				UserId: this.userId,
 				Token: this.token
 			}));
+			this.xintiao&&clearInterval(this.xintiao)
 			// post('TencentCloud/PushCallBack').then(res=>{
 			// 	console.log('关闭直播请求成功res',JSON.stringify(res))
 			// }).catch(err=>{
@@ -286,19 +297,15 @@ export default {
 				}
 			});
 		},
-		// 结束直播
-		stopLive() {
-			const that = this;
-			uni.showModal({
-				title:'是否结束直播！',
-				success(res){
-					if(res.confirm){
-						// that.returns()
-						uni.navigateBack();
-					}
-				}
-			})
+		// 开启美颜
+		openmeiyan() {
+			if (this.beauty == 0) {
+				this.beauty = 9;
+			} else {
+				this.beauty = 0;
+			}
 		},
+		
 		// 切换摄像头
 		switchCamera() {
 			this.context.switchCamera({
@@ -324,18 +331,12 @@ export default {
 		// 获取WebSocketId 用于身份验证
 		async livemessage(){
 			let res =await post('User/GetWebSocketId',{
-				UserId: uni.getStorageSync('userId'),
-				Token: uni.getStorageSync('token'),
+				UserId: this.userId,
+				Token: this.token,
 				Type: this.liveType,
 				ToMemberId:this.userId
 			})
-			console.log({
-				UserId: uni.getStorageSync('userId'),
-				Token: uni.getStorageSync('token'),
-				Type: this.liveType,
-				ToMemberId:''
-			})
-			console.log(res)
+			console.log('连接socket',res)
 			if(res.code) return;
 			this.Signature=res.data.Signature
 			this.TimeStamp=res.data.TimeStamp
@@ -358,13 +359,26 @@ export default {
 				let data=this.LoginData(1,this.TimeStamp,this.SecretKey)
 				this.SocketTask.send({data:JSON.stringify(data)})
 				console.log("发送数据",data);
+				this.xintiao&&clearInterval(this.xintiao)
+				//心跳连接
+				this.xintiao = setInterval(()=>{ 
+					console.log('发送了一次心跳测试')
+					that.pushMsg('ping')
+				},100000)
 			});
 			this.onMessage()
 			this.SocketTask.onError(function (res) {
-			  console.log('WebSocket连接打开失败，请检查！');
+				uni.showModal({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum});
+				// 如果没超过20次就重新连接
+				if(this.liveErrNum<20){
+					this.liveErrNum+=1;
+					this.livemessage();
+				}
 			});
 			this.SocketTask.onClose(close => {
 				console.log("close", close);
+				uni.showModal({title:'WebSocket连接已断开'+this.SocketTask});
+				
 				this.socketStatus = false;
 			});
 		},
@@ -375,21 +389,17 @@ export default {
 		
 			this.SocketTask.onMessage(r => {
 				msg=JSON.parse(r.data)
-				console.log(msg,55555)
+				console.log(msg,'收到的消息')
 				if(msg.code==1){
 					
 				}else if(msg.code==3||msg.code==0){
 					let obj=JSON.parse(msg.data.Id)
 					console.log(obj,987)
-					that.strArr.push(obj)
-					// for(let i=0; i<that.strArr.length; i++){
-					//     for(let j=i+1; j<that.strArr.length; j++){
-					//         if(that.strArr[i].Id==that.strArr[j].Id){ //第一个等同于第二个，splice方法删除第二个
-					//             that.strArr.splice(j,1);
-					//             j--;
-					//         }
-					//     }
-					// }
+					if(obj.Info!=='ping'){
+						that.strArr.push(obj);
+					}else{
+						console.log('接收了一次心跳测试')
+					}
 					console.log('arr',that.strArr)
 					this.$nextTick(function(){//等最新一条消息dom更新，滚动到底部
 						// that.scrollTop=this.scrollTop+50;
@@ -398,6 +408,7 @@ export default {
 						
 					})
 				}else if(msg.code==2){//连接断开，重新连接
+					uni.showModal({title:'WebSocket连接已断开，onMessage'});
 					// let data=that.LoginData(1,that.TimeStamp,that.SecretKey)
 					// that.SocketTask.send({data:JSON.stringify(data)})
 					// uni.showToast({
@@ -415,6 +426,19 @@ export default {
 			}
 			// console.log(data)
 			return data;
+		},
+		// 推送一条消息
+		pushMsg(text,name=''){
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:text,
+					name:name||'系统提示'
+				}),
+				Info:text,
+			}
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
 		//******************产品*******************************
 		// 获取产品列表
@@ -449,6 +473,16 @@ export default {
 				title:res.msg,
 				icon:'none'
 			})
+			let data = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:'主播'+item.confirmText+'<'+item.Name+'>',
+					name:'系统消息'
+				}),
+				Info:item.Name,
+			}
+			this.SocketTask.send({ data: JSON.stringify(data) });
 			if(item.confirmText=='取消推荐'){
 				item.confirmText ='推荐商品';
 			}else{
@@ -459,7 +493,8 @@ export default {
 	// 页面卸载
 	onUnload(){
 		console.log('直播onUnload')
-		// this.returns();
+		this.xintiao&&clearInterval(this.xintiao)
+		this.returns();
 	},
 	onHide(){
 		console.log('直播onHide')

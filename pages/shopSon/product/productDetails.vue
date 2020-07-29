@@ -112,7 +112,9 @@
 			<view class="plan">卖家服务 4.7 <span>低</span></view>
 			<view class="plan">物流服务 4.8 <span>低</span></view>
 		</view> -->
-		<div class="contentDetail" v-html="data.ContentDetail"></div>
+		<view class="contentDetail">
+			<uParse :content="data.ContentDetail" />
+		</view>
 		
 		<div class="foot ali-c jus-b">
 			<div class="left ali-c">
@@ -149,9 +151,10 @@
 <script>
 import {post,get,toLogin,navigate,toast,previewImage} from '@/common/util.js';
 import sku from '@/components/sku/popsku.vue'
+import uParse from '@/components/uParse/src/wxParse.vue';
 export default {
 	components:{
-		sku
+		sku,uParse
 	},
 	data() {
 		return {
@@ -226,6 +229,7 @@ export default {
 			}
 			// data.ServiceKeyss = data.ServiceKeys.split('，');
 			data.ContentDetail = data.ContentDetail.replace(/<img/g,'<img style="max-width:100%;"')
+			data.ContentDetail = data.ContentDetail.replace(/<video/g,'<video style="max-width:100%;"')
 			this.productInfo={
 				img:data.PicData[0].PicUrl,//默认产品图片
 				maxbuy:data.MaxBuyNum,//最大购买量
@@ -687,5 +691,8 @@ export default {
 	}
 
 	
+}
+.contentDetail{
+	padding: 30upx;
 }
 </style>

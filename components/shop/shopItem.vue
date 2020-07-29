@@ -17,7 +17,7 @@
                     @click="navigate('shopSon/product/productDetails',{proId:item.Id})">
                 <image :src="item.PicNo" mode="aspectFill"></image>
                 <view class="live-day" v-if="item.IsExplosive||item.IsRecommend||item.IsNewProduct">
-                    {{item.IsExplosive?'今日爆款':item.IsRecommend?'推荐':item.IsNewProduct?'新品':''}}
+                    {{item.IsExplosive?'今日爆款':item.IsNewProduct?'新品':''}}
                 </view>
                 <view class="live-int">
                     <view class="live-tit">{{item.Name}}</view>

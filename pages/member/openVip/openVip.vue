@@ -65,7 +65,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,throttle} from '@/common/util.js';
+	import {post,get,toLogin,throttle, getUrlParam,isWeixin,GetUrlRelativePath} from '@/common/util.js';
 	import pay from '@/components/pay.vue';
 	import {payFn} from './payvip';
 	export default {
@@ -95,6 +95,14 @@
 				isVIP:option.isVIP
 			} 
 			this.getData();
+			// #ifdef H5
+			this.WxCode=getUrlParam("code");
+			this.WxOpenid = uni.getStorageSync("openId");
+			if(this.WxCode){//首次跳转获取code地址都直接调起支付
+				let orderNo=option.orderNo;
+				this.payweixin(orderNo)
+			}
+			// #endif
 		},
 		onShow(){
 			
@@ -105,8 +113,8 @@
 			},
 			async getData(){
 				const res = await post('User/GetPlusMemberList',{
-					UserId:this.userId,
-					Token:this.token
+					UserId:uni.getStorageSync("userId"),
+					Token:uni.getStorageSync("token")
 				})
 				if(res.code)return;
 				this.setmeal = res.data[0].Id;
@@ -149,11 +157,24 @@
 				})
 				const data= res.data;
 				this.orderNo =data.plusNo;
+				// #ifdef H5
+				if(e.id==0){
+					this.payweixin(this.orderNo)
+				}else{
+					payFn(e,{
+						orderNo:data.plusNo,
+						TotalPrice:this.totalprice,
+						payPassword
+					})
+				}
+				// #endif
+				// #ifndef H5
 				payFn(e,{
 					orderNo:data.plusNo,
 					TotalPrice:this.totalprice,
 					payPassword
 				})
+				// #endif
 				// if(e.payType==0){
 					
 				// }else if(e.payType==2){
@@ -161,8 +182,78 @@
 				// }else if(e.payType==1){//余额
 				// 	const password = e.password;
 				// }
-			}
-			
+			},
+			//微信公众号支付  微信自带浏览器的h5支付
+			async payweixin(orderNo) {
+			    let NewUrl=GetUrlRelativePath() +'/#/pages/member/openVip/openVip?orderNo='+orderNo+'&avatar='+this.info.avatar+'&name='+this.info.name+'&endTime='+this.info.endTime+'&isVIP='+this.info.isVIP;
+			    let result = await post("User/WeiXinPlus", {
+			        UserId: uni.getStorageSync('userId'),
+			        Token: uni.getStorageSync('token'),
+			        orderNo:orderNo,
+			        NewUrl:NewUrl,//支付后的回调地址
+			        WxCode:this.WxCode,
+			        WxOpenid:this.WxOpenid,
+			        paytype:0
+			    })
+			    if (result.code == 201) { //检测不到openid需要进行微信授权
+			        window.location.href=result.data;
+			    }else if(result.code == 0){console.log(result.data)
+			        uni.setStorageSync('openId', result.data.openid);
+			        this.WxOpenid = uni.getStorageSync("openId");
+			        if(this.WxOpenid!=""&&this.WxOpenid!="undefined"){
+			            this.WxCode="";//每次获取的code只能使用一次，有openid时用openid调起支付数据
+			        }
+			        this.callpay(result.data.JsParam);
+			    }else {
+			        uni.showToast({
+			            title: result.msg,
+			            icon: "none",
+			            duration: 1500
+			        });
+			    }
+			},
+			// GetUrlRelativePath() {
+			// 	var urlStr = '';　　　　
+			// 	var url = document.location.toString();　　　　
+			// 	var arrUrl = url.split("//");　　　　
+			// 	var start = arrUrl[1].split("/");
+			// 	urlStr = arrUrl[0] + '//' + start[0];　　　　
+			// 	return urlStr;　　
+			// },
+			//微信公众号支付
+			callpay(param) {
+				if(typeof WeixinJSBridge === 'undefined') {
+					if(document.addEventListener) {
+						document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(), false);
+					} else if(document.attachEvent) {
+						document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady());
+						document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady());
+					}
+				} else {
+					this.onBridgeReady(param);
+				}
+			},
+			onBridgeReady(param){
+				var _this=this;
+				var parameter = JSON.parse(param);
+				WeixinJSBridge.invoke(
+					'getBrandWCPayRequest', parameter,
+					function(res){
+					if(res.err_msg == "get_brand_wcpay_request:ok" ){
+					// 使用以上方式判断前端返回,微信团队郑重提示：
+					//res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
+						setTimeout(()=>{
+							uni.navigateBack();
+						},1500)
+					}else{
+						uni.showToast({
+							title: "支付失败",
+							icon: "none",
+							duration: 1500
+						});
+					} 
+				}); 
+			},
 		}
 	}
 </script>

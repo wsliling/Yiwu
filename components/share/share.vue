@@ -31,19 +31,33 @@ export default {
     },
     data(){
         return {
-
+			data:{}
         }
     },
     methods:{
+		editUrl(params){
+			if(!this[params])return;
+			if(this[params].indexOf('?')==-1){
+				this.data[params] =this[params]+'?'
+			}else{
+				this.data[params] =this[params]+'&'
+			}
+			console.log(this.data[params],params,'111')
+			this.data[params] += `inviteCode=${uni.getStorageSync('myInviteCode')}`
+		},
         // h5复制链接，app调用分享api
         share(e){
+			this.editUrl('h5Url')
+			this.editUrl('wxUrl')
+			this.editUrl('appUrl')
+			this.editUrl('url')
             // #ifdef APP-PLUS
 				uni.share({
 				    provider: "weixin",
 				    scene: "WXSceneSession",
 				    type: 0,
 					title:'壹舞',
-				    href: this.appUrl?webUrl+'/#'+this.appUrl:webUrl+'/#'+this.url,
+				    href: this.data.appUrl?webUrl+'/#'+this.data.appUrl:webUrl+'/#'+this.data.url,
 				    success: function (res) {
 				        console.log("success:" + JSON.stringify(res));
 				    },
@@ -55,7 +69,7 @@ export default {
             // #ifdef H5
             console.log('h5')
             console.log(window.location.origin)
-            const status = h5Copy(this.h5Url?window.location.origin+'/#'+this.h5Url:window.location.origin+'/#'+this.url)
+            const status = h5Copy(this.data.h5Url?window.location.origin+'/#'+this.data.h5Url:window.location.origin+'/#'+this.data.url)
             if(status){
                 uni.showToast({title:'链接复制成功，快去分享给好友吧~'})
             }else{
@@ -71,7 +85,7 @@ export default {
         if (res.from === 'button') {}
         return {
         title: '壹舞',
-        path: this.wxUrl||this.url,
+        path: this.data.wxUrl||this.data.url,
         success: function(res) {}
         }
     }
