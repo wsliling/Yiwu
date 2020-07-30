@@ -170,7 +170,9 @@
 			</view>
 			<noData v-if="noDataIsShow1"></noData>
 		</view>
+		<!-- #ifndef MP-WEIXIN -->
 		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
+		<!-- #endif -->
 	</view>
 </template>
 

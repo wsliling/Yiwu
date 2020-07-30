@@ -109,6 +109,9 @@
 				</div>
 			</div>
 		</uni-popup>
+		<div class="popGift" v-if="PopGiftImg&&showPopGift">
+			<img :src="PopGiftImg" alt="" mode="widthFix" id="giftpop">
+		</div>
 	</view>
 </template>
 
@@ -156,6 +159,8 @@ export default {
 			myMoney:0,//我的直播币
 			userInfo:{},
 			xintiaoOut:null,//没有接收到心跳包的退出定时器,用于判断是否主播已离开
+			showPopGift:false,//显示送礼的动画
+			PopGiftImg:'',
 		};
 	},
 	onLoad(e) {
@@ -183,10 +188,12 @@ export default {
 	onHide() {
 		if(!this.SocketTask)return;
 		this.SocketTask.close();
+		this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 	},
 	onUnload() {
 		if(!this.SocketTask)return;
 		this.SocketTask.close();
+		this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 	},
 	methods: {
 		// **************直播************
@@ -296,7 +303,7 @@ export default {
 				})
 			});
 			this.onMessage();
-			this.SocketTask.onError(function(res) {
+			this.SocketTask.onError((res)=> {
 				// 如果没超过10次就重新连接
 				if(this.liveErrNum<20){
 					this.liveErrNum+=1;
@@ -306,6 +313,10 @@ export default {
 			});
 			this.SocketTask.onClose(close => {
 				this.SocketTask=null;
+				if(this.liveErrNum<99){
+					this.liveErrNum+=1;
+					this.connectSocket();
+				}
 				console.log('close1', close);
 			});
 		},
@@ -320,13 +331,15 @@ export default {
 			return data;
 		},
 		// 推送一条消息
-		pushMsg(text,name=''){
+		pushMsg(text,name='',type,content){
 			let sendData = {
 				MsgType:3,
 				Id:JSON.stringify({
 					Id:new Date().getTime(),
 					Info:text,
-					name:name||'系统提示'
+					name:name||'系统提示',
+					type,//3-送礼
+					content,//根据类型判断内容
 				}),
 				Info:text,
 			}
@@ -493,7 +506,16 @@ export default {
 			})
 			if(res.code)return;
 			this.myMoney -= item.Cost;
-			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name)
+			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name,'系统提示',3,item.Img)
+			// 送礼动画
+			this.PopGiftImg = item.Img;
+			setTimeout(()=>{
+				this.showPopGift = true;
+				setTimeout(()=>{
+						this.showPopGift = false;
+					},2000)
+			},500)
+			// 送礼动画end
 			uni.showToast({
 				title:'赠送成功！'
 			})
@@ -822,6 +844,44 @@ export default {
 		text-align:center;
 		display:inline-block;
 		margin:0 5upx;
+	}
+}
+.popGift{
+	position:fixed;
+	top:0;left:0;
+	width:100%;
+	#giftpop{
+		width:40%; 
+		position:relative;
+		margin:250upx auto;
+		display:block;
+		animation:gifypop 2s infinite;
+	}
+}
+@keyframes gifypop {
+	0% {
+		margin-left:-50%;
+		transform:skewX(-20deg);
+	}
+	10% {
+		margin-left:30%;
+		transform:skewX(-30deg);
+	}
+	30% {
+		margin-left:30%;
+		transform:skewX(0deg);
+	}
+	
+	40% {transform:skewX(30deg);margin-left:30%;}
+	50% {transform:skewX(-30deg);margin-left:30%;}
+	60% {transform:skewX(30deg);margin-left:30%;}
+	70% {transform:skewX(0deg);margin-left:30%;}
+	90% {
+		transform:skewX(0deg);
+		margin-left:30%;}
+	100% {
+		margin-left:100%;
+		transform:skewX(20deg);
 	}
 }
 </style>

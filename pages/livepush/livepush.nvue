@@ -51,6 +51,10 @@
 		<uni-popup type="bottom" ref="proList">
 			<proList :list="proList" @confirm="recommendPro"></proList>
 		</uni-popup>
+		<div class="popGift" v-if="PopGiftImg&&showPopGift">
+			<image :src="PopGiftImg" alt="" mode="widthFix" id="giftpop" class="giftpop"
+			 :style="`margin-left:${scale}upx`">
+		</div>
 	</div>
 </template>
 
@@ -88,6 +92,10 @@ export default {
 			liveType:0, //直播类型。0--舞者;1--店铺
 			proList:[],//产品列表
 			xintiao:null,
+			showPopGift:false,//显示送礼的动画
+			PopGiftImg:'',
+			scale:-300,
+			scaleTime:null,
 		};
 	},
 	onLoad(e){
@@ -378,7 +386,10 @@ export default {
 			this.SocketTask.onClose(close => {
 				console.log("close", close);
 				uni.showModal({title:'WebSocket连接已断开'+this.SocketTask});
-				
+				if(this.liveErrNum<99){
+					this.liveErrNum+=1;
+					this.connectSocket()
+				}
 				this.socketStatus = false;
 			});
 		},
@@ -397,6 +408,10 @@ export default {
 					console.log(obj,987)
 					if(obj.Info!=='ping'){
 						that.strArr.push(obj);
+						if(obj.type==3){
+							that.PopGiftImg = obj.content;
+							this.animations();
+						}
 					}else{
 						console.log('接收了一次心跳测试')
 					}
@@ -488,7 +503,30 @@ export default {
 			}else{
 				item.confirmText ='取消推荐';
 			}
-		}
+		},
+		// 送礼动画
+		animations(){
+			this.showPopGift = true;
+			this.scale = -300;
+			this.scaleTime = setInterval(()=>{
+				if(this.scale>200){
+					clearInterval(this.scaleTime)
+					setTimeout(()=>{
+						this.scaleTime = setInterval(()=>{
+							if(this.scale>750){
+								this.showPopGift = false;
+								clearInterval(this.scaleTime)
+							}else{
+								this.scale += 20;
+							}
+						},8)
+					},1500)
+				}else{
+					this.scale += 20;
+				}
+			},8)
+		},
+		
 	},
 	// 页面卸载
 	onUnload(){
@@ -630,4 +668,52 @@ export default {
 	width: 100%;
 }
 
+	.popGift{
+		position:fixed;
+		top:300upx;left:0;
+		width:750upx;
+		height:1000upx
+	}
+		.giftpop{
+			position:relative;
+			width:300upx;
+			display:block;
+			transform:scale(1);
+			transition-duration:2000; 
+			animation:gifypop 2000 infinite;
+			animation-name:gifypop;
+			animation-duration:2000;
+			animation-iteration-count:3;
+		}
+	@keyframes gifypop {
+		0% {
+			margin-left:-300upx;
+			transform:skewX(-20deg);
+		}
+		10% {
+			margin-left:-225upx;
+			transform:skewX(-30deg);
+		}
+		30% {
+			margin-left:-225upx;
+			transform:skewX(0deg);
+		}
+		
+		40% {transform:skewX(30deg);
+			margin-left:225upx;}
+		50% {transform:skewX(-30deg);
+			margin-left:225upx;}
+		60% {transform:skewX(30deg);
+			margin-left:225upx;}
+		70% {transform:skewX(0deg);
+			margin-left:225upx;}
+		90% {
+			transform:skewX(0deg);
+			
+			margin-left:225upx;}
+		100% {
+			margin-left:750upx;
+			transform:skewX(20deg);
+		}
+	}
 </style>
