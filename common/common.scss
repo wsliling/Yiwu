@@ -785,7 +785,9 @@ a {
 		overflow-y: auto;
 	}
 }
-
+.musiclist .item .icon{
+	padding: 20upx 10upx;
+}
 .autotop{
   padding-top:var(--status-bar-height);
 }

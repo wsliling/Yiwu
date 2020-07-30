@@ -6,9 +6,9 @@
 					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
-					<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
+					<view :class="['name uni-ellipsis',(playID==item.Id&&isplayingmusic)?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="playBtn(item)"><image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
 						<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
@@ -77,14 +77,17 @@
 			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</view>
 		<noData :isShow="noDataIsShow"></noData>
+		<playerMin></playerMin>
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,debounce,playMusic} from '@/common/util.js';
+	import {post,get,toLogin} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
+	import Vue from 'vue'
+	import {mapGetters,mapMutations} from 'vuex'
 	export default {
 		components: {
 			uniPopup,
@@ -106,7 +109,7 @@
 				isShowSelect:false,
 				isCollect:false,//是否收藏
 				playID:"",//当前播放
-				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+				playIDtype:false,//当前播放舞曲的状态false：暂停 true：播放中
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
 				itemdata:{},
@@ -116,11 +119,15 @@
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
-			this.playID=uni.getStorageSync("playID")
-			this.playIDtype=uni.getStorageSync("playIDtype")
+			this.playID=uni.getStorageSync("playID");
+			this.playIDtype=this.$store.state.isplayingmusic;
 			this.workeslist();
 		},
+		computed: {
+		   ...mapGetters(['isplayingmusic'])
+		 },
 		methods: {
+			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
 			/*获取列表*/
 			async workeslist() {
 				let result = await post('DanceMusic/MemberPalyVideoList', {
@@ -155,6 +162,7 @@
 						this.isLoad = true;
 						this.loadingType = 0
 					}
+					this.setAudiolist(this.datalist);
 				}else if(result.code==2){
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
@@ -170,30 +178,50 @@
 				}
 			},
 			//播放
-			rePlayBtn(index,id,isbuy){
-				let _this=this;
-				debounce(function(){
-					console.log("禁止频繁点击")
-					_this.playBtn(index,id,isbuy);
-				})
-			},
-			playBtn(index,id,isbuy){
+			playBtn(item){
+				let src=item.Audio,
+				    id=item.Id,
+					isbuy=item.IsShowBuy,
+					PicImg=item.PicImg;
+				this.setPlaydetail({id,pic:PicImg});
 				if(isbuy==0){
-					uni.setStorageSync("musicList",this.datalist)
-					if(this.playID==id){
-						this.playID="";
+					this.setIsplayactive(true)
+					this.playID=id;
+					if(id==uni.getStorageSync("playID")){
+						if (this.playIDtype) {
+							this.$au_player.pause();
+						} else {
+							this.$au_player.play();
+						}
+						this.playIDtype=!this.playIDtype;
 					}else{
-						this.playID=id;
-					}
-					playMusic(index,id)
-					this.playID=uni.getStorageSync("playID")
-					this.playIDtype=uni.getStorageSync("playIDtype")
+						this.playIDtype=true;
+						this.$au_player.src = src;
+						this.$au_player.play();
+					}				
+					this.setIsplayingmusic(this.playIDtype)
+					Vue.prototype.cusPlay = this.onPlayFn
+					Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
+					Vue.prototype.cusEnded = this.onEndedFn
 				}else{
 					uni.showToast({
 						title:"抱歉！该舞曲需付费",
 						icon:"none"
 					})
 				}
+			},
+			onPlayFn(){
+				this.setIsplayactive(true)
+				uni.setStorageSync("playID",this.playID);
+			},
+			onEndedFn() {
+				this.playIDtype = false;
+				this.setIsplayingmusic(false)
+				this.setIsplayactive(false)
+			},
+			onTimeUpdateFn() {
+				const curtime = this.$au_player.currentTime
+				return Math.floor(curtime)
 			},
 			toplaylist(id,index){
 				uni.setStorageSync("musicList",this.datalist)

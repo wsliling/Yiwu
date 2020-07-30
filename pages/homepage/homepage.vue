@@ -79,8 +79,8 @@
 			</view>
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
 				<view class="item audiobox" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
-					<view :class="['islive',playID==item.Id&&playIDtype==1?'active':'']" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)">
-						<image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
+					<view :class="['islive',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playBtn(item)">
+						<image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
 					</view>
 					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
@@ -119,13 +119,16 @@
 				</view>
 			</view>
 		</view>
+		<playerMin></playerMin>
 	</view>
 </template>
 
 <script>
-import {post,get,toLogin,navigate,debounce,audio,playMusic} from '@/common/util.js';
+import {post,get,toLogin,navigate} from '@/common/util.js';
 import noData from '@/components/noData.vue'; //暂无数据
 import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
+import Vue from 'vue'
+import {mapGetters,mapMutations} from 'vuex'
 export default {
 	components: {
 		noData,
@@ -174,7 +177,7 @@ export default {
 				}
 			],
 			playID:"",//当前播放
-			playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+			playIDtype:false,//当前播放舞曲的状态false：暂停 true：播放中
 		};
 	},
 	 onLoad(e){
@@ -189,9 +192,13 @@ export default {
 		this.userId = uni.getStorageSync("userId");
 		this.token = uni.getStorageSync("token");
 		this.playID=uni.getStorageSync("playID");
-		this.playIDtype=uni.getStorageSync("playIDtype");
+		this.playIDtype=this.$store.state.isplayingmusic;
 	 },
+	 computed: {
+	    ...mapGetters(['isplayingmusic'])
+	  },
 	 methods:{
+		 ...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
 		 //跳转
 		tolink(Url,islogin) {
 		 	if(islogin=="login"){
@@ -351,6 +358,9 @@ export default {
 					this.isLoad = true;
 					this.loadingType = 0
 				} 
+				if(this.tabId==2){
+					this.setAudiolist(this.datalist);
+				}
 			 }
 		 },
 		toplaylist(id,index){
@@ -359,25 +369,32 @@ export default {
 				url:'/pages/music/playMusic/playMusic?nowIndex='+index+'&id='+id
 			})	
 		},
-		//播放舞曲
-		rePlayBtn(index,id,isbuy){
-			let _this=this;
-			debounce(function(){
-				console.log("禁止频繁点击")
-				_this.playBtn(index,id,isbuy);
-			})
-		},
-		playBtn(index,id,isbuy){
+		//播放
+		playBtn(item){
+			let src=item.Audio,
+			    id=item.Id,
+				isbuy=item.IsShowBuy,
+				PicImg=item.PicImg;
+			this.setPlaydetail({id,pic:PicImg});
 			if(isbuy==0){
-				uni.setStorageSync("musicList",this.datalist)
-				if(this.playID==id){
-					this.playID="";
+				this.setIsplayactive(true)
+				this.playID=id;
+				if(id==uni.getStorageSync("playID")){
+					if (this.playIDtype) {
+						this.$au_player.pause();
+					} else {
+						this.$au_player.play();
+					}
+					this.playIDtype=!this.playIDtype;
 				}else{
-					this.playID=id;
-				}
-				playMusic(index,id)
-				this.playID=uni.getStorageSync("playID")
-				this.playIDtype=uni.getStorageSync("playIDtype")
+					this.playIDtype=true;
+					this.$au_player.src = src;
+					this.$au_player.play();
+				}				
+				this.setIsplayingmusic(this.playIDtype)
+				Vue.prototype.cusPlay = this.onPlayFn
+				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
+				Vue.prototype.cusEnded = this.onEndedFn
 			}else{
 				uni.showModal({
 					content: "该舞曲需付费,去付费？",
@@ -385,9 +402,9 @@ export default {
 						if (res.confirm) {
 							if(toLogin()){
 								let buyInfo={
-									PicImg:_this.datalist[index].PicImg,
-									name:_this.datalist[index].Name,
-									price:_this.datalist[index].Price
+									PicImg:item.PicImg,
+									name:item.Name,
+									price:item.Price
 								}
 								uni.setStorageSync('buyInfo', buyInfo);
 								uni.navigateTo({
@@ -399,6 +416,19 @@ export default {
 					}
 				});
 			}
+		},
+		onPlayFn(){
+			this.setIsplayactive(true)
+			uni.setStorageSync("playID",this.playID);
+		},
+		onEndedFn() {
+			this.playIDtype = false;
+			this.setIsplayingmusic(false)
+			this.setIsplayactive(false)
+		},
+		onTimeUpdateFn() {
+			const curtime = this.$au_player.currentTime
+			return Math.floor(curtime)
 		},
 		//预览图片
 		previewImg(index){
