@@ -97,6 +97,7 @@ image{ width: 100%;}
 	line-height: 40px;
 	background: #fff;
 	position: relative;
+	box-sizing: border-box;
 }
 .index-swiper-tab::before{
 		content: "";
@@ -107,6 +108,7 @@ image{ width: 100%;}
 		position: absolute;
 		bottom: 0;
 		left: 0;
+		z-index: 10;
 	}
 .index-swiper-tab .item{
 		width:20%;
@@ -116,7 +118,8 @@ image{ width: 100%;}
 		font-size: 14px;
 	}
 .index-swiper-tab .item.active{
-	font-size: 16px;
+	font-size: 18px;
+	font-weight: bold;
 	color: #DD196D
 }	
 .index-swiper-tab .bb_line{

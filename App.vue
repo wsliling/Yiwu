@@ -54,6 +54,7 @@
 			})
 			Vue.prototype.$au_player.onStop((res)=>{
 				console.log('play stop:'+res)
+				uni.setStorageSync("playID","");
 				this.setIsplayactive(false)
 				clearInterval(timer)
 			})

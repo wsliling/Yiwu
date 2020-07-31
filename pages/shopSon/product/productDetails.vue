@@ -123,8 +123,7 @@
 					<p>客服</p>
 				</div>
 				<div @click="collect">
-					<img v-if="data.IsCollection&&data.IsCollection.Value" src="http://jd.wtvxin.com/images/images/index/collect_y.png" alt="" />
-					<img v-else src="http://jd.wtvxin.com/images/images/index/collect_n.png" alt="" />
+					<text :class="['iconfont',data.IsCollection&&data.IsCollection.Value?'icon-collect':'icon-collect1']"></text>
 					<p>收藏</p>
 				</div>
 				<div @click="navigate('member/cart/cart')">
@@ -639,6 +638,16 @@ export default {
 			width: 34upx;
 			height: 32upx;
 		}
+		.icon-collect,.icon-collect1{
+			line-height: 32upx;
+			font-size: 36upx;
+		}
+		.icon-collect{
+			color: $primary;
+		}
+		.icon-collect1{
+			color:#8c8a8a
+		}
 		.right {
 			width: 400upx;
 			height: 70upx;
@@ -651,10 +660,10 @@ export default {
 			text-align:center;
 		}
 		.right p:nth-child(1) {
-			background-color: #fda33a;
+			background-color: #f73d8d;
 		}
 		.right p:nth-child(2) {
-			background-color: #ff6f00;
+			background-color: $primary;
 		}
 		.right p.dis {
 			// opacity: 0.5;

@@ -1,5 +1,5 @@
 <template>
-		<view class="player-min" :class="[!isOpen?'open':'']" v-if="(isplayactive && require)">
+		<view class="player-min" :class="[!isOpen?'open':'']" v-if="(isplayactive && require)" @longpress="longbtn">
 			<image class="img" :class="[isplayingmusic ? '':'stoped']" :src="playdetail.pic" mode="" @click="isOpen=!isOpen"></image>
 			<view class="btns" v-show="isOpen">
 				<text :class="['item iconfont',isplayingmusic?'icon-audiopuse':'icon-audioplay']" @click="play"></text>
@@ -58,6 +58,19 @@
 						url:'/pages/music/playMusic/playMusic?id='+this.playdetail.id
 					})
 				}
+			},
+			longbtn(){
+				let _this=this;
+				uni.showModal({
+					content: "确定要关闭音乐播放器？",
+					success(res) {
+						if (res.confirm) {
+							_this.setIsplayingmusic(false)
+							_this.$au_player.stop();
+						} else if (res.cancel) {
+						}
+					}
+				});
 			}
 		}
 	}

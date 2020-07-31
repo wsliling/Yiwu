@@ -1,5 +1,12 @@
 .index_head{
-	padding: 10px 15px 0;
+	// padding: 10px 15px 0;
+	height: 44px;
+	.title{
+		font-size: 32upx; font-weight: bold; text-align: center;align-items: center;
+		image{
+			 width: 140px;
+		}
+	}
 	.seachbox{
 		background: #f3f3f3;
 		border-radius: 100px;
@@ -46,12 +53,13 @@
 		overflow-y: auto;
 	}
 }
-.index-item-2,.index-item-3{
+
+.index-item{
 	/* #ifdef MP-WEIXIN||APP-PLUS */
-	min-height: calc(100vh - 80px);
+	min-height: calc(100vh - 84px);
 	/* #endif */
 	/* #ifdef H5 */
-	min-height: calc(100vh - 130px);
+	min-height: calc(100vh - 134px);
 	/* #endif */
 }
 .Yi-mechanism{
@@ -178,16 +186,20 @@
 					}
 				}
 			}
-			video{
-				width: 100%;
-				height: 450upx;
-				display: block;
-				position: absolute;
-				left: 0;
-				top: 0;
-				z-index: 2;
+			&.mv{
+				height: 750upx;
+				video{
+					width: 100%;
+					height: 750upx;
+					display: block;
+					position: absolute;
+					left: 0;
+					top: 0;
+					z-index: 2;
+				}
 			}
-			.postpic{height: 450upx;}
+			
+			.postpic{height: 750upx;}
 			.isplay{
 				height: 88upx;
 				width: 88upx;
@@ -217,39 +229,39 @@
 		}
 	}
 	.media-ft{
-		margin-top: 20upx;
+		margin-top: 24upx;
 		.txt_info{
 			font-size: 24upx;
 			color: #999;
-			height: 40upx;
-			line-height: 40upx;
+			height: 44upx;
+			line-height: 44upx;
 		}
 		.ft_l .txt_info{
 			margin-right: 40upx;
 		}
 		.like{padding-left: 50upx; background: url(http://yw.wtvxin.com/static/like.png) left center no-repeat;
-		background-size: 40upx 40upx;}
+		background-size: 44upx 44upx;}
 		.like.active{ background: url(http://yw.wtvxin.com/static/like2.png) left center no-repeat;
-		background-size: 40upx 40upx;}
+		background-size: 44upx 44upx;}
 		.reply{
 			padding-left: 50upx;background: url(http://yw.wtvxin.com/static/reply.png) left center no-repeat;
-			background-size: 40upx 40upx;
+			background-size: 44upx 44upx;
 		}
 		.share{
-			width: 40upx;
-			height: 40upx;
+			width: 44upx;
+			height: 44upx;
 			background: url(http://yw.wtvxin.com/static/share.png) left center no-repeat;
-			background-size: 40upx 40upx;
+			background-size: 44upx 44upx;
 		}
 		.sign{
-			width: 40upx;
-			height: 40upx;
+			width: 44upx;
+			height: 44upx;
 			background: url(http://yw.wtvxin.com/static/sign.png) left center no-repeat;
-			background-size: 40upx 40upx;
+			background-size: 44upx 44upx;
 		}
 		.sign.active{
 			background: url(http://yw.wtvxin.com/static/sign2.png) left center no-repeat;
-			background-size: 40upx 40upx;
+			background-size: 44upx 44upx;
 		}
 	}
 	.media-comment{ 
@@ -260,6 +272,9 @@
 			.con{ color: #666;}
 		}
 		.more{font-size: 26upx;}
+	}
+	.likenum{
+		font-size: 26upx; margin-top: 10upx;
 	}
 }
 .flow{
@@ -389,8 +404,12 @@
 }
 .Yi-courselist{
 	padding:0 30upx;
+	align-items: start;
+	.left-list,.right-list{
+		width: 49%;
+	}
 	.item{
-		width:49%;margin-top:20upx;
+		width:100%;margin-top:20upx;
 		background: #ffffff;
 		.item_info{
 			padding:10upx 0;
@@ -399,7 +418,8 @@
 			width:100%;
 		}
 		.maxpic{
-			width:100%;height:200upx;
+			width:100%;
+			// height:200upx;
 			border-radius: 12upx;
 			overflow: hidden;
 			position: relative;

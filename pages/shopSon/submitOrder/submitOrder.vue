@@ -151,7 +151,7 @@
 						</view>
 						<view class="orderinfo">
 							<view class="orderleft">运费</view>
-							<view class="orderright" style="color: #FF3333;">
+							<view class="orderright" style="color: #dd196d;">
 								{{info.Freight ? '￥'+info.Freight:'包邮'}}
 							</view>
 						</view>

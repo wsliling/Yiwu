@@ -42,10 +42,17 @@
 				 </view>
 			 </view>
 			<view class="classifytab">
-			 	<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
-			 		<view v-for="(tab,index) in classifylist" :key="index" :class="['btn',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.Name}}</view>
+			 	<scroll-view id="tab-bar" v-if="!isshowAll" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
+			 		<view v-for="(tab,index) in classifylist" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)" style="width: auto; padding: 0 20upx;">{{tab.Name}}</view>
 			 	</scroll-view>
-			 	<view class="allbtn" id="allbtn" @click="showAll">{{isshowAll?'收起':'全部'}}</view>
+			 	<view class="flex-column menuIco" id="allbtn" @click="isshowAll=!isshowAll">
+					<block v-if="!isshowAll">
+						<view class="line1"></view>
+						<view class="line2"></view>
+						<view class="line3"></view>
+					</block>
+					<text v-if="isshowAll" class="iconfont icon-close"></text>
+				</view>
 				<view class="showClassify" v-if="isshowAll">
 					<view class="allhd">全部分类</view>
 					<view v-for="(tab,index) in classifylist" :key="index" :class="['btn',tabIndex==index ? 'active' : '']"  @click="tapTab(index,tab.Id)">{{tab.Name}}</view>
@@ -216,9 +223,6 @@
 		 },
 		methods: {
 			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
-			showAll(){
-				this.isshowAll=!this.isshowAll
-			},
 			//跳转
 			tolink(Url,islogin) {
 				if(islogin=="login"){
@@ -582,7 +586,4 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	.index-swiper-tab .item{
-		width: 50%;
-	}
 </style>

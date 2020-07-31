@@ -2,7 +2,7 @@
 	<!-- 购物车支付成功 -->
 	<view>
 		<view class="payinfo">
-		  <view class="p1 flex-center"><view class="iconfont icon-gou2"></view>{{status==='success'?'支付成功':'支付失败'}}</view>
+		  <view class="p1 flex-center"><view :class="['iconfont', status==='success'?'icon-gou2':'icon-cha']"></view>{{status==='success'?'支付成功':'支付失败'}}</view>
 		  <view class="p2"><span class="yuan">￥</span>{{TotalPrice}}</view>
 		  <view class="btns">
 			<view class="btn toindex" @click="tolink('/pages/tabBar/index/index',true)">返回首页</view>
