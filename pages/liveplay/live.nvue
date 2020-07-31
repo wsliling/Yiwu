@@ -119,6 +119,11 @@
 				</div>
 			</div>
 		</uni-popup>
+		<!-- v-if="PopGiftImg&&showPopGift" -->
+		<div class="popGift" v-if="PopGiftImg&&showPopGift">
+			<image :src="PopGiftImg" alt="" mode="widthFix" id="giftpop" class="giftpop"
+			 :style="`margin-left:${scale}upx`">
+		</div>
 	</view>
 </template>
 
@@ -168,6 +173,10 @@ export default {
 			screenHeight:750,//屏幕高度
 			screenHeight:0,//状态栏高度
 			xintiaoOut:null,//没有接收到心跳包的退出定时器,用于判断是否主播已离开
+			showPopGift:false,//显示送礼的动画
+			PopGiftImg:'',
+			scale:-300,
+			scaleTime:null,
 		};
 	},
 	onLoad(e) {
@@ -244,7 +253,7 @@ export default {
 			} else {
 				plus.nativeUI.toast("当前没人在直播哦~请晚点再来!");
 				setTimeout(() => {
-					uni.navigateBack();
+					// uni.navigateBack();
 				}, 2000);
 			}
 		},
@@ -314,6 +323,10 @@ export default {
 			});
 			this.SocketTask.onClose(close => {
 				this.SocketTask=null;
+				if(this.liveErrNum<99){
+					this.liveErrNum+=1;
+					this.connectSocket();
+				}
 				console.log('close1', close);
 			});
 		},
@@ -328,13 +341,15 @@ export default {
 			return data;
 		},
 		// 推送一条消息
-		pushMsg(text,name=''){
+		pushMsg(text,name='',type,content){
 			let sendData = {
 				MsgType:3,
 				Id:JSON.stringify({
 					Id:new Date().getTime(),
 					Info:text,
-					name:name||'系统提示'
+					name:name||'系统提示',
+					type,//3-送礼
+					content,//根据类型判断内容
 				}),
 				Info:text,
 			}
@@ -513,11 +528,37 @@ export default {
 			})
 			if(res.code)return;
 			this.myMoney -= item.Cost;
-			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name)
+			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name,'系统提示',3,item.Img)
+			// 送礼动画
+			this.PopGiftImg = item.Img;
+			this.showPopGift = true;
+			this.animations();
+			// 送礼动画end
 			uni.showToast({
-				title:'赠送成功！'
+				title:`赠送${item.Name}成功！`
 			})
 			this.$refs.gift.close();
+		},
+		// 送礼动画
+		animations(){
+			this.scale = -300;
+			this.scaleTime = setInterval(()=>{
+				if(this.scale>200){
+					clearInterval(this.scaleTime)
+					setTimeout(()=>{
+						this.scaleTime = setInterval(()=>{
+							if(this.scale>750){
+								this.showPopGift = false;
+								clearInterval(this.scaleTime)
+							}else{
+								this.scale += 20;
+							}
+						},8)
+					},1500)
+				}else{
+					this.scale += 20;
+				}
+			},8)
 		},
 		// 充值
 		payTo(){
@@ -915,5 +956,53 @@ video {
 		text-align:center;
 		display:inline-block;
 		margin:0 5upx;
+	}
+	.popGift{
+		position:fixed;
+		top:300upx;left:0;
+		width:750upx;
+		height:1000upx
+	}
+		.giftpop{
+			position:relative;
+			width:300upx;
+			display:block;
+			transform:scale(1);
+			transition-duration:2000; 
+			animation:gifypop 2000 infinite;
+			animation-name:gifypop;
+			animation-duration:2000;
+			animation-iteration-count:3;
+		}
+	@keyframes gifypop {
+		0% {
+			margin-left:-300upx;
+			transform:skewX(-20deg);
+		}
+		10% {
+			margin-left:-225upx;
+			transform:skewX(-30deg);
+		}
+		30% {
+			margin-left:-225upx;
+			transform:skewX(0deg);
+		}
+		
+		40% {transform:skewX(30deg);
+			margin-left:225upx;}
+		50% {transform:skewX(-30deg);
+			margin-left:225upx;}
+		60% {transform:skewX(30deg);
+			margin-left:225upx;}
+		70% {transform:skewX(0deg);
+			margin-left:225upx;}
+		90% {
+			transform:skewX(0deg);
+			
+			margin-left:225upx;}
+		100% {
+			margin-left:750upx;
+			transform:skewX(20deg);
+		}
 	}
 </style>

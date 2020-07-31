@@ -122,7 +122,9 @@
 			</block>
 			<noData v-if="noDataIsShow0"></noData>
 		</view>
+		<!-- #ifndef MP-WEIXIN -->
 		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
+		<!-- #endif -->
 		<playerMin :pagetype="'share'"></playerMin>
 	</view>
 </template>
