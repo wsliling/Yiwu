@@ -28,14 +28,18 @@
 					<input type="text" class="ipt" value="" v-model="code" placeholder="请输入验证码" />
 					<view class="getcode" @click="getCode">{{codeMsg}}</view>
 				</view>
-				<view class="from-line text_r" style="margin:0;display: none;" @click="changeWay">
+				<view class="from-line text_r" style="margin:0; display: none;" @click="changeWay">
 					<text class="c_theme" v-if="logintype">手机验证码登录</text>
 					<text class="c_theme" v-if="!logintype">密码登录</text>
 				</view>
 				<view class="ftbtn" style="padding:40upx 0 20upx 0;">
 					<button type="primary" @click="btnSubmit" class="btn">登录</button>
 				</view>
-				<view class="form-line aLine" style="margin:0 30upx;">
+				<view class="from-txt">
+					<view  @click="isAgree=!isAgree" style="display: inline-block;vertical-align: middle;"><view class="IconsCK IconsCK-radio" :class="{'checked':isAgree}" style="margin-right: 8upx;"></view><text>我已阅读并同意</text></view>
+					<navigator url="/pages/message/agreement/agreement" class="inline-block" style="color:#3fb1ea;">《用户协议》</navigator>
+				</view>
+				<view class="form-line aLine" style="margin:0 30upx;" v-if="false">
 					<view @click="register" class="inline-block aline">没有账号？注册账号</view>
 					<view v-if="logintype" @click="getPassword" class="inline-block aline fr">忘记密码?</view>
 				</view>
@@ -74,6 +78,13 @@
 	import {host,post,get,valPhone,setRegular} from '@/common/util.js';
 	export default {
 		onLoad(e){
+			if(e.inviteCode){
+				this.inviteCode=e.inviteCode;
+				uni.setStorageSync('inviteCode',e.inviteCode)
+			}
+			if(uni.getStorageSync('inviteCode')){
+				this.inviteCode=uni.getStorageSync('inviteCode')
+			}
 			// #ifdef APP-PLUS
 			if((e.askUrl!=undefined )&& (e.askUrl!="")&& (e.askUrl!=null)){
 				this.askUrl=e.askUrl.toString().replace(/\%3F/g, '?').replace(/\%3D/g, '=').replace(/\%26/g, '&')
@@ -134,9 +145,11 @@
 				has_click: false,
 				isRegister:false,
 				isIndex:false,
-				logintype:true,//true表示密码登录，false手机验证码登录
+				logintype:false,//true表示密码登录，false手机验证码登录
 				isShowMolie:true,//是否显示号登录界面
-				isShowminiApp:false//是否显示小程序登录
+				isShowminiApp:false,//是否显示小程序登录
+				isAgree:true,
+				inviteCode:''
 			};
 		},
 		methods: { 
@@ -169,10 +182,7 @@
 				}
 			},
 			async sendCode() {
-				let result = await post("Login/GetUserSms", {
-					"Mobile": this.tel,
-					"VerifyType": 1
-				});
+				let result = await post("Login/GetLoginSMSCode?mobile="+this.tel);
 				if (result.code === 0) {
 					this.has_click = true;
 					const TIME_COUNT = 90; // 90s后重新获取验证码
@@ -229,6 +239,14 @@
 						});
 						return false;
 					}
+					if (!this.isAgree) {
+						uni.showToast({
+							title: "请勾选同意用户协议!",
+							icon: "none",
+							duration: 2000
+						});
+						return false;
+					}
 				}
 				return true;
 			},
@@ -245,9 +263,10 @@
 					    "password": this.pwd
 					})
 				}else{
-					result = await post("Login/MemberLoginByCode",{
-						"Mobile": this.tel,
-					    "VerifyCode": this.code
+					result = await post("Login/RegisterLogin",{
+						"mobile": this.tel,
+					    "yzcode": this.code,
+						"InviteCode":this.inviteCode
 					})
 				}
 				if(result.code===0){

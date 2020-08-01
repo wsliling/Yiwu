@@ -53,7 +53,7 @@
 		</uni-popup>
 		<div class="popGift" v-if="PopGiftImg&&showPopGift">
 			<image :src="PopGiftImg" alt="" mode="widthFix" id="giftpop" class="giftpop"
-			 :style="`margin-left:${scale}upx`">
+			 :style="{'margin-left':scale+'upx'}">
 		</div>
 	</div>
 </template>

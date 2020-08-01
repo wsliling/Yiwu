@@ -36,6 +36,7 @@ export default {
     },
     methods:{
 		editUrl(params){
+			console.log(params)
 			if(!this[params])return;
 			if(this[params].indexOf('?')==-1){
 				this.data[params] =this[params]+'?'
@@ -67,7 +68,7 @@ export default {
 				});
             // #endif
             // #ifdef H5
-            console.log('h5')
+            console.log(this.data.url)
             console.log(window.location.origin)
             const status = h5Copy(this.data.h5Url?window.location.origin+'/#'+this.data.h5Url:window.location.origin+'/#'+this.data.url)
             if(status){
@@ -81,6 +82,13 @@ export default {
     // #ifdef MP-WEIXIN
      //转发
     onShareAppMessage: function(e) {
+		console.log(11111111111111)
+		console.log(this.data.url,'13')
+		this.editUrl('h5Url')
+		this.editUrl('wxUrl')
+		this.editUrl('appUrl')
+		this.editUrl('url')
+		console.log(this.data.url)
         let res = wx.getStorageSync('user');
         if (res.from === 'button') {}
         return {

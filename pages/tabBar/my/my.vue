@@ -109,12 +109,15 @@
 				<view class="tag" v-if="item.Type==6">课程</view>
 			</view>
 		</view>
-		
+		<view class="uni-tab-bar-loading" v-if="hasData">
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
+		</view>
+		<noData :isShow="noDataIsShow"></noData>
 		<!-- 抽屉导航 -->
 		<view :class="['rightbox',showDrawer?'visible':'']">
 			<view class="drawer_mask" @click="closeMENU"></view>
 			<view class="drawer_content" :style="{'padding-top':barHeight+'px'}">
-				<view class="drawer_hd flex-between" @click="closeMENU">收起<text class="iconfont icon-close"></text></view>
+				<view class="drawer_hd flex-between" @click="closeMENU">管理工具<text class="iconfont icon-close"></text></view>
 				<view class="sevice">
 					<view class="item" @click="tolink('/pages/member/cart/cart')">
 						<view class="item-left">
@@ -225,31 +228,6 @@
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
-					<view class="item" @click="tolink('/pages/member/set/set')">
-						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
-							<view>设置</view>
-						</view>
-						<view class="arrowr uni-icon uni-icon-arrowright"></view>
-					</view><view class="item" @click="tolink('/pages/member/set/set')">
-						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
-							<view>设置</view>
-						</view>
-						<view class="arrowr uni-icon uni-icon-arrowright"></view>
-					</view><view class="item" @click="tolink('/pages/member/set/set')">
-						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
-							<view>设置</view>
-						</view>
-						<view class="arrowr uni-icon uni-icon-arrowright"></view>
-					</view><view class="item" @click="tolink('/pages/member/set/set')">
-						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
-							<view>设置</view>
-						</view>
-						<view class="arrowr uni-icon uni-icon-arrowright"></view>
-					</view>
 				</view>
 			</view>
 		</view>
@@ -259,9 +237,15 @@
 
 <script>
 	import {post,get,toLogin,navigate} from '@/common/util.js';
+	import noData from '@/components/noData.vue'; //暂无数据
+	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import Vue from 'vue'
 	import {mapGetters,mapMutations} from 'vuex'
 	export default {
+		components: {
+			noData,
+			uniLoadMore
+		},
 		data() {
 			return {
 				userId: "",
@@ -278,7 +262,7 @@
 				tabList:[{id:0,name:'作品'},{id:1,name:'舞曲'},{id:2,name:'收藏'}],
 				tabIndex:0,
 				page:1,
-				pagesize:8,
+				pageSize:12,
 				datalist:[],
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				hasData: false,
@@ -332,12 +316,14 @@
 					  Wallet:result.data.Wallet
 					}); 
 					 this.NewsCount();
-					 this.GetUserData();
+					 this.cliTab(0);
 				} else if (result.code === 2) {
 					this.isLogin=false;
 					uni.getStorageSync("userId","")
 					uni.getStorageSync("token","")
 					this.memberInfo={};
+					this.datalist={};
+					this.tabIndex=0;
 					this.newscount=0;
 					let _this = this;
 					uni.showModal({
@@ -573,6 +559,16 @@
 				this.showHead=true;
 			}else{
 				this.showHead=false;
+			}
+		},
+		// 上拉加载
+		onReachBottom: function() {
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				this.GetUserData();
+			} else {
+				this.loadingType = 2;
 			}
 		}
 	}

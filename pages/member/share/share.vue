@@ -8,12 +8,11 @@
 					<span>邀请码:</span>{{myInviteCode}}
 				</div>
 				<!-- #ifdef H5 -->
-				<input type="text" @focus="blur()" :disabled="disabled" 
-				 v-model="myInviteCode" style="opacity: 0;position: fixed;top: -10000px;">
+				<input type="text" @focus="blur()" :disabled="disabled" v-model="myInviteCode" style="opacity: 0;position: fixed;top: -10000px;">
 				<!-- #endif -->
 				<div class="btn" @click="copy">复制</div>
 			</div>
-			<share :url="'/pages/register/register?inviteCode='+myInviteCode">
+			<share :url="'/pages/register/register'">
 				<div class="shareBtn" >分享</div>
 			</share>
 		</div>

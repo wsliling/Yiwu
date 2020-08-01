@@ -17,14 +17,14 @@
 					<input type="text" class="ipt" value="" v-model="code" placeholder="请输入验证码" />
 					<view class="getcode" @click="getCode">{{codeMsg}}</view>
 				</view>
-				<view class="from-line" v-if="type!=1">
+				<!-- <view class="from-line" v-if="type!=1">
 					<view class="iconfont icon-mima"></view>
 					<input type="password" class="ipt" value="" v-model="pwd" placeholder="请输入密码" />
 				</view>
 				<view class="from-line" v-if="type!=1">
 					<view class="iconfont icon-mima"></view>
 					<input type="password" class="ipt" value="" v-model="pwd2" placeholder="请再次输入密码" />
-				</view>
+				</view> -->
 				<view class="from-line">
 					<view class="iconfont icon-mima"></view>
 					<input type="text" class="ipt" v-model="inviteCode" placeholder="好友邀请码(选填)" />
@@ -47,7 +47,7 @@
 		host,
 		post,
 		get,
-		valPhone
+		valPhone,getCurrentPageUrlWithArgs
 	} from '@/common/util.js';
 	export default {
 		onLoad(e) {
@@ -60,6 +60,7 @@
 			}
 			this.type = e.type
 			console.log(this.type,"type999999999999")
+			this.isreg();
 		},
 		onShow() {
 		},
@@ -77,9 +78,16 @@
 				has_click: false,
 				isAgree:true,
 				type:0,//1小程序绑定手机号
+				isRegister:false,
 			};
 		},
 		methods: {
+			isreg(){
+				let pageUrl=getCurrentPageUrlWithArgs();
+				if(pageUrl.indexOf('/register')!==-1){
+					this.isRegister=true
+				}
+			},
 			getCode() {
 				if (valPhone(this.tel)) {
 					if (!this.has_click) {
@@ -99,33 +107,33 @@
 					});
 					return false;
 				}
-				if(this.type != 1){
-					console.log("9999999999")
-					if (this.pwd == "" || this.pwd2 == "") {
-						uni.showToast({
-							title: "密码不能为空!",
-							icon: "none",
-							duration: 2000
-						});
-						return false;
-					}
-					if (this.pwd != this.pwd2) {
-						uni.showToast({
-							title: "两次输入密码不同!",
-							icon: "none",
-							duration: 2000
-						});
-						return false;
-					}
-					if (this.pwd.length < 6) {
-						uni.showToast({
-							title: "密码长度不能小于6个字符!",
-							icon: "none",
-							duration: 2000
-						});
-						return false;
-					}
-				}
+				// if(this.type != 1){
+				// 	console.log("9999999999")
+				// 	if (this.pwd == "" || this.pwd2 == "") {
+				// 		uni.showToast({
+				// 			title: "密码不能为空!",
+				// 			icon: "none",
+				// 			duration: 2000
+				// 		});
+				// 		return false;
+				// 	}
+				// 	if (this.pwd != this.pwd2) {
+				// 		uni.showToast({
+				// 			title: "两次输入密码不同!",
+				// 			icon: "none",
+				// 			duration: 2000
+				// 		});
+				// 		return false;
+				// 	}
+				// 	if (this.pwd.length < 6) {
+				// 		uni.showToast({
+				// 			title: "密码长度不能小于6个字符!",
+				// 			icon: "none",
+				// 			duration: 2000
+				// 		});
+				// 		return false;
+				// 	}
+				// }
 				if (!this.isAgree) {
 					uni.showToast({
 						title: "请勾选同意用户协议!",
@@ -221,24 +229,51 @@
 			async phoneNumberRegister() {
 				let result = await post("Login/MobileRegister", {
 					"mobile": this.tel,
-					"password": this.pwd,
+					// "password": this.pwd,
 					"yzcode": this.code,
 					"InviteCode": this.inviteCode
 				});
 				if (result.code === 0) {
+					// let _this = this;
+					// uni.showToast({
+					// 	title: "注册成功，请使用注册手机号登陆!",
+					// 	icon: "none",
+					// 	duration: 2000,
+					// 	success: function() {
+					// 		setTimeout(function() {
+					// 			uni.navigateTo({
+					// 				url: "/pages/login/login?isResgister=1"
+					// 			})
+					// 		}, 2000);
+					// 	}
+					// });
+					const data = result.data;
+					uni.setStorageSync('token', data.Token);
+					uni.setStorageSync('userId', data.UserId);
+					uni.setStorageSync('myInviteCode', data.ReferralCode);//邀请码
+					//认证
+					uni.setStorageSync('attestation', {
+						IsDancer:data.IsDancer,//舞者
+						IsOrganization:data.IsOrganization,//机构
+						IsShop:data.IsShop//店铺
+					});
 					let _this = this;
 					uni.showToast({
-						title: "注册成功，请使用注册手机号登陆!",
-						icon: "none",
-						duration: 2000,
-						success: function() {
+					     title: "注册登录成功",
+					     duration: 1800,
+						 success:function(){
 							setTimeout(function() {
-								uni.navigateTo({
-									url: "/pages/login/login?isResgister=1"
-								})
-							}, 2000);
-						}
+								if(_this.isRegister){
+									uni.switchTab({
+										url: "/pages/tabBar/my/my"
+									  });	
+								}else{
+									uni.navigateBack();
+								}
+							 }, 1800);
+						 }
 					});
+					console.log(result.data);
 				} else {
 					uni.showToast({
 						title: result.msg,

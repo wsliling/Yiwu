@@ -6,7 +6,7 @@
 					<text class="txt">账户和安全</text>
 				</view>
 			</view>
-			<view class="line-item line-arrow-r" @click="tolink('/pages/member/changeLoginPwd/changeLoginPwd')">
+			<view class="line-item line-arrow-r" v-if="false" @click="tolink('/pages/member/changeLoginPwd/changeLoginPwd')">
 				<view class="line-item-l">
 					<text class="txt">修改登录密码</text>
 				</view>
