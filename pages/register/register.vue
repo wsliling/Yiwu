@@ -60,7 +60,6 @@
 			}
 			this.type = e.type
 			console.log(this.type,"type999999999999")
-			this.isreg();
 		},
 		onShow() {
 		},
@@ -82,12 +81,6 @@
 			};
 		},
 		methods: {
-			isreg(){
-				let pageUrl=getCurrentPageUrlWithArgs();
-				if(pageUrl.indexOf('/register')!==-1){
-					this.isRegister=true
-				}
-			},
 			getCode() {
 				if (valPhone(this.tel)) {
 					if (!this.has_click) {
@@ -206,18 +199,38 @@
 				});
 				if (result.code === 0) {
 					let _this = this;
+					// uni.showToast({
+					// 	title: "绑定成功!",
+					// 	icon: "none",
+					// 	duration: 2000,
+					// 	success: function() {
+					// 		setTimeout(function() {
+					// 			uni.navigateTo({
+					// 				url: "/pages/login/login?isResgister=1"
+					// 			})
+					// 		}, 2000);
+					// 	}
+					// });
+					const data = result.data;
+					uni.setStorageSync('token', data.Token);
+					uni.setStorageSync('userId', data.UserId);
+					uni.setStorageSync('myInviteCode', data.ReferralCode);//邀请码
 					uni.showToast({
-						title: "绑定成功!",
-						icon: "none",
-						duration: 2000,
-						success: function() {
+					     title: "注册登录成功",
+					     duration: 1800,
+						 success:function(){
 							setTimeout(function() {
-								uni.navigateTo({
-									url: "/pages/login/login?isResgister=1"
-								})
-							}, 2000);
-						}
+								if(_this.type==0){
+									uni.switchTab({
+										url: "/pages/tabBar/my/my"
+									  });	
+								}else{
+									uni.navigateBack(2);
+								}
+							 }, 1800);
+						 }
 					});
+					console.log(result.data);
 				} else {
 					uni.showToast({
 						title: result.msg,
@@ -251,19 +264,13 @@
 					uni.setStorageSync('token', data.Token);
 					uni.setStorageSync('userId', data.UserId);
 					uni.setStorageSync('myInviteCode', data.ReferralCode);//邀请码
-					//认证
-					uni.setStorageSync('attestation', {
-						IsDancer:data.IsDancer,//舞者
-						IsOrganization:data.IsOrganization,//机构
-						IsShop:data.IsShop//店铺
-					});
 					let _this = this;
 					uni.showToast({
 					     title: "注册登录成功",
 					     duration: 1800,
 						 success:function(){
 							setTimeout(function() {
-								if(_this.isRegister){
+								if(_this.type==0){
 									uni.switchTab({
 										url: "/pages/tabBar/my/my"
 									  });	
