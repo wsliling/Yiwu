@@ -119,6 +119,7 @@
 import { host, post, get, toLogin,wssHost } from '@/common/util.js';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
 import proListConponent from './proList.vue';
+import {editShareUrl} from '@/common/common'
 var player = null;
 export default {
 	components: {
@@ -555,6 +556,14 @@ export default {
 		},
 		closePlay(){
 			uni.navigateBack();
+		}
+	},
+	onShareAppMessage: function(res) {
+		if (res.from === 'button') {}
+		return {
+			title: '壹舞',
+			path: editShareUrl('/pages/liveplay/live?id='+this.liveItem.MemberId),
+			success: function(res) {}
 		}
 	}
 };

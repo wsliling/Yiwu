@@ -108,6 +108,7 @@
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import Vue from 'vue'
 	import {mapGetters,mapMutations} from 'vuex'
+	import {editShareUrl} from '@/common/common'
 	export default {
 		components: {
 			uniPopup,
@@ -405,6 +406,14 @@
 				this.workeslist();
 			} else {
 				this.loadingType = 2;
+			}
+		},
+		onShareAppMessage: function(res) {
+			if (res.from === 'button') {}
+			return {
+				title: '壹舞',
+				path: editShareUrl('/pages/music/playMusic/playMusic?type=share&id='+this.itemdata.Id),
+				success: function(res) {}
 			}
 		}
 	}

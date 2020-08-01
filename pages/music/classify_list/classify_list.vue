@@ -96,6 +96,7 @@
 	import uniPopup from '@/components/uni-popup.vue';
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import noData from '@/components/noData.vue'; //暂无数据
+	import {editShareUrl} from '@/common/common'
 	export default {
 		data() {
 			return {
@@ -332,6 +333,14 @@
 				this.workeslist();
 			} else {
 				this.loadingType = 2;
+			}
+		},
+		onShareAppMessage: function(res) {
+			if (res.from === 'button') {}
+			return {
+				title: '壹舞',
+				path: editShareUrl('/pages/music/playMusic/playMusic?type=share&id='+this.itemdata.Id),
+				success: function(res) {}
 			}
 		}
 	}

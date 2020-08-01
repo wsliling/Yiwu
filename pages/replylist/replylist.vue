@@ -76,6 +76,7 @@
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import share from '@/components/share/share.vue';
+	import {editShareUrl} from '@/common/common'
 	export default {
 		components: {
 			replyItem,
@@ -399,6 +400,14 @@
 				this.CommnetList();
 			} else {
 				this.loadingType = 2;
+			}
+		},
+		onShareAppMessage: function(res) {
+			if (res.from === 'button') {}
+			return {
+				title: '壹舞',
+				path: editShareUrl('/pages/replylist/replylist?id='+this.Findid),
+				success: function(res) {}
 			}
 		}
 	}

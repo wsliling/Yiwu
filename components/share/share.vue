@@ -1,6 +1,6 @@
 <template>
 <div>
-    <button open-type="share" @click="share" class="button">
+    <button open-type="share" @click="share" class="button" :data-param="param">
         <slot>
             分享
         </slot>
@@ -27,7 +27,12 @@ export default {
 		url:{
             type:String,
             default:''
-		}
+        },
+        // 小程序分享在button里传参，解决列表拿不到当前参数问题
+        param:{
+            type:String,
+            default:''
+        }
     },
     data(){
         return {

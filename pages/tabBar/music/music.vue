@@ -108,7 +108,7 @@
 									<text class="txt">添加到歌单</text>
 								</view>
 							</view>
-							<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id">
+							<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id" :param="itemdata.Id">
 								<view class="line-item-l flex-start" style="width:100%;">
 									<image class="iconimg" src="http://yw.wtvxin.com/static/share.png" mode="widthFix"></image>
 									<text class="txt">分享</text>
@@ -158,6 +158,7 @@
 	import uniPopup from '@/components/uni-popup.vue';
 	import Vue from 'vue'
 	import {mapGetters,mapMutations} from 'vuex'
+	import {editShareUrl} from '@/common/common'
 	export default {
 		components: {
 			noData,
@@ -580,6 +581,16 @@
 					this.loadingType = 2;
 				}
 			}
+		},
+		onShareAppMessage: function(res) {
+				if (res.from === 'button') {
+					let param = res.target.dataset.param
+					return {
+						title: '壹舞',
+						path: editShareUrl('/pages/music/playMusic/playMusic?type=share&id='+param),
+						success: function(res) {}
+					}
+				}
 		}
 	}
 </script>
