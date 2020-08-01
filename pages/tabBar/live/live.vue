@@ -1117,9 +1117,15 @@
 				if (res.from === 'button') {
 					let param = res.target.dataset.param
 					let arr = param.split('&')
+					let url = '';
+					if(arr.length>1){
+						url = this.xqUrl[arr[0]].url+arr[1]
+					}else{
+						url = '/pages/replylist/replylist?id='+arr[0]
+					}
 					return {
 						title: '壹舞',
-						path: editShareUrl(this.xqUrl[arr[0]].url+arr[1]),
+						path: editShareUrl(url),
 						success: function(res) {}
 					}
 				}

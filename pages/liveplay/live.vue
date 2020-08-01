@@ -45,7 +45,7 @@
 								<text class="nlv_reply_text">跟主播聊点什么？</text>
 							</view>
 							<div class="btn-box">
-								<share :url="'/pages/liveplay/live?id='+liveItem.MemberId">
+								<share :url="'/pages/liveplay/live?id='+liveItem.MemberId" :param="liveItem.MemberId">
 									<img src="/static/icons/share.png" alt="" mode="widthFix" />
 								</share>
 								
@@ -559,11 +559,13 @@ export default {
 		}
 	},
 	onShareAppMessage: function(res) {
-		if (res.from === 'button') {}
-		return {
-			title: '壹舞',
-			path: editShareUrl('/pages/liveplay/live?id='+this.liveItem.MemberId),
-			success: function(res) {}
+		if (res.from === 'button') {
+			let param = res.target.dataset.param
+			return {
+				title: '壹舞',
+				path: editShareUrl('/pages/liveplay/live?id='+param),
+				success: function(res) {}
+		}
 		}
 	}
 };
