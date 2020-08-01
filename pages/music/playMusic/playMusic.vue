@@ -63,6 +63,7 @@
 <script>
 	import {post,toLogin,formatSecond} from '@/common/util.js';
 	import uniPopup from '@/components/uni-popup.vue';
+	import {editShareUrl} from '@/common/common'
 	import {
 		mapGetters,
 		mapMutations
@@ -361,6 +362,14 @@
 					});
 				}}
 			},
+		},
+		onShareAppMessage: function(res) {
+			if (res.from === 'button') {}
+			return {
+				title: '壹舞',
+				path: editShareUrl('/pages/music/playMusic/playMusic?type=share&id='+this.musicID),
+				success: function(res) {}
+			}
 		}
 	}
 </script>

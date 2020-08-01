@@ -12,8 +12,8 @@
 				<!-- #endif -->
 				<div class="btn" @click="copy">复制</div>
 			</div>
-			<share :url="'/pages/register/register'">
-				<div class="shareBtn" >分享</div>
+			<share :url="shareUrl">
+				<div class="shareBtn">分享</div>
 			</share>
 		</div>
 	</view>
@@ -21,12 +21,14 @@
 
 <script>
 	import {webUrl,post} from '@/common/util'
+	import {editShareUrl} from '@/common/common'
 	export default {
 		data() {
 			return {
 				myInviteCode:'',
 				inviteCode:'',
-				disabled:false
+				disabled:false,
+				shareUrl:'/pages/register/register',
 			};
 		},
 		onLoad(){
@@ -85,7 +87,18 @@
 				        console.log("fail:" + JSON.stringify(err));
 				    }
 				});
-			}
+			},
+		},
+		onShareAppMessage: function(res,i) {
+			// setTimeout(()=>{
+				if (res.from === 'button') {
+					return {
+						title: '壹舞',
+						path: editShareUrl(this.shareUrl),
+						success: function(res) {}
+					}
+				}
+			// },500)
 		}
 	}
 </script>

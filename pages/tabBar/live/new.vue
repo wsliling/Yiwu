@@ -84,7 +84,7 @@
 								<view class="ft_l flex-start">
 									<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum}}</view>
 									<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-									<share :url="'/pages/replylist/replylist?id='+item.Id">
+									<share :url="'/pages/replylist/replylist?id='+item.Id" :param="item.Id">
 										<view class="txt_info share"></view>
 									</share>
 								</view>
@@ -229,6 +229,7 @@
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import share from '@/components/share/share.vue'; //加载更多
+	import {editShareUrl} from '@/common/common'
 	export default {
 		components: {
 			noData,
@@ -871,6 +872,16 @@
 				}
 			}
 		},
+		onShareAppMessage: function(res) {
+				if (res.from === 'button') {
+					let param = res.target.dataset.param
+					return {
+						title: '壹舞',
+						path: editShareUrl('/pages/replylist/replylist?id='+param),
+						success: function(res) {}
+					}
+				}
+		}
 	}
 </script>
 

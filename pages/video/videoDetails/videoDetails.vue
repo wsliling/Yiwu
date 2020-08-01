@@ -30,7 +30,7 @@
 				<view class="ft_l flex-start">
 					<view @click="likeBtn" :class="['txt_info like',CourseInfo.IsLike==1?'active':'']">{{CourseInfo.LikeNum}}</view>
 					<view class="txt_info reply">{{CourseInfo.CommentNum}}</view>
-					<share :url="'/pages/video/videoDetails/videoDetails?id='+Courseid">
+					<share :url="'/pages/video/videoDetails/videoDetails?id='+Courseid" :param="Courseid">
 						<view class="txt_info share"></view>
 					</share>
 				</view>
@@ -100,6 +100,7 @@
 	import replyItem from '@/components/reply-item.vue'; //评论组件
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniPopup from '@/components/uni-popup.vue';
+	import {editShareUrl} from '@/common/common'
 	export default {
 		components: {
 			replyItem,
@@ -493,6 +494,16 @@
 				this.PCommentId=e[0];
 				this.IsShowReplyBox=true;
 			},
+		},
+		onShareAppMessage: function(res) {
+				if (res.from === 'button') {
+					let param = res.target.dataset.param
+					return {
+						title: '壹舞',
+						path: editShareUrl('/pages/video/videoDetails/videoDetails?id='+param),
+						success: function(res) {}
+					}
+				}
 		}
 	}
 </script>
