@@ -482,7 +482,7 @@ export default {
                             color: #333;
                         }
                         span{
-                            color: #f0370b;
+                            color: $primary;
                             font-size: 36rpx;
                             font-weight:bold;
                             .fuhao{
@@ -547,13 +547,13 @@ export default {
                 align-items:center;
             }
             p{
-                background-color: #fda33a;
+                background-color: #f73d8d;
                 width:100%;
                 line-height: 80rpx;
                 text-align:center;
             }
             p.btn_red{
-                background-color: #ff6f00;
+                background-color: $primary;
             }
             p.btn_ccc{ background-color: #ccc}
         }
@@ -584,8 +584,8 @@ export default {
   align-items: center;
 }
 .specactive {
-  border: 1rpx solid #ff6325;
-  color:#ff6325;
+  border: 1rpx solid $primary;
+  color:$primary;
   border-radius: 10rpx;
   background: #fcf9f7!important;
 }

@@ -7,24 +7,64 @@ page{
 .classifytab{
 	position: relative;
 	width: 100%;
-	overflow-x: hidden;
+	min-height: 80upx;
 	.index-swiper-tab::before{ display: none;}
 	.index-swiper-tab{
+		height: 80upx;
+		line-height: 80upx;
 		padding-left: 20upx;
 		padding-right: 106upx;
+	}
+	.item{
+		font-size: 28upx;
+		&.active{
+			font-size: 36upx;
+		}
 	}
 	.btn{
 		display: inline-block;
 		line-height: 1.1;
 		color: #666;
-		font-size: 24upx;
+		font-size: 28upx;
 		background: #eee;
 		border-radius: 100px;
-		margin: 0 10upx;
-		padding: 8upx 16upx;
+		margin: 0 16upx;
+		padding: 10upx 20upx;
 		&.active{
 			color: $primary;
 			background-color: #fbecf2;
+		}
+	}
+	.menuIco{
+		position: absolute;
+		height: 80upx;
+		right: 0;
+		top: 0;
+		background:#fff;
+		padding: 0 30upx 0 20upx;
+		overflow: hidden;
+		z-index: 9;
+		align-items: flex-end;
+		view{
+			height: 4upx;
+			width: 40upx;
+			background: #666;
+			margin: 6upx 0;
+			border-radius: 4upx;
+		}
+		.line2{
+			width: 34upx;
+		}
+		&::before{
+			content: "";
+			display: block;
+			width: 12upx;
+			height: 60upx;
+			box-shadow: 0 0 30upx rgba(0,0,0,.3);
+			position: absolute;
+			top: 50%;
+			margin-top: -30upx;
+			left: -12upx;
 		}
 	}
 	.allbtn{
@@ -59,7 +99,7 @@ page{
 		z-index: 2;
 		.allhd{ line-height: 80upx; font-size: 30upx;padding: 0 10upx; }
 		.btn{
-			margin-bottom: 20upx;
+			margin-bottom: 30upx;
 		}
 	}
 }

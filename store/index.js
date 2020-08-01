@@ -5,8 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state:{
-        // token:'',
-        // userId:'',
+        token:'',
+        userId:'',
         cardId: "",
         selectCard: {
             url: '',
@@ -24,7 +24,12 @@ export default new Vuex.Store({
             bankCardNo: ""
         },
         //是否为vip
-        IsVip:0
+        IsVip:0,
+		
+		isplayingmusic: false,
+		isplayactive:false,
+		playdetail:'',
+		audiolist:[],
     },
     getters:{
         getToken(state){
@@ -39,6 +44,18 @@ export default new Vuex.Store({
             }
             return state.userId
         },
+		isplayingmusic(state) {
+			return state.isplayingmusic
+		},
+		isplayactive(state) {
+			return state.isplayactive
+		},
+		playdetail(state){
+			return state.playdetail;
+		},
+		audiolist(state) {
+			return state.audiolist
+		}
     },
     mutations: {
         /**
@@ -70,9 +87,26 @@ export default new Vuex.Store({
         // 设置选择我的银行卡
         setSelectMyCard(state, params) {
             state.selectMyCard = params;
-        }
+        },
+		
+		setIsplayingmusic(state, param) {
+			state.isplayingmusic = param
+		},
+		setIsplayactive(state, param) {
+			state.isplayactive = param
+		},
+		setPlaydetail(state, param){
+			state.playdetail = param
+		},
+		setAudiolist(state, param) {
+			state.audiolist = param
+		}
 
-    }
-    
+    },
+	actions:{
+		isplayingmusicAction(context, param) {
+			context.commit('setIsplayingmusic', param)
+		}
+	} 
 })
 

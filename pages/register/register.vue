@@ -55,15 +55,13 @@
 				this.inviteCode=e.inviteCode;
 				uni.setStorageSync('inviteCode',e.inviteCode)
 			}
+			if(uni.getStorageSync('inviteCode')){
+				this.inviteCode=uni.getStorageSync('inviteCode')
+			}
 			this.type = e.type
 			console.log(this.type,"type999999999999")
 		},
 		onShow() {
-			// #ifdef MP-WEIXIN
-			if(uni.getStorageSync('inviteCode')){
-				this.inviteCode=uni.getStorageSync('inviteCode')
-			}
-			// #endif
 		},
 		data() {
 			return {

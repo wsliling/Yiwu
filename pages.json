@@ -3,7 +3,10 @@
 		{
 			"path": "pages/tabBar/index/index",
 			"style": {
-				"navigationBarTitleText": "壹舞",
+				"navigationBarTitleText": "Danceone",
+				// #ifdef MP
+				"navigationStyle": "custom",
+				// #endif
 				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
@@ -15,7 +18,7 @@
 		,{
 			"path": "pages/tabBar/live/new",
 			"style": {
-				"navigationBarTitleText": "壹舞",
+				"navigationBarTitleText": "Danceone",
 				"enablePullDownRefresh":true,
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
@@ -911,7 +914,7 @@
 				"selectedIconPath": "static/tabbar/ft1_in.png"
 			},
 			{
-				"pagePath": "pages/tabBar/live/new",
+				"pagePath": "pages/tabBar/live/live",
 				"iconPath": "static/tabbar/ft6.png",
 				"selectedIconPath": "static/tabbar/ft6_in.png"
 			},

@@ -30,7 +30,7 @@
 				</view>
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
-						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum+'人赞过':'点赞'}}</view>
+						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum:'点赞'}}</view>
 						<share :url="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
@@ -41,11 +41,14 @@
 						<view @click="CollectBtn(NewsInfo.Id,index)" :class="['txt_info sign',NewsInfo.IsCollect==1?'active':'']"></view>
 					</view>
 				</view>
+				<view class="likenum" v-if="NewsInfo.LikeNum>0">被{{NewsInfo.LikeNum}}人赞过</view>
 			</view>
 		</view>
 		<!-- 评价列表 -->
 		<view class="comment-list uni-bg-white" v-if="hasData">
-			<view class="listname">评价列表</view>
+			<view class="listname">评价列表 
+			<text style="font-weight: normal; margin-left: 10upx;" v-if="commenNum">({{commenNum}})</text>
+			</view>
 			<block v-for="(item,index) in datalist" :key="index">
 				<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 			</block>
@@ -92,6 +95,7 @@
 				hasData: false,
 				noDataIsShow: false,
 				datalist:[],
+				commenNum:0,
 				IsShowReplyBox:false,//是否显示评论按钮
 				placeholder:"写评论~",
 				PCommentId:0,//上级评论id
@@ -151,6 +155,7 @@
 					"FkId": this.Findid
 				});
 				if(result.code==0){
+					this.commenNum=result.count;
 					if (result.data.length > 0) {
 						let _this=this;
 						this.hasData = true;

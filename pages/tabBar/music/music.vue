@@ -42,10 +42,17 @@
 				 </view>
 			 </view>
 			<view class="classifytab">
-			 	<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
-			 		<view v-for="(tab,index) in classifylist" :key="index" :class="['btn',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)">{{tab.Name}}</view>
+			 	<scroll-view id="tab-bar" v-if="!isshowAll" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
+			 		<view v-for="(tab,index) in classifylist" :key="index" :class="['item',tabIndex==index ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(index,tab.Id)" style="width: auto; padding: 0 20upx;">{{tab.Name}}</view>
 			 	</scroll-view>
-			 	<view class="allbtn" id="allbtn" @click="showAll">{{isshowAll?'收起':'全部'}}</view>
+			 	<view class="flex-column menuIco" id="allbtn" @click="isshowAll=!isshowAll">
+					<block v-if="!isshowAll">
+						<view class="line1"></view>
+						<view class="line2"></view>
+						<view class="line3"></view>
+					</block>
+					<text v-if="isshowAll" class="iconfont icon-close"></text>
+				</view>
 				<view class="showClassify" v-if="isshowAll">
 					<view class="allhd">全部分类</view>
 					<view v-for="(tab,index) in classifylist" :key="index" :class="['btn',tabIndex==index ? 'active' : '']"  @click="tapTab(index,tab.Id)">{{tab.Name}}</view>
@@ -64,9 +71,9 @@
 						<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<view class="info flex1 flex-between">
-						<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
+						<view :class="['name uni-ellipsis',(playID==item.Id&&isplayingmusic)?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
-							<view class="icon" @click.stop="rePlayBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="playBtn(item)"><image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
 							<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
@@ -139,15 +146,18 @@
 		</view>
 		<view @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<!-- <view @click="tolink('/pages/music/playMusic/playMusic?pagetype=music')" class="Musicbtn flex-column"><image src="http://yw.wtvxin.com/static/playmusic.png" class="icon"></image></view> -->
+		<playerMin></playerMin>
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,debounce,playMusic} from '@/common/util.js';
+	import {post,get,toLogin} from '@/common/util.js';
 	import noData from '@/components/noData.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import mediaList from '@/components/mediaList.vue';//发现列表
 	import uniPopup from '@/components/uni-popup.vue';
+	import Vue from 'vue'
+	import {mapGetters,mapMutations} from 'vuex'
 	export default {
 		components: {
 			noData,
@@ -181,7 +191,7 @@
 				isShowSelect:false,
 				isCollect:false,//是否收藏
 				playID:"",//当前播放
-				playIDtype:0,//当前播放舞曲的状态0：暂停 1：播放中
+				playIDtype:false,//当前播放舞曲的状态false：暂停 true：播放中
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
 				itemdata:{}
@@ -204,14 +214,15 @@
 				this.FindList()
 			}else{
 				this.playID=uni.getStorageSync("playID")
-				this.playIDtype=uni.getStorageSync("playIDtype")
+				this.playIDtype=this.$store.state.isplayingmusic;
 				this.workeslist();
 			}
 		},
+		computed: {
+		   ...mapGetters(['isplayingmusic'])
+		 },
 		methods: {
-			showAll(){
-				this.isshowAll=!this.isshowAll
-			},
+			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
 			//跳转
 			tolink(Url,islogin) {
 				if(islogin=="login"){
@@ -386,30 +397,50 @@
 				}
 			},
 			//播放
-			rePlayBtn(index,id,isbuy){
-				let _this=this;
-				debounce(function(){
-					console.log("禁止频繁点击")
-					_this.playBtn(index,id,isbuy);
-				})
-			},
-			playBtn(index,id,isbuy){
+			playBtn(item){
+				let src=item.Audio,
+				    id=item.Id,
+					isbuy=item.IsShowBuy,
+					PicImg=item.PicImg;
+				this.setPlaydetail({id,pic:PicImg});
 				if(isbuy==0){
-					uni.setStorageSync("musicList",this.datalist)
-					if(this.playID==id){
-						this.playID="";
+					this.setIsplayactive(true)
+					this.playID=id;
+					if(id==uni.getStorageSync("playID")){
+						if (this.playIDtype) {
+							this.$au_player.pause();
+						} else {
+							this.$au_player.play();
+						}
+						this.playIDtype=!this.playIDtype;
 					}else{
-						this.playID=id;
-					}
-					playMusic(index,id)
-					this.playID=uni.getStorageSync("playID");console.log(2)
-					this.playIDtype=uni.getStorageSync("playIDtype")
+						this.playIDtype=true;
+						this.$au_player.src = src;
+						this.$au_player.play();
+					}				
+					this.setIsplayingmusic(this.playIDtype)
+					Vue.prototype.cusPlay = this.onPlayFn
+					Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
+					Vue.prototype.cusEnded = this.onEndedFn
 				}else{
 					uni.showToast({
 						title:"抱歉！该舞曲需付费",
 						icon:"none"
 					})
 				}
+			},
+			onPlayFn(){
+				this.setIsplayactive(true)
+				uni.setStorageSync("playID",this.playID);
+			},
+			onEndedFn() {
+				this.playIDtype = false;
+				this.setIsplayingmusic(false)
+				this.setIsplayactive(false)
+			},
+			onTimeUpdateFn() {
+				const curtime = this.$au_player.currentTime
+				return Math.floor(curtime)
 			},
 			toplaylist(id,index){
 				uni.setStorageSync("musicList",this.datalist)
@@ -555,7 +586,4 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	.index-swiper-tab .item{
-		width: 50%;
-	}
 </style>

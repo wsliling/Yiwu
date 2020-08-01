@@ -109,6 +109,9 @@
 				</div>
 			</div>
 		</uni-popup>
+		<div class="popGift" v-if="PopGiftImg&&showPopGift">
+			<img :src="PopGiftImg" alt="" mode="widthFix" id="giftpop">
+		</div>
 	</view>
 </template>
 
@@ -156,11 +159,11 @@ export default {
 			myMoney:0,//我的直播币
 			userInfo:{},
 			xintiaoOut:null,//没有接收到心跳包的退出定时器,用于判断是否主播已离开
+			showPopGift:false,//显示送礼的动画
+			PopGiftImg:'',
 		};
 	},
 	onLoad(e) {
-		// #ifdef APP-PLUS
-		// #endif
 		this.memberId = e.id || '';
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
@@ -173,9 +176,6 @@ export default {
 		this.token = uni.getStorageSync('token');
 		console.log('this.userId',this.userId)
 		this.height = res.windowHeight;
-		// #ifndef APP-PLUS
-		// this.ShopId = this.$mp.query.ShopId
-		// #endif
 		this.getMyMoney();//获取我的直播币
 		this.showgoodsbox = true;
 		
@@ -188,93 +188,15 @@ export default {
 	onHide() {
 		if(!this.SocketTask)return;
 		this.SocketTask.close();
+		this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 	},
 	onUnload() {
 		if(!this.SocketTask)return;
 		this.SocketTask.close();
+		this.xintiaoOut&&clearTimeout(this.xintiaoOut);
 	},
 	methods: {
-		//统一的关闭popup方法
-		hidePopup: function() {
-			// this.showPopupGoods = false;
-			this.$refs.proList.close();
-		},
-		//展示商品
-		showGoods: function() {
-			this.$refs.proList.open();
-			// this.hidePopup();
-			// this.showPopupGoods = true;
-		},
-		// 获取WebSocketId 用于身份验证
-		async livemessage() {
-			this.SocketTask&&this.SocketTask.close();
-			let res = await post('User/GetWebSocketId', {
-				UserId: this.userId||'',
-				Token: this.token||'',
-				ToMemberId: this.data.MemberId,
-				Type:''
-			});
-			console.log(res);
-			this.Signature = res.data.Signature;
-			this.TimeStamp = res.data.TimeStamp;
-			this.SecretKey = res.data.SecretKey;
-			this.connectSocket();
-		},
-		// 打开webSocket链接登录验证
-		async connectSocket() {
-			let that = this;
-			this.SocketTask = uni.connectSocket({
-				url: wssHost + '/LiveRoomServer.ashx?Signature=' + this.Signature,
-				complete(err){
-					console.log(err)
-				}
-			});
-			this.SocketTask.onOpen(res => {
-				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
-				console.log('发送数据1', that.SocketTask);
-				that.SocketTask.send({ data: JSON.stringify(data) });
-				console.log('发送数据', res);
-				this.liveList.map(item=>{
-					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
-				})
-			});
-			this.onMessage();
-			this.SocketTask.onError(function(res) {
-				// 如果没超过10次就重新连接
-				if(this.liveErrNum<20){
-					this.liveErrNum+=1;
-					this.livemessage();
-				}
-				console.log('WebSocket连接打开失败，请检查！',res);
-			});
-			this.SocketTask.onClose(close => {
-				this.SocketTask=null;
-				console.log('close1', close);
-			});
-		},
-		//WebSocket连接请求数据
-		LoginData(MsgType, TimeStamp, SecretKey) {
-			let data = {
-				MsgType: MsgType, //咨询者还是回答者
-				TimeStamp: TimeStamp,
-				SecretKey: SecretKey
-			};
-			// console.log(data)
-			return data;
-		},
-		// 推送一条消息
-		pushMsg(text,name=''){
-			let sendData = {
-				MsgType:3,
-				Id:JSON.stringify({
-					Id:new Date().getTime(),
-					Info:text,
-					name:name||'系统提示'
-				}),
-				Info:text,
-			}
-			this.SocketTask.send({ data: JSON.stringify(sendData) });
-		},
+		// **************直播************
 		// 获取直播列表
 		async play() {
 			let res = await post('TencentCloud/PlayListURL', {
@@ -310,23 +232,6 @@ export default {
 				}, 2000);
 			}
 		},
-		// 切换直播
-		swiperChange(e){
-			console.log(e.detail.current,'eee')
-			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
-			const index = e.detail.current
-			this.data = this.liveList[index];
-			console.log('player',this.data)
-			this.livemessage();//打开聊天室
-			this.strArr = [];//初始化消息
-			// this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
-			player.pause();
-			player.destroy();
-			this.playH5();
-			if(this.data.fType){
-				this.getProList()
-			}
-		},
 		playH5() {
 			player = new TcPlayer(this.data.StreamName, {
 				RTMP:this.data.RTMP,
@@ -348,20 +253,103 @@ export default {
 			console.log(player,'play')
 			player.play();
 		},
-		//发送消息
-		async sendMessage(e) {
+		// 切换直播
+		swiperChange(e){
+			console.log(e.detail.current,'eee')
+			this.xintiaoOut&&clearTimeout(this.xintiaoOut);
+			const index = e.detail.current
+			this.data = this.liveList[index];
+			console.log('player',this.data)
+			this.livemessage();//打开聊天室
+			this.strArr = [];//初始化消息
+			// this.strArr = [{ name: '系统提示', Info: '欢迎进入直播间' }];//初始化消息
+			player.pause();
+			player.destroy();
+			this.playH5();
+			if(this.data.fType){
+				this.getProList()
+			}
+		},
+		// ***************直播end**************
+		// 获取WebSocketId 用于身份验证
+		async livemessage() {
+			this.SocketTask&&this.SocketTask.close();
+			let res = await post('User/GetWebSocketId', {
+				UserId: this.userId||'',
+				Token: this.token||'',
+				ToMemberId: this.data.MemberId,
+				Type:''
+			});
+			console.log(res);
+			this.Signature = res.data.Signature;
+			this.TimeStamp = res.data.TimeStamp;
+			this.SecretKey = res.data.SecretKey;
+			this.connectSocket();
+		},
+		// 打开webSocket链接登录验证
+		async connectSocket() {
 			let that = this;
+			this.SocketTask = uni.connectSocket({
+				url: wssHost + '/LiveRoomServer.ashx?Signature=' + this.Signature,
+				complete(err){
+					console.log(err)
+				}
+			});
+			this.SocketTask.onOpen(res => {
+				let data = that.LoginData(1, that.TimeStamp, that.SecretKey);
+				that.SocketTask.send({ data: JSON.stringify(data) });
+				this.liveList.map(item=>{
+					item.isPlay = true;//是否正在直播的状态，根据如果100秒内获取不到心跳包就显示直播已离开
+				})
+			});
+			this.onMessage();
+			this.SocketTask.onError((res)=> {
+				// 如果没超过10次就重新连接
+				if(this.liveErrNum<20){
+					this.liveErrNum+=1;
+					this.livemessage();
+				}
+				console.log('WebSocket连接打开失败，请检查！',res);
+			});
+			this.SocketTask.onClose(close => {
+				this.SocketTask=null;
+				if(this.liveErrNum<99){
+					this.liveErrNum+=1;
+					this.connectSocket();
+				}
+				console.log('close1', close);
+			});
+		},
+		//WebSocket连接请求数据
+		LoginData(MsgType, TimeStamp, SecretKey) {
 			let data = {
+				MsgType: MsgType, //咨询者还是回答者
+				TimeStamp: TimeStamp,
+				SecretKey: SecretKey
+			};
+			// console.log(data)
+			return data;
+		},
+		// 推送一条消息
+		pushMsg(text,name='',type,content){
+			let sendData = {
 				MsgType:3,
 				Id:JSON.stringify({
 					Id:new Date().getTime(),
-					Info:e.detail.value,
-					name:this.userInfo.NickName
+					Info:text,
+					name:name||'系统提示',
+					type,//3-送礼
+					content,//根据类型判断内容
 				}),
-				Info:e.detail.value,
+				Info:text,
 			}
-			this.SocketTask.send({ data: JSON.stringify(data) });
-			console.log(data, 'data');
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
+		},
+		
+		//发送消息
+		async sendMessage(e) {
+			let that = this;
+			this.pushMsg(e.detail.value,this.userInfo.NickName)
 			this.sendInfo = '';
 			this.closeInput();
 		},
@@ -384,7 +372,6 @@ export default {
 					
 				} else if (msg.code == 3 || msg.code == 0) {
 					let obj = JSON.parse(msg.data.Id);
-					console.log(obj, '接收到的消息');
 					if(obj.Info.indexOf('主播')!==-1){
 						this.getProList();
 					}
@@ -394,26 +381,14 @@ export default {
 						console.log('接收了一次心跳测试',obj)
 						that.xintiaoOut&&clearTimeout(that.xintiaoOut);
 						that.xintiaoOut = setTimeout(()=>{
-							console.log('主播已离开',obj)
 							this.liveList.map(item=>{
 								console.log('主播已离开1',item.StreamName,that.data.StreamName)
 								if(that.data.StreamName === item.StreamName){
-									console.log('isPlay',item.isPlay)
 									item.isPlay = false;
-									console.log('isPlay',item.isPlay)
 								}
 							})
 						},110000)
 					}
-					// for (let i = 0; i < that.strArr.length; i++) {
-					// 	for (let j = i + 1; j < that.strArr.length; j++) {
-					// 		if (that.strArr[i].Id == that.strArr[j].Id) {
-					// 			//第一个等同于第二个，splice方法删除第二个
-					// 			that.strArr.splice(j, 1);
-					// 			j--;
-					// 		}
-					// 	}
-					// }
 					console.log('arr', that.strArr);
 					// this.isshowInput = false;
 					this.$nextTick(function() {
@@ -439,14 +414,7 @@ export default {
 		},
 		//失去焦点
 		blurFocus() {
-			// this.isshowInput=false;
 			this.isshowInput = false;
-		},
-		//链接跳转
-		goUrl(url) {
-			uni.navigateTo({
-				url: url
-			});
 		},
 		// 关注
 		async onFollow(item) {
@@ -486,6 +454,14 @@ export default {
 			}
 		},
 		//***************商品***************
+		//统一的关闭popup方法
+		hidePopup: function() {
+			this.$refs.proList.close();
+		},
+		//展示商品
+		showGoods: function() {
+			this.$refs.proList.open();
+		},
 		// 获取产品列表
 		async getProList() {
 			const res = await post('Goods/GetGoodsListByM', {
@@ -530,7 +506,16 @@ export default {
 			})
 			if(res.code)return;
 			this.myMoney -= item.Cost;
-			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name)
+			this.pushMsg(this.userInfo.NickName+'赠送了'+item.Name,'系统提示',3,item.Img)
+			// 送礼动画
+			this.PopGiftImg = item.Img;
+			setTimeout(()=>{
+				this.showPopGift = true;
+				setTimeout(()=>{
+						this.showPopGift = false;
+					},2000)
+			},500)
+			// 送礼动画end
 			uni.showToast({
 				title:'赠送成功！'
 			})
@@ -859,6 +844,44 @@ export default {
 		text-align:center;
 		display:inline-block;
 		margin:0 5upx;
+	}
+}
+.popGift{
+	position:fixed;
+	top:0;left:0;
+	width:100%;
+	#giftpop{
+		width:40%; 
+		position:relative;
+		margin:250upx auto;
+		display:block;
+		animation:gifypop 2s infinite;
+	}
+}
+@keyframes gifypop {
+	0% {
+		margin-left:-50%;
+		transform:skewX(-20deg);
+	}
+	10% {
+		margin-left:30%;
+		transform:skewX(-30deg);
+	}
+	30% {
+		margin-left:30%;
+		transform:skewX(0deg);
+	}
+	
+	40% {transform:skewX(30deg);margin-left:30%;}
+	50% {transform:skewX(-30deg);margin-left:30%;}
+	60% {transform:skewX(30deg);margin-left:30%;}
+	70% {transform:skewX(0deg);margin-left:30%;}
+	90% {
+		transform:skewX(0deg);
+		margin-left:30%;}
+	100% {
+		margin-left:100%;
+		transform:skewX(20deg);
 	}
 }
 </style>

@@ -126,7 +126,7 @@
 	align-items:center;
 }
 .pronumber .price{
-	color: #ff3333;
+	color: #dd196d;
 	font-size: 28upx;
 	font-weight: 500;
 }
@@ -164,7 +164,7 @@
 	margin-right: 18upx;
 }
 .orderinfo .orderright .actives{
-	color:#ff3333;
+	color:#dd196d;
 }
 .orderinfo .orderright .number{
 	width: 60upx;
@@ -191,7 +191,7 @@
 	font-size: 25upx;
 }
 .allprice text:nth-child(3){
-	color: #ff3333;
+	color: #dd196d;
 }
 .footer{
 	position: fixed;
@@ -210,7 +210,7 @@
 }
 .footleft .num{
 	margin-right: 40upx;
-	color: #FF3333;
+	color: #dd196d;
 	font-size: 40upx;
 }
 .footright{
@@ -221,7 +221,7 @@
 	justify-content: center;
 	text-align: center;
 	color: #fff;
-	background-color:#FF6F00;
+	background-color:#dd196d;
 	border-radius: 100px;
 }
 /* 弹窗 */

@@ -51,6 +51,10 @@
 		<uni-popup type="bottom" ref="proList">
 			<proList :list="proList" @confirm="recommendPro"></proList>
 		</uni-popup>
+		<div class="popGift" v-if="PopGiftImg&&showPopGift">
+			<image :src="PopGiftImg" alt="" mode="widthFix" id="giftpop" class="giftpop"
+			 :style="`margin-left:${scale}upx`">
+		</div>
 	</div>
 </template>
 
@@ -88,6 +92,10 @@ export default {
 			liveType:0, //直播类型。0--舞者;1--店铺
 			proList:[],//产品列表
 			xintiao:null,
+			showPopGift:false,//显示送礼的动画
+			PopGiftImg:'',
+			scale:-300,
+			scaleTime:null,
 		};
 	},
 	onLoad(e){
@@ -107,6 +115,7 @@ export default {
 		this.quanxian();
 	},
 	methods: {
+		// 判断是否已开启权限
 		async quanxian() {
 			let platform = uni.getSystemInfoSync()&&uni.getSystemInfoSync().platform;
 			
@@ -213,6 +222,7 @@ export default {
 		// 开始直播
 		async getPlay() {
 			this.livemessage()// 开启实时聊天
+			// 获取直播列表
 			let res = await post('TencentCloud/PushURL', {
 				// push: '',
 				UserId: this.userId,
@@ -251,14 +261,6 @@ export default {
 				}, 2000);
 			}
 		},
-		// 开启美颜
-		openmeiyan() {
-			if (this.beauty == 0) {
-				this.beauty = 9;
-			} else {
-				this.beauty = 0;
-			}
-		},
 		startLive() {
 			let _this = this;
 			this.context.start({
@@ -267,6 +269,19 @@ export default {
 					console.log('livePusher.start:' + JSON.stringify(a));
 				}
 			});
+		},
+		// 结束直播弹窗
+		stopLive() {
+			const that = this;
+			uni.showModal({
+				title:'是否结束直播！',
+				success(res){
+					if(res.confirm){
+						// that.returns()
+						uni.navigateBack();
+					}
+				}
+			})
 		},
 		// 结束直播
 		returns() {
@@ -290,19 +305,15 @@ export default {
 				}
 			});
 		},
-		// 结束直播
-		stopLive() {
-			const that = this;
-			uni.showModal({
-				title:'是否结束直播！',
-				success(res){
-					if(res.confirm){
-						// that.returns()
-						uni.navigateBack();
-					}
-				}
-			})
+		// 开启美颜
+		openmeiyan() {
+			if (this.beauty == 0) {
+				this.beauty = 9;
+			} else {
+				this.beauty = 0;
+			}
 		},
+		
 		// 切换摄像头
 		switchCamera() {
 			this.context.switchCamera({
@@ -366,32 +377,21 @@ export default {
 			this.onMessage()
 			this.SocketTask.onError(function (res) {
 				uni.showModal({title:'WebSocket连接已断开，尝试重新连接'+this.liveErrNum});
-				// 如果没超过10次就重新连接
+				// 如果没超过20次就重新连接
 				if(this.liveErrNum<20){
 					this.liveErrNum+=1;
 					this.livemessage();
 				}
-			  console.log('WebSocket连接打开失败，请检查！');
 			});
 			this.SocketTask.onClose(close => {
 				console.log("close", close);
 				uni.showModal({title:'WebSocket连接已断开'+this.SocketTask});
-				
+				if(this.liveErrNum<99){
+					this.liveErrNum+=1;
+					this.connectSocket()
+				}
 				this.socketStatus = false;
 			});
-		},
-		// 推送一条消息
-		pushMsg(text,name=''){
-			let sendData = {
-				MsgType:3,
-				Id:JSON.stringify({
-					Id:new Date().getTime(),
-					Info:text,
-					name:name||'系统提示'
-				}),
-				Info:text,
-			}
-			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
 		//接收消息
 		onMessage(){
@@ -400,7 +400,7 @@ export default {
 		
 			this.SocketTask.onMessage(r => {
 				msg=JSON.parse(r.data)
-				console.log(msg,55555)
+				console.log(msg,'收到的消息')
 				if(msg.code==1){
 					
 				}else if(msg.code==3||msg.code==0){
@@ -408,17 +408,13 @@ export default {
 					console.log(obj,987)
 					if(obj.Info!=='ping'){
 						that.strArr.push(obj);
+						if(obj.type==3){
+							that.PopGiftImg = obj.content;
+							this.animations();
+						}
 					}else{
 						console.log('接收了一次心跳测试')
 					}
-					// for(let i=0; i<that.strArr.length; i++){
-					//     for(let j=i+1; j<that.strArr.length; j++){
-					//         if(that.strArr[i].Id==that.strArr[j].Id){ //第一个等同于第二个，splice方法删除第二个
-					//             that.strArr.splice(j,1);
-					//             j--;
-					//         }
-					//     }
-					// }
 					console.log('arr',that.strArr)
 					this.$nextTick(function(){//等最新一条消息dom更新，滚动到底部
 						// that.scrollTop=this.scrollTop+50;
@@ -427,6 +423,7 @@ export default {
 						
 					})
 				}else if(msg.code==2){//连接断开，重新连接
+					uni.showModal({title:'WebSocket连接已断开，onMessage'});
 					// let data=that.LoginData(1,that.TimeStamp,that.SecretKey)
 					// that.SocketTask.send({data:JSON.stringify(data)})
 					// uni.showToast({
@@ -444,6 +441,19 @@ export default {
 			}
 			// console.log(data)
 			return data;
+		},
+		// 推送一条消息
+		pushMsg(text,name=''){
+			let sendData = {
+				MsgType:3,
+				Id:JSON.stringify({
+					Id:new Date().getTime(),
+					Info:text,
+					name:name||'系统提示'
+				}),
+				Info:text,
+			}
+			this.SocketTask.send({ data: JSON.stringify(sendData) });
 		},
 		//******************产品*******************************
 		// 获取产品列表
@@ -493,7 +503,30 @@ export default {
 			}else{
 				item.confirmText ='取消推荐';
 			}
-		}
+		},
+		// 送礼动画
+		animations(){
+			this.showPopGift = true;
+			this.scale = -300;
+			this.scaleTime = setInterval(()=>{
+				if(this.scale>200){
+					clearInterval(this.scaleTime)
+					setTimeout(()=>{
+						this.scaleTime = setInterval(()=>{
+							if(this.scale>750){
+								this.showPopGift = false;
+								clearInterval(this.scaleTime)
+							}else{
+								this.scale += 20;
+							}
+						},8)
+					},1500)
+				}else{
+					this.scale += 20;
+				}
+			},8)
+		},
+		
 	},
 	// 页面卸载
 	onUnload(){
@@ -635,4 +668,52 @@ export default {
 	width: 100%;
 }
 
+	.popGift{
+		position:fixed;
+		top:300upx;left:0;
+		width:750upx;
+		height:1000upx
+	}
+		.giftpop{
+			position:relative;
+			width:300upx;
+			display:block;
+			transform:scale(1);
+			transition-duration:2000; 
+			animation:gifypop 2000 infinite;
+			animation-name:gifypop;
+			animation-duration:2000;
+			animation-iteration-count:3;
+		}
+	@keyframes gifypop {
+		0% {
+			margin-left:-300upx;
+			transform:skewX(-20deg);
+		}
+		10% {
+			margin-left:-225upx;
+			transform:skewX(-30deg);
+		}
+		30% {
+			margin-left:-225upx;
+			transform:skewX(0deg);
+		}
+		
+		40% {transform:skewX(30deg);
+			margin-left:225upx;}
+		50% {transform:skewX(-30deg);
+			margin-left:225upx;}
+		60% {transform:skewX(30deg);
+			margin-left:225upx;}
+		70% {transform:skewX(0deg);
+			margin-left:225upx;}
+		90% {
+			transform:skewX(0deg);
+			
+			margin-left:225upx;}
+		100% {
+			margin-left:750upx;
+			transform:skewX(20deg);
+		}
+	}
 </style>

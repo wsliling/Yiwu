@@ -23,6 +23,18 @@ function formatTime(date) {
 	const t2 = [hour, minute, second].map(formatNumber).join(':')
 	return `${t1} ${t2}`
 }
+// 秒格式化 00:00 格式
+function formatSecond(second){
+	var sec = second % 60;
+	var min = Math.floor(second / 60);
+	if(min.toString().length < 2){
+		min = '0' + min;
+	}
+	if(sec.toString().length < 2){
+		sec = '0' + sec;
+	}
+	return min + ':' + sec
+}
 function formatLocation(longitude, latitude) {
 	if (typeof longitude === 'string' && typeof latitude === 'string') {
 		longitude = parseFloat(longitude)
@@ -233,76 +245,6 @@ const compareVersion = function(v1, v2) {
   return 0
 }
  //#endif
-//播放音频
-const audio = uni.createInnerAudioContext(); //创建音频
-var playID="" //当前播放的舞曲id
-var hasplay=true  //是否播放过
-const version = wx.getSystemInfoSync().SDKVersion;
-    
-export function playMusic(index,id,nowSrc){//index:当前列表的索引，舞曲id
-	var musicList=uni.getStorageSync("musicList"),//音乐列表
-	playID=uni.getStorageSync("playID");
-	//#ifdef MP-WEIXIN
-	if (compareVersion(version, '2.3.0') >= 0) {
-	  wx.setInnerAudioOption({
-	    obeyMuteSwitch: false
-	  })
-	}else{
-	  wx.showModal({
-	    title: '提示',
-	    content: '当前微信版本过低，静音模式下可能会导致播放音频失败。'
-	  })
-	}
-	//#endif
-	console.log("playID和id"+playID+"--"+id);
-    if(playID!=""&&playID!="undefined"){
-		if(playID==id){//暂停
-			if(hasplay){
-				audio.pause()
-				hasplay=false
-				uni.setStorageSync("playIDtype",0)
-			}else{
-				audio.play()
-				hasplay=true
-				uni.setStorageSync("playIDtype",1)
-			}
-		}else{
-			audio.stop()
-			hasplay=false
-			playID=id
-			uni.setStorageSync("playID",playID)
-			uni.setStorageSync("playIDtype",1)
-			if(nowSrc){
-			audio.src = nowSrc	
-			}else{
-			audio.src = musicList[index].Audio	
-			}
-			audio.play()
-			MemberPaly(id)
-		}
-	}else{
-		playID=id
-		uni.setStorageSync("playID",playID)
-		uni.setStorageSync("playIDtype",1)
-		if(nowSrc){
-		audio.src = nowSrc	
-		}else{
-		audio.src = musicList[index].Audio	
-		}
-		audio.play()
-		MemberPaly(id)
-	}
-	//音频播放事件
-	audio.onPlay(() => {
-		hasplay=true
-		uni.setStorageSync("playIDtype",1)
-	})
-	//音频暂停事件
-	audio.onPause(() => {
-		hasplay=false
-		uni.setStorageSync("playIDtype",0)
-	})
-}
 //记录播放舞曲
 function MemberPaly(id){
 	const userId = uni.getStorageSync('userId');
@@ -339,6 +281,7 @@ import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,pr
 import {get,post,requestHideLoading} from './request.js'
 export {
 	formatTime,
+	formatSecond,
 	formatLocation,
 	dateUtils,
 	host,
@@ -353,10 +296,10 @@ export {
 	valPhone,
 	getUrlParam,
 	uncodeUtf16,
-	audio,
+	//audio,
+	MemberPaly,
 	isWeixin,
 	GetUrlRelativePath,
-
 	toast,
 	debounce,
 	throttle,
