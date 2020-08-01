@@ -133,16 +133,16 @@
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
-					<uni-popup type="bottom" ref="ac">
+					<!-- <uni-popup type="bottom" ref="ac">
 						<div class="ac">
 							<div class="list1" @click="$refs.ac.close()">
-								<div class="item1" @click="navigate('member/regDancer/regDancer')">舞者认证</div>
-								<div class="item1" @click="navigate('member/regMechanism/regMechanism')">机构认证</div>
-								<div class="item1" @click="navigate('member/regShop/regShop')">店铺认证</div>
+								<div class="item1" @click="tolink('member/regDancer/regDancer')">舞者认证</div>
+								<div class="item1" @click="tolink('member/regMechanism/regMechanism')">机构认证</div>
+								<div class="item1" @click="tolink('member/regShop/regShop')">店铺认证</div>
 							</div>
 							<div class="cancel" @click="$refs.ac.close()">取消</div>
 						</div>
-					</uni-popup>
+					</uni-popup> -->
 					<view class="item" @click="tolink('/pages/member/myWorks/myWorks')">
 						<view class="item-left">
 							<image  src="http://yw.wtvxin.com/static/my/icon7.png" mode="aspectFit"></image>
@@ -375,25 +375,27 @@
 				}
 			},
 			openAttestation(){
-				this.$refs.ac.open();
-				return;
-				// let urlstr="";
-				// uni.showActionSheet({
-				// 	itemList: ['舞者认证', '机构认证', '店铺认证'],
-				// 	success: (e) => {
-				// 		console.log(e.tapIndex);
-				// 		if(e.tapIndex==0){
-				// 			urlstr="/pages/member/regDancer/regDancer";
-				// 		}else if(e.tapIndex==1){
-				// 			urlstr="/pages/member/regMechanism/regMechanism";
-				// 		}else if(e.tapIndex==2){
-				// 			urlstr="/pages/member/regShop/regShop";
-				// 		}
-				// 		uni.navigateTo({
-				// 			url: urlstr
-				// 		})
-				// 	}
-				// })
+				// this.$refs.ac.open();
+				// return;
+				let urlstr="";
+				if(toLogin()){
+					uni.showActionSheet({
+						itemList: ['舞者认证', '机构认证', '店铺认证'],
+						success: (e) => {
+							console.log(e.tapIndex);
+							if(e.tapIndex==0){
+								urlstr="/pages/member/regDancer/regDancer";
+							}else if(e.tapIndex==1){
+								urlstr="/pages/member/regMechanism/regMechanism";
+							}else if(e.tapIndex==2){
+								urlstr="/pages/member/regShop/regShop";
+							}
+							uni.navigateTo({
+								url: urlstr
+							})
+						}
+					})
+				}
 			},
 			async NewsCount() {
 				let result = await post("News/NewsCount", {

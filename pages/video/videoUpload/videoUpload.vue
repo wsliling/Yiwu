@@ -76,18 +76,65 @@
 		onShow() {
 			this.userId = uni.getStorageSync("userId")
 			this.token = uni.getStorageSync("token")
-			this.videoImg = uni.getStorageSync("VfileName")
-			const that=this
-			setTimeout(()=>{
-				that.videoShowImg=webUrl+that.videoImg
-			},500)
-			this.videofile = uni.getStorageSync("VfilePath")
+			//this.videoImg = uni.getStorageSync("VfileName")
+			// const that=this
+			// setTimeout(()=>{
+			// 	that.videoShowImg=webUrl+that.videoImg
+			// },500)
+			//this.videofile = uni.getStorageSync("VfilePath")
 		},
 		methods: {
 			choosevideo(){
-				uni.navigateTo({
-					url:"/pages/uploadFile/uploadFile?type=1"
+				let _this=this;
+				
+				// uni.navigateTo({
+				// 	url:"/pages/uploadFile/uploadFile?type=1"
+				// })
+				
+				uni.chooseVideo({
+					count:1,
+					sourceType:['camera','album'],
+					success(res) {
+						console.log(res)
+						let tempFilePaths = res.tempFilePath;
+						uni.showLoading({
+						  title: '上传中' //数据请求前loading
+						})
+						uni.uploadFile({
+							url:host+'System/UploadMultiFile',
+							filePath:tempFilePaths,
+							name:'file',
+							header:{"Content-Type":"multipart/form-data"},
+							formData:{
+								'UserId':_this.userId,
+								'Token':_this.token,
+								'SignKey':'video'
+							},
+							success: (_res) => {   
+								uni.showToast({
+									title:"视频上传成功",
+								})
+								console.log(_res)
+								let data=JSON.parse(_res.data);
+								_this.videofile=data.data[0].Video;
+								_this.videoShowImg=data.data[0].Img;
+								console.log(_this.videoShowImg)
+							},
+							fail(err) {
+								uni.showToast({
+									title:"视频上传失败，请重试",
+								})
+							},
+							complete() {
+								uni.hideLoading();
+							}
+						})
+					},
+					fail(err) {
+						console.log(err)
+					}
 				})
+				
 			},
 			//发布视频
 			async pushVideo(){
@@ -101,7 +148,7 @@
 					Token: this.token,
 					Type: this.type,
 					Video:this.videofile,
-					Logo: this.videoImg,
+					Logo: this.videoShowImg,
 					Title:this.Title,
 					IsCharge:IsCharge,
 					Price:this.Price,
@@ -111,10 +158,10 @@
 					uni.showToast({
 						title:"发布成功",
 					})
-					uni.setStorageSync("fileName","");//清空缓存
-					uni.setStorageSync("filePath","");
-					uni.setStorageSync("VfilePath","");
-					uni.setStorageSync("VfileName","");
+					// uni.setStorageSync("fileName","");//清空缓存
+					// uni.setStorageSync("filePath","");
+					// uni.setStorageSync("VfilePath","");
+					// uni.setStorageSync("VfileName","");
 					setTimeout(()=>{
 						uni.navigateBack({
 						    delta: 1
@@ -137,7 +184,7 @@
 					uni.showToast({title:"请输入视频/课程的标题！",icon:"none"})
 					return false
 				}
-				if(this.videofile==""){
+				if(!this.videofile){
 					uni.showToast({title:"请选择要上传的视频！",icon:"none"})
 					return false
 				}
@@ -187,15 +234,16 @@
 	}
 	.videobox{
 		width: 230upx;
-		height: 245upx;
+		height: 230upx;
 		image{
 			width: 230upx;
-			height: 245upx;
+			height: 230upx;
 			border-radius: 6upx;
+			border:1px solid #E6E6E6;
 		}
 		video{
 			width: 230upx;
-			height: 245upx;
+			height: 230upx;
 		}
 	}
 }

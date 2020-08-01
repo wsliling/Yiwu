@@ -28,7 +28,7 @@
 					<input type="text" class="ipt" value="" v-model="code" placeholder="请输入验证码" />
 					<view class="getcode" @click="getCode">{{codeMsg}}</view>
 				</view>
-				<view class="from-line text_r" style="margin:0; display: none;" @click="changeWay">
+				<view class="from-line text_r" style="margin:0;" @click="changeWay">
 					<text class="c_theme" v-if="logintype">手机验证码登录</text>
 					<text class="c_theme" v-if="!logintype">密码登录</text>
 				</view>
@@ -285,6 +285,32 @@
 					     title: "登录成功",
 					     duration: 1800,
 						 success:function(){
+							 //#ifdef H5
+							 uni.showModal({
+							 	title:"温馨提示",
+							 	content: "更多功能体验尽在壹舞APP",
+								confirmText:"下载APP",
+								cancelText:"逛逛别的",
+								confirmColor:"#DD196D",
+								cancelColor:"#999999",
+							 	success(res) {
+							 		if (res.confirm) {
+							 			uni.navigateTo({
+							 			  url: "/pages/dowmApp/dowmApp"
+							 			});
+							 		} else if (res.cancel) {
+										if(_this.isRegister){
+											uni.switchTab({
+												url: "/pages/tabBar/my/my"
+											  });	
+										}else{
+											uni.navigateBack();
+										}
+							 		}
+							 	}
+							 });
+							 //#endif
+							 //#ifndef H5
 							setTimeout(function() {
 								if(_this.isRegister){
 									uni.switchTab({
@@ -294,6 +320,7 @@
 									uni.navigateBack();
 								}
 							 }, 1800);
+							 //#endif
 						 }
 					});
 					console.log(result.data);

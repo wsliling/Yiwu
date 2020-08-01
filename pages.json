@@ -204,6 +204,19 @@
 		    	}
 		    }
 		}
+        ,{
+            "path" : "pages/dowmApp/dowmApp",
+            "style" : {
+				"navigationBarTitleText": "下载APP",
+				"app-plus": {
+					 "titleNView": {    
+						"splitLine": {  
+						  "color":"#eee"  
+						}    
+					 }
+				}
+			}
+        }
     ],
 	"subPackages":[
 		{
