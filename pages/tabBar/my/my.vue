@@ -160,7 +160,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item" @click="tolink('/pages/member/interflow/interflow')">
+			<view class="item" @click="navigate('member/interflow/interflow')">
 				<view class="item-left">
 					<image  src="http://yw.wtvxin.com/static/my/icon11.png" mode="aspectFit"></image>
 					<view>加入官方交流</view>
@@ -174,7 +174,7 @@
 				</view>
 				<view class="arrowr uni-icon uni-icon-arrowright"></view>
 			</view>
-			<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
+			<view class="item" @click="navigate('member/aboutUs/aboutUs')">
 				<view class="item-left">
 					<image  src="http://yw.wtvxin.com/static/my/icon13.png" mode="aspectFit"></image>
 					<view>关于我们</view>
