@@ -104,7 +104,9 @@
 							url:host+'System/UploadMultiFile',
 							filePath:tempFilePaths,
 							name:'file',
+							// #ifndef H5
 							header:{"Content-Type":"multipart/form-data"},
+							// #endif
 							formData:{
 								'UserId':_this.userId,
 								'Token':_this.token,
@@ -117,7 +119,9 @@
 								console.log(_res)
 								let data=JSON.parse(_res.data);
 								_this.videofile=data.data[0].Video;
-								_this.videoShowImg=data.data[0].Img;
+								setTimeout(()=>{
+									_this.videoShowImg=data.data[0].Img;
+								},500)
 								console.log(_this.videoShowImg)
 							},
 							fail(err) {

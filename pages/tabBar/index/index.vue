@@ -46,6 +46,14 @@
 									<view class="uni-icon uni-icon-closeempty close" @click="closeuser(i)"></view>
 									<view class="tx" @click="tolink('/pages/homepage/homepage?id='+e.Id)">
 										<image :src="e.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+										<!-- #ifndef MP-WEIXIN -->
+										<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
+											<view class="line line1"></view>
+											<view class="line line2"></view>
+											<view class="line line3"></view>
+											<view class="txt">直播</view>
+										</view>
+										<!-- #endif -->
 									</view>
 									<view class="name uni-ellipsis">
 										{{e.NickName||'壹舞用户'}}
@@ -60,7 +68,17 @@
 					<view class="Yi-media">
 						<view class="media-hd flex-between">
 							<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
-								<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+								<view class="tx">
+									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+									<!-- #ifndef MP-WEIXIN -->
+									<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
+										<view class="line line1"></view>
+										<view class="line line2"></view>
+										<view class="line line3"></view>
+										<view class="txt">直播</view>
+									</view>
+									<!-- #endif -->
+								</view>
 								<view class="name uni-ellipsis">{{item.NickName}}</view>
 								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
 							</view>
@@ -96,7 +114,7 @@
 									<view class="txt_info share"></view>
 								</share>
 							</view>
-							<view class="ft_r">
+							<view class="ft_r" v-if="item.Type!=0">
 								<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 							</view>
 						</view>

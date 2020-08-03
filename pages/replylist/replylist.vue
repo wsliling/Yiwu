@@ -3,7 +3,7 @@
 		<view class="Yi-media" style="background: #fff;">
 			<view class="media-hd flex-between">
 				<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+NewsInfo.MemberId)">
-					<view class="tx"><image :src="NewsInfo.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+					<view class="tx" style="border: none;padding: 0;"><image :src="NewsInfo.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
 					<view class="name uni-ellipsis">{{NewsInfo.NickName}}</view>
 					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
 				</view>
@@ -37,7 +37,7 @@
 						<view class="txt_info inwith" v-if="NewsInfo.Source">来源{{NewsInfo.Source}}</view>
 					</view>
 					
-					<view class="ft_r">
+					<view class="ft_r"  v-if="NewsInfo.Type!=0">
 						<view @click="CollectBtn(NewsInfo.Id,index)" :class="['txt_info sign',NewsInfo.IsCollect==1?'active':'']"></view>
 					</view>
 				</view>

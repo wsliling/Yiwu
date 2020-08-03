@@ -43,7 +43,7 @@
 								<view class="icos flex-center-start uni-mt10">
 									<text class="ico" v-if="memberInfo.Age"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
 									<text class="ico" v-if="memberInfo.Area">{{memberInfo.Area}}</text>
-									<text class="ico" @click="tolink('/pages/member/editinfo/editinfo')">{{memberInfo.UserDefined?memberInfo.UserDefined:'+自定义'}}</text>
+									<text class="ico" v-if="memberInfo.UserDefined" @click="tolink('/pages/member/editinfo/editinfo')">{{memberInfo.UserDefined}}</text>
 								</view>
 							</block>
 						</view>

@@ -15,9 +15,9 @@
 		align-items: center;
 		view{
 			height: 2px;
-			width: 20px;
+			width: 18px;
 			background: #666;
-			margin: 3px 0;
+			margin: 2px 0;
 			border-radius: 2px;
 		}
 	}
@@ -34,8 +34,8 @@
 			display: flex;
 			align-items: flex-start;
 			.user-img{
-				width: 128upx;
-				height: 128upx;
+				width: 140upx;
+				height: 140upx;
 				border: solid 2upx transparent;
 				border-radius:100%;
 				background-image: linear-gradient(#e4cb9f, #797875),
@@ -416,11 +416,6 @@
 			margin-right: 0;
 		}
 	}
-}
-
-.music-box .item image{
-	border-radius: 100%;
-
 }
 .audiobox{
 	position: relative;
