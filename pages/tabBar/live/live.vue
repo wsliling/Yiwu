@@ -134,7 +134,7 @@
 						<view class="author flex-start">
 							<view class="tx">
 								<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
-								<!-- #ifdef MP-WEIXIN -->
+								<!-- #ifndef MP-WEIXIN -->
 								<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.UserId})">
 									<view class="line line1"></view>
 									<view class="line line2"></view>
@@ -259,7 +259,7 @@
 						<view class="ft_r flex-end">
 							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
 							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
-							<share :url="'/pages/replylist/replylist?id='+item.Id">
+							<share :url="xqUrl[1].url+item.Id" :param="'1&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
 						</view>

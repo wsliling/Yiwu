@@ -1,16 +1,43 @@
 <template>
 <div>
-    <button open-type="share" @click="share" class="button" :data-param="param">
-        <slot>
-            分享
-        </slot>
-    </button>
+	<button open-type="share" @click="share" class="button" :data-param="param">
+	    <slot>
+	        分享
+	    </slot>
+	</button>
+    <!-- #ifdef APP-PLUS -->
+   <uni-popup type="bottom" :show="showPopupShare" :h5Top="true" position="bottom" @hidePopup='hide'>
+	   <view class="uni-popup">
+		   <view class="pop-hd">分享</view>
+		<view class="sharelist flex-between">
+			<view class="share-item" @click="appShare('WXSceneSession')">
+				<image class="imgico" src="http://yw.wtvxin.com/static/wx.png" mode="aspectFit"></image>
+				<text class="txt">微信好友</text>
+			</view>
+			<view class="share-item" @click="appShare('WXSenceTimeline')">
+				<image class="imgico" src="http://yw.wtvxin.com/static/ico_quan.png" mode="aspectFit"></image>
+				<text class="txt">微信朋友圈</text>
+			</view>
+			<view class="share-item" @click="appShare()">
+				<image class="imgico" src="http://yw.wtvxin.com/static/share_link.png" mode="aspectFit"></image>
+				<text class="txt">复制链接</text>
+			</view>
+		</view>
+		<view style="height: 100upx;"></view>
+		<view class="uni-close-bottom" @click="hide">关闭</view>
+	   </view>
+   </uni-popup>
+    <!-- #endif -->
 </div>
 </template>
 <script>
 import {webUrl} from '@/common/util'
 import h5Copy from '@/common/junyi-h5-copy'
+import uniPopup from '@/components/uni-popup.vue';
 export default {
+	components: {
+		uniPopup
+	},
     props:{
         h5Url:{
             type:String,
@@ -36,10 +63,17 @@ export default {
     },
     data(){
         return {
-			data:{}
+			data:{},
+			showPopupShare:false,
+			offsetTop:0
         }
     },
     methods:{
+		//统一的关闭popup方法
+		hide: function() {
+			this.showPopupShare = false;
+		},
+		moveHandle() {},
 		editUrl(params){
 			console.log(params)
 			if(!this[params])return;
@@ -58,19 +92,20 @@ export default {
 			this.editUrl('appUrl')
 			this.editUrl('url')
             // #ifdef APP-PLUS
-				uni.share({
-				    provider: "weixin",
-				    scene: "WXSceneSession",
-				    type: 0,
-					title:'壹舞',
-				    href: this.data.appUrl?webUrl+'/#'+this.data.appUrl:webUrl+'/#'+this.data.url,
-				    success: function (res) {
-				        console.log("success:" + JSON.stringify(res));
-				    },
-				    fail: function (err) {
-				        console.log("fail:" + JSON.stringify(err));
-				    }
-				});
+			this.showPopupShare = true;
+				// uni.shareWithSystem({
+				// 	summary:'DanceOne',
+				// 	type:'image',
+				// 	// href:this.data.appUrl?webUrl+'/#'+this.data.appUrl:webUrl+'/#'+this.data.url,
+				// 	imageUrl:'../../static/logo.png',
+				// 	success(res){
+				// 	   console.log("success:" + JSON.stringify(res));
+				// 	},
+				// 	fail(err){
+				// 	   console.log("fail:" + JSON.stringify(err));
+				// 	}
+				// })
+				
             // #endif
             // #ifdef H5
             console.log(this.data.url)
@@ -82,7 +117,37 @@ export default {
                 uni.showToast({title:'分享失败',icon:'none'})
             }
             //#endif
-        }
+        },
+		appShare(Scene){
+			if(Scene){
+				uni.share({
+				    provider: "weixin",
+				    scene: Scene,
+				    type: 0,
+					title:'壹舞',
+					imageUrl:'/static/logo.png',
+				    href: this.data.appUrl?webUrl+'/#'+this.data.appUrl:webUrl+'/#'+this.data.url,
+				    success: function (res) {
+				        console.log("success:" + JSON.stringify(res));
+				    },
+				    fail: function (err) {
+				        console.log("fail:" + JSON.stringify(err));
+				    }
+				});
+			}else{
+				let txt = this.data.appUrl?webUrl+'/#'+this.data.appUrl:webUrl+'/#'+this.data.url;
+				uni.setClipboardData({
+				  data: txt,
+				  success: function (res) {
+				    uni.getClipboardData({ 
+				      success: function (res) {
+				        console.log(res.data) // data
+				      }
+				    })
+				  }
+				})
+			}
+		}
     },
     // #ifdef MP-WEIXIN
      //转发
@@ -122,4 +187,30 @@ export default {
 	border-color: transparent;
 	border:none;
 }
+.uni-mask {
+		position: fixed;
+		z-index: 99999;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: rgba(0, 0, 0, .4);
+	}
+	.uni-popup {
+		// position: fixed;
+		// z-index: 999999;
+		background-color: #ffffff;
+		box-shadow: 0 0 30upx rgba(0, 0, 0, .1);
+		// left: 0;
+		// bottom: 0;
+		// width: 100%;
+		// text-align: center;
+		border-radius: 20upx 20upx 0 0;
+		.pop-hd{ font-size: 32upx;}
+	}
+	.sharelist{ padding: 20upx 30upx;}
+	.sharelist .share-item{ width: 25%; margin-bottom: 20upx;}
+	.imgico{ display: block; width: 100upx; height: 100upx; margin: 0 auto;}
+	.txt{ color: #333; font-size: 26upx;}
+	.uni-close-bottom{ height: 100upx; line-height: 100upx; width: 100%; position: absolute;bottom: 0; left: 0; font-size: 30upx; border-top: 1px solid #eee;color: #999;}
 </style>

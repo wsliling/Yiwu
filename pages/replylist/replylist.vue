@@ -415,6 +415,15 @@
 
 <style lang="scss" scoped>
 	@import '../tabBar/index/style';
+	.maxpic video{
+		width: 100%;
+		height: 375px;
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		z-index: 2;
+	}
 	.listname{
 		font-size: 30upx;
 		padding: 30upx 30upx 0;
