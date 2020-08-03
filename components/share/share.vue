@@ -5,7 +5,7 @@
 	        分享
 	    </slot>
 	</button>
-    <!-- #ifdef APP-PLUS -->
+    <!-- #ifdef APP-PLUS||H5 -->
    <uni-popup type="bottom" :show="showPopupShare" :h5Top="true" position="bottom" @hidePopup='hide'>
 	   <view class="uni-popup">
 		   <view class="pop-hd">分享</view>
@@ -91,7 +91,7 @@ export default {
 			this.editUrl('wxUrl')
 			this.editUrl('appUrl')
 			this.editUrl('url')
-            // #ifdef APP-PLUS
+            // #ifdef APP-PLUS ||H5
 			this.showPopupShare = true;
 				// uni.shareWithSystem({
 				// 	summary:'DanceOne',
