@@ -208,7 +208,12 @@
 				],//详情链接
 				ismuted:false,
 				phoneheight:0,
+				// #ifdef APP-PLUS
+					isControls:true
+				// #endif
+				// #ifndef APP-PLUS
 				isControls:false
+				// #endif
 			}
 		},
 		onLoad() {

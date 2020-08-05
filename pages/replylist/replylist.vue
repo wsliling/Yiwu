@@ -118,7 +118,13 @@
 				imgArr:[],
 				videoContext:null,
 				onplayHeight:0,//当前播放视频距离顶部的高度
+				// #ifdef APP-PLUS
+					isControls:true
+				// #endif
+				// #ifndef APP-PLUS
 				isControls:false
+				// #endif
+				
 			}
 		},
 		onLoad(e){

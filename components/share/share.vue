@@ -9,22 +9,22 @@
    <uni-popup type="bottom" :show="showPopupShare" :h5Top="true" position="bottom" @hidePopup='hide'>
 	   <view class="uni-popup">
 		   <view class="pop-hd">分享</view>
-		<view class="sharelist flex-between">
-			<view class="share-item" @click="appShare('WXSceneSession')">
-				<image class="imgico" src="http://yw.wtvxin.com/static/wx.png" mode="aspectFit"></image>
-				<text class="txt">微信好友</text>
+			<view class="sharelist flex-between">
+				<view class="share-item" @click="appShare('WXSceneSession')">
+					<image class="imgico" src="http://yw.wtvxin.com/static/wx.png" mode="aspectFit"></image>
+					<text class="txt">微信好友</text>
+				</view>
+				<view class="share-item" @click="appShare('WXSenceTimeline')">
+					<image class="imgico" src="http://yw.wtvxin.com/static/ico_quan.png" mode="aspectFit"></image>
+					<text class="txt">微信朋友圈</text>
+				</view>
+				<view class="share-item" @click="appShare()">
+					<image class="imgico" src="http://yw.wtvxin.com/static/share_link.png" mode="aspectFit"></image>
+					<text class="txt">复制链接</text>
+				</view>
 			</view>
-			<view class="share-item" @click="appShare('WXSenceTimeline')">
-				<image class="imgico" src="http://yw.wtvxin.com/static/ico_quan.png" mode="aspectFit"></image>
-				<text class="txt">微信朋友圈</text>
-			</view>
-			<view class="share-item" @click="appShare()">
-				<image class="imgico" src="http://yw.wtvxin.com/static/share_link.png" mode="aspectFit"></image>
-				<text class="txt">复制链接</text>
-			</view>
-		</view>
-		<view style="height: 100upx;"></view>
-		<view class="uni-close-bottom" @click="hide">关闭</view>
+			<view style="height: 100upx;"></view>
+			<view class="uni-close-bottom" @click="hide">关闭</view>
 	   </view>
    </uni-popup>
     <!-- #endif -->
