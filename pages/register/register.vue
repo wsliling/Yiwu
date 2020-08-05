@@ -220,13 +220,9 @@
 					     duration: 1800,
 						 success:function(){
 							setTimeout(function() {
-								if(_this.type==0){
-									uni.switchTab({
-										url: "/pages/tabBar/my/my"
-									  });	
-								}else{
-									uni.navigateBack(2);
-								}
+								uni.switchTab({
+									url: "/pages/tabBar/my/my"
+								  });	
 							 }, 1800);
 						 }
 					});
@@ -269,15 +265,34 @@
 					     title: "注册登录成功",
 					     duration: 1800,
 						 success:function(){
+							 //#ifdef H5
+							uni.showModal({
+							 	title:"温馨提示",
+							 	content: "更多功能体验尽在壹舞APP",
+								confirmText:"下载APP",
+								cancelText:"逛逛别的",
+								confirmColor:"#DD196D",
+								cancelColor:"#999999",
+							 	success(res) {
+							 		if (res.confirm) {
+							 			uni.navigateTo({
+							 			  url: "/pages/dowmApp/dowmApp"
+							 			});
+							 		} else if (res.cancel) {
+										uni.switchTab({
+											url: "/pages/tabBar/my/my"
+										  });	
+							 		}
+							 	}
+							 });
+							 //#endif
+							 //#ifndef H5
 							setTimeout(function() {
-								if(_this.type==0){
-									uni.switchTab({
-										url: "/pages/tabBar/my/my"
-									  });	
-								}else{
-									uni.navigateBack();
-								}
+								uni.switchTab({
+									url: "/pages/tabBar/my/my"
+								  });	
 							 }, 1800);
+							 //#endif
 						 }
 					});
 					console.log(result.data);

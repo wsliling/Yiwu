@@ -22,7 +22,8 @@
             "VideoPlayer" : {},
             "LivePusher" : {},
             "Payment" : {},
-            "Share" : {}
+            "Share" : {},
+            "OAuth" : {}
         },
         /* 应用发布信息 */
         "distribute" : {
@@ -69,6 +70,13 @@
                 "payment" : {
                     "weixin" : {
                         "appid" : "wx0983daac38bc07a0",
+                        "UniversalLinks" : ""
+                    }
+                },
+                "oauth" : {
+                    "weixin" : {
+                        "appid" : "wx0983daac38bc07a0",
+                        "appsecret" : "4a54a5aab2416d8fd8016d234c7a9f5d",
                         "UniversalLinks" : ""
                     }
                 }

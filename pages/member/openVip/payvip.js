@@ -237,9 +237,27 @@ async function balancePay(){
         PayPassword:params.payPassword
     })
     disable = false;
-    if(res.code) return;
-    toast('购买成功！',{icon:true})
-    navigateBack();
+	if(res.code==3){
+		uni.showModal({
+		    title:'是否跳转设置支付密码页面',
+		    success(ret){
+		        if(ret.confirm){
+					uni.navigateTo({
+						url:'/pages/member/setpwd/setpwd'
+					})
+		        }
+		    }
+		})
+	}else if(res.code==0){
+		toast('购买成功！',{icon:true})
+		navigateBack();
+	}else{
+		uni.showToast({
+		    title: res.msg,
+		    icon: "none",
+		    duration: 1500
+		});
+	}
 }
 
 

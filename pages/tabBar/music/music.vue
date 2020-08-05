@@ -108,6 +108,12 @@
 									<text class="txt">添加到歌单</text>
 								</view>
 							</view>
+							<view class="line-item" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
+								<view class="line-item-l flex-start">
+									<image class="iconimg" src="http://yw.wtvxin.com/static/fabu.png" mode="widthFix"></image>
+									<text class="txt">分享到动态</text>
+								</view>
+							</view>
 							<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id" :param="itemdata.Id">
 								<view class="line-item-l flex-start" style="width:100%;">
 									<image class="iconimg" src="http://yw.wtvxin.com/static/share.png" mode="widthFix"></image>

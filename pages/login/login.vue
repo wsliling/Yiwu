@@ -28,7 +28,7 @@
 					<input type="text" class="ipt" value="" v-model="code" placeholder="请输入验证码" />
 					<view class="getcode" @click="getCode">{{codeMsg}}</view>
 				</view>
-				<view class="from-line text_r" style="margin:0;display: none;" @click="changeWay">
+				<view class="from-line text_r" style="margin:0;" @click="changeWay">
 					<text class="c_theme" v-if="logintype">手机验证码登录</text>
 					<text class="c_theme" v-if="!logintype">密码登录</text>
 				</view>
@@ -52,7 +52,7 @@
 						<view class="iconfont icon-weixin1" style="background: #09BB07;"></view>
 						<view class="name">微信</view>	
 					</view>
-					<view class="flex-item" @click="changeWay(2)">
+					<view class="flex-item" @click="changeWay(2)" v-if="false">
 						<view :class="['iconfont',logintype?'icon-shouji':'icon-zh1']"></view>
 						<view class="name">{{logintype?'手机':'账号'}}</view>	
 					</view>
@@ -67,7 +67,8 @@
 				</view>
 				<!-- <view class="Title">水连动氢力氧</view> -->
 		    </view> 
-		    <button class="login-btn btn_gree" open-type="getUserInfo" @getuserinfo="oauth">微信登录</button>
+			<button v-if="isband" class="login-btn btn_gree" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">绑定手机号</button>
+			<button v-else class="login-btn btn_gree" open-type="getUserInfo" @getuserinfo="oauth">微信登录</button>
 		    <!-- <view class="c_blue uni-center" @click="loginTel">手机号登录/注册</view> -->
 		</view>
 		<!-- #endif -->  
@@ -149,15 +150,121 @@
 				isShowMolie:true,//是否显示号登录界面
 				isShowminiApp:false,//是否显示小程序登录
 				isAgree:true,
-				inviteCode:''
+				inviteCode:'',
+				isband:false,//是否绑定手机号
+				jsonARR:{},
 			};
 		},
 		methods: { 
+			getPhoneNumber(e){
+				console.log(e)
+				if(e.detail.errMsg=="getPhoneNumber:ok"){
+					this.jsonARR['iv']=e.detail.iv;
+					this.jsonARR['encryptedData']=e.detail.encryptedData;
+					this.bandPhoneNumber(this.jsonARR);
+				}else{
+					uni.showToast({
+					  title: "获取授权失败！",
+					  icon: "none",
+					  duration: 2000
+					});
+				}
+			},
 			changeWay(e){
 				if(e==1){
-					// #ifdef MP-WEIXIN
-					this.isShowMolie=false;
-					this.isShowminiApp=true;
+					// #ifdef APP-PLUS
+					// this.isShowMolie=false;
+					// this.isShowminiApp=true;
+					uni.getProvider({
+					    service: 'oauth',
+					    success: function (res) {
+					        console.log(res.provider)
+					        if (~res.provider.indexOf('weixin')) {
+					            uni.login({
+					             provider: 'weixin',
+					              success: function (loginRes) {
+					                console.log(loginRes);
+					                // 获取用户信息
+					                uni.getUserInfo({
+					                 provider: 'weixin',
+					                  success: function (infoRes) {
+					                    console.log(infoRes);
+					                  }
+					                });
+					              }
+					            });
+					        }
+					    }
+					});
+
+					// var it=this;
+					// var  getAppid = plus.runtime.appid;
+					// console.log('app端登陆')
+					// uni.login({
+					//   provider: 'weixin',
+					//   success: function (loginRes) {
+					// 	console.log(JSON.stringify(loginRes.authResult));
+					// 	uni.showModal({
+					// 		content: JSON.stringify(loginRes.authResult),
+					// 		cancelText: "我再想想",
+					// 		cancelColor: "#999",
+					// 		confirmText: "转让",
+					// 		confirmColor: "#DEC17C",
+					// 		success: function(res) {
+								
+					// 		}
+					// 	})
+					//   }
+					// });
+					// var weixinService = null;
+					// // http://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.getServices
+					// plus.oauth.getServices(function(services) {
+					// 	console.log(312589340656548)
+					// 	console.log(services)
+					// 	if (services && services.length) {
+					// 		for (var i = 0, len = services.length; i < len; i++) {
+					// 			if (services[i].id === 'weixin') {
+					// 				weixinService = services[i];
+					// 				console.log('授权对象')
+					// 				console.log(weixinService)
+					// 				break;
+					// 			}
+					// 		}
+					// 		if (!weixinService) {
+					// 			console.log('没有微信登录授权服务');
+					// 			return;
+					// 		}
+					// 		// http://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.AuthService.authorize
+					// 		weixinService.authorize(function(event) {  //此处获取code的关键
+					// 		alert(JSON.stringify(event))
+					// 			console.log(event)
+					// 			console.log(event.code,'这次是真的授权后返回的code')
+					// 			it.weixinCode = event.code; //用户换取 access_token 的 code
+					// 			// it.requestLogin();
+					// 			let data={code: it.weixinCode};
+					// 			it.$api.user.login.getWeiXinCode(data).then(function(userInfo) {
+					// 				console.log('是否走到这里')
+					// 					console.log('第三方登录授权',it.weixinCode)
+					// 					console.log('第三方登录授权1111',userInfo)
+										
+					// 					uni.navigateBack()
+					// 				}).catch(res => {
+					// 				console.log(res)        
+					// 					});
+								
+					// 		}, function(error) {
+					// 			console.error('authorize fail:' + JSON.stringify(error));
+					// 		}, {
+					// 			// http://www.html5plus.org/doc/zh_cn/oauth.html#plus.oauth.AuthOptions
+					// 			appid: getAppid, //开放平台的应用标识。暂时填个假的充数，仅做演示。
+					// 		});
+					// 	} else {
+					// 		console.log('无可用的登录授权服务');
+					// 	}
+					// }, function(error) {
+					// 	console.error('getServices fail:' + JSON.stringify(error));
+					// });
+					 
 					// #endif
 					// #ifdef H5
 					uni.showToast({
@@ -200,6 +307,7 @@
 							clearInterval(this.timer);
 							this.timer = null;
 							this.codeMsg = "获取验证码";
+							this.has_click=false;
 						}
 					}, 1000);
 			
@@ -333,7 +441,8 @@
 				}
 			},
 			// 小程序登录
-			async MPlogin(code, iv, encryptedData){
+			async MPlogin(code, iv, encryptedData,userInfo){
+				let _this=this;
 				let result=await post("Login/SignIn_New",{
 					iv:iv,
 					code:code,
@@ -344,7 +453,7 @@
 				uni.setStorageSync("token", result.data.Token);
 				uni.setStorageSync("userId", result.data.UserId);
 				uni.setStorageSync("openId", result.data.openId);
-				console.log(result.data,"mmmmmmmmmmmm")
+				//console.log(result.data,"mmmmmmmmmmmm")
 				if(result.code===0){
 					let _this = this;
 					uni.showToast({
@@ -360,53 +469,35 @@
 							}else{
 								uni.navigateBack();
 							}
-							
-							// uni.navigateBack();
-							// if(_this.askUrl){
-							//   if(_this.askUrl.indexOf("undefined")>-1){
-							// 	uni.switchTab({
-							// 	  url: "/pages/tabBar/my/my"
-							// 	});
-							//   }
-							//   if(_this.askUrl.indexOf("cart")>-1){
-							// 	uni.switchTab({
-							// 	  url: "/pages/tabBar/cart/cart"
-							// 	});
-							//   }
-							//   if(_this.askUrl.indexOf("/my/my")>-1){
-							// 	uni.switchTab({
-							// 	  url: "/pages/tabBar/my/my"
-							// 	});
-							//   }
-							//   if(_this.askUrl.indexOf("/discover/discover")>-1){
-							// 	uni.switchTab({
-							// 	  url: "/pages/tabBar/discover/discover"
-							// 	});
-							//   }
-							//   uni.redirectTo({
-							// 	url: _this.askUrl
-							//   });
-							// }else{
-							//   uni.switchTab({
-							// 	url: "/pages/tabBar/my/my"
-							//   });
-							// }
 						 }, 1500);
 					  }
 					});
 				}else if (result.code === 2) {
 					uni.showToast({
-						title: result.msg,
-						icon: 'none',
-						duration: 1500,
-						success: function() {
-							setTimeout(function() {
-								wx.redirectTo({
-									url: '/pages/register/register?type=1'
-								})
-							}, 1500);
-						}
-					})
+					  title: result.msg,
+					  icon: "none",
+					  duration: 2000
+					});
+					this.isband=true;
+					this.jsonARR={
+						openId:result.data.openId,
+						unionid:result.data.unionid,
+						userInfo:userInfo,
+						session_key:result.data.session_key,
+						InviteCode:_this.inviteCode
+					}
+					// uni.showToast({
+					// 	title: result.msg,
+					// 	icon: 'none',
+					// 	duration: 1500,
+					// 	success: function() {
+					// 		setTimeout(function() {
+					// 			wx.redirectTo({
+					// 				url: '/pages/register/register?type=1'
+					// 			})
+					// 		}, 1500);
+					// 	}
+					// })
 				}
 				else{
 					uni.showToast({
@@ -419,6 +510,7 @@
 			oauth(){
 				uni.login({
 					success:(res)=>{
+						console.log(res)
 						 uni.getUserInfo({
 						    success: (infoRes) => {
 						        /**
@@ -427,8 +519,7 @@
 						         */
 								uni.setStorageSync("userInfo", infoRes.userInfo);
 								uni.setStorageSync("avatarUrl", infoRes.userInfo.avatarUrl);
-								console.log(res,infoRes,'red')
-								this.MPlogin(res.code, infoRes.iv, infoRes.encryptedData);
+								this.MPlogin(res.code, infoRes.iv, infoRes.encryptedData,infoRes.userInfo);
 						    }
 						});
 					},
@@ -437,6 +528,32 @@
 					}
 				})
 			},
+			async bandPhoneNumber(json){
+				let result=await post("Login/getPhoneNumber",json)
+				if(result.code==0){
+					console.log(result)
+					uni.setStorageSync("token", result.data.Token);
+					uni.setStorageSync("userId", result.data.UserId);
+					let _this = this;
+					uni.showToast({
+					  title: "登录成功!",
+					  icon: "none",
+					  duration: 1500,
+					  success:function(){
+						setTimeout(function() {
+							if(_this.isRegister){
+								uni.switchTab({
+									url: "/pages/tabBar/my/my"
+								  });	
+							}else{
+								uni.navigateBack();
+							}
+						 }, 1500);
+					  }
+					});
+				}
+			},
+			
 			//微信跳转登录
 			loginTel(){
 				this.isShowminiApp=false;

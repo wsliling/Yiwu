@@ -1,5 +1,5 @@
 <template>
-<div>
+<view>
 	<button open-type="share" @click="share" class="button" :data-param="param">
 	    <slot>
 	        分享
@@ -28,7 +28,7 @@
 	   </view>
    </uni-popup>
     <!-- #endif -->
-</div>
+</view>
 </template>
 <script>
 import {webUrl} from '@/common/util'

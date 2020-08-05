@@ -79,8 +79,10 @@ mask.addEventListener("click", () => {
 
 document.addEventListener('UniAppJSBridgeReady', () => {
 	let {url,key,header,formData} = plus.webview.currentWebview();
+	console.log("formData"+formData)
 	fileDom.addEventListener('change', (event) => {
 		let file = fileDom.files[0];
+		console.log("file"+JSON.stringify(file))
 		if(file.size > (1024*1024 * 10)) {
 			plus.nativeUI.toast('单个文件请勿超过10M,请重新上传');
 			return;

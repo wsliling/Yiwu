@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<!-- <l-file ref="lFile" @up-success="onSuccess"></l-file> -->
 		<view class="line-list">
 			<view class="line-item">
 				<view class="lab">曲名</view>
@@ -23,10 +24,12 @@
 				<view class="lab">舞曲来源</view>
 				<view class="item_r flex1"><input type="text" placeholder="请选择" class="flex1" v-model="sourcetype" disabled="true"/></view>
 			</view>
+			<!-- <button @tap="onUpload">上传</button> -->
 			<view class="line-item" @click="chooseMusic">
 				<view class="filebtn">{{ musicFile ? '已选择' : '请选择舞曲' }}</view>
 				<!-- 				<view class="" v-if="musicFile">{{fileName}}</view>
 				<view class="" v-else>未选择</view> -->
+				
 				<input type="text" value="" dir="rtl" v-model="fileName" v-if="musicFile" disabled="true" class="flex1" />
 				<input type="text" value="未选择" disabled="true" v-else />
 			</view>
@@ -79,6 +82,7 @@
 import { post } from '@/common/util';
 import { pathToBase64 } from '@/common/image-tools.js';
 import uniPopup from '@/components/uni-popup.vue';
+import lFile from '@/components/l-file/l-file.vue'
 export default {
 	data() {
 		return {
@@ -97,33 +101,38 @@ export default {
 			fileName: '',
 			classifylist: [], //类型列表
 			Sourcelist: [], //来源列表
-			ClassId: '' //类型Id
+			ClassId: '' ,//类型Id
+			isIos:false,
 		};
 	},
-	components: { uniPopup },
+	components: { uniPopup,lFile},
 	onLoad() {
-		this.userId = uni.getStorageSync('userId');
-		this.token = uni.getStorageSync('token');
 		this.getclassifyList();
 		this.getSource();
-		
+		if(uni.getSystemInfoSync().platform == 'ios'){
+			this.isIos=true
+		}else{
+			this.isIos=false
+		}
 	},
 	onShow() {
+		this.userId = uni.getStorageSync('userId');
+		this.token = uni.getStorageSync('token');
 		this.fileName = uni.getStorageSync('fileName');
 		this.musicFile = uni.getStorageSync('filePath');
 		console.log(uni.getStorageSync("fileName"), this.musicFile, 'this.musicFile');
-		uni.uploadFile({
-			url: 'http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio', //仅为示例，非真实的接口地址
-			filePath: this.fileName,
-			name: 'file',
-			formData: {
-				'UserId': uni.getStorageSync('userId'),
-				'Token': uni.getStorageSync('token')
-			},
-			success: (uploadFileRes) => {
-				console.log(uploadFileRes.data);
-			}
-		});
+		// uni.uploadFile({
+		// 	url: 'http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio', //仅为示例，非真实的接口地址
+		// 	filePath: this.fileName,
+		// 	name: 'file',
+		// 	formData: {
+		// 		'UserId': uni.getStorageSync('userId'),
+		// 		'Token': uni.getStorageSync('token')
+		// 	},
+		// 	success: (uploadFileRes) => {
+		// 		console.log(uploadFileRes.data);
+		// 	}
+		// });
 	},
 	methods: {
 		//取消（统一关闭弹窗）
@@ -161,9 +170,37 @@ export default {
 			});
 		},
 		chooseMusic() {
+			let _this=this;
 			uni.navigateTo({
 				url: '/pages/uploadFile/uploadFile?type=0'
 			});
+		},
+		/* 上传 */
+		onUpload() { 
+			let _this=this;
+			this.$refs.lFile.upload({
+				// #ifdef APP-PLUS
+				// nvue页面使用时请查阅nvue获取当前webview的api，当前示例为vue窗口
+				currentWebview: this.$mp.page.$getAppWebview(),
+				// #endif
+				//非真实地址，记得更换,调试时ios有跨域，需要后端开启跨域并且接口地址不要使用http://localhost/
+				url: 'http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio',
+				//默认file,上传文件的key
+				name: 'file',
+				// header: {'Authorization':'token'},
+				//...其他参数
+				formData:{
+					'UserId':_this.userId,
+					'Token':_this.token
+				}
+			});
+		},
+		onSuccess(res) {
+			console.log('上传成功回调',JSON.stringify(res));
+			uni.showToast({
+				title: JSON.stringify(res),
+				icon: 'none'
+			})
 		},
 		//发布舞曲
 		async uplLoadMusic() {

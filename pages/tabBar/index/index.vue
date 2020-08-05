@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
 								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
 							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
@@ -141,7 +141,7 @@
 			<noData v-if="noDataIsShow0"></noData>
 		</view>
 		<!-- #ifndef MP-WEIXIN -->
-		<view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view>
+		<!-- <view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view> -->
 		<!-- #endif -->
 		<playerMin :pagetype="'share'"></playerMin>
 	</view>
@@ -207,7 +207,8 @@
 					}
 				],//详情链接
 				ismuted:false,
-				phoneheight:0
+				phoneheight:0,
+				isControls:false
 			}
 		},
 		onLoad() {
@@ -262,6 +263,9 @@
 					this.ismuted=true;
 				}
 				//#endif
+			},
+			ControlsFn(){
+				this.isControls=true;
 			},
 			pauseVideo(id){
 				let _this=this;

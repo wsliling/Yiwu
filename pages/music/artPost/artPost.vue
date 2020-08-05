@@ -55,6 +55,16 @@
 						</view>
 					</view>
 				</view>
+				<view class="uni-list-cell" v-if="MusicId">
+					<view class="uni-list-cell-navigate">
+						<view class="list-cell-l">
+						</view>
+						<view class="list-cell-r uni-ellipsis c_theme">
+							#{{ keystr }}#
+							<text class="iconfont icon-cha c_999" style="margin-left: 10upx;" @click="clearmusic"></text>
+						</view>
+					</view>
+				</view>
 			</view>
 		</form>
 		<!--底部-->
@@ -95,16 +105,20 @@ export default {
 			roletxt: ['公开', '好友', '私密'],
 			title: '',
 			ContentAbstract: '',
-			ContentDetails: ''
+			ContentDetails: '',
+			MusicId:'',//关联舞曲id
+			keystr:'',//关联舞曲名称
 		};
 	},
-	onLoad() {
+	onLoad(e) {
 		this.curPage = getCurrentPageUrlWithArgs()
 			.replace(/\?/g, '%3F')
 			.replace(/\=/g, '%3D')
 			.replace(/\&/g, '%26');
 		this.userId = uni.getStorageSync('userId');
 		this.token = uni.getStorageSync('token');
+		this.MusicId=e.MusicId;
+		this.keystr=e.keystr;
 	},
 	onShow() {},
 	onUnload() {
@@ -236,6 +250,9 @@ export default {
 		clearlocation: function() {
 			this.hasLocation = false;
 		},
+		clearmusic(){
+			this.MusicId="";
+		},
 		//设置观看权限
 		selectRole(index) {
 			this.role = index;
@@ -253,7 +270,8 @@ export default {
 				Location: this.locationAddress,
 				ContentAbstract: this.ContentAbstract,
 				ContentDetails: this.ContentDetails,
-				PicList: base64img
+				PicList: base64img,
+				MusicId:this.MusicId
 			});
 			if (result.code === 0) {
 				let _this = this;

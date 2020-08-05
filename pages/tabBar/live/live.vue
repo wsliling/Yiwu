@@ -294,7 +294,7 @@
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
 						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
-						<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
 					</view>
 					
 					<view class="media-ft flex-between">
@@ -438,7 +438,8 @@
 					}
 				],//详情链接
 				ismuted:false,
-				phoneheight:0
+				phoneheight:0,
+				isControls:false
 			}
 		},
 		onLoad() {
@@ -521,6 +522,9 @@
 					this.ismuted=true;
 				}
 				//#endif
+			},
+			ControlsFn(){
+				this.isControls=true;
 			},
 			pauseVideo(id){
 				let _this=this;
@@ -1091,7 +1095,8 @@
 				if(uni.getStorageSync('userId')&& uni.getStorageSync('token')){
 					let urlstr="";
 					uni.showActionSheet({
-						itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
+						//itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
+						itemList: ['拍视频', '上传课程'],
 						success: (e) => {
 							console.log(e.tapIndex);
 							if(e.tapIndex==0){

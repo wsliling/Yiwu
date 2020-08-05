@@ -74,11 +74,12 @@
 			var token = getQuery("token");
 			var type = getQuery("type");
 			var filePath = ""; //选择的文件地址
+			// var device = navigator.userAgent;
+			// var isiOS = !!device.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+			// console.log('isIos'+isIos)
 			console.log(userId + "参数" + type + "参数" + token);
 			if(type == 0){
 				$('#uploadFile').attr('accept','audio/*');
-			}else{
-				$('#uploadFile').attr('accept','video/*');
 			}
 			//取url中的参数值
 			function getQuery(id) {
@@ -105,13 +106,14 @@
 			document.addEventListener('UniAppJSBridgeReady', function() {
 				let isH5=""
 				uni.getEnv(function(res) {
-					// alert(JSON.stringify(res));
+					alert(JSON.stringify(res));
 					if(res.h5){
 						isH5=true;//当前环境为h5
 					}else{
 						isH5=false;
 					}
 				});
+				
 				//上传文件
 				$('.btn').click(function(evt) {
 					if(filePath == '') {
@@ -124,22 +126,11 @@
 						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
 						var formdata = new FormData(); // 创建一个form类型的数据
 						var url = ""
-						if (type == 0) { // 上传舞曲
-							//if(nameSuffix == ".mp3" || nameSuffix == ".wma" || nameSuffix == ".wav" || nameSuffix ==".asf" || nameSuffix ==".aac" || nameSuffix ==".flac" || nameSuffix ==".vqf" || nameSuffix ==".ape" || nameSuffix ==".mid"){
-								formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
-								formdata.append("UserId", userId);
-								formdata.append("Token", token);
-								url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
-							//}
-						} else { // 上传视频
-							if(nameSuffix == ".avi" || nameSuffix == ".mp4" || nameSuffix == ".wma" || nameSuffix == ".rmvb" || nameSuffix == ".rm" || nameSuffix == ".flash" || nameSuffix == ".3gp" || nameSuffix == ".flv"){
-								formdata.append("Video", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
-								formdata.append("UserId", userId);
-								formdata.append("Token", token);
-								url = "http://ywapi.wtvxin.com/api/Find/UploadVideo"
-							}
-						}
-						
+						formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+						formdata.append("UserId", userId);
+						formdata.append("Token", token);
+						url = "http://ywapi.wtvxin.com/api/DanceMusic/UploadAudio"
+							
 						$.ajax({
 							url: url,
 							type: "POST",
@@ -153,25 +144,12 @@
 								console.log(JSON.stringify(res))
 								if (res.code == 0) {
 									if(isH5){
-										if (type == 0) {
-											localStorage.setItem("fileName", filePath); //上传成功的文件名缓存
-											localStorage.setItem("filePath", res.data); //上传成功返回的服务器地址
-										} else {
-											localStorage.setItem("VfileName", res.data.imgUrl); //上传成功的返回的视频封面图片地址显示出来
-											localStorage.setItem("VfilePath", res.data.path); //上传视频成功返回的服务器地址
-										}
+										localStorage.setItem("fileName", filePath); //上传成功的文件名缓存
+										localStorage.setItem("filePath", res.data); //上传成功返回的服务器地址
 									}else{//APP、小程序无法获取此页面缓存，将res传输给原页面
-										var param={}
-										if (type == 0) {
-											param={
-												fileName:filePath,//上传成功的文件名缓存
-												filePath:res.data//上传成功返回的服务器地址
-											}
-										} else {
-											param={
-												fileName:res.data.imgUrl,//上传成功的返回的视频封面图片地址显示出来
-												filePath:res.data.path//上传视频成功返回的服务器地址
-											}
+										var param={
+											fileName:filePath,//上传成功的文件名缓存
+											filePath:res.data//上传成功返回的服务器地址
 										}
 										//传输数据给原页面
 										uni.postMessage({

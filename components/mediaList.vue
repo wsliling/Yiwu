@@ -38,6 +38,17 @@
 					</view>
 				</block>
 			
+			<view class="media-song" v-if="dataitem.MusicData" @click.stop="toRec(dataitem.MusicData.Id)">
+				<view class="box flex">
+					<view class="songpic">
+						<view class="isaudio">
+							<image src="http://yw.wtvxin.com/static/play2.png" mode="widthFix"></image>
+						</view>
+						<image :src="dataitem.MusicData.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+					</view>
+					<text class="uni-ellipsis2">{{dataitem.MusicData.Name}}</text>
+				</view>
+			</view>
 			<view class="media-location" v-if="dataitem.Location">
 				<text class="info-text iconfont icon-shouhuodizhi">{{dataitem.Location}}</text>
 			</view>
@@ -98,6 +109,11 @@
 		onLoad(){
 		},
 		methods: {
+			toRec(id){
+				uni.navigateTo({
+					url: '/pages/music/playMusic/playMusic?type=share&id='+id
+				})
+			},
 			bindClick(artType,id) {
 				this.$emit('click',{artType,id});
 			},
@@ -213,7 +229,7 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	view {
 		box-sizing: border-box;
 	}
@@ -420,4 +436,44 @@
 		display: block;
 	}
 	.Grid3.image-section.image-section-one .image-list .img{display: block; height: auto;}
+	.media-song{
+		margin-top: 20upx;
+		background: #f5f5f5;
+		border-radius: 12upx;
+		padding: 24upx;
+		overflow: hidden;
+		.box{
+			align-items: center;
+			text{padding-left: 20upx; 
+			font-size: 30upx;}
+			.songpic{
+				position: relative;
+				height: 120upx; width: 120upx;
+				image{
+					height: 100%; width: 100%;border-radius: 8upx;
+					display: block;
+				}
+			}
+			.isaudio{
+					position: absolute;
+					left: 50%;
+					top: 50%;
+					margin-top: -30upx;
+					margin-left: -30upx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 60upx;
+					border-radius: 50%;
+					height: 60upx;
+					// background: rgba(221,25,109,.7);
+					background: rgba(255,255,255,.6);
+					color: #fff;
+					z-index: 3;
+					image{
+						height: 80%; width: 800%;
+					}
+				}
+		}
+	}
 </style>

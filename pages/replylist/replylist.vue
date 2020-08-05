@@ -13,9 +13,9 @@
 				<view class="desc">
 					{{NewsInfo.Title}}
 				</view>
-				<view :class="['maxpic',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
+				<view :class="['maxpic mv',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
 					<view v-if="!NewsInfo.play||NewsInfo.fixed" class="isplay" @click="playBtn"></view>
-					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" controls autoplay @play="playVideo" @pause="pauseVideo" id="video" :show-mute-btn="true" :poster="NewsInfo.PicImg" object-fit="cover"></video>
+					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" id="video" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
 					<image class="postpic" :src="NewsInfo.PicImg" mode="aspectFill"></image>
 				</view>
 				<!-- <view class="maxpic maxh" v-if="NewsInfo.Type==0&&NewsInfo.PicImg">
@@ -27,6 +27,17 @@
 						<image class="img" :src="source" v-else mode="aspectFill" @click="previewImg(imgArr,i)" />
 					</view>
 					<view v-if="imgArr.length>3" class="count">{{imgArr.length}}</view>
+				</view>
+				<view class="media-song" v-if="NewsInfo.MusicData" @click.stop="toRec(NewsInfo.MusicData.Id)">
+					<view class="box flex">
+						<view class="songpic">
+							<view class="isaudio">
+								<image src="http://yw.wtvxin.com/static/play2.png" mode="widthFix"></image>
+							</view>
+							<image :src="NewsInfo.MusicData.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+						</view>
+						<text class="uni-ellipsis2">{{NewsInfo.MusicData.Name}}</text>
+					</view>
 				</view>
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
@@ -67,6 +78,7 @@
 				</view>
 			</view>
 		</view>
+		<playerMin></playerMin>
 	</view>
 </template>
 
@@ -106,6 +118,7 @@
 				imgArr:[],
 				videoContext:null,
 				onplayHeight:0,//当前播放视频距离顶部的高度
+				isControls:false
 			}
 		},
 		onLoad(e){
@@ -116,10 +129,19 @@
 			this.FindNewsInfo()
 		},
 		methods: {
+			toRec(id){
+				uni.navigateTo({
+					url: '/pages/music/playMusic/playMusic?type=share&id='+id
+				})
+			},
+			ControlsFn(){
+				this.isControls=true;
+			},
 			pauseVideo(){
 				this.$set(this.NewsInfo,'fixed',true);
 			},
 			playVideo(){
+				let _this = this;
 				this.$set(this.NewsInfo,'fixed',false);
 			},
 			playBtn(){
@@ -415,15 +437,15 @@
 
 <style lang="scss" scoped>
 	@import '../tabBar/index/style';
-	.maxpic video{
-		width: 100%;
-		height: 375px;
-		display: block;
-		position: absolute;
-		left: 0;
-		top: 0;
-		z-index: 2;
-	}
+	// .maxpic video{
+	// 	width: 100%;
+	// 	height: 375px;
+	// 	display: block;
+	// 	position: absolute;
+	// 	left: 0;
+	// 	top: 0;
+	// 	z-index: 2;
+	// }
 	.listname{
 		font-size: 30upx;
 		padding: 30upx 30upx 0;
@@ -500,5 +522,45 @@
 	.Grid3.image-section.image-section-one .image-list .img {
 		display: block;
 		height: auto;
+	}
+	.media-song{
+		margin-top: 20upx;
+		background: #f5f5f5;
+		border-radius: 12upx;
+		padding: 24upx;
+		overflow: hidden;
+		.box{
+			align-items: center;
+			text{padding-left: 20upx; 
+			font-size: 30upx;}
+			.songpic{
+				position: relative;
+				height: 120upx; width: 120upx;
+				image{
+					height: 100%; width: 100%;border-radius: 8upx;
+					display: block;
+				}
+			}
+			.isaudio{
+					position: absolute;
+					left: 50%;
+					top: 50%;
+					margin-top: -30upx;
+					margin-left: -30upx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					width: 60upx;
+					border-radius: 50%;
+					height: 60upx;
+					// background: rgba(221,25,109,.7);
+					background: rgba(255,255,255,.6);
+					color: #fff;
+					z-index: 3;
+					image{
+						height: 80%; width: 800%;
+					}
+				}
+		}
 	}
 </style>

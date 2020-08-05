@@ -393,10 +393,10 @@ export default {
 .payPasswordComponent {
   background: rgba(0, 0, 0, 0.4);
   position: fixed;
-  top: -400px;
+  top: -66vh;
   left: 0;
   z-index: 102;
-  height: 100vh;
+  height: 120vh;
   width: 100%;
   overflow: hidden;
 }
