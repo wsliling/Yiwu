@@ -28,7 +28,7 @@
 				myInviteCode:'',
 				inviteCode:'',
 				disabled:false,
-				shareUrl:'/pages/register/register',
+				shareUrl:'/pages/login/login',
 			};
 		},
 		onLoad(){
