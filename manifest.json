@@ -57,7 +57,9 @@
                 ]
             },
             /* ios打包配置 */
-            "ios" : {},
+            "ios" : {
+				"UIBackgroundModes" : [ "audio" ]
+			},
             /* SDK配置 */
             "sdkConfigs" : {
                 "share" : {
@@ -115,7 +117,8 @@
             "postcss" : true,
             "es6" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+		"requiredBackgroundModes" : [ "audio","backgroundAudioManager" ]
     },
     "mp-alipay" : {
         "usingComponents" : true

@@ -253,6 +253,7 @@
 			},
 			//播放
 			playBtn(item){
+				console.log(this.$au_player)
 				let src=item.Audio,
 				    id=item.Id,
 					isbuy=item.IsShowBuy,
@@ -272,7 +273,8 @@
 						this.playIDtype=true;
 						this.$au_player.src = src;
 						this.$au_player.play();
-					}				
+					}		
+					console.log(this.$au_player.src)
 					this.setIsplayingmusic(this.playIDtype)
 					Vue.prototype.cusPlay = this.onPlayFn
 					Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn

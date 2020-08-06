@@ -1,9 +1,9 @@
 <template>
-		<view class="player-min" :class="[!isOpen?'open':'']" v-if="(isplayactive && require)" @longpress="longbtn">
-			<image class="img" :class="[isplayingmusic ? '':'stoped']" :src="playdetail.pic" mode="" @click="isOpen=!isOpen"></image>
+		<view class="player-min" :class="[!isOpen?'open':'']" v-if="(isplayactive && require)">
+			<image class="img" :class="[isplayingmusic ? '':'stoped']" :src="playdetail.pic" mode="" @click="toPlayPage"></image>
 			<view class="btns" v-show="isOpen">
 				<text :class="['item iconfont',isplayingmusic?'icon-audiopuse':'icon-audioplay']" @click="play"></text>
-				<text class="item iconfont icon-return" @click="toPlayPage"></text>
+				<text class="item iconfont icon-close" @click="longbtn"></text>
 			</view>
 		</view>
 </template>
@@ -29,7 +29,7 @@
 		},
 		data() {
 			return {
-				isOpen:false
+				isOpen:true
 			};
 		},
 		computed:{
@@ -63,6 +63,7 @@
 				let _this=this;
 				uni.showModal({
 					content: "确定要关闭音乐播放器？",
+					confirmColor:"#DD196D",
 					success(res) {
 						if (res.confirm) {
 							_this.setIsplayingmusic(false)
@@ -81,9 +82,10 @@
 			position: fixed;
 			bottom: 40%;
 			left: 12upx;
-			z-index: 1002;
+			z-index: 999;
 			display: flex;
 			align-items: center;
+			width: 240upx;
 			background-color: rgba(0,0,0,0.7);
 			border-radius: 50upx 15upx 15upx 50upx ;
 			&.open{

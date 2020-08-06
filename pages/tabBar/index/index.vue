@@ -414,6 +414,7 @@
 					}
 					this.playIDtype=!this.playIDtype;
 				}else{
+					console.log("切换了歌曲")
 					this.playIDtype=true;
 					this.$au_player.src = src;
 					this.$au_player.play();
@@ -436,7 +437,6 @@
 				const curtime = this.$au_player.currentTime
 				return Math.floor(curtime)
 			},
-
 			//关注取消关注 followtype 1推荐视频用户 2名师 3机构 4推荐用户
 			async flow(id,index,followtype){
 				let result = await post("Find/FollowOperation", {
