@@ -66,7 +66,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,playMusic} from '@/common/util.js';
+	import {post,get,toLogin,playMusic,wssHost} from '@/common/util.js';
 	export default {
 		data() {
 			return {
@@ -105,7 +105,7 @@
 				})
 				// 创建连接
 				uni.connectSocket({
-					url:'ws://ywapi.wtvxin.com/WebSocketServer.ashx?Signature='+res.data.Signature,
+					url:wssHost+'/WebSocketServer.ashx?Signature='+res.data.Signature,
 					complete(err){
 						console.log(err,res.data.Signature)
 					}

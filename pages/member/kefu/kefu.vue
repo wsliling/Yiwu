@@ -8,7 +8,12 @@
 			<view class="kefu_detail">在线客服<view>(09:00~22:00)</view></view>
 		</view>
 		<view class="kefu_desc">所有常见问题都有相应的解决方案，请参考常见问题自主解决，如 果常见问题无法解决您的问题在咨询客服，由于客服咨询量较大， 请尽可能的描述清楚您的问题，以便快速解决</view>
+		<!-- #ifdef MP-WEIXIN -->
 		<button type="primary" open-type="contact" bindcontact="handleContact">在线客服</button>
+		<!-- #endif -->
+		<!-- #ifndef MP-WEIXIN -->
+		<view class="kefu_btn" @click="call">在线客服</view>
+		<!-- #endif -->
 	
 	</view>
 </template>
@@ -18,7 +23,7 @@
 	export default {
 		data() {
 			return {
-				qqnum:"",
+				info:{},
 				
 			}
 		},
@@ -34,23 +39,31 @@
 			// #endif
 		},
 		onShow() {
-			// #ifndef APP-PLUS
-			// this.qqnum = this.$mp.query.qqnum
-			// #endif
-			// this.getinfo()
+			this.getinfo() 
 		},
-		methods: {
-			
-			// async getinfo(){
-			// 	let res=await get('system/GetWebConfiguration',{})
-			// 	console.log(res)
-			// 		if(res.code==0){
-			// 			this.qqnum=res.data.WebQQ
-			// 		}
-			
-				
-			// },
-			
+		methods: {	
+			async getinfo(){
+				let res=await get('system/GetWebConfiguration',{})
+				console.log(res)
+					if(res.code==0){
+						this.info=res.data
+					}	
+			},
+			call(){
+				let tel=this.info.WebTel;
+				uni.showModal({
+					content: tel,
+					confirmText: "呼叫",
+					confirmColor: "#dd196d",
+					success: function(res) {
+						if (res.confirm) {
+							uni.makePhoneCall({
+								phoneNumber: tel
+							});
+						} else if (res.cancel) {}
+					}
+				});
+			}
 		}
 	}
 </script>
@@ -75,7 +88,7 @@
 }
 .kefu_btn{
 	width:90%;
-	background: #5CC69A;
+	background: #dd196d;
 	margin:80upx auto;
 	border-radius:15upx;
 	/* padding:10upx 0; */

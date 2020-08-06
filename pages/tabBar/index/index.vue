@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video :class="[isClass?'':'isC']" v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
+								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
 								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
 							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
@@ -208,7 +208,6 @@
 				],//详情链接
 				ismuted:false,
 				phoneheight:0,
-				isClass:true,
 				// #ifdef APP-PLUS
 					isControls:true
 				// #endif
@@ -272,7 +271,6 @@
 			},
 			ControlsFn(){
 				this.isControls=true;
-				//this.isClass=!this.isClass;
 			},
 			pauseVideo(id){
 				let _this=this;
@@ -680,11 +678,5 @@
 			width: 40upx;
 			margin-bottom: 8upx;
 		}
-	}
-	.mv /deep/ .uni-video-bar-full{
-		display: none !important
-	}
-	.mv /deep/ .isC .uni-video-bar-full{
-		display: block !important
 	}
 </style>

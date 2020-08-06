@@ -40,6 +40,7 @@
 				</view>
 			</view>
 		</uni-popup>
+		<playerMin></playerMin>
 	</view>
 </template>
 

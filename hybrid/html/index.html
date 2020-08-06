@@ -72,15 +72,12 @@
 		<script>
 			var userId = getQuery("userId");
 			var token = getQuery("token");
-			var type = getQuery("type");
 			var filePath = ""; //选择的文件地址
 			// var device = navigator.userAgent;
 			// var isiOS = !!device.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 			// console.log('isIos'+isIos)
-			console.log(userId + "参数" + type + "参数" + token);
-			if(type == 0){
-				$('#uploadFile').attr('accept','audio/*');
-			}
+			console.log(userId + "参数" + token);
+			$('#uploadFile').attr('accept','audio/*');}
 			//取url中的参数值
 			function getQuery(id) {
 				// 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
