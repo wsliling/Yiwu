@@ -143,7 +143,8 @@
 		<!-- #ifndef MP-WEIXIN -->
 		<!-- <view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view> -->
 		<!-- #endif -->
-		<playerMin :pagetype="'share'"></playerMin>
+		<playerMin></playerMin>
+		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
 	</view>
 </template>
 
@@ -206,6 +207,7 @@
 						url:'/pages/shopSon/product/productDetails?proId='
 					}
 				],//详情链接
+				isTop:false,//是否显示置顶
 				ismuted:false,
 				phoneheight:0,
 				// #ifdef APP-PLUS
@@ -286,6 +288,9 @@
 			},
 			playVideo(id){
 				let _this=this;
+				if(this.playID&&this.isplayingmusic){
+					this.setIsplayingmusic(false)
+				}
 				for(let i=0; i<_this.datalist.length;i++){
 					let _id=_this.datalist[i].Id;
 					if(_id==id){
@@ -418,7 +423,14 @@
 					this.playIDtype=true;
 					this.$au_player.src = src;
 					this.$au_player.play();
-				}				
+				}
+				let list=[{
+					Id:item.Id,
+					Name:item.Title,
+					Audio:item.VideoUrl
+				}];
+				console.log(list)
+				this.setAudiolist(list);
 				this.setIsplayingmusic(this.playIDtype)
 				Vue.prototype.cusPlay = this.onPlayFn
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
@@ -588,6 +600,13 @@
 				        console.log('条码内容：' + res.result);
 				    }
 				});
+			},
+			//返回顶部
+			Top(){
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 200
+				});
 			}
 		},
 		// 下拉刷新
@@ -604,6 +623,11 @@
 		//监听页面滚动
         onPageScroll(e){
 			let _this=this;
+			if(e.scrollTop>300){
+				this.isTop=true;
+			}else{
+				this.isTop=false;
+			}
 			const query = uni.createSelectorQuery().in(_this);
 			this.datalist.forEach(function(item,index){
 				let itemh=0;

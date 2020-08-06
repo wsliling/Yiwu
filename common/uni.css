@@ -2010,11 +2010,15 @@ uni-swiper .uni-swiper-dot{
 	width: 80upx;
 	border-radius: 50%;
 	position: fixed;
-	right: 20upx;
-	bottom: 200upx;
+	right: 10upx;
+	/* #ifndef H5 */
+	bottom: 20upx;
+	/* #endif */
+	/* #ifdef H5 */
+	bottom: 120upx;
+	/* #endif */
 	z-index: 99;
-	border: 1px solid #ddd;
-	background: rgba(255,255,255,.8);
-	color: #333;
+	background: rgba(221, 25, 109, 0.5);
+	color: #fff;
 }
 

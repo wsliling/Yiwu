@@ -36,7 +36,7 @@
 			...mapGetters(['isplayingmusic','playdetail','audiolist','isplayactive'])
 		},
 		methods:{
-			...mapMutations(['setIsplayingmusic','setPlaydetail']),
+			...mapMutations(['setIsplayingmusic','setPlaydetail','setIsplayactive']),
 			play(){
 				if(this.isplayingmusic){
 					this.$au_player.pause();
@@ -67,7 +67,9 @@
 					success(res) {
 						if (res.confirm) {
 							_this.setIsplayingmusic(false)
+							_this.setIsplayactive(false)
 							_this.$au_player.stop();
+							
 						} else if (res.cancel) {
 						}
 					}
