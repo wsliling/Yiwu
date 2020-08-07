@@ -201,6 +201,7 @@
 				if(index){
 					this.curPlayIndex = index
 				}
+				console.log(this.$au_player)
 				Vue.prototype.cusPlay = this.onPlayFn
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
 				Vue.prototype.cusEnded = this.onEndedFn

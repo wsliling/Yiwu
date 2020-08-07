@@ -700,9 +700,8 @@
 			playAudio(item){
 				let src=item.VideoUrl,
 				    id=item.Id,
-					PicImg=item.PicImg;
-				this.setPlaydetail({id,pic:PicImg});
-				this.setIsplayactive(true)
+					PicImg=item.PicImg,
+					title=item.Title;
 				this.playID=id;
 				if(id==uni.getStorageSync("playID")){
 					if (this.playIDtype) {
@@ -712,10 +711,13 @@
 					}
 					this.playIDtype=!this.playIDtype;
 				}else{
+					this.setPlaydetail({id,pic:PicImg});
+					this.$au_player.title = title;
 					this.playIDtype=true;
 					this.$au_player.src = src;
 					this.$au_player.play();
-				}				
+				}	
+				this.setIsplayactive(true)
 				this.setIsplayingmusic(this.playIDtype)
 				Vue.prototype.cusPlay = this.onPlayFn
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
