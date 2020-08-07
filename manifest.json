@@ -58,8 +58,8 @@
             },
             /* ios打包配置 */
             "ios" : {
-				"UIBackgroundModes" : [ "audio" ]
-			},
+                "UIBackgroundModes" : [ "audio" ]
+            },
             /* SDK配置 */
             "sdkConfigs" : {
                 "share" : {
@@ -118,7 +118,7 @@
             "es6" : true
         },
         "usingComponents" : true,
-		"requiredBackgroundModes" : [ "audio","backgroundAudioManager" ]
+        "requiredBackgroundModes" : [ "audio", "backgroundAudioManager" ]
     },
     "mp-alipay" : {
         "usingComponents" : true
