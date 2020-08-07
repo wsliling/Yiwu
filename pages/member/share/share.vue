@@ -1,6 +1,6 @@
 <template>
 	<view class="share">
-		<img src="http://yw.wtvxin.com/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
+		<img src="http://m.dance-one.com/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
 		<div class="content">
 			<div class="code">
 				<img :src="inviteCode" alt="">

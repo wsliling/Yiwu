@@ -8,7 +8,7 @@
           <div class="title">
             <div class="name flex-center-start">
               <h4>{{data.ShopNick}}</h4>
-              <!-- <img src="http://yw.wtvxin.com/static/images/map.png" alt /> -->
+              <!-- <img src="http://m.dance-one.com/static/images/map.png" alt /> -->
               <!-- <p>14km</p> -->
             </div>
             <div class="address">{{data.Address}}</div>
@@ -44,7 +44,7 @@
         </div>
     </div>
     <view class="wu-box">
-        <!-- <image v-if="type == 4" class="wu-img" src="/static/http://yw.wtvxin.com/static/g" mode=""></image> -->
+        <!-- <image v-if="type == 4" class="wu-img" src="/static/http://m.dance-one.com/static/g" mode=""></image> -->
         <view class="wu-item" v-for="(val,key) in list" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
             <image :src="val.PicNo" mode="aspectFill"></image>
             <view class="wu-tet">

@@ -6,7 +6,7 @@
 					<text>我的直播币:</text>
 					<view class="right flex-end">
 						{{ LiveStreamMoney || 0 }}
-						<image class="icon" src="http://yw.wtvxin.com/static/my/jf.png" mode=""></image>
+						<image class="icon" src="http://m.dance-one.com/static/my/jf.png" mode=""></image>
 					</view>
 				</view>
 				<view class="withdraw">充值金额</view>
@@ -60,19 +60,19 @@ export default {
 				// #ifdef APP-PLUS||H5
 				// {
 				// 	Id:1,
-				// 	iconimg:'http://yw.wtvxin.com/static/pay_alipay.png',
+				// 	iconimg:'http://m.dance-one.com/static/pay_alipay.png',
 				// 	name:"支付宝"
 				// },
 				// #endif
 				{
 					Id: 0,
 					type: 0,
-					iconimg: 'http://yw.wtvxin.com/static/pay_weixin.png',
+					iconimg: 'http://m.dance-one.com/static/pay_weixin.png',
 					name: '微信'
 				},
 				{
 					Id: 2,
-					iconimg: 'http://yw.wtvxin.com/static/pay_yue.png',
+					iconimg: 'http://m.dance-one.com/static/pay_yue.png',
 					name: '余额'
 				}
 			],

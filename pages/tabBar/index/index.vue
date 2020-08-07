@@ -2,7 +2,7 @@
 	<view class="content bg_fff">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-center" style="border-bottom: 1px solid #eee;">
-				<view class="title"><image src="http://yw.wtvxin.com/static/headTitle.png" mode="widthFix"></image></view>
+				<view class="title"><image src="http://m.dance-one.com/static/headTitle.png" mode="widthFix"></image></view>
 				<view class="seachbox" v-if="false">
 					<text class="uni-icon uni-icon-search"></text>
 					<ans-input placeholder="请输入搜索内容" :value="searchText" @confirm="searchConfirm" class="flex1"></ans-input>
@@ -23,7 +23,7 @@
 				<scroll-view class="Daren-swiper-tab" scroll-x>
 					<view class="item" v-for="(item,index) in TeacherUserList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
 						<view class="tx">
-							<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+							<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 						</view>
 						<view class="name uni-ellipsis">
 							{{item.Name}}
@@ -45,7 +45,7 @@
 								<view class="item" v-for="(e,i) in recuserlist" :key="i">
 									<view class="uni-icon uni-icon-closeempty close" @click="closeuser(i)"></view>
 									<view class="tx" @click="tolink('/pages/homepage/homepage?id='+e.Id)">
-										<image :src="e.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+										<image :src="e.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 										<!-- #ifndef MP-WEIXIN -->
 										<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 											<view class="line line1"></view>
@@ -69,7 +69,7 @@
 						<view class="media-hd flex-between">
 							<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 								<view class="tx">
-									<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+									<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 									<!-- #ifndef MP-WEIXIN -->
 									<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 										<view class="line line1"></view>
@@ -80,7 +80,7 @@
 									<!-- #endif -->
 								</view>
 								<view class="name uni-ellipsis">{{item.NickName}}</view>
-								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
+								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 							</view>
 							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
@@ -98,7 +98,7 @@
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
 							<view class="maxpic audio" v-if="item.Type==3" @click="toRec(item.Type,item.Id)">
-								<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+								<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 								<view :class="['isaudio',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playAudio(item)">
 									<view class="line line1"></view>
 									<view class="line line2"></view>

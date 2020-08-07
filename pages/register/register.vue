@@ -3,7 +3,7 @@
 		<view class="regLoginBox">
 			<view class="logo">
 				<view class="img">
-					<image src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
+					<image src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 					<view class="Title">壹舞</view>
 				</view>
 			</view>

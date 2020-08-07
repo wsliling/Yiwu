@@ -4,8 +4,8 @@
 			<view class="media-hd" v-if="dataitem.FindType!=2">
 				<view class="media-author" @click="gotoPensonal">
 					<image class="img" v-if="dataitem.Avatar" :src="dataitem.Avatar" mode="aspectFill"></image>
-					<image class="img" v-else-if="dataitem.FindType==2" src="http://yw.wtvxin.com/static/logo.png" mode="aspectFill"></image>
-					<image class="img" v-else src="http://yw.wtvxin.com/static/default.png"></image>
+					<image class="img" v-else-if="dataitem.FindType==2" src="http://m.dance-one.com/static/logo.png" mode="aspectFill"></image>
+					<image class="img" v-else src="http://m.dance-one.com/static/default.png"></image>
 				</view>
 				<view class="author-name uni-ellipsis" @click="gotoPensonal">
 					<block v-if="dataitem.NickName">{{dataitem.NickName}}</block>
@@ -42,9 +42,9 @@
 				<view class="box flex">
 					<view class="songpic">
 						<view class="isaudio">
-							<image src="http://yw.wtvxin.com/static/play2.png" mode="widthFix"></image>
+							<image src="http://m.dance-one.com/static/play2.png" mode="widthFix"></image>
 						</view>
-						<image :src="dataitem.MusicData.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+						<image :src="dataitem.MusicData.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<text class="uni-ellipsis2">{{dataitem.MusicData.Name}}</text>
 				</view>

@@ -1,10 +1,10 @@
 
 
-const host = 'https://ywapi.wtvxin.com/api/';  //测试接口地址
+const host = 'https://api.dance-one.com/api/';  //测试接口地址
 // const host = 'https://api.dadanyipin.com/api/';  //正式接口地址
-const webUrl = 'http://yw.wtvxin.com';
-const wssPath = 'wss://ywapi.wtvxin.com/WebSocketServer.ashx';  //wss接口地址
-const wssHost = 'wss://ywapi.wtvxin.com';  //wss接口地址
+const webUrl = 'http://m.dance-one.com';
+const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
+const wssHost = 'wss://api.dance-one.com';  //wss接口地址
 
 
 function formatNumber(n) {

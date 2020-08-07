@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<view class="wu-box">
-			<!-- <image v-if="type == 4" class="wu-img" src="/static/http://yw.wtvxin.com/static/g" mode=""></image> -->
+			<!-- <image v-if="type == 4" class="wu-img" src="/static/http://m.dance-one.com/static/g" mode=""></image> -->
 			<view class="wu-item" v-for="(val,key) in list" :key="key" @click="navigate('shopSon/product/productDetails',{proId:val.Id})">
 				<image :src="val.PicNo" mode="aspectFill"></image>
 				<view class="wu-tet">

@@ -4,7 +4,7 @@
 		<view class="regLoginBox" >
 			<view class="logo">
 				<view class="img">
-					<image class="logoimg" src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
+					<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 					<view class="livetitle">商家直播登录</view>
 				</view>
 			</view>

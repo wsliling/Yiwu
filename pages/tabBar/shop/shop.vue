@@ -31,7 +31,7 @@
 				</view>
 			</block>
 			<view class="item" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
-				<image class="icon" src="http://yw.wtvxin.com/static/fenlei5.png"></image>
+				<image class="icon" src="http://m.dance-one.com/static/fenlei5.png"></image>
 				<text class="txt">全部</text>
 			</view> 
 		</view>

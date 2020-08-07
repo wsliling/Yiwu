@@ -3,25 +3,25 @@
 		<view class="line-list">
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/wallet/wallet')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/my/money.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/my/money.png" mode="widthFix"></image>
 					<text class="txt">我的零钱</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/myIncome/myIncome')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/my/icon1.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/my/icon1.png" mode="widthFix"></image>
 					<text class="txt">我的收入</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/myIntegral/myIntegral')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/my/icon2.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/my/icon2.png" mode="widthFix"></image>
 					<text class="txt">我的积分</text>
 				</view>
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/livebi/livebi')">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/my/icon3.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/my/icon3.png" mode="widthFix"></image>
 					<text class="txt">直播币</text>
 				</view>
 			</view>

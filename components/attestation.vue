@@ -1,12 +1,12 @@
 <template>
 	<view class="">
 		<view class="succeed" v-if="AuditStatus == 0 || AuditStatus == 1">
-			<image src="http://yw.wtvxin.com/static/my/succeed.png" mode=""></image>
+			<image src="http://m.dance-one.com/static/my/succeed.png" mode=""></image>
 			<view class="" v-if="AuditStatus == 0"> 认证成功</view>
 			<view class="" v-else> 待审核中</view>
 		</view>
 		<view class="succeed" v-if="AuditStatus == 2">
-			<image src="http://yw.wtvxin.com/static/my/defeated.png" mode=""></image>
+			<image src="http://m.dance-one.com/static/my/defeated.png" mode=""></image>
 			<view class="">认证失败！</view>
 			<view class="anew" @click="anew">重新认证</view>
 		</view>

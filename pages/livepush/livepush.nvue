@@ -4,7 +4,7 @@
 		<view>
 			<view @click="stopLive" class="arrow-box"><text class="jiesu">结束直播</text></view>
 			<!--view class="arrow-boxs">
-				<image class="user-img" src="http://yw.wtvxin.com/static/logo.png"></image>
+				<image class="user-img" src="http://m.dance-one.com/static/logo.png"></image>
 				<view>
 					<text class="text-box">8 关注</text>
 				</view>

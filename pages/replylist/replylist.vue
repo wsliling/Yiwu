@@ -3,9 +3,9 @@
 		<view class="Yi-media" style="background: #fff;">
 			<view class="media-hd flex-between">
 				<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+NewsInfo.MemberId)">
-					<view class="tx" style="border: none;padding: 0;"><image :src="NewsInfo.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+					<view class="tx" style="border: none;padding: 0;"><image :src="NewsInfo.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image></view>
 					<view class="name uni-ellipsis">{{NewsInfo.NickName}}</view>
-					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
+					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 				</view>
 				<view v-if="NewsInfo.IsMy==0" @click="flow(NewsInfo.MemberId,index,1)" :class="['flow',NewsInfo.IsFollow==1?'active':'']">{{NewsInfo.IsFollow==1?'已关注':'关注'}}</view>
 			</view>
@@ -32,9 +32,9 @@
 					<view class="box flex">
 						<view class="songpic">
 							<view class="isaudio">
-								<image src="http://yw.wtvxin.com/static/play2.png" mode="widthFix"></image>
+								<image src="http://m.dance-one.com/static/play2.png" mode="widthFix"></image>
 							</view>
-							<image :src="NewsInfo.MusicData.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+							<image :src="NewsInfo.MusicData.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 						</view>
 						<text class="uni-ellipsis2">{{NewsInfo.MusicData.Name}}</text>
 					</view>

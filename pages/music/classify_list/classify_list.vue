@@ -4,7 +4,7 @@
 			<view class="item flex-between">
 				<view class="imgbox">
 					<image v-if="Logo" :src="Logo" mode="aspectFill"></image>
-					<image v-else src="http://yw.wtvxin.com/static/default_music.png" mode="aspectFill"></image>
+					<image v-else src="http://m.dance-one.com/static/default_music.png" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1">
 					<view class="name uni-ellipsis">{{Name||'舞曲列表'}}</view>
@@ -15,13 +15,13 @@
 		<view class="musiclist pd15">
 			<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 				<view class="imgbox">
-					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+					<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 				<view class="info flex1 flex-between">
 					<view :class="['name uni-ellipsis',(playID==item.Id&&playIDtype==1)?'c_theme':'']">{{item.Name}}</view>
 					<view class="icons flex-end">
-						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
-						<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="playBtn(index,item.Id,item.IsShowBuy)"><image :src="(playID==item.Id&&playIDtype==1)?'http://m.dance-one.com/static/play3.png':'http://m.dance-one.com/static/play2.png'" mode="widthFix"></image></view>
+						<view class="icon" @click.stop="ShowOperation(item)"><image src="http://m.dance-one.com/static/more.png" mode="widthFix"></image></view>
 					</view>
 				</view>
 			</view>
@@ -41,31 +41,31 @@
 						</view>
 						<view class="line-item" v-if="false">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/play_next.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/play_next.png" mode="widthFix"></image>
 								<text class="txt">播放下一首</text>
 							</view>
 						</view>
 						<view class="line-item" @click="ShowSelect">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/add.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/add.png" mode="widthFix"></image>
 								<text class="txt">添加到歌单</text>
 							</view>
 						</view>
 						<view class="line-item" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/fabu.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/fabu.png" mode="widthFix"></image>
 								<text class="txt">分享到动态</text>
 							</view>
 						</view>
 						<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id">
 							<view class="line-item-l flex-start" style="width:100%;">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/share.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/share.png" mode="widthFix"></image>
 								<text class="txt">分享</text>
 							</view>
 						</share>
 						<view class="line-item" @click="Collect">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" :src="isCollect?'http://yw.wtvxin.com/static/collect2.png':'http://yw.wtvxin.com/static/collect.png'" mode="widthFix"></image>
+								<image class="iconimg" :src="isCollect?'http://m.dance-one.com/static/collect2.png':'http://m.dance-one.com/static/collect.png'" mode="widthFix"></image>
 								<text class="txt">收藏</text>
 							</view>
 						</view>

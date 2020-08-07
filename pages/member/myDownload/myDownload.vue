@@ -24,7 +24,7 @@
 			<view class="listbox" v-for="(val, index) in datalist" :key="index">
 				<view class="choose" v-if="isShowDel" @click.stop="shiftChecked(index)"><view class="IconsCK IconsCK-radio" :class="{ checked: val.checked }"></view></view>
 				<view class="drawing flex">
-					<view class="" v-if="val.Type == 1"><video controls :src="'http://yw.wtvxin.com'+ val.Video"></video></view>
+					<view class="" v-if="val.Type == 1"><video controls :src="'http://m.dance-one.com'+ val.Video"></video></view>
 					<view class="" v-else><image class="imgs" :src="val.PicImg" mode=""></image></view>
 					<view class="brace">
 						<view class="being uni-ellipsis2">{{ val.Title }}</view>

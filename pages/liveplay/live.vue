@@ -51,7 +51,7 @@
 								
 								<img @click="showGift" src="/static/icons/gift.png" alt="" mode="widthFix" />
 								<div class="like" @click="onLike(liveItem)">
-									<img src="http://yw.wtvxin.com/static/like2.png" alt="" mode="widthFix" />
+									<img src="http://m.dance-one.com/static/like2.png" alt="" mode="widthFix" />
 									<div class="num active">
 										{{likeNum(liveItem.LikeNum)}}
 									</div>

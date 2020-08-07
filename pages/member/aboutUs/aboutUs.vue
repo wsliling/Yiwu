@@ -2,7 +2,7 @@
 	<!-- 关于我们 -->
 	<view class="">
 		<view class="">
-			<view class="auoutimg"><image src="http://yw.wtvxin.com/static/logo.png" mode=""></image></view>
+			<view class="auoutimg"><image src="http://m.dance-one.com/static/logo.png" mode=""></image></view>
 			<view class="txt"><view v-html="Content"></view></view>
 		</view>
 	</view>
