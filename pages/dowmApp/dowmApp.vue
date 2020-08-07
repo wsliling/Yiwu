@@ -2,7 +2,7 @@
 	<view>
 		<view class="btns">
 			<view class="logo">
-				<image class="logoimg" src="http://yw.wtvxin.com/static/logo.png" mode="widthFix"></image>
+				<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 			</view>
 			<view class="btn btn_1">
 				Android版下载

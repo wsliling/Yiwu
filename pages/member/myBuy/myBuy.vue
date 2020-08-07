@@ -8,7 +8,7 @@
 		<view class="bb_pt uni-bg-white" v-if="hasData">
 			<view :class="['listbox',tabIndex==1?'musicbox':'']" v-for="(val, index) in datalist" :key="index" @click="godetail(val.Id,index)">
 				<view class="drawing flex">
-					<view class=""><image class="imgs" v-if="tabIndex==0" :src="val.PicImg" mode=""></image><image class="imgs" v-if="tabIndex==1" :src="val.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode=""></image></view>
+					<view class=""><image class="imgs" v-if="tabIndex==0" :src="val.PicImg" mode=""></image><image class="imgs" v-if="tabIndex==1" :src="val.PicImg||'http://m.dance-one.com/static/default_music.png'" mode=""></image></view>
 					<view class="brace">
 						<view :class="['being',tabIndex==1?'uni-ellipsis':'uni-ellipsis2']">{{ val.Name }}</view>
 						<view class="fz12 c_999" v-if="tabIndex==0">

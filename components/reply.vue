@@ -12,7 +12,7 @@
 				<view class="uni-comment-list" v-for="(item,index) in replylist" :key="index">
 					<view class="uni-comment-face" @click="gotoUserhome(item.MemberId)">
 						<image class="img" v-if="item.MemberHead" :src="item.MemberHead" mode="aspectFill"></image>
-						<image class="img" v-else src="http://yw.wtvxin.com/static/default.png" mode="aspectFill"></image>
+						<image class="img" v-else src="http://m.dance-one.com/static/default.png" mode="aspectFill"></image>
 					</view>
 					<view class="uni-comment-body">
 						<view class="uni-comment-top">

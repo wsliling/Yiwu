@@ -5,12 +5,12 @@
 			</view>
 		</view>
 		<view class="flex-end list_hd p_re pd15">
-			<image :src="pageType==0?'http://yw.wtvxin.com/static/icon_rec.png':pageType==1?'http://yw.wtvxin.com/static/icon_new.png':pageType==2?'http://yw.wtvxin.com/static/icon_hot.png':''"></image>
+			<image :src="pageType==0?'http://m.dance-one.com/static/icon_rec.png':pageType==1?'http://m.dance-one.com/static/icon_new.png':pageType==2?'http://m.dance-one.com/static/icon_hot.png':''"></image>
 			<text>{{pageTitle}}</text>
 		</view>
 		<view class="bgbox">
 			<view class="topplay flex-start" @click="toplaylist(datalist[0].Id,0)" v-if="pageType!=3">
-				<image src="http://yw.wtvxin.com/static/play4.png"></image>
+				<image src="http://m.dance-one.com/static/play4.png"></image>
 				<text>播放全部</text>
 			</view>
 			<view class="search" v-else>
@@ -22,13 +22,13 @@
 			<view class="musiclist pd15">
 				<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 					<view class="imgbox">
-						<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+						<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 					</view>
 					<view class="info flex1 flex-between">
 						<view :class="['name uni-ellipsis',(playID==item.Id&&isplayingmusic)?'c_theme':'']">{{item.Name}}</view>
 						<view class="icons flex-end">
-							<view class="icon" @click.stop="playBtn(item)"><image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image></view>
-							<view class="icon" @click.stop="ShowOperation(item)"><image src="http://yw.wtvxin.com/static/more.png" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="playBtn(item)"><image :src="(playID==item.Id&&isplayingmusic)?'http://m.dance-one.com/static/play3.png':'http://m.dance-one.com/static/play2.png'" mode="widthFix"></image></view>
+							<view class="icon" @click.stop="ShowOperation(item)"><image src="http://m.dance-one.com/static/more.png" mode="widthFix"></image></view>
 						</view>
 					</view>
 				</view>
@@ -53,31 +53,31 @@
 						</view>
 						<view class="line-item" v-if="false">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/play_next.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/play_next.png" mode="widthFix"></image>
 								<text class="txt">播放下一首</text>
 							</view>
 						</view>
 						<view class="line-item" @click="ShowSelect">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/add.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/add.png" mode="widthFix"></image>
 								<text class="txt">添加到歌单</text>
 							</view>
 						</view>
 						<view class="line-item" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/fabu.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/fabu.png" mode="widthFix"></image>
 								<text class="txt">分享到动态</text>
 							</view>
 						</view>
 						<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id">
 							<view class="line-item-l flex-start" style="width:100%;">
-								<image class="iconimg" src="http://yw.wtvxin.com/static/share.png" mode="widthFix"></image>
+								<image class="iconimg" src="http://m.dance-one.com/static/share.png" mode="widthFix"></image>
 								<text class="txt">分享</text>
 							</view>
 						</share>
 						<view class="line-item" @click="Collect">
 							<view class="line-item-l flex-start">
-								<image class="iconimg" :src="isCollect?'http://yw.wtvxin.com/static/collect2.png':'http://yw.wtvxin.com/static/collect.png'" mode="widthFix"></image>
+								<image class="iconimg" :src="isCollect?'http://m.dance-one.com/static/collect2.png':'http://m.dance-one.com/static/collect.png'" mode="widthFix"></image>
 								<text class="txt">收藏</text>
 							</view>
 						</view>
@@ -257,10 +257,10 @@
 				let src=item.Audio,
 				    id=item.Id,
 					isbuy=item.IsShowBuy,
-					PicImg=item.PicImg;
-				this.setPlaydetail({id,pic:PicImg});
+					PicImg=item.PicImg,
+					title=item.Name;
 				if(isbuy==0){
-					this.setIsplayactive(true)
+					
 					this.playID=id;
 					if(id==uni.getStorageSync("playID")){
 						if (this.playIDtype) {
@@ -270,11 +270,13 @@
 						}
 						this.playIDtype=!this.playIDtype;
 					}else{
+						this.setPlaydetail({id,pic:PicImg});
+						this.$au_player.title = title;
 						this.playIDtype=true;
 						this.$au_player.src = src;
 						this.$au_player.play();
 					}		
-					console.log(this.$au_player.src)
+					this.setIsplayactive(true)
 					this.setIsplayingmusic(this.playIDtype)
 					Vue.prototype.cusPlay = this.onPlayFn
 					Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn

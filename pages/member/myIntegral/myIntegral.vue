@@ -3,7 +3,7 @@
 	<view class="Integral">
 		<view class="Integralbox uni-bg-white">
 			<view class="reveal">
-				<image class="bg" src="http://yw.wtvxin.com/static/my/bg3.png" alt="" />
+				<image class="bg" src="http://m.dance-one.com/static/my/bg3.png" alt="" />
 				<view class="jf">我的积分{{SumScore}}</view>
 				<view class="flex-between">
 					<view class="item flex-column">

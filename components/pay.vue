@@ -124,28 +124,28 @@ export default {
       payTypeList:[
         {
           name:'微信',
-          icon:'http://yw.wtvxin.com/static/pay_weixin.png',
+          icon:'http://m.dance-one.com/static/pay_weixin.png',
           id:0,
           code:'wx',
           status:true,
         },
         // {
         //   name:'支付宝',
-        //   icon:'http://yw.wtvxin.com/static/pay_alipay.png',
+        //   icon:'http://m.dance-one.com/static/pay_alipay.png',
         //   id:2,
         //   code:'alipay',
         //   status:false,
         // },
         {
           name:'余额',
-          icon:'http://yw.wtvxin.com/static/pay_yue.png',
+          icon:'http://m.dance-one.com/static/pay_yue.png',
           id:1,
           code:'balance',
           status:true,
         },
         {
           name:'积分',
-          icon:'http://yw.wtvxin.com/static/pay_jf.png',
+          icon:'http://m.dance-one.com/static/pay_jf.png',
           id:3,
           code:'integral',
           status:false,

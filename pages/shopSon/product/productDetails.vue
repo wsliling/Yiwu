@@ -421,7 +421,7 @@ export default {
 	left: 50%;
 	top: 50%;
 	margin: -44upx 0 0 -44upx;
-	background: url(http://yw.wtvxin.com/static/play.png);
+	background: url(http://m.dance-one.com/static/play.png);
 	background-size: cover;
 	z-index: 2;
 }

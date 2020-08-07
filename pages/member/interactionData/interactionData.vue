@@ -27,7 +27,7 @@
 					<view class="author flex-start">
 						<view class="tx">
 							<image v-if="item.Avatar" :src="item.Avatar" mode="aspectFill"></image>
-							<image v-else src="http://yw.wtvxin.com/static/default.png" mode="aspectFill"></image>
+							<image v-else src="http://m.dance-one.com/static/default.png" mode="aspectFill"></image>
 						</view>
 						<view class="info">
 							<view class="name uni-ellipsis">{{item.Name}}</view>

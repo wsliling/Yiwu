@@ -3,7 +3,7 @@
 		<view class="line-list">
 			<view class="line-item line-arrow-r" v-if="false">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/share_weixin.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/share_weixin.png" mode="widthFix"></image>
 					<text class="txt">绑定微信</text>
 				</view>
 				<view class="item_r text_right">
@@ -12,7 +12,7 @@
 			</view>
 			<view class="line-item line-arrow-r" @click="tolink('/pages/member/verPhone/verPhone?Mobile='+Mobile)">
 				<view class="line-item-l flex-start">
-					<image class="iconimg" src="http://yw.wtvxin.com/static/phone.png" mode="widthFix"></image>
+					<image class="iconimg" src="http://m.dance-one.com/static/phone.png" mode="widthFix"></image>
 					<text class="txt">手机号更换</text>
 				</view>
 				<view class="item_r text_right">

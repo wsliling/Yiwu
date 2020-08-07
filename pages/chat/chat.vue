@@ -28,22 +28,22 @@
 			<!-- <view class="cu-item self">
 				<view class="main">
 					<!-1- #ifdef MP-WEIXIN --1>
-					<image src="http://yw.wtvxin.com/static/of/banner.jpg" mode="widthFix"></image>
+					<image src="http://m.dance-one.com/static/of/banner.jpg" mode="widthFix"></image>
 					<!-1- #endif -->
 					<!-- #ifndef MP-WEIXIN --1>
-					<img src="http://yw.wtvxin.com/static/of/banner.jpg" class="img">
+					<img src="http://m.dance-one.com/static/of/banner.jpg" class="img">
 					<!-1- #endif --1>
 				</view>
-				<view class="cu-avatar" style="background-image:url(http://yw.wtvxin.com/static/default.png);"></view>
+				<view class="cu-avatar" style="background-image:url(http://m.dance-one.com/static/default.png);"></view>
 			</view>
 			<view class="cu-item">
-				<view class="cu-avatar" style="background-image:url(http://yw.wtvxin.com/static/of/2.png);"></view>
+				<view class="cu-avatar" style="background-image:url(http://m.dance-one.com/static/of/2.png);"></view>
 				<view class="main">
 					<!-1- #ifdef MP-WEIXIN --1>
-					<image src="http://yw.wtvxin.com/static/of/3.png" mode="widthFix"></image>
+					<image src="http://m.dance-one.com/static/of/3.png" mode="widthFix"></image>
 					<!-1- #endif -1->
 					<!-1- #ifndef MP-WEIXIN -1->
-					<img src="http://yw.wtvxin.com/static/of/3.png" class="img">
+					<img src="http://m.dance-one.com/static/of/3.png" class="img">
 					<!-1- #endif --1>
 				</view>
 			</view> -->

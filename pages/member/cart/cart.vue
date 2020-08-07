@@ -90,7 +90,7 @@
 		<view class="noConPage table bg_fff nodatalocal" v-if="noDataIsShow">
 			<view class="table-cell">
 				<view class="noDataImg">
-					<image src="http://yw.wtvxin.com/static/nocart.png" mode="widthFix"></image>
+					<image src="http://m.dance-one.com/static/nocart.png" mode="widthFix"></image>
 				</view>
 				<view class="tips">购物车空空如也~</view>
 				<view class="btnBox">
@@ -120,7 +120,7 @@
 								</view>
 								<view class="couponbtn">
 									<view class="btn" v-if="item.IsMyAlready==0" @click="ReceiveCoupon(item.Id,index)">立即领取</view>
-									<view class="rightimg" v-else><image src="http://yw.wtvxin.com/static/ylq.png" mode=""></image></view>
+									<view class="rightimg" v-else><image src="http://m.dance-one.com/static/ylq.png" mode=""></image></view>
 								</view>
 							</view>
 						</view>

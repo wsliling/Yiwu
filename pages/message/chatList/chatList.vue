@@ -35,7 +35,7 @@
 						<div class="circlePosition" @click="navigate('homepage/homepage',{id:item.MemberId})">
 							<div class="dot" v-if="!item.Islook"></div>
 							<div class="avatarbox">
-								<img :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" alt="" class="avatar">
+								<img :src="item.Avatar||'http://m.dance-one.com/static/default.png'" alt="" class="avatar">
 							</div>
 							<span class="circleNum msgnum" v-if="item.Count>0">{{item.Count }}</span>
 						</div>

@@ -59,7 +59,7 @@
 								
 								<image class="img gift-icon" @click="showGift" src="/static/icons/gift.png" alt="" mode="widthFix" />
 								<div class="like" @click="onLike(liveItem)">
-									<image class="img like-icon" src="http://yw.wtvxin.com/static/like2.png" alt="" mode="widthFix" />
+									<image class="img like-icon" src="http://m.dance-one.com/static/like2.png" alt="" mode="widthFix" />
 									<text class="num">{{likeNum(liveItem.LikeNum)}}</text>
 								</div>
 							</div>

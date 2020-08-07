@@ -18,7 +18,7 @@
 			this.userId = uni.getStorageSync("userId")
 			this.token = uni.getStorageSync("token")
 			// #ifdef MP-WEIXIN
-			this.webSrc="http://yw.wtvxin.com/hybrid/html/index.html?userId="+this.userId+"&token="+this.token
+			this.webSrc="http://m.dance-one.com/hybrid/html/index.html?userId="+this.userId+"&token="+this.token
 			// #endif
 			// #ifndef MP-WEIXIN
 			this.webSrc="/hybrid/html/index.html?userId="+this.userId+"&token="+this.token

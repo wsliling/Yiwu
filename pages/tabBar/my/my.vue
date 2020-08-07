@@ -18,13 +18,13 @@
 					<view class="user-left">
 						<view class="user-img" @click="tolink('/pages/homepage/homepage?id='+memberInfo.Id)">
 							<view>
-								<image :src="memberInfo.Avatar||'http://yw.wtvxin.com/static/my/user.png'" mode="aspectFill"></image>
+								<image :src="memberInfo.Avatar||'http://m.dance-one.com/static/my/user.png'" mode="aspectFill"></image>
 							</view>
 						</view>
 						<view class="user-name">
 							<view class="name" v-if="memberInfo.NickName">
 								<view class="uni-ellipsis">{{memberInfo.NickName}}</view>
-								<image class="vip" src="http://yw.wtvxin.com/static/V.png" v-if="memberInfo.IsPlus" 
+								<image class="vip" src="http://m.dance-one.com/static/V.png" v-if="memberInfo.IsPlus" 
 									@click.stop="navigate('member/openVip/openVip',{
 										avatar:memberInfo.Avatar,
 										name:memberInfo.NickName,
@@ -36,8 +36,8 @@
 							<view class="name" v-else style="margin-top: 28upx;">您未登录，请先登录</view>
 							<block v-if="isLogin">
 								<view class="btns clear uni-mt10">
-									<view class="btn" @click="tolink('/pages/member/editinfo/editinfo')"><image class="img30" src="http://yw.wtvxin.com/static/my/editor.png"></image>编辑资料</view>
-									<view class="btn" @click="tolink('/pages/member/addUser/addUser')"><image class="img30" src="http://yw.wtvxin.com/static/my/add_min.png"></image>关注</view>
+									<view class="btn" @click="tolink('/pages/member/editinfo/editinfo')"><image class="img30" src="http://m.dance-one.com/static/my/editor.png"></image>编辑资料</view>
+									<view class="btn" @click="tolink('/pages/member/addUser/addUser')"><image class="img30" src="http://m.dance-one.com/static/my/add_min.png"></image>关注</view>
 								</view>
 								<view class="text uni-mt10"><label v-if="!memberInfo.Introduction">简介：</label>{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
 								<view class="icos flex-center-start uni-mt10">
@@ -49,7 +49,7 @@
 						</view>
 					</view>
 					<view class="user-right">
-						<image src="http://yw.wtvxin.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click.stop="navigate('member/openVip/openVip',{
+						<image src="http://m.dance-one.com/static/my/sign.png" mode="" v-if="memberInfo.IsShowV" @click.stop="navigate('member/openVip/openVip',{
 								avatar:memberInfo.Avatar,
 								name:memberInfo.NickName,
 								endTime:memberInfo.PlusEndTime
@@ -97,9 +97,9 @@
 		<view class="music-box item-box"  v-if="tabIndex==1&&hasData">
 			<view class="item audiobox" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 				<view :class="['islive',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playBtn(item)">
-					<image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
+					<image :src="(playID==item.Id&&isplayingmusic)?'http://m.dance-one.com/static/play3.png':'http://m.dance-one.com/static/play2.png'" mode="widthFix"></image>
 				</view>
-				<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+				<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 			</view>
 		</view>
 		<view class="play-box item-box"  v-if="tabIndex==2&&hasData">
@@ -121,14 +121,14 @@
 				<view class="sevice">
 					<view class="item" @click="tolink('/pages/member/cart/cart')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon5.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon5.png" mode="aspectFit"></image>
 							<view>购物车</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="openAttestation">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon6.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon6.png" mode="aspectFit"></image>
 							<view>认证中心</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
@@ -145,35 +145,35 @@
 					</uni-popup> -->
 					<view class="item" @click="tolink('/pages/member/myWorks/myWorks')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon7.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon7.png" mode="aspectFit"></image>
 							<view>我的作品</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/myMusic/myMusic')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon8.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon8.png" mode="aspectFit"></image>
 							<view>我的舞曲</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/collect/collect')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon9.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon9.png" mode="aspectFit"></image>
 							<view>我的收藏</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/ordertype/ordertype')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon10.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon10.png" mode="aspectFit"></image>
 							<view>订单列表</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/message/messageClass/messageClass')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon15.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon15.png" mode="aspectFit"></image>
 							<view>我的消息</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
@@ -187,7 +187,7 @@
 					</view>
 					<view class="item" @click="tolink('/pages/member/share/share')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon16.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon16.png" mode="aspectFit"></image>
 							<view>分享</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
@@ -195,35 +195,35 @@
 					<!-- 我的下载先不做，苹果的下载和多端下载很难实现 -->
 					<view class="item" @click="tolink('/pages/member/myDownload/myDownload')" v-if="false">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon18.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon18.png" mode="aspectFit"></image>
 							<view>我的下载</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/interflow/interflow')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon11.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon11.png" mode="aspectFit"></image>
 							<view>加入官方交流</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/kefu/kefu')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon12.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon12.png" mode="aspectFit"></image>
 							<view>客服服务</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon13.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon13.png" mode="aspectFit"></image>
 							<view>关于我们</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
 					<view class="item" @click="tolink('/pages/member/set/set')">
 						<view class="item-left">
-							<image  src="http://yw.wtvxin.com/static/my/icon14.png" mode="aspectFit"></image>
+							<image  src="http://m.dance-one.com/static/my/icon14.png" mode="aspectFit"></image>
 							<view>设置</view>
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
@@ -498,10 +498,9 @@
 				let src=item.Audio,
 				    id=item.Id,
 					isbuy=item.IsShowBuy,
-					PicImg=item.PicImg;
-				this.setPlaydetail({id,pic:PicImg});
+					PicImg=item.PicImg,
+					title=item.Name;
 				if(isbuy==0){
-					this.setIsplayactive(true)
 					this.playID=id;
 					if(id==uni.getStorageSync("playID")){
 						if (this.playIDtype) {
@@ -511,10 +510,13 @@
 						}
 						this.playIDtype=!this.playIDtype;
 					}else{
+						this.setPlaydetail({id,pic:PicImg});
+						this.$au_player.title = title;
 						this.playIDtype=true;
 						this.$au_player.src = src;
 						this.$au_player.play();
-					}				
+					}
+					this.setIsplayactive(true)				
 					this.setIsplayingmusic(this.playIDtype)
 					Vue.prototype.cusPlay = this.onPlayFn
 					Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn

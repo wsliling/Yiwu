@@ -4,7 +4,7 @@
 			<textarea placeholder="请填写视频/课程的标题" v-model="Title"/>
 			<view class="videobox" @click="choosevideo">
 				<image v-if="videofile" :src="videoShowImg" mode="aspectFill"></image>
-				<image src="http://yw.wtvxin.com/static/videoUp.png" v-else></image>
+				<image src="http://m.dance-one.com/static/videoUp.png" v-else></image>
 			</view>
 		</view>
 		<view class="pricebox" v-if="type==1">
@@ -18,7 +18,7 @@
 			<view class="">视频/课程的来源</view>
 			<view class="listdis">
 				<input type="text" disabled placeholder="请选择" class="flex1" v-model="sourcetype" />
-				<image src="http://yw.wtvxin.com/static/my/icon-right.png" mode=""></image>
+				<image src="http://m.dance-one.com/static/my/icon-right.png" mode=""></image>
 			</view>
 		</view>
 		<!-- 选择来源 -->

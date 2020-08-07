@@ -70,7 +70,7 @@
 					<view class="media-hd flex-between">
 						<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 							<view class="tx">
-								<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+								<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 								<!-- #ifndef MP-WEIXIN -->
 								<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 									<view class="line line1"></view>
@@ -81,7 +81,7 @@
 								<!-- #endif -->
 							</view>
 							<view class="name uni-ellipsis">{{item.NickName}}</view>
-							<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
+							<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 						</view>
 						<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 					</view>
@@ -99,7 +99,7 @@
 							<image :src="item.PicImg" mode="widthFix"></image>
 						</view>
 						<view class="maxpic audio" v-if="item.Type==3" @click="toRec(item.Type,item.Id)">
-							<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+							<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 							<view :class="['isaudio',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playAudio(item)">
 								<view class="line line1"></view>
 								<view class="line line2"></view>
@@ -172,7 +172,7 @@
 					<view class="flex-between">
 						<view class="author flex-start">
 							<view class="tx">
-								<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+								<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 								<!-- #ifndef MP-WEIXIN -->
 								<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.UserId})">
 									<view class="line line1"></view>
@@ -205,7 +205,7 @@
 				<view class="mechanism-item uni-bg-white uni-mb10" v-for="(item,index) in JiGouList" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 					<view class="flex-between">
 						<view class="author flex-start">
-							<view class="tx"><image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image></view>
+							<view class="tx"><image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image></view>
 							<view class="info">
 								<view class="name uni-ellipsis">{{item.Name}}</view>
 								<view class="fz12 c_999">关注人数：{{item.FansNum}}</view>
@@ -272,7 +272,7 @@
 				<view class="media-hd flex-between">
 					<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 						<view class="tx">
-							<image :src="item.Avatar||'http://yw.wtvxin.com/static/default.png'" mode="aspectFill"></image>
+							<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 							<!-- #ifndef MP-WEIXIN -->
 							<view class="islive" v-if="item.Flag==1" @click.stop="navigate('liveplay/live',{id:item.MemberId})">
 								<view class="line line1"></view>
@@ -283,7 +283,7 @@
 							<!-- #endif -->
 						</view>
 						<view class="name uni-ellipsis">{{item.NickName}}</view>
-						<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://yw.wtvxin.com/static/chat.png"></image></view>
+						<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 					</view>
 					<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 				</view>
@@ -700,9 +700,8 @@
 			playAudio(item){
 				let src=item.VideoUrl,
 				    id=item.Id,
-					PicImg=item.PicImg;
-				this.setPlaydetail({id,pic:PicImg});
-				this.setIsplayactive(true)
+					PicImg=item.PicImg,
+					title=item.Title;
 				this.playID=id;
 				if(id==uni.getStorageSync("playID")){
 					if (this.playIDtype) {
@@ -712,10 +711,13 @@
 					}
 					this.playIDtype=!this.playIDtype;
 				}else{
+					this.setPlaydetail({id,pic:PicImg});
+					this.$au_player.title = title;
 					this.playIDtype=true;
 					this.$au_player.src = src;
 					this.$au_player.play();
-				}				
+				}	
+				this.setIsplayactive(true)
 				this.setIsplayingmusic(this.playIDtype)
 				Vue.prototype.cusPlay = this.onPlayFn
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
@@ -1274,7 +1276,7 @@
 						left: 50%;
 						top: 50%;
 						margin: -44upx 0 0 -44upx;
-						background: url(http://yw.wtvxin.com/static/play.png);
+						background: url(http://m.dance-one.com/static/play.png);
 						background-size: cover;
 						z-index: 2;
 					}
@@ -1316,18 +1318,18 @@
 				.ft_r .txt_info{
 					margin-left: 40upx;
 				}
-				.like{padding-left: 50upx; background: url(http://yw.wtvxin.com/static/like.png) left center no-repeat;
+				.like{padding-left: 50upx; background: url(http://m.dance-one.com/static/like.png) left center no-repeat;
 				background-size: 44upx 44upx;}
-				.like.active{ background: url(http://yw.wtvxin.com/static/like2.png) left center no-repeat;
+				.like.active{ background: url(http://m.dance-one.com/static/like2.png) left center no-repeat;
 				background-size: 44upx 44upx;}
 				.reply{
-					padding-left: 50upx;background: url(http://yw.wtvxin.com/static/reply.png) left center no-repeat;
+					padding-left: 50upx;background: url(http://m.dance-one.com/static/reply.png) left center no-repeat;
 					background-size: 44upx 44upx;
 				}
 				.share{
 					width: 44upx;
 					height: 44upx;
-					background: url(http://yw.wtvxin.com/static/share.png) left center no-repeat;
+					background: url(http://m.dance-one.com/static/share.png) left center no-repeat;
 					background-size: 44upx 44upx;
 				}
 			}

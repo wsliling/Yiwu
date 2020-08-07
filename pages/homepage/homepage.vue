@@ -3,7 +3,7 @@
 		<view class="pd15 heade">
 			<view class="user">
 				<view class="left">
-					<image  :src="PersonInfo.Avatar||'http://yw.wtvxin.com/static/default.png'"></image>
+					<image  :src="PersonInfo.Avatar||'http://m.dance-one.com/static/default.png'"></image>
 					<!-- #ifdef MP-WEIXIN -->
 					<view class="islive" v-if="PersonInfo.Flag" @click="navigate('liveplay/live',{id:memberId})">
 						<view class="line line1"></view>
@@ -16,7 +16,7 @@
 				<view class="right">
 					<view class="name">
 						<view>{{PersonInfo.NickName}}</view>
-						<image v-if="PersonInfo.IsPlus==1" src="http://yw.wtvxin.com/static/V.png" mode="widthFix"></image>
+						<image v-if="PersonInfo.IsPlus==1" src="http://m.dance-one.com/static/V.png" mode="widthFix"></image>
 					</view>
 					<view class="list">
 						<view class="item">
@@ -80,9 +80,9 @@
 			<view class="music-box item-box"  v-if="tabId==2&&hasData">
 				<view class="item audiobox" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 					<view :class="['islive',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playBtn(item)">
-						<image :src="(playID==item.Id&&isplayingmusic)?'http://yw.wtvxin.com/static/play3.png':'http://yw.wtvxin.com/static/play2.png'" mode="widthFix"></image>
+						<image :src="(playID==item.Id&&isplayingmusic)?'http://m.dance-one.com/static/play3.png':'http://m.dance-one.com/static/play2.png'" mode="widthFix"></image>
 					</view>
-					<image :src="item.PicImg||'http://yw.wtvxin.com/static/default_music.png'" mode="aspectFill"></image>
+					<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 				</view>
 			</view>
 			<view class="play-box" v-if="tabId==3&&hasData">
@@ -110,11 +110,11 @@
 		<view class="bottom-box" v-if="PersonInfo.IsMy==0">
 			<view class="box flex-between">
 				<view @click="flow">
-					<image src="http://yw.wtvxin.com/static/attention.png"></image>
+					<image src="http://m.dance-one.com/static/attention.png"></image>
 					<span>{{PersonInfo.IsFollow==1?'已关注':'关注'}}</span>
 				</view>
 				<view @click="tolink('/pages/chat/chat?id='+memberId,'login')">
-					<image src="http://yw.wtvxin.com/static/chat1.png"></image>
+					<image src="http://m.dance-one.com/static/chat1.png"></image>
 					<span>极速联系</span>
 				</view>
 			</view>
@@ -374,10 +374,9 @@ export default {
 			let src=item.Audio,
 			    id=item.Id,
 				isbuy=item.IsShowBuy,
-				PicImg=item.PicImg;
-			this.setPlaydetail({id,pic:PicImg});
+				PicImg=item.PicImg,
+				title=item.Name;
 			if(isbuy==0){
-				this.setIsplayactive(true)
 				this.playID=id;
 				if(id==uni.getStorageSync("playID")){
 					if (this.playIDtype) {
@@ -387,10 +386,13 @@ export default {
 					}
 					this.playIDtype=!this.playIDtype;
 				}else{
+					this.setPlaydetail({id,pic:PicImg});
+					this.$au_player.title = title;
 					this.playIDtype=true;
 					this.$au_player.src = src;
 					this.$au_player.play();
-				}				
+				}	
+				this.setIsplayactive(true)			
 				this.setIsplayingmusic(this.playIDtype)
 				Vue.prototype.cusPlay = this.onPlayFn
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn

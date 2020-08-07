@@ -2,7 +2,7 @@
 	<!-- 我的积分 -->
 	<view class="Integral">
 		<view class="Integralbox uni-bg-white">
-			<image class="In-image" src="http://yw.wtvxin.com/static/my/bg4.png" mode=""></image>
+			<image class="In-image" src="http://m.dance-one.com/static/my/bg4.png" mode=""></image>
 			<view class="reveal">
 				<view class="jf">我的直播币</view>
 				<view class="flex-start">
