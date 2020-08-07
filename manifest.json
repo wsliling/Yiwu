@@ -103,6 +103,24 @@
                         "notification@3x" : "E:/liu项目/A壹舞/APP_logo配置/ios/Icon-App-60x60.png"
                     }
                 }
+            },
+            "splashscreen" : {
+                "android" : {
+                    "hdpi" : "E:/liu项目/A壹舞/启动页/安卓/480x762.png",
+                    "xhdpi" : "E:/liu项目/A壹舞/启动页/安卓/720x1242.png",
+                    "xxhdpi" : "E:/liu项目/A壹舞/启动页/安卓/1080x1882.png"
+                },
+                "ios" : {
+                    "iphone" : {
+                        "portrait-896h@3x" : "E:/liu项目/A壹舞/启动页/ios/1242x2688.png",
+                        "portrait-896h@2x" : "E:/liu项目/A壹舞/启动页/ios/828x1792.png",
+                        "iphonex" : "E:/liu项目/A壹舞/启动页/ios/1125x2436.png",
+                        "retina55" : "E:/liu项目/A壹舞/启动页/ios/1242x2208.png",
+                        "retina47" : "E:/liu项目/A壹舞/启动页/ios/750x1334.png",
+                        "retina40" : "E:/liu项目/A壹舞/启动页/ios/640x1136.png",
+                        "retina35" : "E:/liu项目/A壹舞/启动页/ios/640x960.png"
+                    }
+                }
             }
         }
     },
