@@ -65,9 +65,9 @@
 							</scroll-view>
 						</view>
 					</view>
-					<view class="Yi-media">
+					<view class="Yi-media" @click="toRec(item.Type,item.Id)">
 						<view class="media-hd flex-between">
-							<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
+							<view class="author flex-start" @click.stop="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 								<view class="tx">
 									<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 									<!-- #ifndef MP-WEIXIN -->
@@ -82,22 +82,22 @@
 								<view class="name uni-ellipsis">{{item.NickName}}</view>
 								<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 							</view>
-							<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+							<view v-if="item.IsMy==0" @click.stop="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 						</view>
 						<view class="media-bd">
-							<view class="desc uni-ellipsis2" @click="toRec(item.Type,item.Id)">
+							<view class="desc uni-ellipsis2">
 								{{item.Title}}
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
-								<image class="postpic" :src="item.PicImg" mode="aspectFill" @click="toRec(item.Type,item.Id)"></image>
+								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 							</view>
-							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
+							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
 								<view v-if="item.Type==2" class="tag">课程</view>
 								<image :src="item.PicImg" mode="widthFix"></image>
 							</view>
-							<view class="maxpic audio" v-if="item.Type==3" @click="toRec(item.Type,item.Id)">
+							<view class="maxpic audio" v-if="item.Type==3">
 								<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 								<view :class="['isaudio',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playAudio(item)">
 									<view class="line line1"></view>
@@ -108,14 +108,14 @@
 						</view>
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
-								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-								<view class="txt_info reply" @click="toRec(item.Type,item.Id)">{{item.CommentNum}}</view>
+								<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
+								<view class="txt_info reply">{{item.CommentNum}}</view>
 								<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 									<view class="txt_info share"></view>
 								</share>
 							</view>
 							<view class="ft_r" v-if="item.Type!=0">
-								<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+								<view @click.stop="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 							</view>
 						</view>
 						<view class="likenum" v-if="item.LikeNum>0">被{{item.LikeNum}}人赞过</view>
@@ -128,7 +128,7 @@
 									</text>
 								</view>
 							</block>
-							<view class="more c_999" v-if="item.CommentNum>4" @click="toRec(item.Type,item.Id)">
+							<view class="more c_999" v-if="item.CommentNum>4">
 								查看全部评论
 							</view>
 						</view>

@@ -5,6 +5,9 @@
 			<view class="videobox" @click="choosevideo">
 				<image v-if="videofile" :src="videoShowImg" mode="aspectFill"></image>
 				<image src="http://m.dance-one.com/static/videoUp.png" v-else></image>
+				<view class="rate" v-if="percent>0">
+					<view class="press" :style="{width: percent+'%'}"></view>
+				</view>
 			</view>
 		</view>
 		<view class="pricebox" v-if="type==1">
@@ -58,6 +61,7 @@
 				Sourcelist:[], // 视频课程来源列表
 				isShowSource:false, //来源
 				sourcetype: '', //选中来源
+				percent:0,//上传进度
 			};
 		},
 		components: { uniPopup },
@@ -100,7 +104,7 @@
 						uni.showLoading({
 						  title: '上传中' //数据请求前loading
 						})
-						uni.uploadFile({
+						const uploadTask =uni.uploadFile({
 							url:host+'System/UploadMultiFile',
 							filePath:tempFilePaths,
 							name:'file',
@@ -133,6 +137,9 @@
 								uni.hideLoading();
 							}
 						})
+						uploadTask.onProgressUpdate(function (res) {
+						   _this.percent = res.progress;
+						});
 					},
 					fail(err) {
 						console.log(err)
@@ -239,15 +246,32 @@
 	.videobox{
 		width: 230upx;
 		height: 230upx;
+		position: relative;
 		image{
 			width: 230upx;
 			height: 230upx;
 			border-radius: 6upx;
 			border:1px solid #E6E6E6;
 		}
-		video{
-			width: 230upx;
-			height: 230upx;
+		.rate{ 
+			height: 10upx;
+			width: 100%;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			background: rgba(0,0,0,.5);
+			border-radius: 10upx;
+			z-index: 2;
+			overflow: hidden;
+			.press{
+				position: absolute;
+				border-radius: 10upx;
+				bottom: 0;
+				left: 0;
+				height: 100%;
+				background: #8bc34a;
+				z-index: 3;
+			}
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="Yi-Userlist bg_fff" v-if="hasData">
-			<view class="user-item" v-if="item.IsMy==0" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.UserId)">
+			<view class="user-item" v-if="item.IsMy==0" v-for="(item,index) in datalist" :key="index" @click="tolink('/pages/homepage/homepage?id='+item.Id)">
 				<view class="flex-between">
 					<view class="author flex-start">
 						<view class="tx">

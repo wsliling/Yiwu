@@ -465,6 +465,13 @@
 		.item_market{
 			color:#999;font-size:24upx; line-height: 1.4;
 		}
+		.item_auther{
+			align-items: center;
+			.tx{
+				width: 46upx; height: 46upx; border-radius: 50%; background: #E0E0E0;
+			}
+			.name{ padding: 0 10upx; font-size: 26upx;}
+		}
 	}
 	
 }
@@ -472,7 +479,7 @@
 	align-items: start;
 	margin-left: -1px;
 	.left-list,.right-list{
-		width: 50%;
+		width: 49%;
 		padding-left: 1px;
 	}
 	.item{

@@ -28,6 +28,7 @@
 			message(event){
 				let data=event.detail.data;console.log(data[0])
 				if(data.length>0){
+					//uni.setStorageSync("fileName",data[0].filePath)
 					uni.setStorageSync("fileName",data[0].fileName)
 					uni.setStorageSync("filePath",data[0].filePath)
 				}
