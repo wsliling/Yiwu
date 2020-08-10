@@ -14,7 +14,7 @@
 			</view>
 			<view style="position: relative; width: 100%; overflow-x: hidden;">
 				<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft" style="padding: 0 50px 0 5px;">
-					<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==tab.Id ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(tab.Id,index)" style="width: auto; padding: 0 10px;">{{tab.TypeName}}</view>
+					<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==tab.Id ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(tab.Id,index)" style="width: auto; padding: 0 12px;">{{tab.TypeName}}</view>
 					<!-- <view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view> -->
 				</scroll-view>
 				<view class="flex-column menuIco" id="menu" @click="isshowAll=!isshowAll">
@@ -36,13 +36,20 @@
 		<view :style="{'height':(84+barHeight)+'px'}"></view>
 		<!-- 最新 -->
 		<view class="index-item index-item-0"  v-if="tabIndex==5">
-			<view class="Yi-zxlist flex-between">
+			<view class="Yi-courselist flex-between">
 				<view class="left-list">
 					<block v-for="(item,index) in zxlist" :key="index">
 						<view class="item" v-if="index%2==0" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 							<view class="maxpic">
 								<image :src="item.PicImg" mode="widthFix"></image>
-								<view class="isplay"></view>
+								<!-- <view class="isplay"></view> -->
+							</view>
+							<view class="item_info">
+								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_auther flex">
+									<image class="tx" :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
+									<view class="name uni-ellipsis">{{item.NickName}}</view>
+								</view>
 							</view>
 						</view>
 					</block>
@@ -52,7 +59,14 @@
 						<view class="item" v-if="index%2==1" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 							<view class="maxpic">
 								<image :src="item.PicImg" mode="widthFix"></image>
-								<view class="isplay"></view>
+								<!-- <view class="isplay"></view> -->
+							</view>
+							<view class="item_info">
+								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_auther flex">
+									<image class="tx" :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
+									<view class="name uni-ellipsis">{{item.NickName}}</view>
+								</view>
 							</view>
 						</view>
 					</block>
@@ -66,9 +80,10 @@
 		<!-- 关注 -->
 		<view class="index-item index-item-0" v-if="tabIndex==6">
 			<block v-if="datalist.length">
-				<view class="Yi-media" v-for="(item,index) in datalist" :key="index">
+				<block v-for="(item,index) in datalist" :key="index">
+				<view class="Yi-media" @click="toRec(item.Type,item.Id)">
 					<view class="media-hd flex-between">
-						<view class="author flex-start" @click="tolink('/pages/homepage/homepage?id='+item.MemberId)">
+						<view class="author flex-start" @click.stop="tolink('/pages/homepage/homepage?id='+item.MemberId)">
 							<view class="tx">
 								<image :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 								<!-- #ifndef MP-WEIXIN -->
@@ -83,22 +98,22 @@
 							<view class="name uni-ellipsis">{{item.NickName}}</view>
 							<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+item.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 						</view>
-						<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
+						<view v-if="item.IsMy==0" @click.stop="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 					</view>
 					<view class="media-bd">
-						<view class="desc uni-ellipsis2" @click="toRec(item.Type,item.Id)">
+						<view class="desc uni-ellipsis2">
 							{{item.Title}}
 						</view>
 						<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 							<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
-							<image class="postpic" :src="item.PicImg" mode="aspectFill" @click="toRec(item.Type,item.Id)"></image>
+							<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 						</view>
-						<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
+						<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
 							<view v-if="item.Type==2" class="tag">课程</view>
 							<image :src="item.PicImg" mode="widthFix"></image>
 						</view>
-						<view class="maxpic audio" v-if="item.Type==3" @click="toRec(item.Type,item.Id)">
+						<view class="maxpic audio" v-if="item.Type==3">
 							<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
 							<view :class="['isaudio',playID==item.Id&&isplayingmusic?'active':'']" @click.stop="playAudio(item)">
 								<view class="line line1"></view>
@@ -109,14 +124,14 @@
 					</view>
 					<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 						<view class="ft_l flex-start">
-							<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-							<view class="txt_info reply" @click="toRec(item.Type,item.Id)">{{item.CommentNum}}</view>
+							<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
+							<view class="txt_info reply">{{item.CommentNum}}</view>
 							<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
 						</view>
 						<view class="ft_r" v-if="item.Type!=0">
-							<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+							<view @click.stop="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 						</view>
 					</view>
 					<view class="likenum" v-if="item.LikeNum>0">被{{item.LikeNum}}人赞过</view>
@@ -129,11 +144,12 @@
 								</text>
 							</view>
 						</block>
-						<view class="more c_999" v-if="item.CommentNum>4" @click="toRec(item.Type,item.Id)">
+						<view class="more c_999" v-if="item.CommentNum>4">
 							查看全部评论
 						</view>
 					</view>
 				</view>
+				</block>
 				<view class="uni-tab-bar-loading">
 					<uni-load-more :loadingType="LoadingType6"></uni-load-more>
 				</view>	
@@ -293,8 +309,13 @@
 					</view>
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
 						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
-						<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
-						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
+						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
+						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;"
+						:muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" 
+						@fullscreenchange="screenchange" :id="'video'+item.Id" 
+						:show-mute-btn="true" object-fit="contain">
+							<cover-view class="cover-mark" @click="ControlsFn" v-if="!isControls"></cover-view>
+						</video>
 					</view>
 					
 					<view class="media-ft flex-between">
@@ -439,6 +460,7 @@
 				],//详情链接
 				ismuted:false,
 				phoneheight:0,
+				screenWidth:0,
 				// #ifdef APP-PLUS
 					isControls:true
 				// #endif
@@ -544,6 +566,7 @@
 				}
 			},
 			playVideo(id){
+				this.isControls = false;
 				let _this=this;
 				for(let i=0; i<_this.datalist.length;i++){
 					let _id=_this.datalist[i].Id;
@@ -811,7 +834,7 @@
 					json['IsFollow']=1
 				}else if(this.tabIndex==7){
 					url='Find/VideoList';
-					json['IsALL']=1;
+					// json['IsALL']=1;
 				}
 				let result =await post(url,json);
 				if (result.code === 0) {
@@ -1201,7 +1224,7 @@
 						query.select('#box'+item.Id).boundingClientRect(data => {
 							h=_this.phoneheight-data.height;
 							itemh=data.top;
-							if(itemh<h&&itemh>84&&!item.ispause){
+							if(itemh<h&&itemh>84&&!item.ispause&&_this.onplayId>0){
 								_this.$set(item,'play',true);
 								_this.$set(item,'fixed',false);
 								setTimeout(()=>{
@@ -1211,8 +1234,10 @@
 									// _this.onplayId=item.Id;
 								},500)
 							}else{
+								// if(!item.play&&item.fixed&&!_this.isControls)return;
 								_this.$set(item,'fixed',true);
 								_this.$set(item,'play',false);
+								_this.isControls = false;
 							}
 						}).exec();
 					}
@@ -1256,7 +1281,7 @@
 					// border-radius: 12upx;
 					overflow: hidden;
 					position: relative;
-					background-color: #e0e0e0;
+					background-color: #000;
 					&.maxh{
 						max-height: 750upx;
 					}
@@ -1420,5 +1445,14 @@
 			width: 40upx;
 			margin-bottom: 8upx;
 		}
+	}
+	video{
+		position:relative;
+	}
+	.cover-mark{
+		position:absolute;
+		width:100%;
+		height:100%;
+		left:0;top:0;
 	}
 </style>

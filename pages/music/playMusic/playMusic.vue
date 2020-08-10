@@ -121,7 +121,7 @@
 			this.musicID=e.id||'';
 			this.type = e.type||'';
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
-			if(!this.nowIndex){
+			if(!this.nowIndex&&!e.type){
 				this.musicList.forEach((v,i)=>{
 					if(v.Id == this.musicID ){
 						this.nowIndex = i;
