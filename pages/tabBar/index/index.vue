@@ -90,8 +90,12 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
-								<image class="postpic" :src="item.PicImg" mode="aspectFill" @click="toRec(item.Type,item.Id)"></image>
+								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" 
+								@pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" 
+								object-fit="contain">
+									<cover-view class="cover-mark" @click="ControlsFn" v-if="!isControls"></cover-view>
+								</video>
+								<image class="postpic" :src="item.PicImg" mode="widthFix" @click="toRec(item.Type,item.Id)"></image>
 							</view>
 							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
 								<view v-if="item.Type==2" class="tag">课程</view>
@@ -210,8 +214,9 @@
 				isTop:false,//是否显示置顶
 				ismuted:false,
 				phoneheight:0,
+				videoPlay:false,
 				// #ifdef APP-PLUS
-					isControls:true
+					isControls:false
 				// #endif
 				// #ifndef APP-PLUS
 				isControls:false
@@ -271,7 +276,7 @@
 				}
 				//#endif
 			},
-			ControlsFn(){
+			ControlsFn(){console.log(this.isControls)
 				this.isControls=true;
 			},
 			pauseVideo(id){
@@ -287,6 +292,7 @@
 				}
 			},
 			playVideo(id){
+				this.isControls = false;
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -637,7 +643,8 @@
 					query.select('#box'+item.Id).boundingClientRect(data => {
 						h=_this.phoneheight-data.height;
 						itemh=data.top;
-						if(itemh<h&&itemh>44&&!item.ispause){
+						if(itemh<h&&itemh>44&&!item.ispause&&!A_this.videoPlay){
+							_this.videoPlay = true;
 							_this.$set(item,'play',true);
 							_this.$set(item,'fixed',false);
 							setTimeout(()=>{
@@ -647,8 +654,11 @@
 								// _this.onplayId=item.Id;
 							},500)
 						}else{
+							if(!item.play&&item.fixed&&!_this.isControls&&!_this.videoPlay)return;
+							_this.videoPlay = false;
 							_this.$set(item,'fixed',true);
 							_this.$set(item,'play',false);
+							_this.isControls = false;
 						}
 					}).exec();
 				}
@@ -703,5 +713,14 @@
 			width: 40upx;
 			margin-bottom: 8upx;
 		}
+	}
+	video{
+		position:relative;
+	}
+	.cover-mark{
+		position:absolute;
+		width:100%;
+		height:100%;
+		left:0;top:0;
 	}
 </style>
