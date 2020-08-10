@@ -91,7 +91,7 @@
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
-								<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
+								<image class="postpic" :src="item.PicImg" mode="aspectFill" @click="toRec(item.Type,item.Id)"></image>
 							</view>
 							<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg" @click="toRec(item.Type,item.Id)">
 								<view v-if="item.Type==2" class="tag">课程</view>
@@ -109,7 +109,7 @@
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
 								<view @click="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-								<view class="txt_info reply">{{item.CommentNum}}</view>
+								<view class="txt_info reply" @click="toRec(item.Type,item.Id)">{{item.CommentNum}}</view>
 								<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 									<view class="txt_info share"></view>
 								</share>
