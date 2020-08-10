@@ -58,6 +58,7 @@
 				Sourcelist:[], // 视频课程来源列表
 				isShowSource:false, //来源
 				sourcetype: '', //选中来源
+				videoInfo:{},//上传视频的信息
 			};
 		},
 		components: { uniPopup },
@@ -96,6 +97,7 @@
 					sourceType:['camera','album'],
 					success(res) {
 						console.log(res)
+						_this.videoInfo = res;
 						let tempFilePaths = res.tempFilePath;
 						uni.showLoading({
 						  title: '上传中' //数据请求前loading
@@ -156,7 +158,9 @@
 					Title:this.Title,
 					IsCharge:IsCharge,
 					Price:this.Price,
-					Source:this.sourcetype
+					Source:this.sourcetype,
+					VideoH:this.videoInfo.height,
+					VideoW:this.videoInfo.width,
 				});
 				if(res.code==0){
 					uni.showToast({

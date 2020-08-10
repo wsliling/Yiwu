@@ -66,7 +66,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,playMusic,wssHost} from '@/common/util.js';
+	import {post,get,toLogin,playMusic,wssHost,toast } from '@/common/util.js';
 	export default {
 		data() {
 			return {
