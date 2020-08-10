@@ -9,14 +9,14 @@
         </view>
       </view>
       <view class="pp3 dec c_999">
-        *1~16个字符
+        *4~16个字符
       </view>
       <view class="btn" @click="EditUserNick">确定</view>
   </view>
 </template>
 
 <script>
-import {post,get,toLogin} from '@/common/util.js';
+import {post,get,toLogin,strLength} from '@/common/util.js';
 export default {
   data () {
     return {
@@ -34,6 +34,14 @@ export default {
     //编辑昵称
     EditUserNick(){
       if(this.userNick){
+		  const nameLength = strLength(this.userNick);
+		  if(nameLength<4||nameLength>16){
+				uni.showToast({
+				  title: "请输入4-16个字符名称",
+				  icon: 'none',
+				})
+				return;
+		  }
         post('User/EditUserNick',{
           UserId:this.userId,
           Token:this.token,

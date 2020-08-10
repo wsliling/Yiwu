@@ -4,7 +4,7 @@
 const host = 'https://ywapi.wtvxin.com/api/';  //正式接口地址
 const webUrl = 'http://m.dance-one.com';
 const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
-const wssHost = 'wss://api.dance-one.com';  //wss接口地址
+const wssHost = 'ws://api.dance-one.com';  //wss接口地址
 
 
 function formatNumber(n) {
@@ -277,6 +277,18 @@ function GetUrlRelativePath() {
 	urlStr = arrUrl[0] + '//' + start[0];　　　　
 	return urlStr;　　
 }
+// 字符串长度,中文2个字符,英文1个字符
+function strLength(str) {    
+    var len = 0;    
+    for (var i=0; i<str.length; i++) {    
+        if (str.charCodeAt(i)>127 || str.charCodeAt(i)==94) {    
+             len += 2;    
+         } else {    
+             len ++;    
+         }    
+     }    
+    return len;    
+}    
 import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 export {
@@ -308,5 +320,6 @@ export {
 	redirect,
 	navigateBack,
 	call,
-	previewImage
+	previewImage,
+	strLength
 }
