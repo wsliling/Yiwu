@@ -154,6 +154,7 @@
 
 <script>
 	import {post,get,toLogin,navigate} from '@/common/util.js';
+	import {debounce} from '@/common/ans-utils';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
