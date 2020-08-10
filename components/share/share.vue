@@ -1,6 +1,6 @@
 <template>
 <view>
-	<button open-type="share" @click="share" class="button" :data-param="param">
+	<button open-type="share" @click.stop="share" class="button" :data-param="param">
 	    <slot>
 	        分享
 	    </slot>

@@ -97,6 +97,7 @@ export default {
 			Sourcelist: [], //来源列表
 			ClassId: '' ,//类型Id
 			isIos:false,
+			percent:0,//进度
 		};
 	},
 	components: { uniPopup},
@@ -174,7 +175,7 @@ export default {
 					uni.showLoading({
 					  title: '上传中' //数据请求前loading
 					})
-					uni.uploadFile({
+					const uploadTask =uni.uploadFile({
 						url: host+'System/UploadMultiFile',
 						filePath: path,
 						name: 'file',
@@ -198,6 +199,9 @@ export default {
 							uni.hideLoading();
 						}
 					});
+					uploadTask.onProgressUpdate(function (res) {
+					   _this.percent = res.progress;
+					});
 				},
 				fail: (err) => {
 					uni.showToast({
@@ -207,6 +211,7 @@ export default {
 				}
 			})
 		},
+		
 		//发布舞曲
 		async uplLoadMusic() {
 			if (this.hascheck) {
