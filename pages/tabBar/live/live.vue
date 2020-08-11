@@ -496,7 +496,7 @@
 		    return ((750/this.tabnav.length)*(this.tabIndex-1))+(((750/this.tabnav.length)-68)/2)
 		  }
 		 },
-		 onUnload(){
+		 onHide(){
 			 if(this.onplayId>-1){
 				 this.videoContext.pause();
 			 }

@@ -153,6 +153,9 @@
 										});
 									}
 								}
+								else{
+									alert(res.msg)
+								}
 								$(".modal").hide();
 							},
 							error: function(err) {
@@ -184,6 +187,14 @@
 					}
 				});
 			});
+			function progressHandlingFunction(event) {
+			    if (event.lengthComputable) {
+			      var value = (event.loaded / event.total * 100 | 0);
+				  console.log(value)
+			      //$("#progress_bar_top").css('width', (value + '%'));
+			    }
+			  }
+
 		</script>
 	</body>
 </html>
