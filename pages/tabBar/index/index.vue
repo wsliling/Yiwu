@@ -251,7 +251,7 @@
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
 		},
-		onUnload() {
+		onHide() {
 			if(this.onplayId>-1){
 				this.videoContext.pause();
 			}
