@@ -90,8 +90,8 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id)" 
-								@pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" 
+								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" 
+								@pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" 
 								object-fit="contain">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 								</video>
@@ -217,10 +217,10 @@
 				phoneheight:0,
 				videoPlay:false,
 				// #ifdef APP-PLUS
-					isControls:false
+					isControls:false,
 				// #endif
 				// #ifndef APP-PLUS
-				isControls:false
+				isControls:false,
 				// #endif
 			}
 		},
@@ -250,12 +250,12 @@
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
-		 },
-		 onHide(){
+		},
+		onHide(){
 			 if(this.onplayId>-1){
 				 this.videoContext.pause();
 			 }
-		 },
+		},
 		methods: {
 			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
 			init(){
@@ -277,36 +277,26 @@
 				}
 				//#endif
 			},
-			ControlsFn(){console.log(this.isControls)
+			ControlsFn(){
 				this.isControls=true;
 			},
-			pauseVideo(id){
+			pauseVideo(id,index){
 				let _this=this;
-				for(let i=0; i<_this.datalist.length;i++){
-					let _id=_this.datalist[i].Id;
-					if(_id==id){
-						_this.onplayId=id;
-						_this.onplayIndex=i;
-						_this.$set(_this.datalist[i],'fixed',true);
-						_this.$set(_this.datalist[i],'ispause',true);
-					}
-				}
+				_this.onplayId=id;
+				_this.onplayIndex=index;
+				_this.$set(_this.datalist[index],'fixed',true);
+				_this.$set(_this.datalist[index],'ispause',true);
 			},
-			playVideo(id){
+			playVideo(id,index){
 				this.isControls = false;
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
 				}
-				for(let i=0; i<_this.datalist.length;i++){
-					let _id=_this.datalist[i].Id;
-					if(_id==id){
-						_this.onplayId=id;
-						_this.onplayIndex=i;
-						_this.$set(_this.datalist[i],'fixed',false);
-						_this.$set(_this.datalist[i],'ispause',false);
-					}
-				}
+				_this.onplayId=id;
+				_this.onplayIndex=index;
+				_this.$set(_this.datalist[index],'fixed',false);
+				_this.$set(_this.datalist[index],'ispause',false);
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -371,10 +361,11 @@
 					let _this=this;
 					if(result.data.length>0){
 						_this.noDataIsShow0= false;
-						result.data.forEach(function(item){
+						result.data.forEach(function(item,index){
 							if(item.Type==1){
 								_this.$set(item,'play',false);
 								_this.$set(item,'fixed',false);
+								_this.$set(item,'oIndex',index);
 							}
 						})
 					}
@@ -637,14 +628,14 @@
 				this.isTop=false;
 			}
 			const query = uni.createSelectorQuery().in(_this);
-			this.datalist.forEach(function(item,index){
+			_this.datalist.forEach(function(item,index){
 				let itemh=0;
 				let h=0;
 				if(item.Type==1){
 					query.select('#box'+item.Id).boundingClientRect(data => {
 						h=_this.phoneheight-data.height;
 						itemh=data.top;
-						if(itemh<h&&itemh>44){
+						if(itemh<h&&itemh>50){
 							if(!item.ispause&&!_this.videoPlay){
 								console.log(1111)
 								_this.videoPlay = true;
