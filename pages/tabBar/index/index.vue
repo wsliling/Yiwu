@@ -251,10 +251,10 @@
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
 		},
-		onHide(){
-			 if(this.onplayId>-1){
-				 this.videoContext.pause();
-			 }
+		onUnload() {
+			if(this.onplayId>-1){
+				this.videoContext.pause();
+			}
 		},
 		methods: {
 			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
