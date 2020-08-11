@@ -215,7 +215,7 @@
 				isTop:false,//是否显示置顶
 				ismuted:false,
 				phoneheight:0,
-				videoPlay:false,
+				pageTop:0,
 				// #ifdef APP-PLUS
 					isControls:false
 				// #endif
@@ -637,31 +637,57 @@
 				this.isTop=false;
 			}
 			const query = uni.createSelectorQuery().in(_this);
-			this.datalist.forEach(function(item,index){
-				let itemh=0;
-				let h=0;
-				if(item.Type==1){
-					query.select('#box'+item.Id).boundingClientRect(data => {
-						h=_this.phoneheight-data.height;
-						itemh=data.top;
-						if(itemh<h&&itemh>44&&!item.ispause){
-							_this.$set(item,'play',true);
-							_this.$set(item,'fixed',false);
-							setTimeout(()=>{
-								_this.videoContext=uni.createVideoContext('video'+item.Id);
-								_this.videoContext.play();
-								// _this.onplayIndex=index;
-								// _this.onplayId=item.Id;
-							},500)
-						}else{
-							// if(!item.play&&item.fixed&&!_this.isControls)return;
-							_this.$set(item,'fixed',true);
-							_this.$set(item,'play',false);
-							_this.isControls = false;
-						}
-					}).exec();
-				}
-			})
+			// console.log(e.scrollTop+"*****"+this.pageTop)
+			if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
+				this.pageTop=e.scrollTop
+				this.datalist.forEach(function(item,index){
+					let itemh=0;
+					let h=0;
+					if(item.Type==1){
+						query.select('#box'+item.Id).boundingClientRect(data => {
+							h=_this.phoneheight-data.height;
+							itemh=data.top;
+							if(itemh<h&&itemh>44&&!item.ispause){
+								let Pitem={}
+								if(index==0){
+									Pitem=_this.datalist[0];
+									_this.$set(item,'play',true);
+									_this.$set(item,'fixed',false);
+								}else if(index==1){
+									if(_this.datalist[0].Type==1){
+										if(!_this.datalist[0].play){
+											_this.$set(item,'play',true);
+											_this.$set(item,'fixed',false);
+										}else{
+											_this.$set(item,'play',false);
+											_this.$set(item,'fixed',true);
+										}
+									}else{
+										_this.$set(item,'play',true);
+										_this.$set(item,'fixed',false);
+									}
+								}else{
+									Pitem=_this.datalist[index-1];
+									_this.$set(Pitem,'play',false);
+									_this.$set(Pitem,'fixed',true);
+									_this.$set(item,'play',true);
+									_this.$set(item,'fixed',false);
+								}
+								setTimeout(()=>{
+									_this.videoContext=uni.createVideoContext('video'+item.Id);
+									_this.videoContext.play();
+									// _this.onplayIndex=index;
+									// _this.onplayId=item.Id;
+								},500)
+							}else{
+								_this.$set(item,'fixed',true);
+								_this.$set(item,'play',false);
+								_this.isControls = false;
+							}
+						}).exec();
+					}
+				})
+			}
 		},
 		
 		onShareAppMessage: function(res) {
