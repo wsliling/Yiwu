@@ -644,26 +644,20 @@
 					query.select('#box'+item.Id).boundingClientRect(data => {
 						h=_this.phoneheight-data.height;
 						itemh=data.top;
-						if(itemh<h&&itemh>44){
-							if(!item.ispause&&!_this.videoPlay){
-								console.log(1111)
-								_this.videoPlay = true;
-								_this.$set(item,'play',true);
-								_this.$set(item,'fixed',false);
-								setTimeout(()=>{
-									_this.videoContext=uni.createVideoContext('video'+item.Id);
-									_this.videoContext.play();
-									// _this.onplayIndex=index;
-									// _this.onplayId=item.Id;
-								},500)
-							}else{
-								if(!item.play&&item.fixed&&!_this.isControls&&!_this.videoPlay)return;
-								console.log(2222)
-								_this.videoPlay = false;
-								_this.$set(item,'fixed',true);
-								_this.$set(item,'play',false);
-								_this.isControls = false;
-							}
+						if(itemh<h&&itemh>44&&!item.ispause){
+							_this.$set(item,'play',true);
+							_this.$set(item,'fixed',false);
+							setTimeout(()=>{
+								_this.videoContext=uni.createVideoContext('video'+item.Id);
+								_this.videoContext.play();
+								// _this.onplayIndex=index;
+								// _this.onplayId=item.Id;
+							},500)
+						}else{
+							// if(!item.play&&item.fixed&&!_this.isControls)return;
+							_this.$set(item,'fixed',true);
+							_this.$set(item,'play',false);
+							_this.isControls = false;
 						}
 					}).exec();
 				}
