@@ -11,6 +11,7 @@
 				"app-plus": {
 					"titleNView": false, //首页去除原生导航
 					"bounce": "none",
+					// "softinputMode": "adjustPan",
 					"scrollIndicator": "none" //不显示滚动条
 				}
 			}
@@ -671,6 +672,19 @@
                     "path" : "feedback/feedback",
                     "style" : {
 						"navigationBarTitleText": "意见反馈",
+						"app-plus": {
+							 "titleNView": {    
+								"splitLine": {  
+								  "color":"#eee"  
+								}    
+							 }
+						}
+					}
+                }
+                ,{
+                    "path" : "myfind/myfind",
+                    "style" : {
+						"navigationBarTitleText": "我的动态",
 						"app-plus": {
 							 "titleNView": {    
 								"splitLine": {  

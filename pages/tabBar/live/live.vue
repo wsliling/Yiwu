@@ -104,9 +104,9 @@
 						<view class="desc uni-ellipsis2">
 							{{item.Title}}
 						</view>
-						<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
+						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-							<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
+							<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
 							<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
 						</view>
 						<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
@@ -125,7 +125,7 @@
 					<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 						<view class="ft_l flex-start">
 							<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-							<view class="txt_info reply">{{item.CommentNum}}</view>
+							<view class="txt_info reply" @click.stop="showReplyBox(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
 							<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
@@ -303,31 +303,31 @@
 					</view>
 					<view v-if="item.IsMy==0" @click="flow(item.MemberId,index,1)" :class="['flow','active',item.IsFollow==1?'active':'']">{{item.IsFollow==1?'已关注':'关注'}}</view>
 				</view>
-				<view class="media-bd">
-					<view class="desc uni-ellipsis2" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+				<view class="media-bd" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
+					<view class="desc uni-ellipsis2">
 						{{item.Title}}
 					</view>
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
-						<view v-if="!item.play||item.fixed" class="isplay" @click="playBtn(index,item.Id)"></view>
+						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;"
-						:muted="ismuted" autoplay @play="playVideo(item.Id)" @pause="pauseVideo(item.Id)" 
+						:muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" 
 						@fullscreenchange="screenchange" :id="'video'+item.Id" 
 						:show-mute-btn="true" object-fit="contain">
-							<cover-view class="cover-mark" @click="ControlsFn" v-if="!isControls"></cover-view>
+							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 						</video>
 					</view>
 					
 					<view class="media-ft flex-between">
 						<view class="ft_l flex-start">
-							<view @click="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
-							<view class="txt_info reply" @click="tolink('/pages/replylist/replylist?id='+item.Id)">{{item.CommentNum}}</view>
+							<view @click.stop="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
+							<view class="txt_info reply" @click.stop="showReplyBox(item.Id,item.NickName)">{{item.CommentNum}}</view>
 							<share :url="xqUrl[1].url+item.Id" :param="'1&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
 						</view>
 						<view class="ft_r">
-							<view @click="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
+							<view @click.stop="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
 						</view>
 					</view>
 					<view class="likenum" v-if="item.LikeNum>0">被{{item.LikeNum}}人赞过</view>
@@ -341,6 +341,16 @@
 		
 		<view class="uploadbtn flex-column" @click="openAttestation"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<playerMin :pagetype="'share'"></playerMin>
+		<!-- 底部发表按钮 -->
+		<view class="foot-fiexd" v-show="IsShowReplyBox">
+			<view class="mark" @click="CancelReply"></view>
+			<view class="foot-reply flex-between active">
+				<input class="ipt" type="text" cursor-spacing="10" v-model="Comment" :placeholder="placeholder" :focus="IsShowReplyBox"/>
+				<view class="btn-r">
+					<view :class="['sendBtn',Comment==''?'dis':'']" @click="Send">发布</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -461,6 +471,11 @@
 				ismuted:false,
 				phoneheight:0,
 				pageTop:0,
+				IsShowReplyBox:false,//是否显示评论按钮
+				FkId:0,
+				placeholder:"写评论~",
+				Comment:"",//评论内容
+				Commenttype:0,
 				// #ifdef APP-PLUS
 					isControls:true
 				// #endif
@@ -538,6 +553,7 @@
 					this.datalist=[];//关注、视频
 					this.Page6=1;
 					this.LoadingType6=0;//0加载前，1加载中，2没有更多了
+					this.IsShowReplyBox=false;
 					this.GETdatalist();
 				}
 			},
@@ -553,30 +569,23 @@
 			ControlsFn(){
 				this.isControls=true;
 			},
-			pauseVideo(id){
+			pauseVideo(id,index){
 				let _this=this;
-				for(let i=0; i<_this.datalist.length;i++){
-					let _id=_this.datalist[i].Id;
-					if(_id==id){
-						_this.onplayId=id;
-						_this.onplayIndex=i;
-						_this.$set(_this.datalist[i],'fixed',true);
-						_this.$set(_this.datalist[i],'ispause',true);
-					}
-				}
+				_this.onplayId=id;
+				_this.onplayIndex=index;
+				_this.$set(_this.datalist[index],'fixed',true);
+				_this.$set(_this.datalist[index],'ispause',true);
 			},
-			playVideo(id){
+			playVideo(id,index){
 				this.isControls = false;
 				let _this=this;
-				for(let i=0; i<_this.datalist.length;i++){
-					let _id=_this.datalist[i].Id;
-					if(_id==id){
-						_this.onplayId=id;
-						_this.onplayIndex=i;
-						_this.$set(_this.datalist[i],'fixed',false);
-						_this.$set(_this.datalist[i],'ispause',false);
-					}
+				if(this.playID&&this.isplayingmusic){
+					this.setIsplayingmusic(false)
 				}
+				_this.onplayId=id;
+				_this.onplayIndex=index;
+				_this.$set(_this.datalist[index],'fixed',false);
+				_this.$set(_this.datalist[index],'ispause',false);
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -861,11 +870,12 @@
 						this.datalist = result.data;
 					}
 					if (this.Page6 > 1) {
+						this.datalist.splice(this.pageSize*(this.Page6-1),this.pageSize);
 						this.datalist = this.datalist.concat(
 							result.data
 						);
 					}
-					if (result.data.length <this.pageSize) {
+					if (!result.isok) {
 						this.LoadingType6 = 2;
 					} else {
 						this.LoadingType6 = 0
@@ -1119,6 +1129,61 @@
 				    }
 				});
 			},
+			//显示评论按钮
+			showReplyBox(id,name,type){
+				if(toLogin()){
+					if(this.onplayId>-1){
+						this.videoContext.pause();
+					}
+					this.IsShowReplyBox=true;
+					this.FkId=id;
+					this.placeholder='@'+name;
+			        if(type==2){
+						this.Commenttype=2
+					}else{
+						this.Commenttype=0
+					}
+				}
+			},
+			//取消评论
+			CancelReply(){
+				this.placeholder="写评论~";
+				this.IsShowReplyBox=false;
+				this.Comment="";
+			},
+			// 发表评论
+			async CommentOperation(){
+				let result = await post("Find/CommentOperation",{
+					"UserId": this.userId,
+					"Token": this.token,
+					"FkId":this.FkId,
+					"TypeInt":this.Commenttype,
+					"ParentCommentId":0,
+					"Comment":this.Comment
+				});
+				if(result.code===0){
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 1500
+					});
+					//更新评论列表，并清空评论内容
+					this.CancelReply();
+					this.GETdatalist();
+				}
+			},
+			Send(){
+				if(this.Comment!=""){
+					this.CommentOperation();
+				}else{
+					uni.showToast({
+						title: "评论内容不能为空",
+						icon: "none",
+						duration: 2000
+					});
+				}
+			},
+			
 			openAttestation(){
 				let _this=this;
 				this.IsEdit=true;
@@ -1294,6 +1359,12 @@
 	page{
 		background: #fff !important;
 		// height: 100vh;
+	}
+	.foot-reply{
+		bottom: 0;
+		/* #ifdef H5 */
+		bottom: 50px;
+		/* #endif */
 	}
 	.videolist{
 		.Yi-media{

@@ -113,7 +113,7 @@
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
 								<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-								<view class="txt_info reply">{{item.CommentNum}}</view>
+								<view class="txt_info reply" @click.stop="showReplyBox(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
 								<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 									<view class="txt_info share"></view>
 								</share>
@@ -149,6 +149,16 @@
 		<!-- #endif -->
 		<playerMin></playerMin>
 		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
+		<!-- 底部发表按钮 -->
+		<view class="foot-fiexd" v-show="IsShowReplyBox">
+			<view class="mark" @click="CancelReply"></view>
+			<view class="foot-reply flex-between active">
+				<input class="ipt" type="text" cursor-spacing="10" v-model="Comment" :placeholder="placeholder" :focus="IsShowReplyBox"/>
+				<view class="btn-r">
+					<view :class="['sendBtn',Comment==''?'dis':'']" @click="Send">发布</view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -216,6 +226,11 @@
 				ismuted:false,
 				phoneheight:0,
 				pageTop:0,
+				IsShowReplyBox:false,//是否显示评论按钮
+				FkId:0,
+				placeholder:"写评论~",
+				Comment:"",//评论内容
+				Commenttype:0,
 				// #ifdef APP-PLUS
 					isControls:false,
 				// #endif
@@ -264,6 +279,7 @@
 				this.datalist=[];////推荐视频
 				this.Page0=1;
 				this.LoadingType0=0;//0加载前，1加载中，2没有更多了
+				this.IsShowReplyBox=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -376,11 +392,12 @@
 						this.datalist = result.data;
 					}
 					if (this.Page0 > 1) {
+						this.datalist.splice(this.pageSize*(this.Page0-1),this.pageSize);
 						this.datalist = this.datalist.concat(
 							result.data
 						);
 					}
-					if (result.data.length <this.pageSize) {
+					if (!result.isok) {
 						this.LoadingType0 = 2;
 					} else {
 						this.LoadingType0 = 0
@@ -600,6 +617,61 @@
 				    }
 				});
 			},
+			//显示评论按钮
+			showReplyBox(id,name,type){
+				if(toLogin()){
+					if(this.onplayId>-1){
+						this.videoContext.pause();
+					}
+					this.IsShowReplyBox=true;
+					this.FkId=id;
+					this.placeholder='@'+name;
+					if(type==2){
+						this.Commenttype=2
+					}else{
+						this.Commenttype=0
+					}
+				}
+			},
+			//取消评论
+			CancelReply(){
+				this.placeholder="写评论~";
+				this.IsShowReplyBox=false;
+				this.Comment="";
+			},
+			// 发表评论
+			async CommentOperation(){
+				let result = await post("Find/CommentOperation",{
+					"UserId": this.userId,
+					"Token": this.token,
+					"FkId":this.FkId,
+					"TypeInt":this.Commenttype,
+					"ParentCommentId":0,
+					"Comment":this.Comment
+				});
+				if(result.code===0){
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 1500
+					});
+					//更新评论列表，并清空评论内容
+					this.CancelReply();
+					this.IndexRecommend();
+				}
+			},
+			Send(){
+				if(this.Comment!=""){
+					this.CommentOperation();
+				}else{
+					uni.showToast({
+						title: "评论内容不能为空",
+						icon: "none",
+						duration: 2000
+					});
+				}
+			},
+			
 			//返回顶部
 			Top(){
 				uni.pageScrollTo({
@@ -737,5 +809,11 @@
 		width:100%;
 		height:100%;
 		left:0;top:0;
+	}
+	.foot-reply{
+		bottom: 0;
+		/* #ifdef H5 */
+		bottom: 50px;
+		/* #endif */
 	}
 </style>

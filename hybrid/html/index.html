@@ -57,7 +57,6 @@
 				</a>
 			</form>
 			<p class="showFileName"></p>
-
 		</div>
 		<div class="box">
 			<button class="btn1" type="button" data-action="navigateBack">取消上传</button>
@@ -99,6 +98,7 @@
 					$(".showFileName").html("");
 				}
 			});
+			
 			//上传文件 ，传输数据
 			document.addEventListener('UniAppJSBridgeReady', function() {
 				let isH5=""
@@ -187,14 +187,6 @@
 					}
 				});
 			});
-			function progressHandlingFunction(event) {
-			    if (event.lengthComputable) {
-			      var value = (event.loaded / event.total * 100 | 0);
-				  console.log(value)
-			      //$("#progress_bar_top").css('width', (value + '%'));
-			    }
-			  }
-
 		</script>
 	</body>
 </html>

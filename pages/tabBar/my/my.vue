@@ -157,6 +157,13 @@
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
+					<view class="item" @click="tolink('/pages/member/myfind/myfind')">
+						<view class="item-left">
+							<image  src="http://m.dance-one.com/static/my/myfind.png" mode="aspectFit"></image>
+							<view>我的动态</view>
+						</view>
+						<view class="arrowr uni-icon uni-icon-arrowright"></view>
+					</view>
 					<view class="item" @click="tolink('/pages/member/collect/collect')">
 						<view class="item-left">
 							<image  src="http://m.dance-one.com/static/my/icon9.png" mode="aspectFit"></image>
