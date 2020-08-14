@@ -837,7 +837,6 @@
 			}else{
 				this.isTop=false;
 			}
-			console.log(_this.IsShowReplyList,"kkkkkkkk")
 			if(_this.IsShowReplyList) return;
 			const query = uni.createSelectorQuery().in(_this);
 			if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
