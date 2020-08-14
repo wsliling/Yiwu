@@ -3,7 +3,7 @@
 		<!-- 评价列表 -->
 		<view class="commentlist">
 			<view class="uni-list-cell">
-				<view class="uni-list-cell-navigate">
+				<view class="uni-list-cell-navigate text_center">
 					精选评论
 				</view>
 			</view>
@@ -78,7 +78,6 @@
 				<view style="text-align: center; color: #999; padding: 20upx;">暂无评论</view>
 			</block>
 		</view>
-		
 		<!-- 底部发表按钮 -->
 		<view class="foot-fiexd">
 			<view class="mark" v-if="IsShowReplyBox" @click="CancelReply"></view>
@@ -99,7 +98,7 @@
 </template>
 
 <script>
-	import {host,post,get,dateUtils,toLogin,getCurrentPageUrlWithArgs} from '@/common/util.js';
+	import {host,post,get,dateUtils,toLogin} from '@/common/util.js';
 	export default {
 		props:{
 			newsInfo: {
@@ -108,7 +107,6 @@
 			}
 		},
 		created(){
-			this.curPage = getCurrentPageUrlWithArgs().replace(/\?/g, '%3F').replace(/\=/g, '%3D').replace(/\&/g, '%26');
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.CommnetList();
@@ -117,10 +115,9 @@
 			return{
 				userId: "",
 				token: "",
-				curPage:"",
 				hasData: false,
 				page: 1,
-				pageSize: 11,
+				pageSize: 2,
 				replylist:{},
 				FkId:this.newsInfo.Id,
 				comment_count:this.newsInfo.CommentNum,
@@ -174,7 +171,7 @@
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({
-								  url: "/pages/login/login?askUrl="+_this.curPage
+								  url: "/pages/login/login"
 								});
 							} else if (res.cancel) {
 							}
@@ -222,7 +219,7 @@
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({
-								  url: "/pages/login/login?askUrl="+_this.curPage
+								  url: "/pages/login/login"
 								});
 							} else if (res.cancel) {
 							}
@@ -326,7 +323,7 @@
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({
-								  url: "/pages/login/login?askUrl="+_this.curPage
+								  url: "/pages/login/login"
 								});
 							} else if (res.cancel) {
 							}

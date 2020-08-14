@@ -161,7 +161,8 @@
 			overflow: hidden;
 			margin-right: 20upx;
 			image{
-				width: 100%; height: 100%; 
+				width: 100%; height: 100%;
+				 display: block;
 			}
 		}
 		.comment-con{
@@ -194,6 +195,7 @@
 			margin-left: 20upx;
 			display: flex;
 			justify-content: flex-start;
+			align-items: center;
 			.icon{
 				display: block;
 				height: 34upx;
