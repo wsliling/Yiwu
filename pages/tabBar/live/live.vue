@@ -1178,6 +1178,8 @@
 				}else{
 					this.placeholder="回复"+name;
 				}
+				this.noDataReplyIsShow = false;
+				this.hasReplyData=false;
 				this.CommnetList();
 				setTimeout(()=>{
 					this.IsShowReplyList=true;

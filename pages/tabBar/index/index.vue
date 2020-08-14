@@ -668,6 +668,8 @@
 				}else{
 					this.placeholder="回复"+name;
 				}
+				this.noDataReplyIsShow = false;
+				this.hasReplyData=false;
 				this.CommnetList();
 				setTimeout(()=>{
 					this.IsShowReplyList=true;
@@ -682,8 +684,6 @@
 			showReplyBox(){
 				if(toLogin()){
 					this.IsShowReplyBox=true;
-					this.noDataReplyIsShow = false;
-					this.hasReplyData=false;
 				}
 			},
 			Sendreplay(e){
