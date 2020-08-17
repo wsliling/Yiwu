@@ -106,8 +106,10 @@
 						</view>
 						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-							<video v-if="item.play" :src="item.VideoUrl" :controls="true" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" :poster="item.PicImg" object-fit="cover"></video>
-							<image class="postpic" :src="item.PicImg" mode="aspectFill"></image>
+							<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
+							</video>
+							<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 						</view>
 						<view class="maxpic maxh" v-if="(item.Type==0||item.Type==2||item.Type==4)&&item.PicImg">
 							<view v-if="item.Type==2" class="tag">课程</view>
@@ -310,10 +312,7 @@
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
-						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;"
-						:muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" 
-						@fullscreenchange="screenchange" :id="'video'+item.Id" 
-						:show-mute-btn="true" object-fit="contain">
+						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 						</video>
 					</view>
@@ -509,12 +508,8 @@
 				placeholder:"写评论~",
 				Comment:"",//评论内容
 				Commenttype:0,
-				// #ifdef APP-PLUS
-					isControls:true
-				// #endif
-				// #ifndef APP-PLUS
-				isControls:false
-				// #endif
+				isfullscreen:false,//是否全屏状态
+				isControls:false,
 			}
 		},
 		onLoad() {
@@ -592,18 +587,23 @@
 				}
 			},
 			screenchange(e){
-				//#ifdef H5
 				if(e.type=="fullscreenchange"){
+					//#ifdef H5
 					this.ismuted=false;
+					//#endif
 				}else{
+					//#ifdef H5
 					this.ismuted=true;
+					//#endif
 				}
-				//#endif
+				this.isfullscreen=e.detail.fullScreen;
+				this.isControls=e.detail.fullScreen;
 			},
 			ControlsFn(){
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
+				this.isControls = false;
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
@@ -750,6 +750,7 @@
 			},
 			playBtn(index,id){
 				let _this = this;
+				this.isControls = false;
 				this.datalist.forEach(function(item){
 					if(id==item.Id){
 						_this.$set(item,'play',true);
@@ -884,18 +885,13 @@
 					let _this=this;
 					if(result.data.length>0){
 						this.noDataIsShow6= false;
-						if(this.tabIndex==6){
-							result.data.forEach(function(item){
-								if(item.Type==1){
-									_this.$set(item,'play',false);
-									_this.$set(item,'fixed',false);
-								}
-							})
-						}else{
-							result.data.forEach(function(item){
+						result.data.forEach(function(item){
+							if(_this.tabIndex==7){
 								_this.$set(item,'Type',1);
-							})
-						}
+							}
+							_this.$set(item,'play',false);
+							_this.$set(item,'fixed',false);
+						})
 					}
 					if (result.data.length == 0 && this.Page6 == 1) {
 						this.noDataIsShow6 = true;
@@ -1418,7 +1414,7 @@
 		onPageScroll(e){
 			let _this=this;
 			if(_this.tabIndex>5){
-				if(_this.IsShowReplyList) return;
+				if(_this.IsShowReplyList||_this.isfullscreen) return;
 				const query = uni.createSelectorQuery().in(_this);
 				if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
 					this.pageTop=e.scrollTop
@@ -1450,8 +1446,10 @@
 										}
 									}else{
 										Pitem=_this.datalist[index-1];
-										_this.$set(Pitem,'play',false);
-										_this.$set(Pitem,'fixed',true);
+										if(Pitem.Type==1){
+											_this.$set(_this.datalist[index-1],'play',false);
+											_this.$set(_this.datalist[index-1],'fixed',true);
+										}
 										_this.$set(item,'play',true);
 										_this.$set(item,'fixed',false);
 									}
@@ -1464,7 +1462,7 @@
 								}else{
 									_this.$set(item,'fixed',true);
 									_this.$set(item,'play',false);
-									_this.isControls = false;
+									//_this.isControls = false;
 								}
 							}).exec();
 						}
@@ -1497,96 +1495,6 @@
 	page{
 		// background: #fff !important;
 		// height: 100vh;
-	}
-	.videolist{
-		.Yi-media{
-			//padding: 20upx 30upx;
-			// &:first-child{
-			// 	padding-top: 0;
-			// }
-			.media-bd{
-				.maxpic{
-					// border-radius: 12upx;
-					overflow: hidden;
-					position: relative;
-					background-color: #000;
-					&.maxh{
-						max-height: 750upx;
-					}
-					video{
-						width: 100%;
-						height: 750upx;
-						display: block;
-						position: absolute;
-						left: 0;
-						top: 0;
-					}
-					.postpic{height: 100%;}
-					.isplay{
-						height: 88upx;
-						width: 88upx;
-						position: absolute;
-						left: 50%;
-						top: 50%;
-						margin: -44upx 0 0 -44upx;
-						background: url(http://m.dance-one.com/static/play.png);
-						background-size: cover;
-						z-index: 2;
-					}
-					&.dis{
-						video{
-							left: -2000px;
-						}
-					}
-				}
-			}
-			.media-ft{
-				margin-top: 20upx;
-				.author{
-					.tx{
-						width: 80upx;
-						height: 80upx;
-						padding: 4upx;
-						border: 1px solid $primary;
-						border-radius: 100%;
-						margin-right: 20upx;
-						position: relative;
-						image{
-							display: block;width: 100%; height: 100%;
-							border-radius: 100%;
-						}
-					}
-					.name{
-						max-width: 300upx;
-						font-size: 30upx;
-						margin-right: 20upx;
-					}
-				}
-				.txt_info{
-					font-size: 24upx;
-					color: #999;
-					height: 44upx;
-					line-height: 44upx;
-				}
-				.ft_r .txt_info{
-					margin-left: 40upx;
-				}
-				.like{padding-left: 50upx; background: url(http://m.dance-one.com/static/like.png) left center no-repeat;
-				background-size: 44upx 44upx;}
-				.like.active{ background: url(http://m.dance-one.com/static/like2.png) left center no-repeat;
-				background-size: 44upx 44upx;}
-				.reply{
-					padding-left: 50upx;background: url(http://m.dance-one.com/static/reply.png) left center no-repeat;
-					background-size: 44upx 44upx;
-				}
-				.share{
-					width: 44upx;
-					height: 44upx;
-					background: url(http://m.dance-one.com/static/share.png) left center no-repeat;
-					background-size: 44upx 44upx;
-				}
-			}
-		}
 	}
 	.showClassify{
 		position: absolute;

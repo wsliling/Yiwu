@@ -90,9 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" 
-								@pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" 
-								object-fit="contain">
+								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -266,12 +264,8 @@
 				placeholder:"写评论~",
 				Comment:"",//评论内容
 				Commenttype:0,
-				// #ifdef APP-PLUS
-					isControls:false,
-				// #endif
-				// #ifndef APP-PLUS
+				isfullscreen:false,//是否全屏状态
 				isControls:false,
-				// #endif
 			}
 		},
 		onLoad() {
@@ -321,18 +315,23 @@
 				this.getRecommendUser();
 			},
 			screenchange(e){
-				//#ifdef H5
 				if(e.type=="fullscreenchange"){
+					//#ifdef H5
 					this.ismuted=false;
+					//#endif
 				}else{
+					//#ifdef H5
 					this.ismuted=true;
+					//#endif
 				}
-				//#endif
+				this.isfullscreen=e.detail.fullScreen;
+				this.isControls=e.detail.fullScreen;
 			},
 			ControlsFn(){
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
+				this.isControls = false;
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
@@ -417,7 +416,6 @@
 							if(item.Type==1){
 								_this.$set(item,'play',false);
 								_this.$set(item,'fixed',false);
-								_this.$set(item,'oIndex',index);
 							}
 						})
 					}
@@ -442,6 +440,7 @@
 			},
 			playBtn(index,id){
 				let _this = this;
+				_this.isControls = false;
 				_this.datalist.forEach(function(item){
 					if(id==item.Id){
 						_this.$set(item,'play',true);
@@ -837,10 +836,10 @@
 			}else{
 				this.isTop=false;
 			}
-			if(_this.IsShowReplyList) return;
-			const query = uni.createSelectorQuery().in(_this);
-			if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
-				this.pageTop=e.scrollTop
+			if(_this.IsShowReplyList||_this.isfullscreen) return;
+		const query = uni.createSelectorQuery().in(_this);
+		if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
+		 		this.pageTop=e.scrollTop
 				this.datalist.forEach(function(item,index){
 					let itemh=0;
 					let h=0;
@@ -869,8 +868,10 @@
 									}
 								}else{
 									Pitem=_this.datalist[index-1];
-									_this.$set(Pitem,'play',false);
-									_this.$set(Pitem,'fixed',true);
+									if(Pitem.Type==1){
+										_this.$set(_this.datalist[index-1],'play',false);
+										_this.$set(_this.datalist[index-1],'fixed',true);
+									}
 									_this.$set(item,'play',true);
 									_this.$set(item,'fixed',false);
 								}
@@ -883,13 +884,13 @@
 							}else{
 								_this.$set(item,'fixed',true);
 								_this.$set(item,'play',false);
-								_this.isControls = false;
+								//_this.isControls = false;
 							}
 						}).exec();
 					}
 				})
 			}
-		},
+		 },
 		
 		onShareAppMessage: function(res) {
 				if (res.from === 'button') {
