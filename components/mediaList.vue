@@ -1,5 +1,5 @@
 <template>
-	<view class="list-cell">
+	<view class="list-cell" v-if="isdata">
 		<view class="media-list">
 			<view class="media-hd" v-if="dataitem.FindType!=2">
 				<view class="media-author" @click="gotoPensonal">
@@ -15,6 +15,7 @@
 				<block v-if="dataitem.IsMy==0&&dataitem.FindType!=2&&isBtn==true">
 					<view :class="['flow-btn',dataitem.IsFollow==0?'':'flowed']" @click="flow(dataitem.FindType,dataitem.ShopId,dataitem.MemberId)">{{dataitem.IsFollow==0?'关注':'已关注'}}</view>
 				</block>
+				<view v-if="dataitem.IsMy==1&&isdel==true" class="delbtn iconfont icon-ziyuanxhdpi fr" @click="Del(dataitem.Id)"></view>
 			</view>
 			<view @click="bindClick(dataitem.FindType,dataitem.Id)">
 				<view class="media-title" v-if="dataitem.Title">{{dataitem.Title}}</view>
@@ -78,6 +79,10 @@
 				type:Boolean,
 				default:true
 			},
+			isdel:{
+				type:Boolean,
+				default:false
+			},
 			datajson: {
 				type: Object,
 				default: function(e) {
@@ -96,7 +101,8 @@
 			return{
 				// userId: "",
 				// token: "",
-				dataitem:{}
+				dataitem:{},
+				isdata:true,
 			}
 		},
 		computed: {
@@ -116,6 +122,42 @@
 			},
 			bindClick(artType,id) {
 				this.$emit('click',{artType,id});
+			},
+			Del(id){
+				//this.$emit('Del',id);
+				let _this=this;
+				uni.showModal({
+					content: "确定删除该条动态？",
+					confirmColor:"#DD196D",
+					success(res) {
+						if (res.confirm) {
+							_this.DelFind(id);
+						} else if (res.cancel) {
+						}
+					}
+				});
+			},
+			async DelFind(id){
+				let result = await post("Find/DelFind", {
+					"UserId": uni.getStorageSync("userId"),
+					"Token": uni.getStorageSync("token"),
+					"FindId": id
+				});
+				if(result.code==0){
+					let _this=this;
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 2000
+					});
+					this.isdata=false;
+				}else{
+					uni.showToast({
+						title: result.msg,
+						icon: "none",
+						duration: 2000
+					});
+				}
 			},
 			gotoPensonal() {
 				if(this.dataitem.FindType==0){//指定用户个人主页
@@ -225,6 +267,7 @@
 				}
 				
 			},
+			
 		}
 	}
 </script>
@@ -233,7 +276,11 @@
 	view {
 		box-sizing: border-box;
 	}
-
+	.delbtn{
+		height: 80upx;
+		line-height: 80upx;
+		padding: 0 10upx;
+	}
 	.list-cell {
 		width: 750upx;
 		padding: 0 20upx;

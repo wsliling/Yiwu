@@ -90,7 +90,9 @@
 					this.$emit('hidePopup');
 				}
 			},
-			moveHandle() {}
+			moveHandle() {
+				return;
+			}
 		}
 	};
 </script>
@@ -127,7 +129,8 @@
 	}
 	.uni-popup-fixed{
 		position: fixed;
-		z-index: 999;
+		bottom: var(--window-bottom);
+		z-index: 9999;
 	}
 	.uni-close-bottom,
 	.uni-close-right {

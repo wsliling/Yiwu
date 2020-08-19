@@ -57,7 +57,6 @@
 				</a>
 			</form>
 			<p class="showFileName"></p>
-
 		</div>
 		<div class="box">
 			<button class="btn1" type="button" data-action="navigateBack">取消上传</button>
@@ -99,6 +98,7 @@
 					$(".showFileName").html("");
 				}
 			});
+			
 			//上传文件 ，传输数据
 			document.addEventListener('UniAppJSBridgeReady', function() {
 				let isH5=""
@@ -122,12 +122,11 @@
 						// alert(filePath)
 						let nameSuffix = /.[^.]+$/.exec(filePath)[0]
 						var formdata = new FormData(); // 创建一个form类型的数据
-						var url = ""
+						var url = "";
 						formdata.append("Audio", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
 						formdata.append("UserId", userId);
 						formdata.append("Token", token);
 						url = "http://api.dance-one.com/api/DanceMusic/UploadAudio"
-							
 						$.ajax({
 							url: url,
 							type: "POST",
@@ -153,6 +152,9 @@
 											data: param
 										});
 									}
+								}
+								else{
+									alert(res.msg)
 								}
 								$(".modal").hide();
 							},
