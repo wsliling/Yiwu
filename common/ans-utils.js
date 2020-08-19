@@ -32,14 +32,14 @@ export function toast(title,data={icon:false,mask:false,time:2000}){
   let timeout = null
   export function debounce(fn, wait = 500) {
     if (timeout !== null) clearTimeout(timeout)
-    timeout = setTimeout(fn, wait)
+    timeout = setTimeout(()=>{fn()}, wait)
   }
   // 函数节流,多少秒内只允许执行一次，重复点击会无视
   let throttleStatus = false
   export function throttle(fn, wait = 500) {
     if (throttleStatus) return;
     throttleStatus = true;
-    fn();
+    fn()
     // setTimeout(fn, wait)
     setTimeout(() => {
       throttleStatus = false;
@@ -47,7 +47,7 @@ export function toast(title,data={icon:false,mask:false,time:2000}){
   }
 // 后退到上一页,防抖
 export function navigateBack(time=2000){
-	debounce(function(){uni.navigateBack();console.log('回退了一次')},time)
+	debounce(function(){uni.navigateBack();},time)
 }
 // 跳转url,带参
 export function navigate(url,params,isLogin){
