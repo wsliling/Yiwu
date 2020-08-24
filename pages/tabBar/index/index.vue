@@ -208,7 +208,7 @@
 				barHeight:0,
 				searchText:'',
 				page:1,
-				pageSize:8,
+				pageSize:5,
 				isLoad: false,
 				recuserlist:[],//推荐用户
 				TeacherUserList:[],//推荐的名师
@@ -268,6 +268,7 @@
 				isControls:false,
 				canSwip:false,
 				timer:'',
+				onHidePage:false
 			}
 		},
 		onLoad() {
@@ -293,12 +294,15 @@
 			this.token = uni.getStorageSync("token");
 			this.playID=uni.getStorageSync("playID");
 			this.playIDtype=this.$store.state.isplayingmusic;
-			this.IsShowReplyList=false
+			this.IsShowReplyList=false;
+			this.onHidePage=false;
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
 		},
 		onHide() {
+			clearTimeout(this.timer);
+			this.onHidePage=true;
 			if(this.onplayId>-1){
 				this.videoContext.stop();
 			}
@@ -333,7 +337,9 @@
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
-				this.isControls = false;
+				if(!this.isfullscreen){
+					this.isControls = false;
+				}
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
@@ -341,7 +347,9 @@
 				_this.$set(_this.datalist[index],'ispause',true);
 			},
 			playVideo(id,index){
-				this.isControls = false;
+				if(!this.isfullscreen){
+					this.isControls = false;
+				}
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -838,7 +846,7 @@
 			}else{
 				this.isTop=false;
 			}
-			if(_this.IsShowReplyList||_this.isfullscreen) return;
+			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage) return;
 		const query = uni.createSelectorQuery().in(_this);
 		clearTimeout(_this.timer)// 每次滚动前 清除一次
 		_this.canSwip=false;
