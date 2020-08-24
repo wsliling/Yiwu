@@ -18,7 +18,7 @@
 					<view class="user-left">
 						<view class="user-img" @click="tolink('/pages/homepage/homepage?id='+memberInfo.Id)">
 							<view>
-								<image :src="memberInfo.Avatar||'http://m.dance-one.com/static/my/user.png'" mode="aspectFill"></image>
+								<image :src="memberInfo.Avatar||'/static/default.png'" mode="aspectFill"></image>
 							</view>
 						</view>
 						<view class="user-name">

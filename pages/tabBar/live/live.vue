@@ -104,7 +104,7 @@
 						<view class="desc uni-ellipsis2">
 							{{item.Title}}
 						</view>
-						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
+						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id" @click.stop="">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 							<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
@@ -309,7 +309,7 @@
 					<view class="desc uni-ellipsis2">
 						{{item.Title}}
 					</view>
-					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id">
+					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id" @click.stop="">
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
@@ -510,6 +510,8 @@
 				Commenttype:0,
 				isfullscreen:false,//是否全屏状态
 				isControls:false,
+				canSwip:false,
+				timer:''
 			}
 		},
 		onLoad() {
@@ -542,7 +544,7 @@
 		 },
 		 onHide(){
 			 if(this.onplayId>-1){
-				 this.videoContext.pause();
+				 this.videoContext.stop();
 			 }
 		 },
 		methods: {
@@ -1416,9 +1418,12 @@
 			if(_this.tabIndex>5){
 				if(_this.IsShowReplyList||_this.isfullscreen) return;
 				const query = uni.createSelectorQuery().in(_this);
-				if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
-					this.pageTop=e.scrollTop
-					this.datalist.forEach(function(item,index){
+				clearTimeout(_this.timer)// 每次滚动前 清除一次
+				_this.canSwip=false;
+				_this.timer=setTimeout(function(){
+					console.log("滚动停止")
+					_this.canSwip=true;
+					_this.datalist.forEach(function(item,index){
 						let itemh=0;
 						let h=0;
 						if(item.Type==1){
@@ -1467,7 +1472,11 @@
 							}).exec();
 						}
 					})
-				}
+				},500)
+				// if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
+				// 	this.pageTop=e.scrollTop
+					
+				// }
 			}
 		},
 		onShareAppMessage: function(res) {
