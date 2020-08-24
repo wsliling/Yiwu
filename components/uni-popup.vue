@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="uni-mask" v-show="show" :style="{ top: offsetTop + 'px' }" @click="hide" @touchmove.stop.prevent="moveHandle"></view>
+		<view class="uni-mask" v-show="show" :style="{ top: offsetTop + 'px' }" @click.stop="hide" @touchmove.stop.prevent="moveHandle"></view>
 		<view class="uni-popup" :class="['uni-popup-' + position, 'uni-popup-' + mode]" v-show="show">
 			{{ msg }}
 			<slot></slot>
