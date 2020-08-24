@@ -266,6 +266,8 @@
 				Commenttype:0,
 				isfullscreen:false,//是否全屏状态
 				isControls:false,
+				canSwip:false,
+				timer:''
 			}
 		},
 		onLoad() {
@@ -298,7 +300,7 @@
 		},
 		onHide() {
 			if(this.onplayId>-1){
-				this.videoContext.pause();
+				this.videoContext.stop();
 			}
 		},
 		methods: {
@@ -838,59 +840,66 @@
 			}
 			if(_this.IsShowReplyList||_this.isfullscreen) return;
 		const query = uni.createSelectorQuery().in(_this);
-		if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
-		 		this.pageTop=e.scrollTop
-				this.datalist.forEach(function(item,index){
-					let itemh=0;
-					let h=0;
-					if(item.Type==1){
-						query.select('#box'+item.Id).boundingClientRect(data => {
-							h=_this.phoneheight-data.height;
-							itemh=data.top;
-							if(itemh<h&&itemh>44&&!item.ispause){
-								let Pitem={}
-								if(index==0){
-									Pitem=_this.datalist[0];
-									_this.$set(item,'play',true);
-									_this.$set(item,'fixed',false);
-								}else if(index==1){
-									if(_this.datalist[0].Type==1){
-										if(!_this.datalist[0].play){
-											_this.$set(item,'play',true);
-											_this.$set(item,'fixed',false);
-										}else{
-											_this.$set(item,'play',false);
-											_this.$set(item,'fixed',true);
-										}
-									}else{
+		clearTimeout(_this.timer)// 每次滚动前 清除一次
+		_this.canSwip=false;
+		_this.timer=setTimeout(function(){
+			console.log("滚动停止")
+			_this.canSwip=true;
+			_this.datalist.forEach(function(item,index){
+				let itemh=0;
+				let h=0;
+				if(item.Type==1){
+					query.select('#box'+item.Id).boundingClientRect(data => {
+						h=_this.phoneheight-data.height;
+						itemh=data.top;
+						if(itemh<h&&itemh>44&&!item.ispause){
+							let Pitem={}
+							if(index==0){
+								Pitem=_this.datalist[0];
+								_this.$set(item,'play',true);
+								_this.$set(item,'fixed',false);
+							}else if(index==1){
+								if(_this.datalist[0].Type==1){
+									if(!_this.datalist[0].play){
 										_this.$set(item,'play',true);
 										_this.$set(item,'fixed',false);
+									}else{
+										_this.$set(item,'play',false);
+										_this.$set(item,'fixed',true);
 									}
 								}else{
-									Pitem=_this.datalist[index-1];
-									if(Pitem.Type==1){
-										_this.$set(_this.datalist[index-1],'play',false);
-										_this.$set(_this.datalist[index-1],'fixed',true);
-									}
 									_this.$set(item,'play',true);
 									_this.$set(item,'fixed',false);
 								}
-								setTimeout(()=>{
-									_this.videoContext=uni.createVideoContext('video'+item.Id);
-									_this.videoContext.play();
-									// _this.onplayIndex=index;
-									// _this.onplayId=item.Id;
-								},500)
 							}else{
-								_this.$set(item,'fixed',true);
-								_this.$set(item,'play',false);
-								//_this.isControls = false;
+								Pitem=_this.datalist[index-1];
+								if(Pitem.Type==1){
+									_this.$set(_this.datalist[index-1],'play',false);
+									_this.$set(_this.datalist[index-1],'fixed',true);
+								}
+								_this.$set(item,'play',true);
+								_this.$set(item,'fixed',false);
 							}
-						}).exec();
-					}
-				})
-			}
-		 },
+							setTimeout(()=>{
+								_this.videoContext=uni.createVideoContext('video'+item.Id);
+								_this.videoContext.play();
+								// _this.onplayIndex=index;
+								// _this.onplayId=item.Id;
+							},500)
+						}else{
+							_this.$set(item,'fixed',true);
+							_this.$set(item,'play',false);
+							//_this.isControls = false;
+						}
+					}).exec();
+				}
+			})
+		},500)
+		// if(e.scrollTop>this.pageTop+40||e.scrollTop<this.pageTop-40){
+		//  		this.pageTop=e.scrollTop
+				
+		// 	}
+		},
 		
 		onShareAppMessage: function(res) {
 				if (res.from === 'button') {

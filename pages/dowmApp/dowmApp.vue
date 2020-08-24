@@ -4,10 +4,10 @@
 			<view class="logo">
 				<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 			</view>
-			<view class="btn btn_1">
+			<view class="btn btn_1" @click="dowmapp(0)">
 				Android版下载
 			</view>
-			<view class="btn btn_2">
+			<view class="btn btn_2" v-if="false">
 				Ios版下载
 			</view>
 		</view>
@@ -22,7 +22,11 @@
 			}
 		},
 		methods: {
-			
+			dowmapp(type){
+				if(type==0){
+					window.location.href='http://m.dance-one.com/down/android.apk'
+				}
+			}
 		}
 	}
 </script>
