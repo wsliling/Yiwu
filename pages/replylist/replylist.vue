@@ -15,7 +15,7 @@
 				</view>
 				<view :class="['maxpic mv',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
 					<view v-if="!NewsInfo.play||NewsInfo.fixed" class="isplay" @click="playBtn"></view>
-					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" id="video" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
+					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" @fullscreenchange="screenchange" id="video" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
 					<image class="postpic" :src="NewsInfo.PicImg" mode="aspectFill"></image>
 				</view>
 				<!-- <view class="maxpic maxh" v-if="NewsInfo.Type==0&&NewsInfo.PicImg">
@@ -117,6 +117,7 @@
 				NewsInfo:{},
 				imgArr:[],
 				videoContext:null,
+				isfullscreen:false,//是否全屏状态
 				onplayHeight:0,//当前播放视频距离顶部的高度
 				// #ifdef APP-PLUS
 					isControls:true
@@ -140,7 +141,9 @@
 				_this.videoContext.stop();
 			}
 			_this.$set(_this.NewsInfo,'play',false);
-			
+			if(this.isfullscreen){
+				this.videoContext.exitFullScreen()
+			}
 		},
 		methods: {
 			toRec(id){
@@ -166,6 +169,9 @@
 					_this.videoContext=uni.createVideoContext('video');
 					_this.videoContext.play();
 				},500)
+			},
+			screenchange(e){
+				this.isfullscreen=e.detail.fullScreen;
 			},
 			//跳转
 			tolink(Url) {

@@ -105,7 +105,6 @@ export default {
 				// 	   console.log("fail:" + JSON.stringify(err));
 				// 	}
 				// })
-				
             // #endif
             // #ifdef H5
             console.log(this.data.url)

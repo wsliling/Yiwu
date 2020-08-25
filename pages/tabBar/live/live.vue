@@ -128,9 +128,17 @@
 						<view class="ft_l flex-start">
 							<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
 							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
+							
+							<!-- #ifdef APP-PLUS -->
+							<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
+								<view class="txt_info share"></view>
+							</view>
+							<!-- #endif -->
+							<!-- #ifndef APP-PLUS -->
 							<share :url="xqUrl[item.Type].url+item.Id" :param="item.Type+'&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
+							<!-- #endif -->
 						</view>
 						<view class="ft_r" v-if="item.Type!=0">
 							<view @click.stop="CollectBtn(item.Id,index,item.Type)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
@@ -321,9 +329,16 @@
 						<view class="ft_l flex-start">
 							<view @click.stop="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
 							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName)">{{item.CommentNum}}</view>
+							<!-- #ifdef APP-PLUS -->
+							<view @click.stop="popShare(xqUrl[1].url+item.Id)">
+								<view class="txt_info share"></view>
+							</view>
+							<!-- #endif -->
+							<!-- #ifndef APP-PLUS -->
 							<share :url="xqUrl[1].url+item.Id" :param="'1&'+item.Id">
 								<view class="txt_info share"></view>
 							</share>
+							<!-- #endif -->
 						</view>
 						<view class="ft_r">
 							<view @click.stop="CollectBtn(item.Id,index)" :class="['txt_info sign',item.IsCollect==1?'active':'']"></view>
@@ -369,11 +384,32 @@
 			</view>
 		</uni-popup>
 		
+		<uni-popup type="bottom" :show="IsShowShare" :h5Top="true" position="bottom" @hidePopup='hidePopup'>
+			   <view class="uni-popup-share">
+				   <view class="pop-hd">分享</view>
+					<view class="sharelist flex-between">
+						<view class="share-item" @click.stop="appShare('WXSceneSession')">
+							<image class="imgico" src="http://m.dance-one.com/static/wx.png" mode="aspectFit"></image>
+							<text class="txt">微信好友</text>
+						</view>
+						<view class="share-item" @click.stop="appShare('WXSenceTimeline')">
+							<image class="imgico" src="http://m.dance-one.com/static/ico_quan.png" mode="aspectFit"></image>
+							<text class="txt">微信朋友圈</text>
+						</view>
+						<view class="share-item" @click.stop="appShare()">
+							<image class="imgico" src="http://m.dance-one.com/static/share_link.png" mode="aspectFit"></image>
+							<text class="txt">复制链接</text>
+						</view>
+					</view>
+					<view style="height: 100upx;"></view>
+					<view class="uni-close-bottom" @click.stop="hidePopup">关闭</view>
+			   </view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
-	import {post,get,toLogin,navigate,dateUtils} from '@/common/util.js';
+	import {post,get,toLogin,navigate,dateUtils,webUrl} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -513,6 +549,8 @@
 				canSwip:false,
 				timer:'',
 				onHidePage:false,
+				IsShowShare:false,
+				shareUrl:""
 			}
 		},
 		onLoad() {
@@ -559,6 +597,9 @@
 					that.$set(item,'play',false);
 					that.$set(item,'fixed',true);
 				 })
+				 if(this.isfullscreen){
+					 this.videoContext.exitFullScreen()
+				 }
 				// this.init(this.tabIndex);
 			 }
 			
@@ -1182,6 +1223,43 @@
 				    }
 				});
 			},
+			popShare(url){
+				if(this.onplayId>-1){
+					this.videoContext.pause();
+				}
+				this.IsShowShare=true;
+				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
+			},
+			appShare(Scene){
+				if(Scene){
+					uni.share({
+					    provider: "weixin",
+					    scene: Scene,
+					    type: 0,
+						title:'壹舞',
+						imageUrl:'/static/logo.png',
+					    href: webUrl+'/#'+this.shareUrl,
+					    success: function (res) {
+					        console.log("success:" + JSON.stringify(res));
+					    },
+					    fail: function (err) {
+					        console.log("fail:" + JSON.stringify(err));
+					    }
+					});
+				}else{
+					let txt = webUrl+'/#'+this.shareUrl;
+					uni.setClipboardData({
+					  data: txt,
+					  success: function (res) {
+					    uni.getClipboardData({ 
+					      success: function (res) {
+					        console.log(res.data) // data
+					      }
+					    })
+					  }
+					})
+				}
+			},
 			showReply(id,name,type){
 				this.FkId=id;
 				if(this.onplayId>-1){
@@ -1208,6 +1286,7 @@
 			//取消（统一关闭弹窗）
 			hidePopup(){
 				this.IsShowReplyList=false;
+				this.IsShowShare=false;
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -1437,7 +1516,7 @@
 		onPageScroll(e){
 			let _this=this;
 			if(_this.tabIndex>5){
-				if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage) return;
+				if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare) return;
 				const query = uni.createSelectorQuery().in(_this);
 				clearTimeout(_this.timer)// 每次滚动前 清除一次
 				_this.canSwip=false;
@@ -1642,4 +1721,18 @@
 			padding: 0 30upx;
 		}
 	}
+	.uni-popup-share {
+		background-color: #ffffff;
+		box-shadow: 0 0 30upx rgba(0, 0, 0, .1);
+		border-radius: 20upx 20upx 0 0;
+		.pop-hd{ font-size: 32upx;}
+		.sharelist{
+				padding: 20upx 30upx;
+				.share-item{ width: 25%; margin-bottom: 20upx;}
+				.imgico{ display: block; width: 100upx; height: 100upx; margin: 0 auto;}
+				.txt{ color: #333; font-size: 26upx;}
+			}
+		.uni-close-bottom{ height: 100upx; line-height: 100upx; width: 100%; position: absolute;bottom: 0; left: 0; font-size: 30upx; border-top: 1px solid #eee;color: #999;}
+	}
+	
 </style>
