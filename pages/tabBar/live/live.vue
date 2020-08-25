@@ -106,7 +106,7 @@
 						</view>
 						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id" @click.stop="">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-							<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+							<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 							</video>
 							<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -312,7 +312,7 @@
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id" @click.stop="">
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
-						<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+						<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 						</video>
 					</view>
@@ -512,7 +512,7 @@
 				isControls:false,
 				canSwip:false,
 				timer:'',
-				onHidePage:false
+				onHidePage:false,
 			}
 		},
 		onLoad() {
@@ -543,13 +543,25 @@
 		  tabStyle(){
 		    return ((750/this.tabnav.length)*(this.tabIndex-1))+(((750/this.tabnav.length)-68)/2)
 		  }
-		 },
-		 onHide(){
+		},
+		onHide(){
 			 clearTimeout(this.timer);
-			 this.onHidePage=true;
+			 let that=this;
 			 if(this.onplayId>-1){
-				 this.videoContext.stop();
+			 	this.videoContext.stop();
 			 }
+			 if(this.tabIndex>5){
+				 this.onHidePage=true;
+				 this.datalist.forEach(function(item){
+					 if(that.tabIndex==7){
+					 	that.$set(item,'Type',1);
+					 }
+					that.$set(item,'play',false);
+					that.$set(item,'fixed',true);
+				 })
+				// this.init(this.tabIndex);
+			 }
+			
 		 },
 		methods: {
 			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),
@@ -619,6 +631,7 @@
 				_this.$set(_this.datalist[index],'ispause',true);
 			},
 			playVideo(id,index){
+				 console.log("播放了")
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
@@ -1485,6 +1498,7 @@
 				// 	this.pageTop=e.scrollTop
 					
 				// }
+				
 			}
 		},
 		onShareAppMessage: function(res) {

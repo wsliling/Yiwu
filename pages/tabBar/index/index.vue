@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -268,7 +268,7 @@
 				isControls:false,
 				canSwip:false,
 				timer:'',
-				onHidePage:false
+				onHidePage:false,
 			}
 		},
 		onLoad() {
@@ -303,9 +303,15 @@
 		onHide() {
 			clearTimeout(this.timer);
 			this.onHidePage=true;
+			let that=this;
 			if(this.onplayId>-1){
 				this.videoContext.stop();
 			}
+			this.datalist.forEach(function(item){
+				that.$set(item,'play',false);
+				that.$set(item,'fixed',true);
+			})
+			//this.init();
 		},
 		methods: {
 			...mapMutations(['setAudiolist','setPlaydetail','setIsplayingmusic','setIsplayactive']),

@@ -134,6 +134,14 @@
 			this.CommnetList();
 			this.FindNewsInfo()
 		},
+		onHide(){
+			let _this = this;
+			if(_this.NewsInfo.play){
+				_this.videoContext.stop();
+			}
+			_this.$set(_this.NewsInfo,'play',false);
+			
+		},
 		methods: {
 			toRec(id){
 				uni.navigateTo({
