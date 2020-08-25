@@ -340,6 +340,9 @@
 				that.$set(item,'play',false);
 				that.$set(item,'fixed',true);
 			})
+			if(this.isfullscreen){
+				this.videoContext.exitFullScreen()
+			}
 			//this.init();
 		},
 		methods: {
