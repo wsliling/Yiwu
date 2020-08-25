@@ -1,7 +1,7 @@
 <template>
 	<view class="bg_fff">
 		<view class="videobox">
-			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover"></video>
+			<video v-if="CourseInfo.IsShowBuy==0&&!onHidePage" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover" id="video"></video>
 			<view class="tipbox" v-if="CourseInfo.IsShowBuy==1">
 				<image :src="CourseInfo.PicImg" mode="aspectFill"></image>
 				<view class="txt flex-column">
@@ -139,17 +139,20 @@
 				Downinfo:{},//下载信息
 				durl:"",//下载的路径
 				totalBytesWritten:'0kb',
-				DownSize:""//下载文件大小
+				DownSize:"",//下载文件大小
+				onHidePage:false,
+				videoContext:null
 			}
 		},
 		onLoad(e) {
 			this.Courseid=e.id;
-			
+			// this.videoContext=uni.createVideoContext('video');
 		},
 		onShow(){
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.GetCoursexq();
+			this.onHidePage=false;
 		},
 		computed: {
 		   tabStyle(){
@@ -166,6 +169,7 @@
 						})
 					}
 				}else{
+					this.onHidePage=true;
 					uni.navigateTo({
 						url: Url
 					})
