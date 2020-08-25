@@ -1,7 +1,7 @@
 <template>
 	<view class="bg_fff">
 		<view class="videobox">
-			<video v-if="CourseInfo.IsShowBuy==0&&!onHidePage" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover" id="video"></video>
+			<video v-if="CourseInfo.IsShowBuy==0" :src="CourseInfo.Video" :poster="CourseInfo.PicImg" controls object-fit="cover" id="video" @play="playVideo" @pause="pauseVideo"></video>
 			<view class="tipbox" v-if="CourseInfo.IsShowBuy==1">
 				<image :src="CourseInfo.PicImg" mode="aspectFill"></image>
 				<view class="txt flex-column">
@@ -141,18 +141,23 @@
 				totalBytesWritten:'0kb',
 				DownSize:"",//下载文件大小
 				onHidePage:false,
-				videoContext:null
+				videoContext:null,
+				playnow:false
 			}
 		},
 		onLoad(e) {
 			this.Courseid=e.id;
-			// this.videoContext=uni.createVideoContext('video');
 		},
 		onShow(){
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.GetCoursexq();
-			this.onHidePage=false;
+		},
+		onHide() {
+			if(this.playnow){
+				this.videoContext=uni.createVideoContext('video');
+				this.videoContext.pause();
+			}
 		},
 		computed: {
 		   tabStyle(){
@@ -169,11 +174,16 @@
 						})
 					}
 				}else{
-					this.onHidePage=true;
 					uni.navigateTo({
 						url: Url
 					})
 				}
+			},
+			playVideo(){
+				this.playnow=true;
+			},
+			pauseVideo(){
+				this.playnow=false;
 			},
 			tapTab(index,id) { //点击tab-bar
 				if (this.tabIndex === index) {
