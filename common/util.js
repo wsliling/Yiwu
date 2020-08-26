@@ -1,7 +1,7 @@
 
 
-//const host = 'https://api.dance-one.com/api/';  //测试接口地址
-const host = 'https://ywapi.wtvxin.com/api/';  //正式接口地址
+const host = 'https://api.dance-one.com/api/';  //测试接口地址
+//const host = 'https://ywapi.wtvxin.com/api/';  //正式接口地址
 const webUrl = 'http://m.dance-one.com';
 const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'ws://api.dance-one.com';  //wss接口地址
