@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<block v-if="pageCon==1">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-between" style="padding: 0 15px;">
 				<view class="seachbox">
@@ -34,6 +35,13 @@
 			</view>
 		</view>
 		<view :style="{'height':(84+barHeight)+'px'}"></view>
+		</block>
+		<block v-if="pageCon==2">
+			<view class="head" :style="{'padding-top':barHeight+'px'}">
+				<view class="title center" style="height: 44px; line-height: 44px; font-size: 16px; font-weight: bold;border-bottom: 1px solid #eee;">Danceone</view>
+			</view>
+			<view :style="{'height':(44+barHeight)+'px'}"></view>
+		</block>
 		<!-- 最新 -->
 		<view class="index-item index-item-0 bg_fff"  v-if="tabIndex==5">
 			<view class="Yi-courselist flex-between">
@@ -106,7 +114,7 @@
 						</view>
 						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id" @click.stop="">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-							<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+							<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 							</video>
 							<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -320,7 +328,7 @@
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id" @click.stop="">
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
-						<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+						<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 						</video>
 					</view>
@@ -353,11 +361,11 @@
 			<noData v-if="noDataIsShow6"></noData>
 		</view>
 		
-		<view class="uploadbtn flex-column" @click="openAttestation"><text class="uni-icon uni-icon-plusempty"></text></view>
+		<view class="uploadbtn flex-column" v-if="pageCon==1" @click="openAttestation"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<playerMin :pagetype="'share'"></playerMin>
 		<!-- 弹出评论 -->
 		<uni-popup mode="fixed" :show="IsShowReplyList" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-ReplyBox">
+			<view class="uni-modal-ReplyBox" @touchmove.stop.prevent="moveHandle2">
 				<view class="close iconfont icon-close" @click="hidePopup"></view>
 				<view class="uni-modal__hd">{{commenNum?commenNum+'条':''}}评论</view>
 				<view class="uni-modal__bd text_left" style="line-height: normal;" v-if="hasReplyData">
@@ -429,6 +437,7 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				navigate,
 				userId: "",
 				token: "",
@@ -546,14 +555,16 @@
 				Commenttype:0,
 				isfullscreen:false,//是否全屏状态
 				isControls:false,
-				canSwip:false,
+				canSwip:true,
 				timer:'',
 				onHidePage:false,
 				IsShowShare:false,
-				shareUrl:""
+				shareUrl:"",
+				isClick:false,
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
@@ -566,7 +577,12 @@
 			//#ifndef H5
 			this.ismuted=false;
 			//#endif
-			this.init(5);
+			if(this.pageCon==1){
+				this.init(5);
+			}else{
+				this.tabIndex=4;
+				this.init(4);
+			}
 		},
 		onShow(){
 			this.userId = uni.getStorageSync("userId");
@@ -821,8 +837,9 @@
 						_this.$set(item,'fixed',false);
 						setTimeout(()=>{
 							_this.videoContext=uni.createVideoContext('video'+item.Id);
+							if(_this.IsShowReplyList||_this.IsShowShare) return;
 							_this.videoContext.play();
-						},500)
+						},200)
 					}else{
 						_this.$set(item,'play',false);
 					}
@@ -1224,11 +1241,19 @@
 				});
 			},
 			popShare(url){
-				if(this.onplayId>-1){
-					this.videoContext.pause();
-				}
-				this.IsShowShare=true;
+				this.isClick=true;
+				if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
+				setTimeout(()=>{
+					if(this.onplayId>-1){
+						setTimeout(()=>{
+							this.videoContext.pause();
+							this.IsShowShare=true;
+						},500)
+					}else{
+						this.IsShowShare=true;
+					}
+				},500)
 			},
 			appShare(Scene){
 				if(Scene){
@@ -1261,10 +1286,8 @@
 				}
 			},
 			showReply(id,name,type){
+				this.isClick=true;
 				this.FkId=id;
-				if(this.onplayId>-1){
-					this.videoContext.pause();
-				}
 				if(type==2){
 					this.Commenttype=2
 				}else{
@@ -1278,15 +1301,26 @@
 				this.noDataReplyIsShow = false;
 				this.hasReplyData=false;
 				this.CommnetList();
+				if(!this.canSwip) return;
 				setTimeout(()=>{
-					this.IsShowReplyList=true;
+					if(this.onplayId>-1){
+						setTimeout(()=>{
+							this.IsShowReplyList=true;
+							this.videoContext.pause();
+						},500)
+					}else{
+						this.IsShowReplyList=true;
+					}
 				},500)
-				
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
+				this.isClick=false;
+				if(this.onplayId>-1){
+					this.$set(this.datalist[this.onplayIndex],'ispause',false);
+				}
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -1373,13 +1407,16 @@
 				}
 			},
 			loadMoreReply(){
-				if(this.isReplyLoad){
-					this.loadingReplyType=1
-					this.replypage++
-					this.CommnetList()
-				}else{
-					this.loadingReplyType=2
-				}
+				// if(this.isReplyLoad){
+				// 	this.loadingReplyType=1
+				// 	this.replypage++
+				// 	this.CommnetList()
+				// }else{
+				// 	this.loadingReplyType=2
+				// }
+				uni.navigateTo({
+					url:'/pages/replylist/replylist?id='+this.FkId
+				})
 			},
 			// 发表评论
 			async CommentOperation(){
@@ -1418,7 +1455,9 @@
 					});
 				}
 			},
-			
+			moveHandle2() {
+				return;	
+			},
 			openAttestation(){
 				let _this=this;
 				this.IsEdit=true;
@@ -1482,6 +1521,7 @@
 					uni.showModal({
 						title:'登录提示',
 						content: "您还没有登录，是否重新登录？",
+						confirmColor:"#DD196D",
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({
@@ -1559,11 +1599,18 @@
 										_this.$set(item,'fixed',false);
 									}
 									setTimeout(()=>{
+										_this.onplayId=item.Id;
 										_this.videoContext=uni.createVideoContext('video'+item.Id);
-										_this.videoContext.play();
+										if(!_this.isClick){
+											_this.videoContext.play();
+										}else{
+											_this.videoContext.pause();
+											_this.$set(item,'fixed',true);
+										}
+										
 										// _this.onplayIndex=index;
 										// _this.onplayId=item.Id;
-									},500)
+									},200)
 								}else{
 									_this.$set(item,'fixed',true);
 									_this.$set(item,'play',false);
@@ -1711,7 +1758,7 @@
 			font-size: 32upx;
 		}
 		.uni-modal__bd{
-			max-height: 960upx;
+			max-height: 60vh;
 			overflow-y: auto;
 		}
 		.close{

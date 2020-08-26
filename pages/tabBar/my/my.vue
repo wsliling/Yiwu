@@ -4,7 +4,7 @@
 			<view class="flex-between" style="height: 44px;">
 				<view class="head_l" style="width: 44px; height: 44px;"></view>
 				<view class="title" style="font-size: 16px; font-weight: bold;">我的</view>
-				<view class="head_r flex-column menuIco pd15" @click="showMENU">
+				<view class="head_r flex-column menuIco pd15" v-if="pageCon==1" @click="showMENU">
 					<view class="line1"></view>
 					<view class="line2"></view>
 					<view class="line3"></view>
@@ -59,7 +59,7 @@
 				</view>
 			</view>
 			<view class="info uni-mb10">
-			<view class="item" @click="tolink('/pages/member/myAssets/myAssets')">
+			<view class="item" v-if="pageCon!=2" @click="tolink('/pages/member/myAssets/myAssets')">
 				<view>
 					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
 				</view>
@@ -81,6 +81,7 @@
 			</view>
 		</view>
 		</view>
+		<block v-if="pageCon==1">
 		<view class="bg_fff tabList flex p_re">
 			<view v-for="(item,index) in tabList" :key="index" class="item" :class="{'active':item.id==tabIndex}"  @click="cliTab(item.id)">{{item.name}}</view>
 			<view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view>
@@ -239,6 +240,7 @@
 			</view>
 		</view>
 		<playerMin></playerMin>
+		</block>
 	</view>
 </template>
 
@@ -255,6 +257,7 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				userId: "",
 				token: "",
 				barHeight:0,
@@ -280,6 +283,8 @@
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
+			//this.pageCon=2;
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
@@ -336,6 +341,7 @@
 					uni.showModal({
 						title:"登录提示",
 						content: "您还没有登录，是否重新登录？",
+						confirmColor:"#DD196D",
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({

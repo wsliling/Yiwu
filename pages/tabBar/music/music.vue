@@ -1,5 +1,6 @@
 <template>
 	<view class="bg_fff">
+		<block v-if="pageCon==1">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="search" @click="tolink('/pages/music/list/list?type=3')">
 				<view class="seachbox">
@@ -8,7 +9,14 @@
 			</view>
 		</view>
 		<view :style="{'height':(40+barHeight)+'px'}"></view>
-		<view class="music-content">
+		</block>
+		<block v-if="pageCon==2">
+			<view class="head" :style="{'padding-top':barHeight+'px'}">
+				<view class="title center" style="height: 44px; line-height: 44px; font-size: 16px; font-weight: bold;border-bottom: 1px solid #eee;">Danceone</view>
+			</view>
+			<view :style="{'height':(44+barHeight)+'px'}"></view>
+		</block>
+		<view class="music-content" v-if="pageCon==1">
 			<!--轮播图-->
 			<view class="index_swiper uni-mt10">
 				<swiper class="swiper" :indicator-dots="false" autoplay :interval="5000" :duration="500" @change="changeSwiper">
@@ -150,7 +158,27 @@
 			</uni-popup>
 			
 		</view>
-		<view @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text></view>
+		<view class="staticPage" v-if="pageCon==2">
+			<view class="Yi-newslist" >
+				<view class="Yi-media uni-bg-white" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
+					<view class="media-bd">
+						<view class="desc">
+							{{item.Title}}
+						</view>
+						<view class="maxpic maxh" v-if="item.Logo">
+							<image :src="item.Logo" mode="widthFix"></image>
+						</view>
+						<view class="media-ft flex-between">
+							<view class="ft_l flex-start">
+								<view class="txt_info">{{item.Source}}</view>
+								<view class="txt_info">{{item.AddTime}}</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="pageCon==1" @click="openAttestation" class="uploadbtn flex-column"><text class="uni-icon uni-icon-plusempty"></text></view>
 		<!-- <view @click="tolink('/pages/music/playMusic/playMusic?pagetype=music')" class="Musicbtn flex-column"><image src="http://m.dance-one.com/static/playmusic.png" class="icon"></image></view> -->
 		<playerMin></playerMin>
 	</view>
@@ -174,6 +202,7 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				userId: "",
 				token: "",
 				barHeight:0,
@@ -201,15 +230,21 @@
 				playIDtype:false,//当前播放舞曲的状态false：暂停 true：播放中
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
-				itemdata:{}
+				itemdata:{},
+				NewsList:[]
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
-			this.getclassifyList();
-			this.getBanner();
+			if(this.pageCon==1){
+				this.getclassifyList();
+				this.getBanner();
+			}else{
+				this.YWNewsList()
+			}
 		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
@@ -565,6 +600,17 @@
 					indicator:obj.imgurls.length
 				});
 			},
+			async YWNewsList(){
+				let result = await post("News/YWNewsList", {
+					UserId:this.userId,
+					Token:this.token,
+					page:1,
+					pageSize:20
+				});
+				if (result.code === 0) {
+					this.NewsList = result.data;
+				}
+			},
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
@@ -605,4 +651,38 @@
 
 <style lang="scss" scoped>
 	@import './style';
+	.Yi-media{
+		padding: 30upx;
+		.media-bd{
+			.desc{ line-height: 1.5;font-size: 32upx; font-weight: 600;}
+			.maxpic{
+				margin-top: 20upx;
+				//border-radius: 12upx;
+				overflow: hidden;
+				position: relative;
+				// background-color: #e0e0e0;
+				background-color: #000;
+				margin-left: -30upx;
+				margin-right: -30upx;
+				&.maxh{
+					max-height: 1000upx;
+				}
+				
+			}
+		}
+		.media-ft{
+			margin-top: 24upx;
+			.txt_info{
+				font-size: 24upx;
+				color: #999;
+				height: 44upx;
+				line-height: 44upx;
+			}
+			.ft_l .txt_info{
+				margin-right: 40upx;
+			}
+			
+		}
+	
+	}
 </style>

@@ -17,7 +17,7 @@
 		</view>
 		<view :style="{'height':(40+barHeight)+'px'}"></view>
 		<!-- 首页 -->
-		<view class="index-item index-item-0">
+		<view class="index-item index-item-0" v-if="pageCon==1">
 			<!-- 达人 -->
 			<view class="Yi-mechanism bg_fff" v-if="TeacherUserList.length">
 				<scroll-view class="Daren-swiper-tab" scroll-x>
@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" autoplay @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -149,6 +149,124 @@
 			</block>
 			<noData v-if="noDataIsShow0"></noData>
 		</view>
+		<view class="staticPage uni-bg-white" v-if="pageCon==2">
+			<view class="banner">
+				<image src="http://m.dance-one.com/static/img/banner.jpg" mode="widthFix"></image>
+			</view>
+			<view class="itembox pd15">
+				<view class="hd center">公司介绍</view>
+				
+				<view class="txtbox uni-mb10">
+					<view class="p" style="text-indent: 60upx;">
+						深圳市育诚博雅教育培训有限公司是2018年在广东省深圳市龙岗区注册成立的有限责任公司，注册地址位于深圳市龙岗区坂田街道长坑西六巷2号1-2号。
+					</view>
+					<view class="p" style="text-indent: 60upx;">
+						深圳市育诚博雅教育培训有限公司的经营范围是：舞蹈培训、幼儿培训、学前培训、留学培训；文化交流策划、演出策划。
+					</view>
+					<view class="p" style="text-indent: 60upx;">
+						公司所属舞蹈行业，面向各类群体，成人、幼儿等，培训舞蹈种类繁多，师资力量强大，汇聚业内精英、专家。教学设施完善、教学环境舒适，每年有大量毕业学员从育成博雅走出去。
+					</view>
+				</view>
+				<view class="img uni-mb10"><image src="http://m.dance-one.com/static/img/item1.png" mode="widthFix"></image></view>
+			</view>
+			<view class="itembox pd15">
+				<view class="hd center">关于壹舞</view>
+				<view class="txtbox">
+					<view class="p">
+						Dance One(壹舞）是深圳市育诚博雅培训有限公司（shenzhen Yucheng Boya Education Training Co.,Ltd）旗下的线上品牌，我们意旨打造一个国际化，专业化，多元化的社交媒体线上舞蹈平台。
+					</view>
+				</view>
+				<view class="icons flex-between uni-mb10">
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon1.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">国际化</text>
+							<text class="en">internationalization</text>
+						</view>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon2.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">专业</text>
+							<text class="en">specialized</text>
+						</view>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon3.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">多元化</text>
+							<text class="en">diversification</text>
+						</view>
+					</view>
+				</view>
+				<view class="img uni-mb10">
+					<image src="http://m.dance-one.com/static/img/item2.png" mode="widthFix"></image>
+				</view>
+			</view>
+			<view class="itembox">
+				<view class="hd center">合作机构</view>
+				<view class="icons jigou flex flexWrap uni-mb10">
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon4.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon5.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon6.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon7.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon8.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon9.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon10.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon11.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon12.png" mode="widthFix"></image>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon13.png" mode="widthFix"></image>
+					</view>
+				</view>
+			</view>
+			<view class="itembox youshi">
+				<view class="hd center">我们的优势</view>
+				<view class="icons flex-between">
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon14.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">名师荟萃</text>
+							<text class="zh">很多优秀的达人和名师都聚集在我们平台</text>
+						</view>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon15.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">机构云集</text>
+							<text class="zh">各种行业性舞蹈机构入驻在我们平台</text>
+						</view>
+					</view>
+					<view class="item">
+						<image class="icoimg" src="http://m.dance-one.com/static/img/icon16.png" mode="widthFix"></image>
+						<view class="txt">
+							<text class="zh">课程繁多</text>
+							<text class="zh">平台有繁多种类的舞蹈课程一级舞曲</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		
+		
 		<!-- #ifndef MP-WEIXIN -->
 		<!-- <view class="uploadbtn flex-column" @click="navigate('liveplay/live')">直播</view> -->
 		<!-- #endif -->
@@ -156,18 +274,18 @@
 		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
 		<!-- 弹出评论 -->
 		<uni-popup mode="fixed" :show="IsShowReplyList" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-ReplyBox">
+			<view class="uni-modal-ReplyBox" @touchmove.stop.prevent="moveHandle2">
 				<view class="close iconfont icon-close" @click="hidePopup"></view>
 				<view class="uni-modal__hd">{{commenNum?commenNum+'条':''}}评论</view>
 				<view class="uni-modal__bd text_left" style="line-height: normal;" v-if="hasReplyData">
 					<block v-for="(item,index) in replylist" :key="index">
 						<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 					</block>
-					<view class="uni-tab-bar-loading" style="text-align: center; color: #999;">
-						<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
-						<text v-if="loadingReplyType==1">加载中…</text>
-						<text v-if="loadingReplyType==2">没有更多了</text>
-					</view>
+				</view>
+				<view class="uni-tab-bar-loading" style="text-align: center; color: #999;" v-if="hasReplyData">
+					<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
+					<text v-if="loadingReplyType==1">加载中…</text>
+					<text v-if="loadingReplyType==2">没有更多了</text>
 				</view>
 				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;">还没有评论哦</view>
 				<!-- 底部发表按钮 -->
@@ -205,7 +323,6 @@
 		</uni-popup>
 	</view>
 </template>
-
 <script>
 	import {post,get,toLogin,navigate,dateUtils,webUrl} from '@/common/util.js';
 	import {debounce} from '@/common/ans-utils';
@@ -229,13 +346,14 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				navigate,
 				userId: "",
 				token: "",
 				barHeight:0,
 				searchText:'',
 				page:1,
-				pageSize:5,
+				pageSize:8,
 				isLoad: false,
 				recuserlist:[],//推荐用户
 				TeacherUserList:[],//推荐的名师
@@ -281,7 +399,7 @@
 				PCommentId:0,//上级评论id
 				replylist:[],
 				replypage:1,
-				replypageSize:8,
+				replypageSize:3,
 				hasReplyData: false,
 				noDataReplyIsShow: false,
 				isReplyLoad:false,
@@ -293,14 +411,16 @@
 				Commenttype:0,
 				isfullscreen:false,//是否全屏状态
 				isControls:false,
-				canSwip:false,
+				canSwip:true,
 				timer:'',
 				onHidePage:false,
 				IsShowShare:false,
-				shareUrl:""
+				shareUrl:"",
+				isClick:false,
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
@@ -375,6 +495,7 @@
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
+				console.log("暂停了6666")
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
@@ -488,6 +609,7 @@
 			},
 			playBtn(index,id){
 				let _this = this;
+				_this.onplayId=id;
 				_this.isControls = false;
 				_this.datalist.forEach(function(item){
 					if(id==item.Id){
@@ -495,8 +617,9 @@
 						_this.$set(item,'fixed',false);
 						setTimeout(()=>{
 							_this.videoContext=uni.createVideoContext('video'+item.Id);
+							if(_this.IsShowReplyList||_this.IsShowShare) return;
 							_this.videoContext.play();
-						},500)
+						},200)
 					}else{
 						_this.$set(item,'play',false);
 					}
@@ -701,11 +824,19 @@
 				});
 			},
 			popShare(url){
-				if(this.onplayId>-1){
-					this.videoContext.pause();
-				}
-				this.IsShowShare=true;
+				this.isClick=true;
+				if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
+				setTimeout(()=>{
+					if(this.onplayId>-1){
+						setTimeout(()=>{
+							this.videoContext.pause();
+							this.IsShowShare=true;
+						},500)
+					}else{
+						this.IsShowShare=true;
+					}
+				},500)
 			},
 			appShare(Scene){
 				if(Scene){
@@ -738,10 +869,9 @@
 				}
 			},
 			showReply(id,name,type){
+				let _this=this;
+				this.isClick=true;
 				this.FkId=id;
-				if(this.onplayId>-1){
-					this.videoContext.pause();
-				}
 				if(type==2){
 					this.Commenttype=2
 				}else{
@@ -754,16 +884,28 @@
 				}
 				this.noDataReplyIsShow = false;
 				this.hasReplyData=false;
-				this.CommnetList();
-				setTimeout(()=>{
-					this.IsShowReplyList=true;
+				this.CommnetList();	
+				if(!this.canSwip) return;
+				setTimeout(()=>{			
+					console.log("this.onplayId"+this.onplayId)
+					if(this.onplayId>-1){
+						setTimeout(()=>{
+							this.IsShowReplyList=true;
+							this.videoContext.pause();
+						},500)
+					}else{
+						this.IsShowReplyList=true;
+					}
 				},500)
-				
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
+				this.isClick=false;
+				if(this.onplayId>-1){
+					this.$set(this.datalist[this.onplayIndex],'ispause',false);
+				}
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -849,13 +991,16 @@
 				}
 			},
 			loadMoreReply(){
-				if(this.isReplyLoad){
-					this.loadingReplyType=1
-					this.replypage++
-					this.CommnetList()
-				}else{
-					this.loadingReplyType=2
-				}
+				// if(this.isReplyLoad){
+				// 	this.loadingReplyType=1
+				// 	this.replypage++
+				// 	this.CommnetList()
+				// }else{
+				// 	this.loadingReplyType=2
+				// }
+				uni.navigateTo({
+					url:'/pages/replylist/replylist?id='+this.FkId
+				})
 			},
 			// 发表评论
 			async CommentOperation(){
@@ -894,7 +1039,9 @@
 					});
 				}
 			},
-			
+			moveHandle2() {
+				return;	
+			},
 			//返回顶部
 			Top(){
 				uni.pageScrollTo({
@@ -965,11 +1112,18 @@
 								_this.$set(item,'fixed',false);
 							}
 							setTimeout(()=>{
+								_this.onplayId=item.Id;
+								console.log("判断点击"+_this.isClick)
 								_this.videoContext=uni.createVideoContext('video'+item.Id);
-								_this.videoContext.play();
+								if(!_this.isClick){
+									_this.videoContext.play();
+								}else{
+									_this.videoContext.pause();
+									_this.$set(item,'fixed',true);
+								};
 								// _this.onplayIndex=index;
 								// _this.onplayId=item.Id;
-							},500)
+							},200)
 						}else{
 							_this.$set(item,'fixed',true);
 							_this.$set(item,'play',false);
@@ -1049,11 +1203,12 @@
 	.uni-modal-ReplyBox{
 		background:#fff;
 		border-radius: 10px 10px 0 0;
+		min-height: 30vh;
 		.uni-modal__hd{
 			font-size: 32upx;
 		}
 		.uni-modal__bd{
-			max-height: 960upx;
+			max-height: 60vh;
 			overflow-y: auto;
 		}
 		.close{
@@ -1076,4 +1231,73 @@
 			}
 		.uni-close-bottom{ height: 100upx; line-height: 100upx; width: 100%; position: absolute;bottom: 0; left: 0; font-size: 30upx; border-top: 1px solid #eee;color: #999;}
 	}
+	.staticPage{
+		.itembox{
+			.hd{
+				color: $primary;
+				font-weight: bold;
+				font-size: 36upx;
+				padding: 30upx;
+			}
+			.txtbox{
+				.p{
+					font-size: 30upx;
+					margin-bottom: 10upx;
+					text-align: justify;
+				}
+			}
+			.icons{
+				text-align: center;
+				margin-top: 30upx;
+				.item{
+					width: 33.33%;
+				}
+				.icoimg{
+					width: 128upx;
+					margin-bottom: 20upx;
+				}
+				.txt{
+					line-height: 1.5;
+				}
+				.zh{ 
+					font-size: 30upx;display: block;
+				}
+				.en{
+					font-size: 24upx;
+				}
+				&.jigou{
+					padding: 0 20upx;
+					.item{
+						width: 20%;
+						.icoimg{
+							width: 120upx;
+							margin-bottom: 20upx;
+						}
+					}	
+				}
+			}
+		}
+		.youshi{
+			background: url(http://m.dance-one.com/static/img/item3.png) center center no-repeat;
+			background-size: cover;
+			padding: 40upx 30upx;
+			.hd{
+				color: #fff !important;
+			}
+			.item{
+				background: rgba(0,0,0,.3);
+				padding: 40upx 20upx 30upx;
+				margin: 0 1px;
+				height: 380upx;
+				.txt{
+					.zh{
+						color: #fff;
+						font-size: 24upx;
+					}
+					
+				}
+			}
+		}
+	}
+	
 </style>
