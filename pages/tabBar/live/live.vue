@@ -372,11 +372,12 @@
 					<block v-for="(item,index) in replylist" :key="index">
 						<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 					</block>
-					<view class="uni-tab-bar-loading" style="text-align: center; color: #999;">
-						<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
-						<text v-if="loadingReplyType==1">加载中…</text>
-						<text v-if="loadingReplyType==2">没有更多了</text>
-					</view>
+					
+				</view>
+				<view class="uni-tab-bar-loading" style="text-align: center; color: #999;" v-if="hasReplyData">
+					<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
+					<text v-if="loadingReplyType==1">加载中…</text>
+					<text v-if="loadingReplyType==2">没有更多了</text>
 				</view>
 				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;">还没有评论哦</view>
 				<!-- 底部发表按钮 -->
@@ -544,7 +545,7 @@
 				PCommentId:0,//上级评论id
 				replylist:[],
 				replypage:1,
-				replypageSize:8,
+				replypageSize:3,
 				hasReplyData: false,
 				noDataReplyIsShow: false,
 				loadingReplyType: 0, //0加载前，1加载中，2没有更多了
@@ -658,6 +659,9 @@
 					this.Page6=1;
 					this.LoadingType6=0;//0加载前，1加载中，2没有更多了
 					this.IsShowReplyBox=false;
+					this.IsShowReplyList=false;
+					this.IsShowShare=false;
+					this.isClick=false;
 					this.GETdatalist();
 				}
 			},
@@ -837,9 +841,13 @@
 						_this.$set(item,'fixed',false);
 						setTimeout(()=>{
 							_this.videoContext=uni.createVideoContext('video'+item.Id);
-							if(_this.IsShowReplyList||_this.IsShowShare) return;
-							_this.videoContext.play();
-						},200)
+							if(!_this.isClick){
+								_this.videoContext.play();
+							}else{
+								_this.videoContext.pause();
+								_this.$set(item,'fixed',true);
+							}
+						},600)
 					}else{
 						_this.$set(item,'play',false);
 					}
@@ -1245,15 +1253,11 @@
 				if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
+					this.IsShowShare=true;
 					if(this.onplayId>-1){
-						setTimeout(()=>{
-							this.videoContext.pause();
-							this.IsShowShare=true;
-						},500)
-					}else{
-						this.IsShowShare=true;
+						this.videoContext.pause();
 					}
-				},500)
+				},400)
 			},
 			appShare(Scene){
 				if(Scene){
@@ -1303,23 +1307,20 @@
 				this.CommnetList();
 				if(!this.canSwip) return;
 				setTimeout(()=>{
+					this.IsShowReplyList=true;
 					if(this.onplayId>-1){
-						setTimeout(()=>{
-							this.IsShowReplyList=true;
-							this.videoContext.pause();
-						},500)
-					}else{
-						this.IsShowReplyList=true;
+						this.videoContext.pause();
 					}
-				},500)
+				},400)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
+				let _this=this;
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
 				if(this.onplayId>-1){
-					this.$set(this.datalist[this.onplayIndex],'ispause',false);
+					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
 				}
 			},
 			//显示评论按钮
@@ -1610,7 +1611,7 @@
 										
 										// _this.onplayIndex=index;
 										// _this.onplayId=item.Id;
-									},200)
+									},600)
 								}else{
 									_this.$set(item,'fixed',true);
 									_this.$set(item,'play',false);
@@ -1754,6 +1755,7 @@
 	.uni-modal-ReplyBox{
 		background:#fff;
 		border-radius: 10px 10px 0 0;
+		min-height: 30vh;
 		.uni-modal__hd{
 			font-size: 32upx;
 		}

@@ -474,6 +474,9 @@
 				this.Page0=1;
 				this.LoadingType0=0;//0加载前，1加载中，2没有更多了
 				this.IsShowReplyBox=false;
+				this.IsShowReplyList=false;
+				this.IsShowShare=false;
+				this.isClick=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -617,9 +620,13 @@
 						_this.$set(item,'fixed',false);
 						setTimeout(()=>{
 							_this.videoContext=uni.createVideoContext('video'+item.Id);
-							if(_this.IsShowReplyList||_this.IsShowShare) return;
-							_this.videoContext.play();
-						},200)
+							if(!_this.isClick){
+								_this.videoContext.play();
+							}else{
+								_this.videoContext.pause();
+								_this.$set(item,'fixed',true);
+							}
+						},600)
 					}else{
 						_this.$set(item,'play',false);
 					}
@@ -828,15 +835,11 @@
 				if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
+					this.IsShowShare=true;
 					if(this.onplayId>-1){
-						setTimeout(()=>{
-							this.videoContext.pause();
-							this.IsShowShare=true;
-						},500)
-					}else{
-						this.IsShowShare=true;
+						this.videoContext.pause();
 					}
-				},500)
+				},400)
 			},
 			appShare(Scene){
 				if(Scene){
@@ -871,6 +874,7 @@
 			showReply(id,name,type){
 				let _this=this;
 				this.isClick=true;
+				console.log("点了")
 				this.FkId=id;
 				if(type==2){
 					this.Commenttype=2
@@ -888,23 +892,20 @@
 				if(!this.canSwip) return;
 				setTimeout(()=>{			
 					console.log("this.onplayId"+this.onplayId)
+					this.IsShowReplyList=true;
 					if(this.onplayId>-1){
-						setTimeout(()=>{
-							this.IsShowReplyList=true;
-							this.videoContext.pause();
-						},500)
-					}else{
-						this.IsShowReplyList=true;
+						this.videoContext.pause();
 					}
-				},500)
+				},400)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
+				let _this=this;
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
 				if(this.onplayId>-1){
-					this.$set(this.datalist[this.onplayIndex],'ispause',false);
+					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
 				}
 			},
 			//显示评论按钮
@@ -1123,7 +1124,7 @@
 								};
 								// _this.onplayIndex=index;
 								// _this.onplayId=item.Id;
-							},200)
+							},600)
 						}else{
 							_this.$set(item,'fixed',true);
 							_this.$set(item,'play',false);

@@ -1,10 +1,12 @@
 <template>
 	<view class="share">
 		<img src="http://m.dance-one.com/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
+		<!-- #ifndef APP-PLUS -->
 		<view class="topdownbox flex" @click="todown">
 			<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 			<text>下载壹舞APP体验更多功能 !</text>
 		</view>
+		<!-- #endif -->
 		<div class="content">
 			<div class="code">
 				<img :src="inviteCode" alt="">
