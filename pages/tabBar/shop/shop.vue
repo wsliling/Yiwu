@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="search">
+		<view class="search" v-if="pageCon==1">
 			<view class="seachbox" @click="navigate('shopSon/mywu/wu',{title:'商品列表'})">
 				<text class="uni-icon uni-icon-search">请输入搜索关键字</text>
 			</view>
@@ -18,6 +18,7 @@
 				<view v-for="(item,index) in 3" :key="index" :class="['dot',currentSwiper==index?'active':'']"></view>
 			</view>
 		</view>
+		<block v-if="pageCon==1">
 		<!-- 快捷导航 -->
 		<view class="showMenuBtn" @click="isshowMenu=!isshowMenu">
 			分类<text :class="['iconfont icon-arrow_down-copy',isshowMenu?'up':'']"></text>
@@ -61,8 +62,31 @@
 					<image class="icon" :src="item.Logo" mode="aspectFill"></image>
 				</view>
 			</view>
+			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</block>
-		<uni-load-more :loadingType="loadingType"></uni-load-more>
+		</block>
+		<block v-if="pageCon==2">
+			<view class="staticPage">
+				<view class="Yi-newslist" >
+					<view class="Yi-media uni-bg-white" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
+						<view class="media-bd">
+							<view class="desc">
+								{{item.Title}}
+							</view>
+							<view class="maxpic maxh" v-if="item.Logo">
+								<image :src="item.Logo" mode="widthFix"></image>
+							</view>
+							<view class="media-ft flex-between">
+								<view class="ft_l flex-start">
+									<view class="txt_info">{{item.Source}}</view>
+									<view class="txt_info">{{item.AddTime}}</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</block>
 	</view>
 </template>
 
@@ -76,6 +100,7 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				navigate,
 				userId: "",
 				token: "",
@@ -89,14 +114,20 @@
 				page:1,
 				pageSize:5,
 				loadingType:0,//0-loading前；1-loading中；2-没有更多了
-				isshowMenu:false
+				isshowMenu:false,
+				NewsList:[]
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			this.getBanner();
-			this.getClassify();
-			this.getShopList();
-			this.getProList();
+			if(this.pageCon==1){
+				this.getClassify();
+				this.getShopList();
+				this.getProList();
+			}else{
+				this.YWNewsList()
+			}
 		},
 		onShow() {
 			this.userId = uni.getStorageSync("userId");
@@ -154,10 +185,22 @@
 				uni.navigateTo({
 					url: Url
 				})
-			}
+			},
+			async YWNewsList(){
+				let result = await post("News/YWNewsList", {
+					UserId:this.userId,
+					Token:this.token,
+					page:1,
+					pageSize:20
+				});
+				if (result.code === 0) {
+					this.NewsList = result.data;
+				}
+			},
 		},
 		// 下拉刷新
 		onPullDownRefresh() {
+			if(this.pageCon==2) return
 			this.page = 1
 			this.getBanner();
 			this.getClassify();
@@ -168,6 +211,7 @@
 		},
 		// 上拉加载更多
 		onReachBottom(){
+			if(this.pageCon==2) return
 			if(this.loadMore===2)return;
 			this.page+=1;
 			this.getProList()
@@ -195,5 +239,39 @@
 				margin-top: -6upx;
 			}
 		}
+	}
+	.Yi-media{
+		padding: 30upx;
+		.media-bd{
+			.desc{ line-height: 1.5;font-size: 32upx; font-weight: 600;}
+			.maxpic{
+				margin-top: 20upx;
+				//border-radius: 12upx;
+				overflow: hidden;
+				position: relative;
+				// background-color: #e0e0e0;
+				background-color: #000;
+				margin-left: -30upx;
+				margin-right: -30upx;
+				&.maxh{
+					max-height: 1000upx;
+				}
+				
+			}
+		}
+		.media-ft{
+			margin-top: 24upx;
+			.txt_info{
+				font-size: 24upx;
+				color: #999;
+				height: 44upx;
+				line-height: 44upx;
+			}
+			.ft_l .txt_info{
+				margin-right: 40upx;
+			}
+			
+		}
+
 	}
 </style>

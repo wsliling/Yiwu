@@ -1,6 +1,12 @@
 <template>
 	<view class="share">
 		<img src="http://m.dance-one.com/static/icons/share-bg.png" alt="" class="bg" mode="widthFix">
+		<!-- #ifndef APP-PLUS -->
+		<view class="topdownbox flex" @click="todown">
+			<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
+			<text>下载壹舞APP体验更多功能 !</text>
+		</view>
+		<!-- #endif -->
 		<div class="content">
 			<div class="code">
 				<img :src="inviteCode" alt="">
@@ -35,6 +41,11 @@
 			this.getInfo();
 		},
 		methods:{
+			todown(){
+				uni.navigateTo({
+				  url: "/pages/dowmApp/dowmApp"
+				});
+			},
 			getInfo(){
 				post('User/InviteFriends',{
 					"UserId": uni.getStorageSync("userId"),
@@ -163,6 +174,28 @@
 			background:#ffd84b;
 			background-image: linear-gradient(#ffd84b, #ffd84b);
 			}
+		}
+	}
+	.topdownbox{
+		align-items: center;
+		position: fixed;
+		z-index: 9;
+		width: 100%;
+		padding: 30upx;
+		top: 0;
+		/* #ifdef H5 */
+		top: 44px;
+		/* #endif */
+		background: rgba(255,255,255,.5);
+		.logoimg{
+			height: 88upx;
+			width: 88upx;
+			border-radius: 6px;
+			margin-right: 20upx;
+		}
+		text{ 
+			font-size: 36upx;
+			color: $primary;
 		}
 	}
 </style>

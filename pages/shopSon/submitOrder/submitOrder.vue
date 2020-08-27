@@ -449,6 +449,7 @@
 				uni.showModal({
 					title:'登录提示',
 					content: "您还没有登录，是否重新登录？",
+					confirmColor:"#DD196D",
 					success(res) {
 						if (res.confirm) {
 							uni.navigateTo({

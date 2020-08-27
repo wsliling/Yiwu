@@ -1,7 +1,7 @@
 
 
-const host = 'https://api.dance-one.com/api/';  //测试接口地址
-// const host = 'https://ywapi.wtvxin.com/api/';  //正式接口地址
+const host = 'https://api.dance-one.com/api/';  //正式接口地址
+//const host = 'https://ywapi.wtvxin.com/api/';  //测试接口地址
 const webUrl = 'http://m.dance-one.com';
 const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'ws://api.dance-one.com';  //wss接口地址
@@ -103,6 +103,7 @@ function toLogin(objUrl) {
 		uni.showModal({
 			title:'登录提示',
 			content: "您还没有登录，是否重新登录？",
+			confirmColor:"#DD196D",
 			success(res) {
 				if (res.confirm) {
 					uni.navigateTo({
@@ -259,6 +260,19 @@ function MemberPaly(id){
 		});
 	}
 }
+//判断是否开启多元内容
+function GetOpen(){
+	post("System/GetOpen",{}).then(res=>{
+		if(res.code==0){
+			if(res.data==1){
+				uni.setStorageSync("pageCon",1)
+			}else{
+				uni.setStorageSync("pageCon",2)
+			}
+		}
+	})
+}
+GetOpen();
 // 判断浏览器环境true:微信内置
 function isWeixin() {
 	var ua = navigator.userAgent.toLowerCase();

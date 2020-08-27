@@ -4,7 +4,7 @@
 			<view class="flex-between" style="height: 44px;">
 				<view class="head_l" style="width: 44px; height: 44px;"></view>
 				<view class="title" style="font-size: 16px; font-weight: bold;">我的</view>
-				<view class="head_r flex-column menuIco pd15" @click="showMENU">
+				<view class="head_r flex-column menuIco pd15" v-if="pageCon==1" @click="showMENU">
 					<view class="line1"></view>
 					<view class="line2"></view>
 					<view class="line3"></view>
@@ -12,6 +12,7 @@
 			</view>
 		</view>
 		<view :style="{'height':(44+barHeight)+'px'}"></view>
+		<block v-if="pageCon==1">
 		<view class="pd15">
 			<view class="header">
 				<view class="user">
@@ -58,7 +59,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="info uni-mb10">
+		<view class="info uni-mb10">
 			<view class="item" @click="tolink('/pages/member/myAssets/myAssets')">
 				<view>
 					{{wallet[0]||0}}. <span>{{wallet[1]||0}}</span>
@@ -239,6 +240,71 @@
 			</view>
 		</view>
 		<playerMin></playerMin>
+		</block>
+		<view class="pd15" v-if="pageCon==2">
+			<view class="header">
+				<view class="user">
+					<view class="user-left">
+						<view class="user-img" @click="tolink('/pages/member/editinfo/editinfo')">
+							<view>
+								<image :src="memberInfo.Avatar||'/static/default.png'" mode="aspectFill"></image>
+							</view>
+						</view>
+						<view class="user-name">
+							<view class="name" v-if="memberInfo.NickName">
+								<view class="uni-ellipsis">{{memberInfo.NickName}}</view>
+							</view>
+							<view class="name" v-else style="margin-top: 28upx;">您未登录，请先登录</view>
+							<block v-if="isLogin">
+								<view class="text uni-mt10"><label v-if="!memberInfo.Introduction">简介：</label>{{memberInfo.Introduction||'您还未编辑简介，快去编辑吧！'}}</view>
+								<view class="icos flex-center-start uni-mt10">
+									<text class="ico" v-if="memberInfo.Age"><text class="iconfont icon-zh1" style="font-size: 24upx; margin-right: 4upx;"></text>{{memberInfo.Age}}</text>
+									<text class="ico" v-if="memberInfo.Area">{{memberInfo.Area}}</text>
+									<text class="ico" v-if="memberInfo.UserDefined" @click="tolink('/pages/member/editinfo/editinfo')">{{memberInfo.UserDefined}}</text>
+								</view>
+							</block>
+						</view>
+					</view>
+				</view>
+			</view>
+			<view class="sevice">
+				<view class="item" @click="tolink('/pages/message/messageClass/messageClass')">
+					<view class="item-left">
+						<image  src="http://m.dance-one.com/static/my/icon15.png" mode="aspectFit"></image>
+						<view>我的消息</view>
+					</view>
+					<view class="arrowr uni-icon uni-icon-arrowright"><span v-if="newscount>0" class="rag">{{newscount}}</span></view>
+				</view>
+				<view class="item" @click="tolink('/pages/member/interflow/interflow')">
+					<view class="item-left">
+						<image  src="http://m.dance-one.com/static/my/icon11.png" mode="aspectFit"></image>
+						<view>加入官方交流</view>
+					</view>
+					<view class="arrowr uni-icon uni-icon-arrowright"></view>
+				</view>
+				<view class="item" @click="tolink('/pages/member/kefu/kefu')">
+					<view class="item-left">
+						<image  src="http://m.dance-one.com/static/my/icon12.png" mode="aspectFit"></image>
+						<view>客服服务</view>
+					</view>
+					<view class="arrowr uni-icon uni-icon-arrowright"></view>
+				</view>
+				<view class="item" @click="tolink('/pages/member/aboutUs/aboutUs')">
+					<view class="item-left">
+						<image  src="http://m.dance-one.com/static/my/icon13.png" mode="aspectFit"></image>
+						<view>关于我们</view>
+					</view>
+					<view class="arrowr uni-icon uni-icon-arrowright"></view>
+				</view>
+				<view class="item" @click="tolink('/pages/member/set/set')">
+					<view class="item-left">
+						<image  src="http://m.dance-one.com/static/my/icon14.png" mode="aspectFit"></image>
+						<view>设置</view>
+					</view>
+					<view class="arrowr uni-icon uni-icon-arrowright"></view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -255,6 +321,7 @@
 		},
 		data() {
 			return {
+				pageCon:0,
 				userId: "",
 				token: "",
 				barHeight:0,
@@ -280,6 +347,8 @@
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
+			//this.pageCon=2;
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
@@ -336,6 +405,7 @@
 					uni.showModal({
 						title:"登录提示",
 						content: "您还没有登录，是否重新登录？",
+						confirmColor:"#DD196D",
 						success(res) {
 							if (res.confirm) {
 								uni.navigateTo({
