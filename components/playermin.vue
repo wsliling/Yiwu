@@ -61,6 +61,7 @@
 			},
 			longbtn(){
 				let _this=this;
+				//#ifndef APP-PLUS
 				uni.showModal({
 					content: "确定要关闭音乐播放器？",
 					confirmColor:"#DD196D",
@@ -74,6 +75,19 @@
 						}
 					}
 				});
+				// #endif
+				// #ifdef APP-PLUS
+				this.$showModal({
+					content: "确定要关闭音乐播放器",
+				}).then(res=>{
+					_this.setIsplayingmusic(false)
+					_this.setIsplayactive(false)
+					_this.$au_player.stop();
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				// #endif
 			}
 		}
 	}

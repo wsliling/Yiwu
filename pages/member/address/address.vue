@@ -125,22 +125,36 @@ export default {
      Delete(id, index) {
       //删除地址
       const that = this;
-      uni.showModal({
-        title: '您确定删除该收货地址吗？',
-        content: '删除后无法恢复',
-        showCancel: true,
-        cancelText: '取消',
-        cancelColor: '#000000',
-        confirmText: '确定',
-        confirmColor: '#29a49f',
-        success: (result) => {
-          if(result.confirm){
-              this.SureDel(id,index)
-          }
-        },
-        fail: ()=>{},
-        complete: ()=>{}
-      });
+	  //#ifndef APP-PLUS
+	    uni.showModal({
+		   title: '您确定删除该收货地址吗？',
+		   content: '删除后无法恢复',
+		   showCancel: true,
+		   cancelText: '取消',
+		   cancelColor: '#999999',
+		   confirmText: '确定',
+		   confirmColor: '#DD196D',
+		   success: (result) => {
+			 if(result.confirm){
+				 this.SureDel(id,index)
+			 }
+		   },
+		   fail: ()=>{},
+		   complete: ()=>{}
+		});
+	  // #endif
+	  // #ifdef APP-PLUS
+	  this.$showModal({
+	  	title:'您确定删除该收货地址吗？',
+	  	content: "删除后无法恢复",
+	  }).then(res=>{
+	  	 this.SureDel(id,index)
+	  	//确认
+	    }).catch(res=>{
+	  	//取消
+	    })
+	  // #endif
+      
     },
     SureDel(id,index){
       post(

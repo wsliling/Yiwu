@@ -500,11 +500,19 @@
 						let aTime=new Date().getTime();
 						let bTime=new Date(this.resultStr.replace(/-/g,'/')).getTime();
 						if(aTime>bTime){
+							// #ifdef APP-PLUS
+							this.$showModal({
+								title:'提示',
+								content: "选择时间必须大于当前时间",
+							})
+							// #endif
+							//#ifndef APP-PLUS
 							uni.showModal({
 								title:"提示",
 								content:"选择时间必须大于当前时间",
 								confirmColor:this.themeColor
 							});
+							//#endif
 							return;
 						}
 						this.$emit("confirm",{

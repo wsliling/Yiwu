@@ -279,10 +279,10 @@
 					
 				})
 				if(dataArr.length){
-					let that = this;
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您确定要删除所选商品吗？",
-						confirmColor:"#ff3333",
+						confirmColor:"#DD196D",
 						success: function(res) {
 							if (res.confirm) {
 								_this.DelCart(dataArr);
@@ -290,6 +290,18 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						content: "您确定要删除所选商品吗？",
+					}).then(res=>{
+						_this.DelCart(dataArr);
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
+					
 				}else{
 					uni.showToast({
 						title: "请选择你要删除的数据！",
@@ -649,6 +661,8 @@
 					}
 				}else if (result.code === 2) {
 					let _this =this;
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -660,6 +674,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 
 			},

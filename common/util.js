@@ -85,9 +85,25 @@ var dateUtils = {
 		return new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5]);
 	}
 };
+export function G_show_modal(op={}){
+	return new Promise((resolve, reject)=>{
+		   let ssm=new sj_show_modal({
+				...op,
+				$event:function(e){
+					if(e.res){
+						resolve(e);
+					}else{
+						reject(e);
+					}
+				 }
+				})
+				ssm.show();
+				// Vue.prototype.$hide=function(){
+				// 	ssm.hide();
+				// }
+		})
 
-
-
+}
 // 判断是否登录了
 function toLogin(objUrl) { 
   // const userInfo = wx.getStorageSync('userInfo');
@@ -100,6 +116,21 @@ function toLogin(objUrl) {
 		if(objUrl){
 			strUrl = objUrl.replace(/\?/g, '%3F').replace(/\=/g, '%3D').replace(/\&/g, '%26');
 		}
+		// #ifdef APP-PLUS
+		
+		G_show_modal({
+			title:'登录提示',
+			content: "您还没有登录，是否重新登录？",
+		}).then(res=>{
+			uni.navigateTo({
+				url: "/pages/login/login"
+			})
+			//确认
+		  }).catch(res=>{
+			//取消
+		  })
+		// #endif
+		// #ifndef APP-PLUS
 		uni.showModal({
 			title:'登录提示',
 			content: "您还没有登录，是否重新登录？",
@@ -113,6 +144,7 @@ function toLogin(objUrl) {
 				}
 			}
 		});
+		// #endif
     return false;
   }
 }
@@ -146,7 +178,6 @@ function getCurrentPageUrlWithArgs() {
   urlWithArgs = urlWithArgs.substring(0, urlWithArgs.length - 1)
   return urlWithArgs
 }
-
 //每3秒去检查token是否过期
 // function checkAccessToken() {
 //   setInterval(checkAccessTokenTimeout, 3 * 1000); //这个时间可以自定义。比如 25 * 60 * 1000（代表25分钟）
@@ -305,6 +336,7 @@ function strLength(str) {
 }    
 import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
+import sj_show_modal from '@/components/G_show_modal/index.js'
 export {
 	formatTime,
 	formatSecond,

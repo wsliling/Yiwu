@@ -123,19 +123,32 @@ export default {
     },
     DeleteBank(index, cardId) {
       let that = this;
-      uni.showModal({
-        title: '解绑银行卡',
-        content: '是否确定解绑？',
-          confirmColor:'#ff952e',
-          cancelColor:'#999',
-        success: (res)=>{
-          if (res.confirm) {
-            this.confirmDelete(index, cardId)
-          } else if (res.cancel) {
-            console.log('用户点击取消')
-          }
-        }
-      })
+	  //#ifndef APP-PLUS
+	  uni.showModal({
+	    title: '解绑银行卡',
+	    content: '是否确定解绑？',
+	      confirmColor:'#DD196D',
+	      cancelColor:'#999',
+	    success: (res)=>{
+	      if (res.confirm) {
+	        that.confirmDelete(index, cardId)
+	      } else if (res.cancel) {
+	        console.log('用户点击取消')
+	      }
+	    }
+	  })
+	  //#endif
+	  //#ifdef APP-PLUS
+	  this.$showModal({
+	  	title:'解绑银行卡',
+	  	content: "是否确定解绑？",
+	  }).then(res=>{
+	  	that.confirmDelete(index, cardId)
+	  	//确认
+	    }).catch(res=>{
+	  	//取消
+	    })
+	  //#endif 
     },
     confirmDelete(index, cardId){
       let that = this;

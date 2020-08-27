@@ -214,6 +214,7 @@ export default {
 		},
 		isFullImg: function() {
 			return new Promise(res => {
+				//#ifndef APP-PLUS
 				uni.showModal({
 					content: '已经有9张图片了,是否清空现有图片？',
 					success: e => {
@@ -228,6 +229,19 @@ export default {
 						res(false);
 					}
 				});
+				//#endif
+				//#ifdef APP-PLUS
+				this.$showModal({
+					content: "已经有9张图片了,是否清空现有图片？",
+				}).then(_res=>{
+					this.imageList = [];
+					res(true);
+					//确认
+				  }).catch(_res=>{
+					  res(false);
+					//取消
+				  })
+				//#endif
 			});
 		},
 		previewImage: function(e) {

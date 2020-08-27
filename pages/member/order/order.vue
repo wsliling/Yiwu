@@ -148,6 +148,7 @@
 				var content="您确定收货成功吗？"
 				var url="Order/ConfirmReceipt"
 			  }
+			  //#ifndef APP-PLUS
 			  uni.showModal({
 				title: '提示',
 				cancelText:"再想想",
@@ -158,14 +159,14 @@
 					  UserId:uni.getStorageSync("userId"),
 					  Token:uni.getStorageSync("token"),
 					  OrderNo:OrderNo,
-					}).then(res=>{
+					}).then(_res=>{
 					  _this.showCancel = false;
 					  _this.list = [];
 					  _this.noDataIsShow = false;
 					  _this.getList();
 					  uni.showToast({
 						icon:'none',
-						title:res.msg
+						title:_res.msg
 					  })
 					  console.log( _this.list)
 					})
@@ -174,6 +175,33 @@
 				  }
 				}
 			  })
+			  //#endif
+			  //#ifndef APP-PLUS
+			  this.$showModal({
+			  	title:'提示',
+				content: content,
+			  	cancelVal: "再想想",
+			  }).then(res=>{
+			  	post(url,{
+			  	  UserId:uni.getStorageSync("userId"),
+			  	  Token:uni.getStorageSync("token"),
+			  	  OrderNo:OrderNo,
+			  	}).then(res=>{
+			  	  _this.showCancel = false;
+			  	  _this.list = [];
+			  	  _this.noDataIsShow = false;
+			  	  _this.getList();
+			  	  uni.showToast({
+			  		icon:'none',
+			  		title:res.msg
+			  	  })
+			  	  console.log( _this.list)
+			  	})
+			  	//确认
+			    }).catch(res=>{
+			  	//取消
+			    })
+			  //#endif
 			},
 			goPinJia(goods,id){console.log(goods.length==1)
 			  if(goods.length==1){

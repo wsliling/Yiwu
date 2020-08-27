@@ -184,6 +184,8 @@
 					}
 					this.setAudiolist(this.datalist);
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -195,6 +197,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			//播放

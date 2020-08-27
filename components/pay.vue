@@ -245,17 +245,31 @@ export default {
    //  设置支付密码跳转页面
     forgetPassword() {
       const that =this;
-      uni.showModal({
-        title: "设置密码",
-        content: "是否跳转设置支付密码页面！",
-        confirmColor: "#dd196d",
-        success(res) {
-          if (res.confirm) {
-            uni.navigateTo({ url: that.forgetPasswordUrl });
-          } else if (res.cancel) {
-          }
-        }
-      });
+	  //#ifndef APP-PLUS
+	  uni.showModal({
+	    title: "设置密码",
+	    content: "是否跳转设置支付密码页面！",
+	    confirmColor: "#dd196d",
+	    success(res) {
+	      if (res.confirm) {
+	        uni.navigateTo({ url: that.forgetPasswordUrl });
+	      } else if (res.cancel) {
+	      }
+	    }
+	  });
+	  // #endif
+	  // #ifdef APP-PLUS
+	  this.$showModal({
+	  	title:'设置密码',
+	  	content: "是否跳转设置支付密码页面？",
+	  }).then(res=>{
+	  	uni.navigateTo({ url: that.forgetPasswordUrl });
+	  	//确认
+	    }).catch(res=>{
+	  	//取消
+	    })
+	  // #endif
+     
     },
   }
 };

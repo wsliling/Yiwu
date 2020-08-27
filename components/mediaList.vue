@@ -126,6 +126,7 @@
 			Del(id){
 				//this.$emit('Del',id);
 				let _this=this;
+				//#ifndef APP-PLUS
 				uni.showModal({
 					content: "确定删除该条动态？",
 					confirmColor:"#DD196D",
@@ -136,6 +137,18 @@
 						}
 					}
 				});
+				// #endif
+				// #ifdef APP-PLUS
+				this.$showModal({
+					content: "确定删除该条动态？",
+				}).then(res=>{
+					_this.DelFind(id);
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				// #endif
+				
 			},
 			async DelFind(id){
 				let result = await post("Find/DelFind", {
@@ -203,6 +216,8 @@
 						this.dataitem.LikeNum++;
 					}
 				}else if (result.code === 2) {
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -214,6 +229,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				} else {
 					uni.showToast({
 						title: result.msg,
@@ -247,6 +276,8 @@
 						this.dataitem.IsFollow=0;
 					}
 				}else if(result.code===2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -258,6 +289,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}else{
 					uni.showToast({
 						title: result.msg,

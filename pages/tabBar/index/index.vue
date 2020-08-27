@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view :class="['content',pageCls?'dialog-open':'']" :style="{'top':pageCls?TopNum+'px':''}">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-center" style="border-bottom: 1px solid #eee;">
 				<view class="title"><image src="http://m.dance-one.com/static/headTitle.png" mode="widthFix"></image></view>
@@ -274,18 +274,18 @@
 		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
 		<!-- 弹出评论 -->
 		<uni-popup mode="fixed" :show="IsShowReplyList" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-ReplyBox" @touchmove.stop.prevent="moveHandle2">
+			<view class="uni-modal-ReplyBox">
 				<view class="close iconfont icon-close" @click="hidePopup"></view>
 				<view class="uni-modal__hd">{{commenNum?commenNum+'条':''}}评论</view>
 				<view class="uni-modal__bd text_left" style="line-height: normal;" v-if="hasReplyData">
 					<block v-for="(item,index) in replylist" :key="index">
 						<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 					</block>
-				</view>
 				<view class="uni-tab-bar-loading" style="text-align: center; color: #999;" v-if="hasReplyData">
 					<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
 					<text v-if="loadingReplyType==1">加载中…</text>
 					<text v-if="loadingReplyType==2">没有更多了</text>
+				</view>
 				</view>
 				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;">还没有评论哦</view>
 				<!-- 底部发表按钮 -->
@@ -300,6 +300,7 @@
 				</view>
 			</view>
 		</uni-popup>
+		
 		<uni-popup type="bottom" :show="IsShowShare" :h5Top="true" position="bottom" @hidePopup='hidePopup'>
 			   <view class="uni-popup-share">
 				   <view class="pop-hd">分享</view>
@@ -399,7 +400,7 @@
 				PCommentId:0,//上级评论id
 				replylist:[],
 				replypage:1,
-				replypageSize:3,
+				replypageSize:8,
 				hasReplyData: false,
 				noDataReplyIsShow: false,
 				isReplyLoad:false,
@@ -417,6 +418,10 @@
 				IsShowShare:false,
 				shareUrl:"",
 				isClick:false,
+				scrollTopNum:0,//滚动位置
+				TopNum:0,
+				pageCls:false,
+				isstop:false,
 			}
 		},
 		onLoad() {
@@ -445,6 +450,8 @@
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.IsShowReplyList=false;
 			this.onHidePage=false;
+			this.pageCls=false;
+			this.contrlwebview(true)
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
@@ -477,6 +484,7 @@
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
+				this.pageCls=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -495,10 +503,11 @@
 				this.isControls=e.detail.fullScreen;
 			},
 			ControlsFn(){
+				console.log("888888"+this.isControls)
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
-				console.log("暂停了6666")
+				
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
@@ -512,6 +521,7 @@
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
+				console.log("暂停了6666"+this.isControls)
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -723,6 +733,8 @@
 					}
 					
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -734,6 +746,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			//发现收藏和取消收藏
@@ -763,6 +789,8 @@
 						this.$set(this.datalist[index],"IsCollect",0)
 					}
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -774,6 +802,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			//发现点赞
@@ -809,6 +851,8 @@
 					this.$set(_this.datalist[index],"LikeNum",num)
 					
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -820,6 +864,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			scanCode(){
@@ -832,13 +890,13 @@
 			},
 			popShare(url){
 				this.isClick=true;
-				if(!this.canSwip) return;
+				//if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
-					this.IsShowShare=true;
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
+					this.IsShowShare=true;
 				},400)
 			},
 			appShare(Scene){
@@ -874,7 +932,8 @@
 			showReply(id,name,type){
 				let _this=this;
 				this.isClick=true;
-				console.log("点了")
+				//clearTimeout(this.timer);
+				this.afterOpen();
 				this.FkId=id;
 				if(type==2){
 					this.Commenttype=2
@@ -889,24 +948,62 @@
 				this.noDataReplyIsShow = false;
 				this.hasReplyData=false;
 				this.CommnetList();	
-				if(!this.canSwip) return;
+				//if(!this.canSwip) return;
 				setTimeout(()=>{			
 					console.log("this.onplayId"+this.onplayId)
-					this.IsShowReplyList=true;
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
+					this.IsShowReplyList=true;
 				},400)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
+				console.log("关闭弹窗")
 				let _this=this;
+				this.beforeClose();
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
 				if(this.onplayId>-1){
 					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
 				}
+			},
+			afterOpen() {
+			   this.pageCls=true;
+			   this.TopNum=-this.scrollTopNum;
+			   //#ifdef APP-PLUS
+			   this.contrlwebview(false)
+			   //#endif
+			},
+			beforeClose() {
+				let _this=this;
+			  this.pageCls=false;
+			  //#ifdef APP-PLUS
+			  this.contrlwebview(true)
+			  //#endif
+			  let top=-this.TopNum;
+			   console.log("this.TopNum"+top)
+			   setTimeout(()=>{
+				  uni.pageScrollTo({
+					scrollTop: top,
+					duration: 0
+				  }); 
+				   _this.isstop=true;
+				   setTimeout(()=>{
+					    _this.isstop=false;
+				   },500)
+			   },50)
+			},
+			contrlwebview(e){
+				const pages = getCurrentPages();
+				const page = pages[pages.length - 1];  
+				const webview=page.$getAppWebview();
+				webview.setStyle({  
+				  pullToRefresh: {  
+				    support: e
+				  }  
+				}); 
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -992,16 +1089,16 @@
 				}
 			},
 			loadMoreReply(){
-				// if(this.isReplyLoad){
-				// 	this.loadingReplyType=1
-				// 	this.replypage++
-				// 	this.CommnetList()
-				// }else{
-				// 	this.loadingReplyType=2
-				// }
-				uni.navigateTo({
-					url:'/pages/replylist/replylist?id='+this.FkId
-				})
+				if(this.isReplyLoad){
+					this.loadingReplyType=1
+					this.replypage++
+					this.CommnetList()
+				}else{
+					this.loadingReplyType=2
+				}
+				// uni.navigateTo({
+				// 	url:'/pages/replylist/replylist?id='+this.FkId
+				// })
 			},
 			// 发表评论
 			async CommentOperation(){
@@ -1053,7 +1150,9 @@
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
-			this.init();
+			if(!this.pageCls){
+				this.init();
+			};
 			uni.stopPullDownRefresh();
 		},
 		//上拉加载
@@ -1065,12 +1164,13 @@
 		//监听页面滚动
         onPageScroll(e){
 			let _this=this;
+			_this.scrollTopNum=e.scrollTop;
 			if(e.scrollTop>300){
 				this.isTop=true;
 			}else{
 				this.isTop=false;
 			}
-			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare) return;
+			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare||_this.isstop) return;
 		const query = uni.createSelectorQuery().in(_this);
 		clearTimeout(_this.timer)// 每次滚动前 清除一次
 		_this.canSwip=false;
@@ -1160,6 +1260,10 @@
 	page{
 		// background: #fff !important;
 		// height: 100vh;
+	}
+	.dialog-open {
+	  position: fixed !important;
+	  width: 100%;
 	}
 	.uploadbtn{
 		position: fixed;
