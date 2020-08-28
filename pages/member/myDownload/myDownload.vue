@@ -214,6 +214,7 @@ export default {
 				console.log(_this.Ids, '_this.Ids');
 			});
 			if (this.Ids.length > 0) {
+				//#ifndef APP-PLUS
 				uni.showModal({
 				  content: "您确定要删除所选项吗？",
 				  confirmColor:"#df2271",
@@ -225,7 +226,17 @@ export default {
 						}
 					}
 				}) 
-				
+				//#endif
+				//#ifdef APP-PLUS
+				this.$showModal({
+					content: "您确定要删除所选项吗？",
+				}).then(res=>{
+					 _this.DeleteMyFootprint();
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				//#endif
 			} else {
 				uni.showToast({
 					title: '请选择需要删除的项！',

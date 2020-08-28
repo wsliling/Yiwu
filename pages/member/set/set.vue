@@ -83,6 +83,7 @@
 			},
 			// 退出登录
 			logOut() {
+				//#ifndef APP-PLUS
 				uni.showModal({
 					title:'退出登录',
 					content:"是否退出登录！",
@@ -101,6 +102,27 @@
 						}
 					}
 				})
+				//#endif
+				//#ifdef APP-PLUS
+				this.$showModal({
+					title:'退出登录',
+					content: "是否退出登录？",
+				}).then(res=>{
+					uni.setStorageSync('token', '');
+					uni.setStorageSync('userId', '');
+					uni.setStorageSync('liveUserId', '');//清除商家直播账号
+					uni.setStorageSync('liveToken', '');//清除商家直播账号
+					uni.setStorageSync("unionid", ""); 
+					uni.setStorageSync("openId", ""); 
+					uni.setStorageSync("userInfo", "");
+					uni.switchTab({
+						url: '/pages/tabBar/index/index'
+					});
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				//#endif
 			},
 		}
 	}

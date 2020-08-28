@@ -171,6 +171,7 @@
 					}
 					let _this=this;
 					if(!toLogin())return;
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "该舞曲需付费,去付费？",
 						success(res) {
@@ -190,6 +191,27 @@
 							}
 						}
 					});
+					//#endif
+					//#ifdef APP-PLUS
+					this.$showModal({
+						content: "该舞曲需付费,去付费？",
+					}).then(res=>{
+						if(toLogin()){
+							let buyInfo={
+								PicImg:_this.itemdata.PicImg,
+								name:_this.itemdata.Name,
+								price:_this.itemdata.Price
+							}
+							uni.setStorageSync('buyInfo', buyInfo);
+							uni.navigateTo({
+								url:'/pages/pay2/pay2?type=1&id='+_this.musicID
+							})
+						}
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					//#endif
 				}
 			},
 			
@@ -241,6 +263,7 @@
 						}
 					}else{
 						let _this=this;
+						//#ifndef APP-PLUS
 						uni.showModal({
 							content: "该舞曲需付费,去付费？",
 							success(res) {
@@ -260,6 +283,28 @@
 								}
 							}
 						});
+						//#endif
+						//#ifdef APP-PLUS
+						this.$showModal({
+							content: "该舞曲需付费,去付费？",
+						}).then(res=>{
+							if(toLogin()){
+								let buyInfo={
+									PicImg:_this.musicList[index].PicImg,
+									name:_this.musicList[index].Name,
+									price:_this.musicList[index].Price
+								}
+								uni.setStorageSync('buyInfo', buyInfo);
+								uni.navigateTo({
+									url:'/pages/pay2/pay2?type=1&id='+_this.musicList[index].Id
+								})
+							}
+							//确认
+						  }).catch(res=>{
+							//取消
+						  })
+						//#endif
+						
 					}
 				}).catch(e=>{
 					this.setIsplayactive(false)
@@ -350,6 +395,8 @@
 						icon:"none"
 					})
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -361,6 +408,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}}
 			},
 		},

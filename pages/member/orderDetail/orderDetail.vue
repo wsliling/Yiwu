@@ -193,6 +193,7 @@ methods: {
 				Password
 			})
 			if(res.code==3){
+				//#ifndef APP-PLUS
 				uni.showModal({
 					title:'是否跳转设置支付密码页面',
 					success(ret){
@@ -201,6 +202,17 @@ methods: {
 						}
 					}
 				})
+				//#endif
+				//#ifdef APP-PLUS
+				this.$showModal({
+					content: "是否跳转设置支付密码页面",
+				}).then(res=>{
+					navigate('member/setpwd/setpwd')
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				//#endif
 			}
 			if(res.code) return;
 			this.paySuccess(res);
@@ -214,6 +226,7 @@ methods: {
 				Password
 			})
 			if(res.code==3){
+				//#ifndef APP-PLUS
 				uni.showModal({
 					title:'是否跳转设置支付密码页面',
 					success(ret){
@@ -222,6 +235,17 @@ methods: {
 						}
 					}
 				})
+				//#endif
+				//#ifdef APP-PLUS
+				this.$showModal({
+					content: "是否跳转设置支付密码页面",
+				}).then(res=>{
+					navigate('member/setpwd/setpwd')
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				//#endif
 			}
 			if(res.code) return;
 			this.paySuccess(res);
@@ -377,6 +401,7 @@ methods: {
         var content="您确定收货成功吗？"
         var url="Order/ConfirmReceipt"
       }
+	  //#ifndef APP-PLUS
       uni.showModal({
         title: '提示',
         cancelText:"再想想",
@@ -403,6 +428,33 @@ methods: {
           }
         }
       })
+	  //#endif
+	  //#ifdef APP-PLUS
+	  this.$showModal({
+	  	title:'提示',
+	  	content: content,
+		cancelVal:"再想想",
+	  }).then(res=>{
+	  	post(url,{
+	  	  UserId:uni.getStorageSync("userId"),
+	  	  Token:uni.getStorageSync("token"),
+	  	  OrderNo:OrderNo,
+	  	}).then(_res=>{
+	  	  uni.showToast({
+	  	    icon:'none',
+	  	    title:_res.msg,
+	  		success() {
+	  			uni.navigateBack({
+	  				
+	  			})
+	  		}
+	  	  })
+	  	})
+	  	//确认
+	    }).catch(res=>{
+	  	//取消
+	    })
+	  //#endif
     }, 
 	blur() {
 		this.disabled = true;

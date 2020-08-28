@@ -1,19 +1,48 @@
-
+import sj_show_modal from '@/components/G_show_modal/index.js'
+export function G_show_modal(op={}){
+	return new Promise((resolve, reject)=>{
+		   let ssm=new sj_show_modal({
+				...op,
+				$event:function(e){
+					if(e.res){
+						resolve(e);
+					}else{
+						reject(e);
+					}
+				 }
+				})
+				ssm.show();
+		})
+}
 //判断是否登录，未登录做弹窗跳转登录页面
 export function judgeLogin(){
     // 未登录false，已登录true
     if (!uni.getStorageSync("userId") || !uni.getStorageSync("token")) {
-        uni.showModal({
-          title:'未登录',
-          content:'是否跳转到登录页面？',
-          cancelColor:'#999',
-        //   confirmColor:'#5cc69a',
-          success(res){
-            if(res.confirm){
-              navigate(LoginPath)
-            }
-          }
-        })
+		// #ifdef APP-PLUS
+		G_show_modal({
+			title:'未登录',
+			content: "是否跳转到登录页面？",
+		}).then(res=>{
+			navigate(LoginPath)
+			//确认
+		  }).catch(res=>{
+			//取消
+		  })
+		//#endif
+		// #ifndef APP-PLUS
+		uni.showModal({
+		  title:'未登录',
+		  content:'是否跳转到登录页面？',
+		  cancelColor:'#999',
+		  confirmColor:'#DD196D',
+		  success(res){
+		    if(res.confirm){
+		      navigate(LoginPath)
+		    }
+		  }
+		})
+		//#endif
+        
         return false;
     }else{
       return true;

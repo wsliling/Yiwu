@@ -295,6 +295,8 @@ export default {
 		 			this.$set(this.PersonInfo,"IsFollow",0)
 		 		}
 		 	}else if(result.code==2){
+		 		uni.hideToast();
+		 		//#ifndef APP-PLUS
 		 		uni.showModal({
 		 			content: "您还没有登录，是否重新登录？",
 		 			success(res) {
@@ -306,6 +308,20 @@ export default {
 		 				}
 		 			}
 		 		});
+		 		// #endif
+		 		// #ifdef APP-PLUS
+		 		this.$showModal({
+		 			title:'登录提示',
+		 			content: "您还没有登录，是否重新登录？",
+		 		}).then(res=>{
+		 			uni.navigateTo({
+		 				url: "/pages/login/login"
+		 			})
+		 			//确认
+		 		  }).catch(res=>{
+		 			//取消
+		 		  })
+		 		// #endif
 		 	}
 		},
 		 //获取用户关联数据
@@ -398,6 +414,7 @@ export default {
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
 				Vue.prototype.cusEnded = this.onEndedFn
 			}else{
+				//#ifndef APP-PLUS
 				uni.showModal({
 					content: "该舞曲需付费,去付费？",
 					success(res) {
@@ -417,6 +434,28 @@ export default {
 						}
 					}
 				});
+				// #endif
+				// #ifdef APP-PLUS
+				this.$showModal({
+					content: "该舞曲需付费,去付费？",
+				}).then(res=>{
+					if(toLogin()){
+						let buyInfo={
+							PicImg:item.PicImg,
+							name:item.Name,
+							price:item.Price
+						}
+						uni.setStorageSync('buyInfo', buyInfo);
+						uni.navigateTo({
+							url:'/pages/pay2/pay2?type=1&id='+id
+						})
+					}
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				// #endif
+				
 			}
 		},
 		onPlayFn(){

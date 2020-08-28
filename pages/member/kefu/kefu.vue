@@ -51,6 +51,7 @@
 			},
 			call(){
 				let tel=this.info.WebTel;
+				//#ifndef APP-PLUS
 				uni.showModal({
 					content: tel,
 					confirmText: "呼叫",
@@ -63,6 +64,22 @@
 						} else if (res.cancel) {}
 					}
 				});
+				//#endif
+				
+				//#ifdef APP-PLUS
+				this.$showModal({
+					content: tel,
+					confirmVal:"呼叫",
+				}).then(res=>{
+					uni.makePhoneCall({
+						phoneNumber: tel
+					});
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				//#endif
+				
 			}
 		}
 	}

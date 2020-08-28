@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view :class="['content',pageCls?'dialog-open':'']" :style="{'top':pageCls?TopNum+'px':''}">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-center" style="border-bottom: 1px solid #eee;">
 				<view class="title"><image src="http://m.dance-one.com/static/headTitle.png" mode="widthFix"></image></view>
@@ -91,7 +91,7 @@
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
-									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
+									<cover-view class="cover-mark" :id="'cover'+item.Id" @click.stop="ControlsFn" v-if="!isControls&&item.play"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 							</view>
@@ -111,7 +111,7 @@
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
 								<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-								<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
+								<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type,index)">{{item.CommentNum}}</view>
 								<!-- #ifdef APP-PLUS -->
 								<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
 									<view class="txt_info share"></view>
@@ -274,18 +274,18 @@
 		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
 		<!-- 弹出评论 -->
 		<uni-popup mode="fixed" :show="IsShowReplyList" :h5Top="true" position="bottom" @hidePopup="hidePopup">
-			<view class="uni-modal-ReplyBox" @touchmove.stop.prevent="moveHandle2">
+			<view class="uni-modal-ReplyBox">
 				<view class="close iconfont icon-close" @click="hidePopup"></view>
 				<view class="uni-modal__hd">{{commenNum?commenNum+'条':''}}评论</view>
 				<view class="uni-modal__bd text_left" style="line-height: normal;" v-if="hasReplyData">
 					<block v-for="(item,index) in replylist" :key="index">
 						<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 					</block>
-				</view>
 				<view class="uni-tab-bar-loading" style="text-align: center; color: #999;" v-if="hasReplyData">
 					<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
 					<text v-if="loadingReplyType==1">加载中…</text>
 					<text v-if="loadingReplyType==2">没有更多了</text>
+				</view>
 				</view>
 				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;">还没有评论哦</view>
 				<!-- 底部发表按钮 -->
@@ -300,6 +300,7 @@
 				</view>
 			</view>
 		</uni-popup>
+		
 		<uni-popup type="bottom" :show="IsShowShare" :h5Top="true" position="bottom" @hidePopup='hidePopup'>
 			   <view class="uni-popup-share">
 				   <view class="pop-hd">分享</view>
@@ -399,7 +400,7 @@
 				PCommentId:0,//上级评论id
 				replylist:[],
 				replypage:1,
-				replypageSize:3,
+				replypageSize:8,
 				hasReplyData: false,
 				noDataReplyIsShow: false,
 				isReplyLoad:false,
@@ -417,6 +418,10 @@
 				IsShowShare:false,
 				shareUrl:"",
 				isClick:false,
+				scrollTopNum:0,//滚动位置
+				TopNum:0,
+				pageCls:false,
+				isstop:false,//关闭评论弹窗延迟监听滑动播放
 			}
 		},
 		onLoad() {
@@ -444,7 +449,12 @@
 			this.playID=uni.getStorageSync("playID");
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.IsShowReplyList=false;
+			this.IsShowShare=false;
 			this.onHidePage=false;
+			this.isClick=false;
+			this.pageCls=false;
+			this.isstop=false;
+			this.contrlwebview(true)
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
@@ -457,8 +467,11 @@
 				this.videoContext.stop();
 			}
 			this.datalist.forEach(function(item){
-				that.$set(item,'play',false);
-				that.$set(item,'fixed',true);
+				if(item.Type==1){
+					that.$set(item,'play',false);
+					that.$set(item,'fixed',false);
+					that.$set(item,'ispause',false);
+				}
 			})
 			if(this.isfullscreen){
 				this.videoContext.exitFullScreen()
@@ -477,6 +490,8 @@
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
+				this.pageCls=false;
+				this.isstop=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -495,23 +510,27 @@
 				this.isControls=e.detail.fullScreen;
 			},
 			ControlsFn(){
+				console.log("888888"+this.isControls)
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
-				console.log("暂停了6666")
-				if(!this.isfullscreen){
-					this.isControls = false;
-				}
+				
+				// if(!this.isfullscreen){
+				// 	this.isControls = false;
+				// }
+				console.log("暂停6666"+this.isControls)
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',true);
 				_this.$set(_this.datalist[index],'ispause',true);
+				console.log(_this.datalist[index].fixed,_this.datalist[index].ispause)
 			},
 			playVideo(id,index){
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
+				console.log("播放6666"+this.isControls)
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -520,6 +539,10 @@
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',false);
 				_this.$set(_this.datalist[index],'ispause',false);
+				let theNode=uni.createSelectorQuery().select(".cover-mark")
+				    theNode.boundingClientRect((data)=>{
+				          console.log(data)
+				    }).exec()
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -588,6 +611,7 @@
 							if(item.Type==1){
 								_this.$set(item,'play',false);
 								_this.$set(item,'fixed',false);
+								_this.$set(item,'ispause',false);
 							}
 						})
 					}
@@ -611,6 +635,7 @@
 				}
 			},
 			playBtn(index,id){
+				console.log("点击播放")
 				let _this = this;
 				_this.onplayId=id;
 				_this.isControls = false;
@@ -624,11 +649,14 @@
 								_this.videoContext.play();
 							}else{
 								_this.videoContext.pause();
-								_this.$set(item,'fixed',true);
+								// _this.$set(item,'fixed',true);
+								// _this.$set(item,'ispause',true);
 							}
 						},600)
 					}else{
 						_this.$set(item,'play',false);
+						_this.$set(item,'fixed',false);
+						_this.$set(item,'ispause',false);
 					}
 				})
 			},
@@ -723,6 +751,8 @@
 					}
 					
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -734,6 +764,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			//发现收藏和取消收藏
@@ -763,6 +807,8 @@
 						this.$set(this.datalist[index],"IsCollect",0)
 					}
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -774,6 +820,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			//发现点赞
@@ -809,6 +869,8 @@
 					this.$set(_this.datalist[index],"LikeNum",num)
 					
 				}else if(result.code==2){
+					uni.hideToast();
+					//#ifndef APP-PLUS
 					uni.showModal({
 						content: "您还没有登录，是否重新登录？",
 						success(res) {
@@ -820,6 +882,20 @@
 							}
 						}
 					});
+					// #endif
+					// #ifdef APP-PLUS
+					this.$showModal({
+						title:'登录提示',
+						content: "您还没有登录，是否重新登录？",
+					}).then(res=>{
+						uni.navigateTo({
+							url: "/pages/login/login"
+						})
+						//确认
+					  }).catch(res=>{
+						//取消
+					  })
+					// #endif
 				}
 			},
 			scanCode(){
@@ -832,13 +908,13 @@
 			},
 			popShare(url){
 				this.isClick=true;
-				if(!this.canSwip) return;
+				//if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
-					this.IsShowShare=true;
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
+					this.IsShowShare=true;
 				},400)
 			},
 			appShare(Scene){
@@ -871,10 +947,11 @@
 					})
 				}
 			},
-			showReply(id,name,type){
+			showReply(id,name,type,index){
 				let _this=this;
 				this.isClick=true;
-				console.log("点了")
+				//clearTimeout(this.timer);
+				this.afterOpen();
 				this.FkId=id;
 				if(type==2){
 					this.Commenttype=2
@@ -889,24 +966,88 @@
 				this.noDataReplyIsShow = false;
 				this.hasReplyData=false;
 				this.CommnetList();	
-				if(!this.canSwip) return;
+				//if(!this.canSwip) return;
 				setTimeout(()=>{			
 					console.log("this.onplayId"+this.onplayId)
-					this.IsShowReplyList=true;
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
+					this.IsShowReplyList=true;
 				},400)
+				setTimeout(()=>{
+					console.log({
+						"this.IsShowReplyList":this.IsShowReplyList,
+						"IsShowShare":this.IsShowShare,
+						"onHidePage":this.onHidePage,
+						"isClick":this.isClick,
+						"pageCls":this.pageCls,
+						"isstop":this.isstop
+					})
+				},1000)
+				setTimeout(()=>{
+					console.log({
+						"this.IsShowReplyList":this.IsShowReplyList,
+						"IsShowShare":this.IsShowShare,
+						"onHidePage":this.onHidePage,
+						"isClick":this.isClick,
+						"pageCls":this.pageCls,
+						"isstop":this.isstop
+					})
+				},2000)
+				setTimeout(()=>{
+					console.log("是否显示coverview",_this.isControls)
+					console.log(_this.datalist[index])
+				},2000)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
+				console.log("关闭弹窗")
 				let _this=this;
+				this.beforeClose();
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
-				if(this.onplayId>-1){
-					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
-				}
+				// if(this.onplayId>-1){
+				// 	this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
+				// }
+			},
+			afterOpen() {
+			   this.pageCls=true;
+			   this.TopNum=-this.scrollTopNum;
+			   //#ifdef APP-PLUS
+			   this.contrlwebview(false)
+			   //#endif
+			},
+			beforeClose() {
+				let _this=this;
+			  this.pageCls=false;
+			  //#ifdef APP-PLUS
+			  this.contrlwebview(true)
+			  //#endif
+			  let top=-this.TopNum;
+			   console.log("this.TopNum"+top)
+			   setTimeout(()=>{
+				  uni.pageScrollTo({
+					scrollTop: top,
+					duration: 0
+				  }); 
+				   _this.isstop=true;
+				   setTimeout(()=>{
+					    _this.isstop=false;
+				   },500)
+			   },50)
+			},
+			contrlwebview(e){
+				const pages = getCurrentPages();
+				const page = pages[pages.length - 1];  
+				//#ifdef APP-PLUS
+				const webview=page.$getAppWebview();
+				webview.setStyle({  
+				  pullToRefresh: {  
+				    support: e
+				  }  
+				}); 
+				//#endif
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -992,16 +1133,16 @@
 				}
 			},
 			loadMoreReply(){
-				// if(this.isReplyLoad){
-				// 	this.loadingReplyType=1
-				// 	this.replypage++
-				// 	this.CommnetList()
-				// }else{
-				// 	this.loadingReplyType=2
-				// }
-				uni.navigateTo({
-					url:'/pages/replylist/replylist?id='+this.FkId
-				})
+				if(this.isReplyLoad){
+					this.loadingReplyType=1
+					this.replypage++
+					this.CommnetList()
+				}else{
+					this.loadingReplyType=2
+				}
+				// uni.navigateTo({
+				// 	url:'/pages/replylist/replylist?id='+this.FkId
+				// })
 			},
 			// 发表评论
 			async CommentOperation(){
@@ -1053,7 +1194,9 @@
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
-			this.init();
+			if(!this.pageCls){
+				this.init();
+			};
 			uni.stopPullDownRefresh();
 		},
 		//上拉加载
@@ -1065,12 +1208,13 @@
 		//监听页面滚动
         onPageScroll(e){
 			let _this=this;
+			_this.scrollTopNum=e.scrollTop;
 			if(e.scrollTop>300){
 				this.isTop=true;
 			}else{
 				this.isTop=false;
 			}
-			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare) return;
+			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare||_this.isstop) return;
 		const query = uni.createSelectorQuery().in(_this);
 		clearTimeout(_this.timer)// 每次滚动前 清除一次
 		_this.canSwip=false;
@@ -1097,7 +1241,8 @@
 										_this.$set(item,'fixed',false);
 									}else{
 										_this.$set(item,'play',false);
-										_this.$set(item,'fixed',true);
+										_this.$set(item,'fixed',false);
+										_this.$set(item,'ispause',false);
 									}
 								}else{
 									_this.$set(item,'play',true);
@@ -1107,7 +1252,8 @@
 								Pitem=_this.datalist[index-1];
 								if(Pitem.Type==1){
 									_this.$set(_this.datalist[index-1],'play',false);
-									_this.$set(_this.datalist[index-1],'fixed',true);
+									_this.$set(_this.datalist[index-1],'fixed',false);
+									_this.$set(_this.datalist[index-1],'ispause',false);
 								}
 								_this.$set(item,'play',true);
 								_this.$set(item,'fixed',false);
@@ -1119,15 +1265,17 @@
 								if(!_this.isClick){
 									_this.videoContext.play();
 								}else{
+									console.log("llllllllllllllllllll")
 									_this.videoContext.pause();
-									_this.$set(item,'fixed',true);
+									//_this.$set(item,'fixed',true);
 								};
 								// _this.onplayIndex=index;
 								// _this.onplayId=item.Id;
 							},600)
 						}else{
-							_this.$set(item,'fixed',true);
+							_this.$set(item,'fixed',false);
 							_this.$set(item,'play',false);
+							_this.$set(item,'ispause',false);
 							//_this.isControls = false;
 						}
 					}).exec();
@@ -1161,6 +1309,10 @@
 		// background: #fff !important;
 		// height: 100vh;
 	}
+	.dialog-open {
+	  position: fixed !important;
+	  width: 100%;
+	}
 	.uploadbtn{
 		position: fixed;
 		right: 20upx;
@@ -1189,14 +1341,12 @@
 			margin-bottom: 8upx;
 		}
 	}
-	video{
-		position:relative;
-	}
 	.cover-mark{
 		position:absolute;
 		width:100%;
 		height:100%;
 		left:0;top:0;
+		background: #999;
 	}
 	.foot-reply{
 		bottom: 0;

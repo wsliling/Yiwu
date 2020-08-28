@@ -56,10 +56,10 @@
 	  <div class="modal-content">
 		  <input type='text' placeholder="请输入您的邀请人" v-model="inviteCode" auto-focus/>
 	  </div>
-	  <div class="modal-footer flex justifyContentBetween">
-		<div class="btn-cancel" @click="hidePopup">取消</div>
-		<div class="btn-confirm" @click="onConfirmBind">确定</div> 
-	  </div>
+	  <view class="modal-footer flex-between">
+		<view class="btn-cancel" @click="hidePopup">取消</view>
+		<view class="btn-confirm" @click="onConfirmBind">确定</view> 
+	  </view>
 	</uni-popup>
   </view>
 </template>
@@ -294,10 +294,13 @@ export default {
     text-align: center;
     width: 100%;
     border-top: 1px solid #eee;
-    div{ width: 50%; height: 80upx; line-height: 80upx; font-size: 30upx}
-    div:hover{ background: #f5f5f5}
+    view{ width: 50%; height: 80upx; line-height: 80upx; font-size: 30upx}
+    view:hover{ background: #f5f5f5}
     .btn-cancel{ border-right: 1px solid #eee;}
-    .btn-confirm{color: #ff3333}
+    .btn-confirm{color: $primary}
+  }
+  .uni-close-bottom:after{
+	  border: none;
   }
 }
 </style>

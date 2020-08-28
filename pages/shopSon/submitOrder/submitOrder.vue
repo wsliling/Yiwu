@@ -446,19 +446,32 @@
 				} 
 			  	this.getTypeDate();
 			  }else{
+				//#ifndef APP-PLUS
 				uni.showModal({
-					title:'登录提示',
 					content: "您还没有登录，是否重新登录？",
-					confirmColor:"#DD196D",
 					success(res) {
 						if (res.confirm) {
 							uni.navigateTo({
-								url: "/pages/login/login?askUrl="+strUrl
-							})
+							  url: "/pages/login/login"
+							});
 						} else if (res.cancel) {
 						}
 					}
 				});
+				// #endif
+				// #ifdef APP-PLUS
+				this.$showModal({
+					title:'登录提示',
+					content: "您还没有登录，是否重新登录？",
+				}).then(res=>{
+					uni.navigateTo({
+						url: "/pages/login/login"
+					})
+					//确认
+				  }).catch(res=>{
+					//取消
+				  })
+				// #endif
 			  }
 			},
 			
