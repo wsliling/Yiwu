@@ -56,6 +56,7 @@
 			<view class="">Copyright© 2020</view>
 			<view class="">	壹舞有限责任公司 版本所有</view>
 		</view>
+		<view style="height: 88upx;"></view>
 		<view class="fixedbtn" style="background: #f7f7f7;">
 			<view class="btn" @click="logOut">退出登录</view>
 		</view>

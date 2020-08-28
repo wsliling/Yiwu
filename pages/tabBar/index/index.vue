@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
+								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain" :show-center-play-btn="false" @ended="endedFn(item.Id,index)">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls&&!isClick"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
@@ -538,6 +538,13 @@
 				_this.$set(_this.datalist[index],'fixed',false);
 				_this.$set(_this.datalist[index],'ispause',false);
 			},
+			endedFn(id,index){
+				let _this=this;
+				if(!this.isfullscreen){
+					_this.$set(_this.datalist[index],'fixed',true);
+					_this.$set(_this.datalist[index],'ispause',true);
+				}
+			},
 			// 搜索完成
 			searchConfirm(val){
 				this.searchText = val;
@@ -902,6 +909,7 @@
 			},
 			popShare(url){
 				this.isClick=true;
+				this.afterOpen();
 				//if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
@@ -969,7 +977,7 @@
 				},400)
 				setTimeout(()=>{
 					this.IsShowReplyList=true;
-				},500)
+				},600)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
@@ -1186,6 +1194,7 @@
 		_this.canSwip=false;
 		_this.timer=setTimeout(function(){
 			console.log("滚动停止")
+			if(_this.isClick) return;
 			_this.canSwip=true;
 			_this.datalist.forEach(function(item,index){
 				let itemh=0;
@@ -1230,7 +1239,7 @@
 									_this.videoContext=uni.createVideoContext('video'+item.Id);
 									_this.videoContext.play();
 								}else{
-									//_this.videoContext.pause();
+									// _this.videoContext.pause();
 									_this.$set(item,'fixed',true);
 									_this.$set(item,'ispause',true);
 								};
@@ -1311,7 +1320,7 @@
 	.uni-modal-ReplyBox{
 		background:#fff;
 		border-radius: 10px 10px 0 0;
-		min-height: 30vh;
+		min-height: 40vh;
 		.uni-modal__hd{
 			font-size: 32upx;
 		}
