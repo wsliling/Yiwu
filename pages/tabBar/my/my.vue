@@ -347,13 +347,13 @@
 			}
 		},
 		onLoad() {
-			this.pageCon=uni.getStorageSync("pageCon");
 			//this.pageCon=2;
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
 		},
 		onShow(){
+			this.pageCon=uni.getStorageSync("pageCon");
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.playID=uni.getStorageSync("playID");

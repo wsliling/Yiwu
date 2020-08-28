@@ -63,7 +63,8 @@
                     "NSPhotoLibraryUsageDescription" : "修改用户修改头像和上传产品评价从用户相册选取照片",
                     "NSPhotoLibraryAddUsageDescription" : "保存用户喜欢的图片到自己的相册",
                     "NSCameraUsageDescription" : "用户修改头像时使用摄像头拍摄图片"
-                }
+                },
+                "idfa" : false
             },
             /* SDK配置 */
             "sdkConfigs" : {

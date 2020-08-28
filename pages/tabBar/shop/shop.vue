@@ -62,8 +62,8 @@
 					<image class="icon" :src="item.Logo" mode="aspectFill"></image>
 				</view>
 			</view>
-			<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</block>
+		<uni-load-more :loadingType="loadingType"></uni-load-more>
 		</block>
 		<block v-if="pageCon==2">
 			<view class="staticPage">
@@ -130,6 +130,7 @@
 			}
 		},
 		onShow() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 		},
@@ -177,6 +178,7 @@
 				if(data.length<this.pageSize){
 					this.loadingType=2;
 				}
+				console.log(this.loadingType)
 			},
 			changeSwiper(e){
 				this.currentSwiper=e.detail.current;
