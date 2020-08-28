@@ -115,7 +115,7 @@
 						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id" @click.stop="">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 							<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
-								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
+								<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls&&!isClick"></cover-view>
 							</video>
 							<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 						</view>
@@ -135,7 +135,7 @@
 					<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 						<view class="ft_l flex-start">
 							<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
+							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type,index)">{{item.CommentNum}}</view>
 							
 							<!-- #ifdef APP-PLUS -->
 							<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
@@ -329,14 +329,14 @@
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 						<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 						<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
-							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
+							<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls&&!isClick"></cover-view>
 						</video>
 					</view>
 					
 					<view class="media-ft flex-between">
 						<view class="ft_l flex-start">
 							<view @click.stop="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
-							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName)">{{item.CommentNum}}</view>
+							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,index)">{{item.CommentNum}}</view>
 							<!-- #ifdef APP-PLUS -->
 							<view @click.stop="popShare(xqUrl[1].url+item.Id)">
 								<view class="txt_info share"></view>
@@ -564,7 +564,7 @@
 				scrollTopNum:0,//滚动位置
 				TopNum:0,
 				pageCls:false,
-				isstop:false,
+				isstop:false,//关闭评论弹窗延迟监听滑动播放
 			}
 		},
 		onLoad() {
@@ -594,8 +594,12 @@
 			this.playID=uni.getStorageSync("playID");
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.IsShowReplyList=false;
+			this.IsShowShare=false;
 			this.onHidePage=false;
+			this.isClick=false;
 			this.pageCls=false;
+			this.isstop=false;
+			this.isControls=false;
 			this.contrlwebview(true)
 		},
 		computed: {
@@ -615,9 +619,16 @@
 				 this.datalist.forEach(function(item){
 					 if(that.tabIndex==7){
 					 	that.$set(item,'Type',1);
+						that.$set(item,'play',false);
+						that.$set(item,'fixed',false);
+						that.$set(item,'ispause',false);
+					 }else{
+						if(item.Type==1){
+							that.$set(item,'play',false);
+							that.$set(item,'fixed',false);
+							that.$set(item,'ispause',false);
+						}
 					 }
-					that.$set(item,'play',false);
-					that.$set(item,'fixed',true);
 				 })
 				 if(this.isfullscreen){
 					 this.videoContext.exitFullScreen()
@@ -667,6 +678,9 @@
 					this.IsShowReplyList=false;
 					this.IsShowShare=false;
 					this.isClick=false;
+					this.pageCls=false;
+					this.isstop=false;
+					this.isControls=false;
 					this.GETdatalist();
 				}
 			},
@@ -697,7 +711,6 @@
 				_this.$set(_this.datalist[index],'ispause',true);
 			},
 			playVideo(id,index){
-				 console.log("播放了")
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
@@ -839,8 +852,9 @@
 			},
 			playBtn(index,id){
 				let _this = this;
-				this.isControls = false;
-				this.datalist.forEach(function(item){
+				_this.onplayId=id;
+				_this.isControls = false;
+				_this.datalist.forEach(function(item){
 					if(id==item.Id){
 						_this.$set(item,'play',true);
 						_this.$set(item,'fixed',false);
@@ -850,11 +864,12 @@
 								_this.videoContext.play();
 							}else{
 								_this.videoContext.pause();
-								_this.$set(item,'fixed',true);
 							}
 						},600)
 					}else{
 						_this.$set(item,'play',false);
+						_this.$set(item,'fixed',false);
+						_this.$set(item,'ispause',false);
 					}
 				})
 			},
@@ -982,9 +997,16 @@
 						result.data.forEach(function(item){
 							if(_this.tabIndex==7){
 								_this.$set(item,'Type',1);
+								_this.$set(item,'play',false);
+								_this.$set(item,'fixed',false);
+								_this.$set(item,'ispause',false);
+							}else{
+								if(item.Type==1){
+									_this.$set(item,'play',false);
+									_this.$set(item,'fixed',false);
+									_this.$set(item,'ispause',false);
+								}
 							}
-							_this.$set(item,'play',false);
-							_this.$set(item,'fixed',false);
 						})
 					}
 					if (result.data.length == 0 && this.Page6 == 1) {
@@ -1342,10 +1364,11 @@
 					})
 				}
 			},
-			showReply(id,name,type){
+			showReply(id,name,type,index){
+				let _this=this;
 				this.isClick=true;
 				this.FkId=id;
-				clearTimeout(this.timer);
+				//clearTimeout(this.timer);
 				this.afterOpen();
 				if(type==2){
 					this.Commenttype=2
@@ -1365,8 +1388,10 @@
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
-					this.IsShowReplyList=true;
 				},400)
+				setTimeout(()=>{
+					this.IsShowReplyList=true;
+				},500)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
@@ -1375,9 +1400,7 @@
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
-				if(this.onplayId>-1){
-					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
-				}
+				this.isControls = true;
 			},
 			afterOpen() {
 			   this.pageCls=true;
@@ -1694,7 +1717,8 @@
 												_this.$set(item,'fixed',false);
 											}else{
 												_this.$set(item,'play',false);
-												_this.$set(item,'fixed',true);
+												_this.$set(item,'fixed',false);
+												_this.$set(item,'ispause',false);
 											}
 										}else{
 											_this.$set(item,'play',true);
@@ -1704,28 +1728,27 @@
 										Pitem=_this.datalist[index-1];
 										if(Pitem.Type==1){
 											_this.$set(_this.datalist[index-1],'play',false);
-											_this.$set(_this.datalist[index-1],'fixed',true);
+											_this.$set(_this.datalist[index-1],'fixed',false);
+											_this.$set(_this.datalist[index-1],'ispause',false);
 										}
 										_this.$set(item,'play',true);
 										_this.$set(item,'fixed',false);
 									}
 									setTimeout(()=>{
 										_this.onplayId=item.Id;
-										_this.videoContext=uni.createVideoContext('video'+item.Id);
 										if(!_this.isClick){
+											_this.videoContext=uni.createVideoContext('video'+item.Id);
 											_this.videoContext.play();
 										}else{
-											_this.videoContext.pause();
+											//_this.videoContext.pause();
 											_this.$set(item,'fixed',true);
+											_this.$set(item,'ispause',true);
 										}
-										
-										// _this.onplayIndex=index;
-										// _this.onplayId=item.Id;
 									},600)
 								}else{
-									_this.$set(item,'fixed',true);
+									_this.$set(item,'fixed',false);
 									_this.$set(item,'play',false);
-									//_this.isControls = false;
+									_this.$set(item,'ispause',false);
 								}
 							}).exec();
 						}
@@ -1760,10 +1783,6 @@
 
 <style lang="scss" scoped>
 	@import '../index/style';
-	page{
-		// background: #fff !important;
-		// height: 100vh;
-	}
 	.dialog-open {
 	  position: fixed !important;
 	  width: 100%;
@@ -1853,9 +1872,6 @@
 			width: 40upx;
 			margin-bottom: 8upx;
 		}
-	}
-	video{
-		position:relative;
 	}
 	.cover-mark{
 		position:absolute;

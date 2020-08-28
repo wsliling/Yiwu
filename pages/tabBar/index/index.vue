@@ -91,7 +91,7 @@
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
-									<cover-view class="cover-mark" :id="'cover'+item.Id" @click.stop="ControlsFn" v-if="!isControls&&item.play"></cover-view>
+									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls&&!isClick"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 							</view>
@@ -454,6 +454,7 @@
 			this.isClick=false;
 			this.pageCls=false;
 			this.isstop=false;
+			this.isControls=false;
 			this.contrlwebview(true)
 		},
 		computed: {
@@ -492,6 +493,7 @@
 				this.isClick=false;
 				this.pageCls=false;
 				this.isstop=false;
+				this.isControls=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -510,27 +512,22 @@
 				this.isControls=e.detail.fullScreen;
 			},
 			ControlsFn(){
-				console.log("888888"+this.isControls)
 				this.isControls=true;
 			},
 			pauseVideo(id,index){
-				
-				// if(!this.isfullscreen){
-				// 	this.isControls = false;
-				// }
-				console.log("暂停6666"+this.isControls)
+				if(!this.isfullscreen){
+					this.isControls = false;
+				}
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',true);
 				_this.$set(_this.datalist[index],'ispause',true);
-				console.log(_this.datalist[index].fixed,_this.datalist[index].ispause)
 			},
 			playVideo(id,index){
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
-				console.log("播放6666"+this.isControls)
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -539,10 +536,6 @@
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',false);
 				_this.$set(_this.datalist[index],'ispause',false);
-				let theNode=uni.createSelectorQuery().select(".cover-mark")
-				    theNode.boundingClientRect((data)=>{
-				          console.log(data)
-				    }).exec()
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -972,44 +965,19 @@
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
-					this.IsShowReplyList=true;
 				},400)
 				setTimeout(()=>{
-					console.log({
-						"this.IsShowReplyList":this.IsShowReplyList,
-						"IsShowShare":this.IsShowShare,
-						"onHidePage":this.onHidePage,
-						"isClick":this.isClick,
-						"pageCls":this.pageCls,
-						"isstop":this.isstop
-					})
-				},1000)
-				setTimeout(()=>{
-					console.log({
-						"this.IsShowReplyList":this.IsShowReplyList,
-						"IsShowShare":this.IsShowShare,
-						"onHidePage":this.onHidePage,
-						"isClick":this.isClick,
-						"pageCls":this.pageCls,
-						"isstop":this.isstop
-					})
-				},2000)
-				setTimeout(()=>{
-					console.log("是否显示coverview",_this.isControls)
-					console.log(_this.datalist[index])
-				},2000)
+					this.IsShowReplyList=true;
+				},500)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
-				console.log("关闭弹窗")
 				let _this=this;
 				this.beforeClose();
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
-				// if(this.onplayId>-1){
-				// 	this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
-				// }
+				this.isControls = true;
 			},
 			afterOpen() {
 			   this.pageCls=true;
@@ -1025,7 +993,6 @@
 			  this.contrlwebview(true)
 			  //#endif
 			  let top=-this.TopNum;
-			   console.log("this.TopNum"+top)
 			   setTimeout(()=>{
 				  uni.pageScrollTo({
 					scrollTop: top,
@@ -1194,9 +1161,7 @@
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
-			if(!this.pageCls){
-				this.init();
-			};
+			this.isControls = true;this.init();
 			uni.stopPullDownRefresh();
 		},
 		//上拉加载
@@ -1260,23 +1225,19 @@
 							}
 							setTimeout(()=>{
 								_this.onplayId=item.Id;
-								console.log("判断点击"+_this.isClick)
-								_this.videoContext=uni.createVideoContext('video'+item.Id);
 								if(!_this.isClick){
+									_this.videoContext=uni.createVideoContext('video'+item.Id);
 									_this.videoContext.play();
 								}else{
-									console.log("llllllllllllllllllll")
-									_this.videoContext.pause();
-									//_this.$set(item,'fixed',true);
+									//_this.videoContext.pause();
+									_this.$set(item,'fixed',true);
+									_this.$set(item,'ispause',true);
 								};
-								// _this.onplayIndex=index;
-								// _this.onplayId=item.Id;
 							},600)
 						}else{
 							_this.$set(item,'fixed',false);
 							_this.$set(item,'play',false);
 							_this.$set(item,'ispause',false);
-							//_this.isControls = false;
 						}
 					}).exec();
 				}
@@ -1304,11 +1265,6 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	
-	page{
-		// background: #fff !important;
-		// height: 100vh;
-	}
 	.dialog-open {
 	  position: fixed !important;
 	  width: 100%;
@@ -1346,7 +1302,7 @@
 		width:100%;
 		height:100%;
 		left:0;top:0;
-		background: #999;
+		//background: rgba(0,255,0,.5);
 	}
 	.foot-reply{
 		bottom: 0;
