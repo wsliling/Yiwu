@@ -247,6 +247,7 @@
 			}
 		},
 		onShow() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			if(this.tabIndex==0){

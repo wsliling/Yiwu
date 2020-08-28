@@ -425,7 +425,6 @@
 			}
 		},
 		onLoad() {
-			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
@@ -444,6 +443,7 @@
 			this.init();
 		},
 		onShow(){
+			this.pageCon=uni.getStorageSync("pageCon");
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.playID=uni.getStorageSync("playID");
