@@ -425,6 +425,7 @@
 			}
 		},
 		onLoad() {
+			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
