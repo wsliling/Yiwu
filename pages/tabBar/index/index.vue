@@ -90,7 +90,7 @@
 							</view>
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
-								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain" :show-center-play-btn="false" @ended="endedFn(item.Id,index)">
+								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain" :show-center-play-btn="false" @ended="endedFn(item.Id,index)" @click.stop="">
 									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls&&!isClick"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
