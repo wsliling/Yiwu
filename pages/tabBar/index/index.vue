@@ -91,7 +91,7 @@
 							<view :class="['maxpic mv',item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id">
 								<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 								<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain">
-									<cover-view class="cover-mark" @click.stop="ControlsFn" v-if="!isControls"></cover-view>
+									<cover-view class="cover-mark" :id="'cover'+item.Id" @click.stop="ControlsFn" v-if="!isControls&&item.play"></cover-view>
 								</video>
 								<image class="postpic" :src="item.PicImg" mode="widthFix"></image>
 							</view>
@@ -111,7 +111,7 @@
 						<view class="media-ft flex-between" v-if="item.Type!=3&&item.Type!=4">
 							<view class="ft_l flex-start">
 								<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
-								<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type)">{{item.CommentNum}}</view>
+								<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type,index)">{{item.CommentNum}}</view>
 								<!-- #ifdef APP-PLUS -->
 								<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
 									<view class="txt_info share"></view>
@@ -421,7 +421,7 @@
 				scrollTopNum:0,//滚动位置
 				TopNum:0,
 				pageCls:false,
-				isstop:false,
+				isstop:false,//关闭评论弹窗延迟监听滑动播放
 			}
 		},
 		onLoad() {
@@ -449,8 +449,11 @@
 			this.playID=uni.getStorageSync("playID");
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.IsShowReplyList=false;
+			this.IsShowShare=false;
 			this.onHidePage=false;
+			this.isClick=false;
 			this.pageCls=false;
+			this.isstop=false;
 			this.contrlwebview(true)
 		},
 		computed: {
@@ -464,8 +467,11 @@
 				this.videoContext.stop();
 			}
 			this.datalist.forEach(function(item){
-				that.$set(item,'play',false);
-				that.$set(item,'fixed',true);
+				if(item.Type==1){
+					that.$set(item,'play',false);
+					that.$set(item,'fixed',false);
+					that.$set(item,'ispause',false);
+				}
 			})
 			if(this.isfullscreen){
 				this.videoContext.exitFullScreen()
@@ -485,6 +491,7 @@
 				this.IsShowShare=false;
 				this.isClick=false;
 				this.pageCls=false;
+				this.isstop=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
@@ -508,20 +515,22 @@
 			},
 			pauseVideo(id,index){
 				
-				if(!this.isfullscreen){
-					this.isControls = false;
-				}
+				// if(!this.isfullscreen){
+				// 	this.isControls = false;
+				// }
+				console.log("暂停6666"+this.isControls)
 				let _this=this;
 				_this.onplayId=id;
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',true);
 				_this.$set(_this.datalist[index],'ispause',true);
+				console.log(_this.datalist[index].fixed,_this.datalist[index].ispause)
 			},
 			playVideo(id,index){
 				if(!this.isfullscreen){
 					this.isControls = false;
 				}
-				console.log("暂停了6666"+this.isControls)
+				console.log("播放6666"+this.isControls)
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
@@ -530,6 +539,10 @@
 				_this.onplayIndex=index;
 				_this.$set(_this.datalist[index],'fixed',false);
 				_this.$set(_this.datalist[index],'ispause',false);
+				let theNode=uni.createSelectorQuery().select(".cover-mark")
+				    theNode.boundingClientRect((data)=>{
+				          console.log(data)
+				    }).exec()
 			},
 			// 搜索完成
 			searchConfirm(val){
@@ -598,6 +611,7 @@
 							if(item.Type==1){
 								_this.$set(item,'play',false);
 								_this.$set(item,'fixed',false);
+								_this.$set(item,'ispause',false);
 							}
 						})
 					}
@@ -621,6 +635,7 @@
 				}
 			},
 			playBtn(index,id){
+				console.log("点击播放")
 				let _this = this;
 				_this.onplayId=id;
 				_this.isControls = false;
@@ -634,11 +649,14 @@
 								_this.videoContext.play();
 							}else{
 								_this.videoContext.pause();
-								_this.$set(item,'fixed',true);
+								// _this.$set(item,'fixed',true);
+								// _this.$set(item,'ispause',true);
 							}
 						},600)
 					}else{
 						_this.$set(item,'play',false);
+						_this.$set(item,'fixed',false);
+						_this.$set(item,'ispause',false);
 					}
 				})
 			},
@@ -929,7 +947,7 @@
 					})
 				}
 			},
-			showReply(id,name,type){
+			showReply(id,name,type,index){
 				let _this=this;
 				this.isClick=true;
 				//clearTimeout(this.timer);
@@ -956,6 +974,30 @@
 					}
 					this.IsShowReplyList=true;
 				},400)
+				setTimeout(()=>{
+					console.log({
+						"this.IsShowReplyList":this.IsShowReplyList,
+						"IsShowShare":this.IsShowShare,
+						"onHidePage":this.onHidePage,
+						"isClick":this.isClick,
+						"pageCls":this.pageCls,
+						"isstop":this.isstop
+					})
+				},1000)
+				setTimeout(()=>{
+					console.log({
+						"this.IsShowReplyList":this.IsShowReplyList,
+						"IsShowShare":this.IsShowShare,
+						"onHidePage":this.onHidePage,
+						"isClick":this.isClick,
+						"pageCls":this.pageCls,
+						"isstop":this.isstop
+					})
+				},2000)
+				setTimeout(()=>{
+					console.log("是否显示coverview",_this.isControls)
+					console.log(_this.datalist[index])
+				},2000)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
@@ -965,9 +1007,9 @@
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
-				if(this.onplayId>-1){
-					this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
-				}
+				// if(this.onplayId>-1){
+				// 	this.$set(_this.datalist[_this.onplayIndex],'ispause',false);
+				// }
 			},
 			afterOpen() {
 			   this.pageCls=true;
@@ -998,12 +1040,14 @@
 			contrlwebview(e){
 				const pages = getCurrentPages();
 				const page = pages[pages.length - 1];  
+				//#ifdef APP-PLUS
 				const webview=page.$getAppWebview();
 				webview.setStyle({  
 				  pullToRefresh: {  
 				    support: e
 				  }  
 				}); 
+				//#endif
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -1197,7 +1241,8 @@
 										_this.$set(item,'fixed',false);
 									}else{
 										_this.$set(item,'play',false);
-										_this.$set(item,'fixed',true);
+										_this.$set(item,'fixed',false);
+										_this.$set(item,'ispause',false);
 									}
 								}else{
 									_this.$set(item,'play',true);
@@ -1207,7 +1252,8 @@
 								Pitem=_this.datalist[index-1];
 								if(Pitem.Type==1){
 									_this.$set(_this.datalist[index-1],'play',false);
-									_this.$set(_this.datalist[index-1],'fixed',true);
+									_this.$set(_this.datalist[index-1],'fixed',false);
+									_this.$set(_this.datalist[index-1],'ispause',false);
 								}
 								_this.$set(item,'play',true);
 								_this.$set(item,'fixed',false);
@@ -1219,15 +1265,17 @@
 								if(!_this.isClick){
 									_this.videoContext.play();
 								}else{
+									console.log("llllllllllllllllllll")
 									_this.videoContext.pause();
-									_this.$set(item,'fixed',true);
+									//_this.$set(item,'fixed',true);
 								};
 								// _this.onplayIndex=index;
 								// _this.onplayId=item.Id;
 							},600)
 						}else{
-							_this.$set(item,'fixed',true);
+							_this.$set(item,'fixed',false);
 							_this.$set(item,'play',false);
+							_this.$set(item,'ispause',false);
 							//_this.isControls = false;
 						}
 					}).exec();
@@ -1293,14 +1341,12 @@
 			margin-bottom: 8upx;
 		}
 	}
-	video{
-		position:relative;
-	}
 	.cover-mark{
 		position:absolute;
 		width:100%;
 		height:100%;
 		left:0;top:0;
+		background: #999;
 	}
 	.foot-reply{
 		bottom: 0;

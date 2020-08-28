@@ -1408,12 +1408,14 @@
 			contrlwebview(e){
 				const pages = getCurrentPages();
 				const page = pages[pages.length - 1];  
+				//#ifdef APP-PLUS
 				const webview=page.$getAppWebview();
 				webview.setStyle({  
 				  pullToRefresh: {  
 				    support: e
 				  }  
 				}); 
+				//#endif
 			},
 			//显示评论按钮
 			showReplyBox(){
