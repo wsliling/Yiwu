@@ -24,7 +24,7 @@
 		methods: {
 			dowmapp(type){
 				if(type==0){
-					window.location.href='http://m.dance-one.com/down/android104.apk'
+					window.location.href='http://m.dance-one.com/down/android105.apk'
 				}
 			}
 		}
