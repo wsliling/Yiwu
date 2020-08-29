@@ -1,5 +1,5 @@
 <template>
-	<view :class="['content',pageCls?'dialog-open':'']" :style="{'top':pageCls?TopNum+'px':''}">
+	<view class="content">
 		<view class="head" :style="{'padding-top':barHeight+'px'}">
 			<view class="index_head flex-center" style="border-bottom: 1px solid #eee;">
 				<view class="title"><image src="http://m.dance-one.com/static/headTitle.png" mode="widthFix"></image></view>
@@ -273,22 +273,25 @@
 		<playerMin></playerMin>
 		<view class="topbtn" @click="Top" v-if="isTop"><text class="iconfont icon-iconset0418" style="font-size: 40upx;"></text></view>
 		<!-- 弹出评论 -->
-		<uni-popup mode="fixed" :show="IsShowReplyList" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+		<uni-popup ref="ReplyListWin" type="bottom" @change="changeClose">
 			<view class="uni-modal-ReplyBox">
 				<view class="close iconfont icon-close" @click="hidePopup"></view>
 				<view class="uni-modal__hd">{{commenNum?commenNum+'条':''}}评论</view>
-				<view class="uni-modal__bd text_left" style="line-height: normal;" v-if="hasReplyData">
+				<scroll-view scroll-y="true" class="uni-modal__bd text_left" v-if="hasReplyData">
 					<block v-for="(item,index) in replylist" :key="index">
 						<reply-item :itemData='item' @Sendreplay="Sendreplay"></reply-item>
 					</block>
-				<view class="uni-tab-bar-loading" style="text-align: center; color: #999;" v-if="hasReplyData">
-					<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
-					<text v-if="loadingReplyType==1">加载中…</text>
-					<text v-if="loadingReplyType==2">没有更多了</text>
-				</view>
-				</view>
-				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;">还没有评论哦</view>
+					<view class="uni-tab-bar-loading" style="text-align: center; color: #999;">
+						<text v-if="loadingReplyType==0" @click="loadMoreReply">查看更多</text>
+						<text v-if="loadingReplyType==1">加载中…</text>
+						<text v-if="loadingReplyType==2">没有更多了</text>
+					</view>
+				</scroll-view>
+				<view v-if="noDataReplyIsShow" style="padding: 60upx; color: #999;text-align: center;">还没有评论哦</view>
 				<!-- 底部发表按钮 -->
+				<!-- #ifdef H5 -->
+				<view style="height: 110upx;"></view>
+				<!-- #endif -->
 				<view class="foot-fiexd">
 					<view class="mark" v-if="IsShowReplyBox" @click="CancelReply"></view>
 					<view :class="['foot-reply flex-between',IsShowReplyBox?'active':'']">
@@ -301,7 +304,7 @@
 			</view>
 		</uni-popup>
 		
-		<uni-popup type="bottom" :show="IsShowShare" :h5Top="true" position="bottom" @hidePopup='hidePopup'>
+		<uni-popup ref="sharetWin" type="bottom" @change="changeClose">
 			   <view class="uni-popup-share">
 				   <view class="pop-hd">分享</view>
 					<view class="sharelist flex-between">
@@ -331,7 +334,6 @@
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
 	import share from '@/components/share/share.vue'; //分享
-	import uniPopup from '@/components/uni-popup.vue';
 	import replyItem from '@/components/reply-item.vue'; //评论组件
 	import {editShareUrl} from '@/common/common'
 	import Vue from 'vue'
@@ -342,8 +344,7 @@
 			uniLoadMore,
 			ansInput,
 			share,
-			replyItem,
-			uniPopup
+			replyItem
 		},
 		data() {
 			return {
@@ -418,10 +419,6 @@
 				IsShowShare:false,
 				shareUrl:"",
 				isClick:false,
-				scrollTopNum:0,//滚动位置
-				TopNum:0,
-				pageCls:false,
-				isstop:false,//关闭评论弹窗延迟监听滑动播放
 			}
 		},
 		onLoad() {
@@ -453,10 +450,7 @@
 			this.IsShowShare=false;
 			this.onHidePage=false;
 			this.isClick=false;
-			this.pageCls=false;
-			this.isstop=false;
 			this.isControls=false;
-			this.contrlwebview(true)
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
@@ -492,8 +486,6 @@
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
-				this.pageCls=false;
-				this.isstop=false;
 				this.isControls=false;
 				this.IndexRecommend();
 				this.GetReCommendMember();
@@ -909,14 +901,13 @@
 			},
 			popShare(url){
 				this.isClick=true;
-				this.afterOpen();
-				//if(!this.canSwip) return;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
 				setTimeout(()=>{
 					if(this.onplayId>-1){
 						this.videoContext.pause();
 					}
 					this.IsShowShare=true;
+					this.$refs.sharetWin.open();
 				},400)
 			},
 			appShare(Scene){
@@ -952,8 +943,6 @@
 			showReply(id,name,type,index){
 				let _this=this;
 				this.isClick=true;
-				//clearTimeout(this.timer);
-				this.afterOpen();
 				this.FkId=id;
 				if(type==2){
 					this.Commenttype=2
@@ -968,7 +957,6 @@
 				this.noDataReplyIsShow = false;
 				this.hasReplyData=false;
 				this.CommnetList();	
-				//if(!this.canSwip) return;
 				setTimeout(()=>{			
 					console.log("this.onplayId"+this.onplayId)
 					if(this.onplayId>-1){
@@ -977,53 +965,25 @@
 				},400)
 				setTimeout(()=>{
 					this.IsShowReplyList=true;
-				},600)
+					this.$refs.ReplyListWin.open();
+				},500)
 			},
 			//取消（统一关闭弹窗）
 			hidePopup(){
-				let _this=this;
-				this.beforeClose();
+				this.$refs.ReplyListWin.close();
+				this.$refs.sharetWin.close();
 				this.IsShowReplyList=false;
 				this.IsShowShare=false;
 				this.isClick=false;
 				this.isControls = true;
 			},
-			afterOpen() {
-			   this.pageCls=true;
-			   this.TopNum=-this.scrollTopNum;
-			   //#ifdef APP-PLUS
-			   this.contrlwebview(false)
-			   //#endif
-			},
-			beforeClose() {
-				let _this=this;
-			  this.pageCls=false;
-			  //#ifdef APP-PLUS
-			  this.contrlwebview(true)
-			  //#endif
-			  let top=-this.TopNum;
-			   setTimeout(()=>{
-				  uni.pageScrollTo({
-					scrollTop: top,
-					duration: 0
-				  }); 
-				   _this.isstop=true;
-				   setTimeout(()=>{
-					    _this.isstop=false;
-				   },500)
-			   },50)
-			},
-			contrlwebview(e){
-				const pages = getCurrentPages();
-				const page = pages[pages.length - 1];  
-				//#ifdef APP-PLUS
-				const webview=page.$getAppWebview();
-				webview.setStyle({  
-				  pullToRefresh: {  
-				    support: e
-				  }  
-				}); 
-				//#endif
+			changeClose(e){
+				if(!e.show){
+					this.IsShowReplyList=false;
+					this.IsShowShare=false;
+					this.isClick=false;
+					this.isControls = true;
+				}
 			},
 			//显示评论按钮
 			showReplyBox(){
@@ -1138,6 +1098,7 @@
 					});
 					//更新评论列表，并清空评论内容
 					this.replylist=[];
+					this.replypage=1;
 					this.CommnetList();
 					this.CancelReply();
 					this.IndexRecommend();
@@ -1157,9 +1118,6 @@
 					});
 				}
 			},
-			moveHandle2() {
-				return;	
-			},
 			//返回顶部
 			Top(){
 				uni.pageScrollTo({
@@ -1170,7 +1128,8 @@
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
-			this.isControls = true;this.init();
+			this.isControls = true;
+			this.init();
 			uni.stopPullDownRefresh();
 		},
 		//上拉加载
@@ -1182,16 +1141,16 @@
 		//监听页面滚动
         onPageScroll(e){
 			let _this=this;
-			_this.scrollTopNum=e.scrollTop;
 			if(e.scrollTop>300){
 				this.isTop=true;
 			}else{
 				this.isTop=false;
 			}
-			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare||_this.isstop) return;
+			if(_this.IsShowReplyList||_this.isfullscreen||_this.onHidePage||_this.IsShowShare) return;
 		const query = uni.createSelectorQuery().in(_this);
 		clearTimeout(_this.timer)// 每次滚动前 清除一次
 		_this.canSwip=false;
+		_this.isControls = false;
 		_this.timer=setTimeout(function(){
 			console.log("滚动停止")
 			if(_this.isClick) return;
@@ -1275,9 +1234,8 @@
 
 <style lang="scss" scoped>
 	@import './style';
-	.dialog-open {
-	  position: fixed !important;
-	  width: 100%;
+	page{
+		touch-action: none
 	}
 	.uploadbtn{
 		position: fixed;
@@ -1316,30 +1274,39 @@
 	}
 	.foot-reply{
 		bottom: 0;
+		/* #ifdef H5 */
+		bottom: 50px;
+		/* #endif */
 	}
 	.uni-modal-ReplyBox{
 		background:#fff;
 		border-radius: 10px 10px 0 0;
 		min-height: 40vh;
 		.uni-modal__hd{
+			text-align: center;
 			font-size: 32upx;
+			line-height: 110upx;
 		}
 		.uni-modal__bd{
 			max-height: 60vh;
-			overflow-y: auto;
 		}
 		.close{
 			position: absolute;
 			left: 0;
 			top: 0;
 			padding: 0 30upx;
+			line-height: 110upx;
 		}
 	}
 	.uni-popup-share {
 		background-color: #ffffff;
 		box-shadow: 0 0 30upx rgba(0, 0, 0, .1);
 		border-radius: 20upx 20upx 0 0;
-		.pop-hd{ font-size: 32upx;}
+		text-align: center;
+		.pop-hd{ 
+			font-size: 32upx;
+			line-height: 110upx;
+		}
 		.sharelist{
 				padding: 20upx 30upx;
 				.share-item{ width: 25%; margin-bottom: 20upx;}
