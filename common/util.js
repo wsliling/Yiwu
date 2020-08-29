@@ -367,5 +367,6 @@ export {
 	navigateBack,
 	call,
 	previewImage,
-	strLength
+	strLength,
+	GetOpen
 }

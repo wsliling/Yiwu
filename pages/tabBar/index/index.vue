@@ -438,7 +438,20 @@
 			//#ifndef H5
 			this.ismuted=false;
 			//#endif
-			this.init();
+			if(this.pageCon){
+				this.init();
+			}else{
+				post("System/GetOpen",{}).then(res=>{
+					if(res.code==0){
+						if(res.data==1){
+							this.pageCon=1
+						}else{
+							this.pageCon=2
+						}
+						this.init();
+					}
+				})
+			}
 		},
 		onShow(){
 			this.pageCon=uni.getStorageSync("pageCon");
