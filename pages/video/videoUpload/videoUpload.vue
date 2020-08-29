@@ -42,14 +42,14 @@
 		</uni-popup>
 		<view class="btnbox" @click="uplLoadBtn">确定</view>
 		<!-- #ifdef APP-PLUS -->
-		<view class="advbox" v-if=showmsk>
+		<view class="advbox" v-if="showmsk==1">
 			<view class="imgbox">
 				<view class="textbox">
 					<view class="title">壹舞APP平台服务协议（EULA）</view>
 					<view class="main">
-						<p>用户在接受小舔狗APP平台服务之前，请务必仔细阅读本条款并同意本声明。</p>
+						<p>用户在接受壹舞APP平台服务之前，请务必仔细阅读本条款并同意本声明。</p>
 						<p>第一条</p>
-						　　<p>用户以各种方式使用壹舞平台服务和数据(包括但不限于发表、宣传介绍、转载、浏览及利用拓拼拼平台或拓拼拼平台用户发布内容)的过程中，不得以任何方式利用拓拼拼平台直接或间接从事违反中国法律、以及社会公德的行为，且用户应当恪守下述承诺：</p>
+						　　<p>用户以各种方式使用壹舞平台服务和数据(包括但不限于发表、宣传介绍、转载、浏览及利用壹舞平台或壹舞平台用户发布内容)的过程中，不得以任何方式利用壹舞平台直接或间接从事违反中国法律、以及社会公德的行为，且用户应当恪守下述承诺：</p>
 						
 						　　<p>1. 发布、转载或提供的内容符合中国法律、社会公德;</p>
 						
@@ -57,7 +57,7 @@
 						
 						　　<p>3. 不得干扰、损害和侵犯壹舞APP的各种合法权利与利益;</p>
 						
-						　　<p>4. 遵守拓拼拼平台以及与之相关的网络服务的协议、指导原则、管理细则等;</p>
+						　　<p>4. 遵守壹舞平台以及与之相关的网络服务的协议、指导原则、管理细则等;</p>
 						
 						　　<p>5.壹舞APP有权对违反上述承诺的内容予以删除。</p>
 						
@@ -73,7 +73,7 @@
 					</view>
 					<view class="maskbtnbox">
 						<view class="" @click="toback()">暂不使用</view>
-						<view class="colorblue" @click="showmsk=false">同意</view>
+						<view class="colorblue" @click="showmskFn">同意</view>
 					</view>
 				</view>
 			</view>
@@ -88,7 +88,7 @@
 	export default {
 		data() {
 			return {
-				showmsk:true,
+				showmsk:0,
 				type:0,//0：拍视频 1：课程
 				hascheck:false,//是否选中免费
 				videofile:"",//视频文件
@@ -118,6 +118,7 @@
 			this.getSource()
 		},
 		onShow() {
+			this.showmsk=uni.getStorageSync("showmsk")||1;
 			this.userId = uni.getStorageSync("userId")
 			this.token = uni.getStorageSync("token")
 			//this.videoImg = uni.getStorageSync("VfileName")
@@ -130,6 +131,10 @@
 		methods: {
 			toback(){
 				uni.navigateBack()
+			},
+			showmskFn(){
+				this.showmsk=2;
+				uni.setStorageSync("showmsk",2)
 			},
 			choosevideo(){
 				let _this=this;

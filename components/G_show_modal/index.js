@@ -50,7 +50,7 @@ export class show_model{
 		view.draw([
 			{tag:'rect',id:'modal',color:`rgba(0,0,0,${opa})`,position:{top:'0px',left:'0px',width:'100%',height:'100%'}},
 		    {tag:'rect',id:'content',color:`rgb(255,255,255)`,rectStyles:{borderWidth:'2px',radius:'8px'},position:{top:'42%',left:'20%',width:'60%',height:'16%'}},
-		    {tag:'font',id:'title',text:modelInfo.tit,textStyles:{size:'16px',color:'#000'},position:{top:this.pageHeight*0.435+'px',left:'20%',width:'60%',height:'2%'}},
+		    {tag:'font',id:'title',text:modelInfo.tit,textStyles:{size:'16px',color:'#000'},position:{top:this.pageHeight*0.435+'px',left:'20%',width:'60%',height:'3%'}},
 		    {tag:'font',id:'text',text:modelInfo.content,textStyles:{size:'14px',color:'#666',whiteSpace:'normal',align:modelInfo.align},position:{top:this.pageHeight*0.455+'px',left:'20%',width:'60%',height:'8%'}},
 		    {tag:'rect',id:'line',color:'#EAEAEC',position:{top:'53%',left:'20%',width:'60%',height:'1px'}},
 			{tag:'rect',id:'line2',color:'#EAEAEC',position:{top:'53%',left:'49%',width:modelInfo.delCancel?'0px':'1px',height:modelInfo.delCancel?'0px':'5%'}}

@@ -39,7 +39,6 @@
                     </div>
                   </div>
                 </div> -->
-                
                 <div class="sku" v-for="(skus,val) in thisSku" :key="val">
                   <div class="spcestitle">{{val}}</div>
                   <div class="specs">
@@ -561,6 +560,10 @@ export default {
 }
 .spcestitle {
   padding: 20rpx 0;
+}
+.sku{
+	max-height: 40vh;
+	overflow-y: auto;
 }
 .specs {
   flex-wrap: wrap;
