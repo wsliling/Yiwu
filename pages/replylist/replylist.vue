@@ -15,8 +15,8 @@
 				</view>
 				<view :class="['maxpic mv',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
 					<view v-if="!NewsInfo.play||NewsInfo.fixed" class="isplay" @click="playBtn"></view>
-					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" @fullscreenchange="screenchange" id="video" :show-mute-btn="true" object-fit="cover" @tap="ControlsFn"></video>
-					<image class="postpic" :src="NewsInfo.PicImg" mode="aspectFill"></image>
+					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" @fullscreenchange="screenchange" id="video" :show-mute-btn="true" object-fit="contain" @tap="ControlsFn"></video>
+					<image class="postpic" :src="NewsInfo.PicImg" mode="widthFix"></image>
 				</view>
 				<!-- <view class="maxpic maxh" v-if="NewsInfo.Type==0&&NewsInfo.PicImg">
 					<image :src="NewsInfo.PicImg" mode="widthFix"></image>
