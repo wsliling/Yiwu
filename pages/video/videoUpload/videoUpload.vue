@@ -165,12 +165,19 @@
 								'Token':_this.token,
 								'SignKey':'video'
 							},
-							success: (_res) => {   
-								uni.showToast({
-									title:"视频上传成功",
-								})
-								console.log(_res)
+							success: (_res) => {
 								let data=JSON.parse(_res.data);
+								console.log(data)
+								if(data.code==1){
+									uni.showToast({
+										 title:data.msg,
+										 icon:'none'
+									});
+								}else{
+									uni.showToast({
+										title:"视频上传成功",
+									})
+								}
 								_this.videofile=data.data[0].Video;
 								setTimeout(()=>{
 									_this.videoShowImg=data.data[0].Img;
@@ -180,6 +187,7 @@
 							fail(err) {
 								uni.showToast({
 									title:"视频上传失败，请重试",
+									icon:'none'
 								})
 							},
 							complete() {
