@@ -54,7 +54,7 @@ export default {
 			if (that.src == '') {
 				uni.chooseImage({
 					count: that.number, //默认9
-					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
+					sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
 					// sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
 					success: function (res) {
 						_rtArr = [];
@@ -151,6 +151,7 @@ export default {
 				const ctx = uni.createCanvasContext('_myCanvas', that);
 				that.cWidth = image.width;
 				that.cHeight = image.height;
+				console.log(image.width,image.height,"尺寸")
 				// 图片旋转修正，只有H5有效
 				if (that.fixOrientation) {
 					// 旋转图片

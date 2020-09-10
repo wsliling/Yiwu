@@ -213,7 +213,7 @@ export default {
 				that.base64Arr.splice(9);
 			}
 			that.imageList = that.base64Arr;
-			console.log(that.imageList);
+			// console.log(that.imageList);
 		},
 		cpimgErr(e) {
 			console.log(e);
