@@ -15,7 +15,7 @@
 			</view>
 			<view style="position: relative; width: 100%; overflow-x: hidden;">
 				<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft" style="padding: 0 50px 0 5px;">
-					<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==tab.Id ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(tab.Id,index)" style="width: auto; padding: 0 12px;">{{tab.TypeName}}</view>
+					<view v-for="(tab,index) in tabnav" :key="index" :class="['item',tabIndex==tab.Id ? 'active' : '']" :id="'tabNum'+index" :data-current="index" @click="tapTab(tab.Id,index)" style="width: auto; padding: 0 22px;">{{tab.TypeName}}</view>
 					<!-- <view class="bb_line" :style="'left:'+tabStyle+'rpx'"></view> -->
 				</scroll-view>
 				<view class="flex-column menuIco" id="menu" @click="isshowAll=!isshowAll">
@@ -53,7 +53,7 @@
 								<!-- <view class="isplay"></view> -->
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_auther flex">
 									<image class="tx" :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 									<view class="name uni-ellipsis">{{item.NickName}}</view>
@@ -70,7 +70,7 @@
 								<!-- <view class="isplay"></view> -->
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_auther flex">
 									<image class="tx" :src="item.Avatar||'http://m.dance-one.com/static/default.png'" mode="aspectFill"></image>
 									<view class="name uni-ellipsis">{{item.NickName}}</view>
@@ -268,7 +268,7 @@
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_total">
 									<view class="item_market">{{item.Is_Charge==1?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
 									<span class="item_price" v-if="false">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
@@ -285,7 +285,7 @@
 								<view class="isplay"></view>
 							</view>
 							<view class="item_info">
-								<view class="item_title uni-ellipsis">{{item.Title||'无标题'}}</view>
+								<view class="item_title uni-ellipsis">{{item.Title}}</view>
 								<view class="item_total">
 									<view class="item_market">{{item.Is_Charge==1?item.SalesNum+'人购买':item.Hits+'人点击'}}</view>
 									<span class="item_price" v-if="false">{{item.Is_Charge==1?'￥'+item.Price:'免费'}}</span>
@@ -460,25 +460,25 @@
 						Id:7,
 						TypeName:"视频"
 					},
-					{
-						Id:1,
-						TypeName:"课程"
-					},
-					{
-						Id:2,
-						TypeName:"名师"
-					},
-					{
-						Id:3,
-						TypeName:"机构"
-					},
-					{
-						Id:4,
-						TypeName:"资讯"
-					}
+					// {
+					// 	Id:1,
+					// 	TypeName:"课程"
+					// }
+					// ,{
+					// 	Id:2,
+					// 	TypeName:"名师"
+					// },
+					// {
+					// 	Id:3,
+					// 	TypeName:"机构"
+					// },
+					// {
+					// 	Id:4,
+					// 	TypeName:"资讯"
+					// }
 				],
 				page:1,
-				pageSize:5,
+				pageSize:8,
 				isLoad: false,
 				recuserlist:[],//推荐用户
 				TeacherUserList:[],//推荐的名师
@@ -1755,9 +1755,11 @@
 
 <style lang="scss" scoped>
 	@import '../index/style';
+	/* #ifndef H5 */
 	page{
 		touch-action: none
 	}
+	/* #endif */
 	.showClassify{
 		position: absolute;
 		width: 100%;

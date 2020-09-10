@@ -1247,9 +1247,11 @@
 
 <style lang="scss" scoped>
 	@import './style';
+	/* #ifndef H5 */
 	page{
 		touch-action: none
 	}
+	/* #endif */
 	.uploadbtn{
 		position: fixed;
 		right: 20upx;

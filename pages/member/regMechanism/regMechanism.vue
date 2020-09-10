@@ -32,7 +32,7 @@
 			<view style="height: 110upx;"></view>
 			<view class="fixedbtn" style="background: #f8f8f8;" @click="submit"><view class="btn">提交</view></view>
 		</view>
-		<attestation :AuditStatus="AuditStatus" @toAnew="anew"></attestation>
+		<attestation v-if="AuditStatus!=''" :AuditStatus="AuditStatus" @toAnew="anew"></attestation>
 	</view>
 </template>
 
@@ -110,7 +110,7 @@ export default {
 				PicImg: img
 			});
 			if (res.code !== 0) return;
-			toast('提交成功！等待管理员审核',{icon:true});
+			toast('提交成功！等待管理员审核',{icon:false});
 			navigateBack();
 		},
 		verify() {
