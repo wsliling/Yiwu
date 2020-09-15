@@ -7,7 +7,7 @@
 			<view class="btn btn_1" @click="dowmapp(0)">
 				Android版下载
 			</view>
-			<view class="btn btn_2" v-if="false">
+			<view class="btn btn_2" @click="dowmapp(1)">
 				Ios版下载
 			</view>
 		</view>
@@ -25,6 +25,8 @@
 			dowmapp(type){
 				if(type==0){
 					window.location.href='http://m.dance-one.com/down/android108.apk'
+				}else{
+					window.location.href='https://www.gscapp.cn/app/danceone'
 				}
 			}
 		}

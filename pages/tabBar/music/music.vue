@@ -651,6 +651,14 @@
 				} else {
 					this.loadingType = 2;
 				}
+			}else{
+				if (this.isLoad) {
+					this.loadingType = 1;
+					this.page++;
+					this.workeslist();
+				} else {
+					this.loadingType = 2;
+				}
 			}
 		},
 		onShareAppMessage: function(res) {
