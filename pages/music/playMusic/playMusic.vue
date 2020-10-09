@@ -110,6 +110,7 @@
 		computed:{
 			...mapGetters(['audiolist']),
 			playTimeNum() {
+				console.log(formatSecond(this.playTime))
 				return formatSecond(this.playTime)
 			},
 			curPlayTimeNum() {
