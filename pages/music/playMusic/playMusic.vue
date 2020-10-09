@@ -258,6 +258,9 @@
 							this.$au_player.title = res.data.Name;
 							//app
 							this.$au_player.src = res.data.Audio;
+							//#ifdef APP-PLUS
+							this.$au_player.play();
+							//#endif
 						}else{
 							// this.$au_player.startTime=this.curPlayTime
 							console.log("同一首歌")
