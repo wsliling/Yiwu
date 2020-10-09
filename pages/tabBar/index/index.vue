@@ -325,6 +325,25 @@
 					<view class="uni-close-bottom" @click.stop="hidePopup">关闭</view>
 			   </view>
 		</uni-popup>
+		<!-- #ifdef APP-PLUS -->
+		<view class="advbox" v-if="showXY=='block'">
+			<view class="imgbox">
+				<view class="textbox">
+					<view class="title">服务协议和隐私政策</view>
+					<view class="main">
+						请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各条款，包括但不限于：为了向你提供附近的商品筛选、实时视频等服务，我们需要获取您的定位信息、相机等权限。您可以在“设置”中查看、变更、删除个人信息并管理授权。
+					</view>
+					<view class="main">
+						您可阅读<text class="colorblue" @click="tolink('/pages/message/agreement2/agreement2')">《服务协议》</text>和<text class="colorblue" @click="tolink('/pages/message/agreement2/agreement2')">《隐私政策》</text>了解详细信息。如您同意，请点击“同意”开始接受我们的服务。
+					</view>
+					<view class="maskbtnbox">
+						<view class="" @click="xytab(0)">暂不使用</view>
+						<view class="colorblue" @click="xytab(1)">同意</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 <script>
@@ -348,6 +367,7 @@
 		},
 		data() {
 			return {
+				showXY:"none",//"none":不显示 "block"显示
 				pageCon:0,
 				navigate,
 				userId: "",
@@ -425,6 +445,12 @@
 			this.pageCon=uni.getStorageSync("pageCon");
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
+			var hasXY=uni.getStorageSync("showXY");console.log(hasXY,hasXY!="",hasXY!="undefined")
+			if(hasXY!=""&&hasXY!="undefined"){
+				this.showXY=hasXY;console.log(this.showXY,'++++++++++++++++++++++++')
+			}else{
+				this.showXY="block";
+			}
 			//#endif
 			//#ifdef MP
 			this.barHeight=uni.getSystemInfoSync().statusBarHeight
@@ -503,6 +529,14 @@
 				this.IndexRecommend();
 				this.GetReCommendMember();
 				this.getRecommendUser();
+			},
+			xytab(id){
+				this.showXY=false;
+				if(id==0){
+					plus.runtime.quit();
+				}else{
+					uni.setStorageSync('showXY',"none");
+				}
 			},
 			screenchange(e){
 				if(e.type=="fullscreenchange"){
