@@ -945,11 +945,11 @@
 				"iconPath": "static/tabbar/ft6.png",
 				"selectedIconPath": "static/tabbar/ft6_in.png"
 			},
-			// {
-			// 	"pagePath": "pages/tabBar/shop/shop",
-			// 	"iconPath": "static/tabbar/ft3.png",
-			// 	"selectedIconPath": "static/tabbar/ft3_in.png"
-			// },
+			{
+				"pagePath": "pages/tabBar/shop/shop",
+				"iconPath": "static/tabbar/ft3.png",
+				"selectedIconPath": "static/tabbar/ft3_in.png"
+			},
 			{
 				"pagePath": "pages/tabBar/music/music",
 				"iconPath": "static/tabbar/ft4.png",
