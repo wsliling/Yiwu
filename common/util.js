@@ -148,6 +148,43 @@ function toLogin(objUrl) {
     return false;
   }
 }
+function toLogin2() { 
+  const userId = uni.getStorageSync('userId');
+  const token = uni.getStorageSync('token');
+  if(userId && token){
+    return true;
+  }else{
+		// #ifdef APP-PLUS
+		G_show_modal({
+			title:'登录提示',
+			content: "您还没有登录，登录后可继续体验？",
+		}).then(res=>{
+			uni.navigateTo({
+				url: "/pages/login/login"
+			})
+			//确认
+		  }).catch(res=>{
+			//取消
+		  })
+		// #endif
+		// #ifndef APP-PLUS
+		uni.showModal({
+			title:'登录提示',
+			content: "您还没有登录，登录后可继续体验？",
+			confirmColor:"#DD196D",
+			success(res) {
+				if (res.confirm) {
+					uni.navigateTo({
+						url: "/pages/login/login"
+					})
+				} else if (res.cancel) {
+				}
+			}
+		});
+		// #endif
+    return false;
+  }
+}
 // 获取openId
 function getStorageOpenid() {
   const openId = uni.getStorageSync("openId");
@@ -368,5 +405,6 @@ export {
 	call,
 	previewImage,
 	strLength,
-	GetOpen
+	GetOpen,
+	toLogin2
 }

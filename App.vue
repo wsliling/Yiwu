@@ -1,5 +1,5 @@
 <script>
-	import {MemberPaly} from '@/common/util.js';
+	import {MemberPaly,toLogin2} from '@/common/util.js';
 	import Vue from 'vue'
 	import {
 		mapMutations
@@ -7,6 +7,9 @@
 	export default {
 		onLaunch: function(e) {
 			console.log('App Launch')
+			setInterval(function(){
+				toLogin2()
+			},1000*60*5)
 			// 获取分享的邀请码
 			e.query.inviteCode&&uni.setStorageSync('inviteCode',e.query.inviteCode)
 			// #ifdef H5
