@@ -92,8 +92,8 @@
 		margin-bottom: 20upx;
 		.author{
 			.tx{
-				width: 80upx;
-				height: 80upx;
+				width: 88upx;
+				height: 88upx;
 				padding: 4upx;
 				border: 1px solid $primary;
 				border-radius: 100%;
@@ -105,16 +105,6 @@
 					background-color: #eee;
 				}
 			}
-			// .tx{
-			// 	width: 80upx;
-			// 	height: 80upx;
-			// 	margin-right: 20upx;
-			// 	image{
-			// 		display: block;width: 100%; height: 100%;
-			// 		border-radius: 100%;
-			// 		background-color: #eee;
-			// 	}
-			// }
 			.name{
 				max-width: 300upx;
 				font-size: 30upx;
@@ -130,7 +120,9 @@
 		}
 	}
 	.media-bd{
-		.desc{ line-height: 1.5;font-size: 32upx; font-weight: 600;}
+		.desc{ line-height: 1.5;font-size: 32upx; 
+			// font-weight: 600;
+		}
 		.maxpic{
 			margin-top: 20upx;
 			//border-radius: 12upx;
@@ -248,35 +240,35 @@
 		.txt_info{
 			font-size: 24upx;
 			color: #999;
-			height: 44upx;
-			line-height: 44upx;
+			height: 48upx;
+			line-height: 48upx;
 		}
 		.ft_l .txt_info{
 			margin-right: 40upx;
 		}
 		.like{padding-left: 50upx; background: url(http://m.dance-one.com/static/like.png) left center no-repeat;
-		background-size: 44upx 44upx;}
+		background-size: 48upx 48upx;}
 		.like.active{ background: url(http://m.dance-one.com/static/like2.png) left center no-repeat;
-		background-size: 44upx 44upx;}
+		background-size: 48upx 48upx;}
 		.reply{
 			padding-left: 50upx;background: url(http://m.dance-one.com/static/reply.png) left center no-repeat;
-			background-size: 44upx 44upx;
+			background-size: 48upx 48upx;
 		}
 		.share{
-			width: 44upx;
-			height: 44upx;
+			width: 48upx;
+			height: 48upx;
 			background: url(http://m.dance-one.com/static/share.png) left center no-repeat;
-			background-size: 44upx 44upx;
+			background-size: 48upx 48upx;
 		}
 		.sign{
-			width: 44upx;
-			height: 44upx;
+			width: 48upx;
+			height: 48upx;
 			background: url(http://m.dance-one.com/static/sign.png) left center no-repeat;
-			background-size: 44upx 44upx;
+			background-size: 48upx 48upx;
 		}
 		.sign.active{
 			background: url(http://m.dance-one.com/static/sign2.png) left center no-repeat;
-			background-size: 44upx 44upx;
+			background-size: 48upx 48upx;
 		}
 	}
 	.media-comment{ 
@@ -458,7 +450,8 @@
 			}
 		}
 		.item_title{
-			font-size:30upx;font-weight: bold;
+			font-size:32upx;
+			// font-weight: bold;
 		}
 		.item_price{
 			color:$primary;font-size:30upx;font-weight: bold;

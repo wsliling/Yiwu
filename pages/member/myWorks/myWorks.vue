@@ -464,7 +464,7 @@ export default {
 	.uni-icon{
 		position: absolute;
 		right: 20upx;
-		top: 20upx;
+		top: 60upx;
 		color: #FFF;
 		font-size: 72upx;
 		line-height: 1;
