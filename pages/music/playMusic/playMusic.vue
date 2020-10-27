@@ -251,7 +251,7 @@
 						})
 						// console.log("this.nowIndex"+this.nowIndex)
 						// console.log("this.musicID"+this.musicID)
-						if(uni.getStorageSync("playID")!=id){
+						if(uni.getStorageSync("playID")!=id||this.playType==2){
 							console.log("src改变了")
 							this.setPlaydetail({id,pic:res.data.PicImg});
 							this.$au_player.autoplay = true;
