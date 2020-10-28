@@ -122,7 +122,7 @@
 									<text class="txt">分享到动态</text>
 								</view>
 							</view>
-							<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id" :param="itemdata.Id">
+							<share class="line-item" :url="'/pages/music/playMusic/playMusic?type=share&id='+itemdata.Id">
 								<view class="line-item-l flex-start" style="width:100%;">
 									<image class="iconimg" src="http://m.dance-one.com/static/share.png" mode="widthFix"></image>
 									<text class="txt">分享</text>
@@ -231,17 +231,29 @@
 				MusicId:0,//选择更多操作的id
 				price:0,//选择更多操作的价格
 				itemdata:{},
-				NewsList:[]
+				NewsList:[],
+				pageIn:0,
 			}
 		},
 		onLoad() {
 			this.pageCon=uni.getStorageSync("pageCon");
+			this.pageIn=0;
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
 			if(this.pageCon==1){
 				this.getclassifyList();
 				this.getBanner();
+				if(this.tabIndex==0){
+					this.hasData=false;
+					this.page=1;
+					this.findlist=[];
+					this.FindList()
+				}else{
+					this.playID=uni.getStorageSync("playID")
+					this.playIDtype=this.$store.state.isplayingmusic;
+					this.workeslist();
+				}
 			}else{
 				this.YWNewsList()
 			}
@@ -250,15 +262,19 @@
 			this.pageCon=uni.getStorageSync("pageCon");
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
-			if(this.tabIndex==0){
-				this.hasData=false;
-				this.page=1;
-				this.findlist=[];
-				this.FindList()
-			}else{
-				this.playID=uni.getStorageSync("playID")
-				this.playIDtype=this.$store.state.isplayingmusic;
-				this.workeslist();
+			this.playID=uni.getStorageSync("playID")
+			this.playIDtype=this.$store.state.isplayingmusic;
+			this.pageIn++;
+			if(this.pageIn>1){
+				 if(this.tabIndex==0){
+					 if (this.page === 1) {
+						 this.hasData=false;
+					 	 this.findlist=[];
+					 }
+				     this.FindList()
+				 }else{
+				    this.workeslist();
+				 }
 			}
 		},
 		computed: {
@@ -353,9 +369,12 @@
 						this.hasData = false;
 					}
 					if (this.page === 1) {
+						// this.findlist=[];
+						// console.log(this.findlist)
 						this.findlist = result.data;
 					}
 					if (this.page > 1) {
+						this.findlist.splice(this.pageSize*(this.page-1),this.pageSize);
 						this.findlist = this.findlist.concat(
 							result.data
 						);
@@ -422,6 +441,7 @@
 						this.hasData = false;
 					}
 					if (this.page === 1) {
+						this.datalist=[];
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {
@@ -446,6 +466,7 @@
 					isbuy=item.IsShowBuy,
 					PicImg=item.PicImg,
 					title=item.Name;
+					this.setAudiolist(this.datalist);
 				if(isbuy==0){
 					this.playID=id;
 					if(id==uni.getStorageSync("playID")){
@@ -631,13 +652,14 @@
 		},
 		// 下拉刷新
 		onPullDownRefresh(){
+			this.hasData=false;
+			this.page=1;
 			if(this.tabIndex==0){
-				this.hasData=false;
-				this.page=1;
 				this.findlist=[];
 				this.FindList();
 			}else{
-				
+				this.datalist=[];
+				this.workeslist();
 			}
 			uni.stopPullDownRefresh();
 		},

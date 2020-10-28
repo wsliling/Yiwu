@@ -182,7 +182,7 @@
 						this.isLoad = true;
 						this.loadingType = 0
 					}
-					this.setAudiolist(this.datalist);
+					
 				}else if(result.code==2){
 					uni.hideToast();
 					//#ifndef APP-PLUS
@@ -220,8 +220,7 @@
 					isbuy=item.IsShowBuy,
 					PicImg=item.PicImg,
 					title=item.Name;
-				console.log("playID"+uni.getStorageSync("playID"))
-				console.log("id"+id)
+				this.setAudiolist(this.datalist);
 				if(isbuy==0){
 					this.playID=id;
 					if(id==uni.getStorageSync("playID")){

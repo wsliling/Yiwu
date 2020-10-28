@@ -39,7 +39,7 @@
 					</view>
 				</block>
 			
-			<view class="media-song" v-if="dataitem.MusicData" @click.stop="toRec(dataitem.MusicData.Id)">
+			<view :class="['media-song',playdetail.id==dataitem.MusicData.Id&&isplayactive?'active':'']" v-if="dataitem.MusicData" @click.stop="toRec(dataitem.MusicData.Id)">
 				<view class="box flex">
 					<view class="songpic">
 						<view class="isaudio">
@@ -69,6 +69,7 @@
 </template>
 <script>
     import {host,post,toLogin} from '@/common/util.js';
+	import {mapGetters} from 'vuex'
 	export default {
 		props: {
 			Grid:{
@@ -96,6 +97,7 @@
 			// this.userId = uni.getStorageSync("userId");
 			// this.token = uni.getStorageSync("token");
 			this.dataitem=this.datajson;
+			
 		},
 		data(){
 			return{
@@ -106,6 +108,7 @@
 			}
 		},
 		computed: {
+			...mapGetters(['isplayingmusic','playdetail','isplayactive']),
 			imgArr() {
 				if(this.dataitem.ImgList){
 					return this.dataitem.ImgList.split(",");
@@ -428,7 +431,7 @@
 		height: auto;
 		display: block;
 	}
-	.image-section-one .image-list .img{display: block; height: auto; max-height: 710upx;}
+	.image-section-one .image-list .img{display: block; height: auto;max-height: 710upx;}
 	.image-section-two,
 	.image-section-three,
 	.image-section-four {
@@ -534,6 +537,12 @@
 		border-radius: 12upx;
 		padding: 24upx;
 		overflow: hidden;
+		&.active{
+			background-color: #f9e9ee;
+			text{
+				color: $primary;
+			}
+		}
 		.box{
 			align-items: center;
 			text{padding-left: 20upx; 

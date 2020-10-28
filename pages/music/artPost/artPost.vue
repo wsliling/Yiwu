@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { host, post, get, formatLocation, formatTime, toLogin, getCurrentPageUrlWithArgs } from '@/common/util.js';
+import { host, post, get, formatLocation, formatTime, toLogin, debounce } from '@/common/util.js';
 import cpimg from '@/components/cpimg.vue';
 import { pathToBase64, base64ToPath } from '@/common/image-tools.js';
 var sourceType = [['camera'], ['album'], ['camera', 'album']];
@@ -369,18 +369,20 @@ export default {
 		},
 		async Submit() {
 			let _this = this;
-			let base64Arr = [];
-			for (let i = 0; i < _this.imageList.length; i++) {
-				base64Arr.push({
-					PicUrl: _this.imageList[i]
-				});
-			}
-			if (_this.verifysubmint()) {
-				//#ifdef MP-WEIXIN
-				base64Arr = await this.base64Img(this.imageList);
-				//#endif
-				_this.UserPublishFind(JSON.stringify(base64Arr));
-			}
+			debounce(()=>{
+				let base64Arr = [];
+				for (let i = 0; i < _this.imageList.length; i++) {
+					base64Arr.push({
+						PicUrl: _this.imageList[i]
+					});
+				}
+				if (_this.verifysubmint()) {
+					//#ifdef MP-WEIXIN
+					base64Arr = await this.base64Img(this.imageList);
+					//#endif
+					_this.UserPublishFind(JSON.stringify(base64Arr));
+				}
+			})			
 		},
 		//清除数据
 		clearData() {
