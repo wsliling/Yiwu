@@ -263,6 +263,8 @@
 			this.userId = uni.getStorageSync("userId");
 			this.token = uni.getStorageSync("token");
 			this.playID=uni.getStorageSync("playID")
+			this.isShowOperation=false;
+			this.isShowSelect=false;
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.pageIn++;
 			if(this.pageIn>1){
