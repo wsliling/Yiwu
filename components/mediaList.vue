@@ -430,8 +430,13 @@
 		width: 100%;
 		height: auto;
 		display: block;
+		max-height: 70vh;
+		overflow-y: hidden;
+		border-radius: 6px;
 	}
-	.image-section-one .image-list .img{display: block; height: auto;max-height: 710upx;}
+	.image-section-one .image-list .img{display: block; height: auto;
+	 
+	 }
 	.image-section-two,
 	.image-section-three,
 	.image-section-four {

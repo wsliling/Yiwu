@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { post,host } from '@/common/util';
+import { post,host,debounce } from '@/common/util';
 import { pathToBase64 } from '@/common/image-tools.js';
 import uniPopup from '@/components/uni-popup.vue';
 export default {
@@ -268,9 +268,11 @@ export default {
 			console.log(this.picStr);
 		},
 		uplLoadBtn() {
+			debounce(()=>{
 			if (this.yanzheng()) {
 				this.uplLoadMusic();
 			}
+			})		
 		},
 		yanzheng() {
 			if (this.Title == '') {
