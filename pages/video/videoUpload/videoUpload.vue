@@ -83,7 +83,7 @@
 </template>
 
 <script>
-	import {post,webUrl,host} from '@/common/util';
+	import {post,webUrl,host,debounce} from '@/common/util';
 	import uniPopup from '@/components/uni-popup.vue';
 	export default {
 		data() {
@@ -245,9 +245,11 @@
 				}
 			},
 			uplLoadBtn(){
-				if(this.yanzheng()){
-					this.pushVideo()
-				}
+				debounce(()=>{
+					if(this.yanzheng()){
+						this.pushVideo()
+					}
+				})
 			},
 			yanzheng(){
 				if(this.Title==""){

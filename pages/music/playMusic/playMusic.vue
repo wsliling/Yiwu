@@ -118,7 +118,7 @@
 			}
 		},
 		onLoad(e) {
-			this.nowIndex=e.nowIndex;
+			this.nowIndex=e.nowIndex||0;
 			this.musicID=e.id||'';
 			this.type = e.type||'';
 			this.musicList=uni.getStorageSync("musicList");//音乐列表
@@ -251,7 +251,7 @@
 						})
 						// console.log("this.nowIndex"+this.nowIndex)
 						// console.log("this.musicID"+this.musicID)
-						if(uni.getStorageSync("playID")!=id){
+						if(uni.getStorageSync("playID")!=id||this.playType==2){
 							console.log("src改变了")
 							this.setPlaydetail({id,pic:res.data.PicImg});
 							this.$au_player.autoplay = true;
@@ -262,8 +262,9 @@
 							this.$au_player.play();
 							//#endif
 						}else{
-							// this.$au_player.startTime=this.curPlayTime
 							console.log("同一首歌")
+							// this.$au_player.startTime=this.curPlayTime;
+							// this.$au_player.play();
 						}
 					}else{
 						let _this=this;
@@ -339,6 +340,9 @@
 				this.isPlay = false;
 				this.setIsplayingmusic(false)
 				this.setIsplayactive(false)
+				if(this.musicList.length==1){
+					uni.setStorageSync("playID",'')
+				}
 				this.next(true);
 			},
 			onWaitingFn(){
@@ -359,9 +363,10 @@
 					next = Math.floor(Math.random() * (last + 1))
 					prev = Math.floor(Math.random() * (last + 1))
 				}
-				if (isAuto && this.playType === 2) {
+				if ((isAuto && this.playType === 2)||(isAuto && last === 0)) {
 					next = cur
 				}
+				
 				return type == 'next' ? next : prev
 			},
 			//下一曲

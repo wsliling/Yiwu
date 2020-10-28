@@ -7,7 +7,7 @@
 					<view class="name uni-ellipsis">{{NewsInfo.NickName}}</view>
 					<view class="tochat" @click.stop="tolink('/pages/chat/chat?id='+NewsInfo.MemberId,'login')"><image src="http://m.dance-one.com/static/chat.png"></image></view>
 				</view>
-				<view v-if="NewsInfo.IsMy==0" @click="flow(NewsInfo.MemberId,index,1)" :class="['flow',NewsInfo.IsFollow==1?'active':'']">{{NewsInfo.IsFollow==1?'已关注':'关注'}}</view>
+				<view v-if="NewsInfo.IsMy==0" @click="flow(NewsInfo.MemberId,1)" :class="['flow',NewsInfo.IsFollow==1?'active':'']">{{NewsInfo.IsFollow==1?'已关注':'关注'}}</view>
 			</view>
 			<view class="media-bd">
 				<view class="desc">
@@ -335,7 +335,7 @@
 				});
 			},
 			//关注取消关注 followtype 1推荐视频用户
-			async flow(id,index,followtype){
+			async flow(id,followtype){
 				let result = await post("Find/FollowOperation", {
 					"UserId": this.userId,
 					"Token": this.token,

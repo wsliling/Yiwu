@@ -19,7 +19,6 @@
 										<image class="uni-uploader__img" :src="image" :data-src="image" @tap="previewImage"></image>
 									</view>
 								</block>
-								<cpimg ref="cpimg" @result="cpimgOk" @err="cpimgErr" :number="9" :fixOrientation="true" :size="500" :maxWidth="1000" :ql="0.9" type="url" />
 								<view class="uni-uploader__input-box" v-if="isShowBtnUpload"><view class="uni-uploader__input" @tap="chooseImage"></view></view>
 							</view>
 						</view>
@@ -112,15 +111,9 @@
 </template>
 
 <script>
-import { host, post, get, formatLocation, formatTime, toLogin, getCurrentPageUrlWithArgs } from '@/common/util.js';
-import cpimg from '@/components/cpimg.vue';
-import { pathToBase64, base64ToPath } from '@/common/image-tools.js';
-var sourceType = [['camera'], ['album'], ['camera', 'album']];
-var sizeType = [['compressed'], ['original'], ['compressed', 'original']];
+import { host, post, get, formatLocation, formatTime, toLogin, debounce } from '@/common/util.js';
+import { pathToBase64 } from '@/common/image-tools.js';
 export default {
-	components: {
-		cpimg
-	},
 	data() {
 		return {
 			showmsk:0,
@@ -132,10 +125,7 @@ export default {
 			locationAddress: '',
 			imageList: [],
 			base64Arr: [],
-			sourceTypeIndex: 2,
-			sourceType: ['拍照', '相册', '拍照或相册'],
-			sizeTypeIndex: 2,
-			sizeType: ['压缩', '原图', '压缩或原图'],
+			
 			countIndex: 8,
 			count: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 			inputTxtLength: 0, //当前输入字数
@@ -169,32 +159,25 @@ export default {
 			uni.setStorageSync("showmsk2",2)
 		},
 		// 添加图片
-		chooseImage: async function() {
-			//#ifndef MP-WEIXIN
-			let that = this;
-			that.$refs.cpimg._changImg();
-			//#endif
-			//#ifdef MP-WEIXIN
-			if (this.imageList.length >= 9) {
-				let isContinue = await this.isFullImg();
-				if (!isContinue) {
-					return;
-				}
-			}
+		async chooseImage() {
+			let _this=this;
 			uni.chooseImage({
-				sourceType: sourceType[this.sourceTypeIndex],
-				sizeType: sizeType[this.sizeTypeIndex],
 				count: this.imageList.length + this.count[this.countIndex] > 9 ? 9 - this.imageList.length : this.count[this.countIndex],
-				success: res => {
-					this.imageList = this.imageList.concat(res.tempFilePaths);
-					if (this.imageList.length >= 9) {
-						this.isShowBtnUpload = false;
-						this.imageList.splice(9);
+				sizeType: ['compressed'],
+				sourceType: ['album', 'camera'],
+				success:async res => {
+					// tempFilePath可以作为img标签的src属性显示图片
+					//let tempFilePaths = res.tempFilePaths[0];
+					_this.imageList = _this.imageList.concat(res.tempFilePaths);
+					if (_this.imageList.length >= 9) {
+						_this.isShowBtnUpload = false;
+						_this.imageList.splice(9);
 					}
+					_this.base64Arr = await _this.base64Img(_this.imageList);
 				}
 			});
-			//#endif
 		},
+		
 		async base64Img(arr) {
 			let base64Arr = [];
 			for (let i = 0; i < arr.length; i += 1) {
@@ -205,50 +188,35 @@ export default {
 			}
 			return base64Arr;
 		},
-		cpimgOk(file) {
-			let that = this;
-			that.base64Arr = that.base64Arr.concat(file);
-			if (that.base64Arr.length >= 9) {
-				that.isShowBtnUpload = false;
-				that.base64Arr.splice(9);
-			}
-			that.imageList = that.base64Arr;
-			// console.log(that.imageList);
-		},
-		cpimgErr(e) {
-			console.log(e);
-		},
-		isFullImg: function() {
-			return new Promise(res => {
-				//#ifndef APP-PLUS
-				uni.showModal({
-					content: '已经有9张图片了,是否清空现有图片？',
-					success: e => {
-						if (e.confirm) {
-							this.imageList = [];
-							res(true);
-						} else {
-							res(false);
-						}
-					},
-					fail: () => {
+		isFullImg() {
+			//#ifndef APP-PLUS
+			uni.showModal({
+				content: '已经有9张图片了,是否清空现有图片？',
+				success: e => {
+					if (e.confirm) {
+						this.imageList = [];
+						res(true);
+					} else {
 						res(false);
 					}
-				});
-				//#endif
-				//#ifdef APP-PLUS
-				this.$showModal({
-					content: "已经有9张图片了,是否清空现有图片？",
-				}).then(_res=>{
-					this.imageList = [];
-					res(true);
-					//确认
-				  }).catch(_res=>{
-					  res(false);
-					//取消
-				  })
-				//#endif
+				},
+				fail: () => {
+					res(false);
+				}
 			});
+			//#endif
+			// #ifdef APP-PLUS
+			this.$showModal({
+				content: "已经有9张图片了,是否清空现有图片？",
+			}).then(_res=>{
+				this.imageList = [];
+				res(true);
+				//确认
+			  }).catch(_res=>{
+				//取消
+				res(false)
+			  })
+			// #endif
 		},
 		previewImage: function(e) {
 			var current = e.target.dataset.src;
@@ -299,6 +267,7 @@ export default {
 		//删除图片
 		delImg(index) {
 			this.imageList.splice(index, 1);
+			this.base64Arr.splice(index, 1);
 			if (this.imageList.length < 9) {
 				this.isShowBtnUpload = true;
 			}
@@ -318,7 +287,7 @@ export default {
 			this.inputTxtLength = this.title.length;
 		},
 		//发布
-		async UserPublishFind(base64img) {
+		async UserPublishFind() {
 			let result = await post('Find/UserPublishFind', {
 				UserId: this.userId,
 				Token: this.token,
@@ -327,7 +296,7 @@ export default {
 				Location: this.locationAddress,
 				ContentAbstract: this.ContentAbstract,
 				ContentDetails: this.ContentDetails,
-				PicList: base64img,
+				PicList: JSON.stringify(this.base64Arr),
 				MusicId:this.MusicId
 			});
 			if (result.code === 0) {
@@ -369,18 +338,11 @@ export default {
 		},
 		async Submit() {
 			let _this = this;
-			let base64Arr = [];
-			for (let i = 0; i < _this.imageList.length; i++) {
-				base64Arr.push({
-					PicUrl: _this.imageList[i]
-				});
-			}
-			if (_this.verifysubmint()) {
-				//#ifdef MP-WEIXIN
-				base64Arr = await this.base64Img(this.imageList);
-				//#endif
-				_this.UserPublishFind(JSON.stringify(base64Arr));
-			}
+			debounce(()=>{
+				if (_this.verifysubmint()) {
+					_this.UserPublishFind();
+				}
+			})			
 		},
 		//清除数据
 		clearData() {

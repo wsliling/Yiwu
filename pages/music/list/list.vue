@@ -242,7 +242,7 @@
 						this.isLoad = true;
 						this.loadingType = 0
 					}
-					this.setAudiolist(this.datalist);
+					
 				}
 			},
 			//跳转
@@ -259,6 +259,7 @@
 					isbuy=item.IsShowBuy,
 					PicImg=item.PicImg,
 					title=item.Name;
+				this.setAudiolist(this.datalist);
 				if(isbuy==0){
 					
 					this.playID=id;

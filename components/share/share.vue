@@ -171,6 +171,7 @@ export default {
 </script>
 <style scoped lang="scss">
 .button{
+	width: 100%;
     background-color:transparent;
     padding-left:0;
     padding-right:0;

@@ -447,7 +447,7 @@
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			var hasXY=uni.getStorageSync("showXY");console.log(hasXY,hasXY!="",hasXY!="undefined")
 			if(hasXY!=""&&hasXY!="undefined"){
-				this.showXY=hasXY;console.log(this.showXY,'++++++++++++++++++++++++')
+				this.showXY=hasXY;
 			}else{
 				this.showXY="block";
 			}
@@ -478,6 +478,7 @@
 					}
 				})
 			}
+			toLogin();
 		},
 		onShow(){
 			this.pageCon=uni.getStorageSync("pageCon");
@@ -571,6 +572,7 @@
 				let _this=this;
 				if(this.playID&&this.isplayingmusic){
 					this.setIsplayingmusic(false)
+					this.$au_player.pause();
 				}
 				_this.onplayId=id;
 				_this.onplayIndex=index;
