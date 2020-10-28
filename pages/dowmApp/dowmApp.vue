@@ -24,7 +24,7 @@
 		methods: {
 			dowmapp(type){
 				if(type==0){
-					window.location.href='http://m.dance-one.com/down/android110.apk'
+					window.location.href='http://m.dance-one.com/down/android112.apk'
 				}else{
 					window.location.href='https://www.gscapp.cn/app/danceone'
 				}
