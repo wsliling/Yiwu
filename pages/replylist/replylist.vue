@@ -488,6 +488,13 @@
 				}
 			},
 		},
+		//下拉刷新
+		onPullDownRefresh() {
+			this.page=1;
+			this.CommnetList();
+			this.FindNewsInfo();
+			uni.stopPullDownRefresh();
+		},
 		// 上拉加载
 		onReachBottom: function() {
 			if (this.isLoad) {

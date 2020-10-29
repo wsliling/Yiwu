@@ -97,6 +97,7 @@
             "path" : "pages/replylist/replylist",
             "style" : {
 				"navigationBarTitleText": "评论",
+				"enablePullDownRefresh":true,
 				"app-plus": {
 					 "titleNView": {    
 						"splitLine": {  
@@ -646,6 +647,7 @@
                     "path" : "addUser/addUser",
                     "style" : {
 						"navigationBarTitleText": "推荐关注",
+						"enablePullDownRefresh":true,
 						"app-plus": {
 							 "titleNView": {    
 								"splitLine": {  

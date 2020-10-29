@@ -159,7 +159,7 @@
 			
 		</view>
 		<view class="staticPage" v-if="pageCon==2">
-			<view class="Yi-newslist" >
+			<view class="Yi-newslist">
 				<view class="Yi-media uni-bg-white" v-for="(item,index) in NewsList" :key="index" @click="tolink('/pages/msgDetail/msgDetail?id='+item.Id)">
 					<view class="media-bd">
 						<view class="desc">

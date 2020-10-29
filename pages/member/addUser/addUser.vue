@@ -117,6 +117,23 @@
 					}
 				})
 			}
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.hasData=false;
+			this.page=1;
+			this.getList();
+			uni.stopPullDownRefresh();
+		},
+		//上拉加载
+		onReachBottom(){
+			if (this.isLoad) {
+				this.loadingType = 1;
+				this.page++;
+				this.getList();
+			} else {
+				this.loadingType = 2;
+			}
 		}
 	}
 </script>
