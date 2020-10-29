@@ -229,6 +229,7 @@
 				Vue.prototype.cusTimeUpdate = this.onTimeUpdateFn
 				Vue.prototype.cusEnded = this.onEndedFn
 				Vue.prototype.cusWaiting = this.onWaitingFn
+				Vue.prototype.cusonCanplay = this.onCanplayFn
 				post('DanceMusic/Music_xq',{
 					UserId:uni.getStorageSync('userId'),
 					Token:uni.getStorageSync('token'),
@@ -348,6 +349,10 @@
 			onWaitingFn(){
 				console.log("加载中")
 				this.loading=true;
+			},
+			onCanplayFn(){
+				console.log("可播放")
+				this.loading=false;
 			},
 			getIndex(type, isAuto) {
 				//['列表循环', '随机播放', '单曲循环']

@@ -64,6 +64,9 @@
 			Vue.prototype.$au_player.onWaiting(()=>{
 				Vue.prototype.cusWaiting&&Vue.prototype.cusWaiting()
 			})
+			Vue.prototype.$au_player.onCanplay(()=>{
+				Vue.prototype.cusonCanplay&&Vue.prototype.cusonCanplay()
+			})
 		},
 		onShow: function() {
 			console.log('App Show')

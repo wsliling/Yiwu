@@ -245,13 +245,8 @@
 				this.getclassifyList();
 				this.getBanner();
 				if(this.tabIndex==0){
-					this.hasData=false;
-					this.page=1;
-					this.findlist=[];
 					this.FindList()
 				}else{
-					this.playID=uni.getStorageSync("playID")
-					this.playIDtype=this.$store.state.isplayingmusic;
 					this.workeslist();
 				}
 			}else{
@@ -267,17 +262,18 @@
 			this.isShowSelect=false;
 			this.playIDtype=this.$store.state.isplayingmusic;
 			this.pageIn++;
-			if(this.pageIn>1){
-				 if(this.tabIndex==0){
-					 if (this.page === 1) {
-						 this.hasData=false;
-					 	 this.findlist=[];
-					 }
-				     this.FindList()
-				 }else{
-				    this.workeslist();
-				 }
-			}
+			console.log(this.pageIn,"yyyy")
+			// if(this.pageIn>1){
+				 // if(this.tabIndex==0){
+					//  // if (this.page === 1) {
+					// 	//  this.hasData=false;
+					//  // 	 this.findlist=[];
+					//  // }
+				 //     this.FindList()
+				 // }else{
+				 //    this.workeslist();
+				 // }
+			// }
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
@@ -371,8 +367,6 @@
 						this.hasData = false;
 					}
 					if (this.page === 1) {
-						// this.findlist=[];
-						// console.log(this.findlist)
 						this.findlist = result.data;
 					}
 					if (this.page > 1) {
@@ -443,7 +437,6 @@
 						this.hasData = false;
 					}
 					if (this.page === 1) {
-						this.datalist=[];
 						this.datalist = result.data;
 					}
 					if (this.page > 1) {

@@ -41,7 +41,7 @@
 				</view>
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
-						<view @click="likeBtn(NewsInfo.Id,index)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum:'点赞'}}</view>
+						<view @click="likeBtn(NewsInfo.Id)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum:'点赞'}}</view>
 						<share :url="'/pages/replylist/replylist?id='+Findid">
 							<view class="txt_info share"></view>
 						</share>
@@ -49,7 +49,7 @@
 					</view>
 					
 					<view class="ft_r"  v-if="NewsInfo.Type!=0">
-						<view @click="CollectBtn(NewsInfo.Id,index)" :class="['txt_info sign',NewsInfo.IsCollect==1?'active':'']"></view>
+						<view @click="CollectBtn(NewsInfo.Id)" :class="['txt_info sign',NewsInfo.IsCollect==1?'active':'']"></view>
 					</view>
 				</view>
 				<view class="likenum" v-if="NewsInfo.LikeNum>0">被{{NewsInfo.LikeNum}}人赞过</view>
@@ -134,6 +134,10 @@
 			this.Findid=e.id;
 			this.CommnetList();
 			this.FindNewsInfo()
+		},
+		onShow() {
+			this.userId = uni.getStorageSync("userId");
+			this.token = uni.getStorageSync("token");
 		},
 		onHide(){
 			let _this = this;
@@ -385,7 +389,7 @@
 				}
 			},
 			//发现点赞
-			async likeBtn(id,index){
+			async likeBtn(id){
 				let result = await post("Find/FindlikeOperation", {
 					"UserId": this.userId,
 					"Token": this.token,
@@ -393,16 +397,18 @@
 				});
 				if(result.code==0){
 					let _this=this;
-					let num=0;
+					let num=_this.NewsInfo.LikeNum;
 					uni.showToast({
 						title: result.msg
 					})
-					if(this.NewsInfo.IsLike==0){
-						this.$set(this.NewsInfo,"IsLike",1)
-						this.$set(this.NewsInfo,"LikeNum",_this.NewsInfo.LikeNum++)
+					if(_this.NewsInfo.IsLike>0){
+						num--;
+						_this.$set(_this.NewsInfo,"IsLike",0)
+						_this.$set(_this.NewsInfo,"LikeNum",num)
 					}else{
-						this.$set(this.NewsInfo,"IsLike",0)
-						this.$set(this.NewsInfo,"LikeNum",_this.NewsInfo.LikeNum--)
+						num++;
+						_this.$set(_this.NewsInfo,"IsLike",1)
+						_this.$set(_this.NewsInfo,"LikeNum",num)
 					}
 				}else if(result.code==2){
 					uni.hideToast();
@@ -435,7 +441,7 @@
 				}
 			},
 			//发现收藏和取消收藏
-			async CollectBtn(id,index){
+			async CollectBtn(id){
 				let result = await post("Find/CollectOperation", {
 					"UserId": this.userId,
 					"Token": this.token,
