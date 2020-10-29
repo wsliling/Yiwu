@@ -574,9 +574,6 @@
 					this.isLoad = true;
 					this.loadingType = 0
 				} 
-				if(this.tabIndex==1){
-					this.setAudiolist(this.datalist);
-				}
 			 }
 			},
 			toplaylist(id,index){
@@ -592,6 +589,7 @@
 					isbuy=item.IsShowBuy,
 					PicImg=item.PicImg,
 					title=item.Name;
+				this.setAudiolist(this.datalist);
 				if(isbuy==0){
 					this.playID=id;
 					if(id==uni.getStorageSync("playID")){
