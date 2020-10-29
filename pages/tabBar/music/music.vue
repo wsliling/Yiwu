@@ -232,7 +232,6 @@
 				price:0,//选择更多操作的价格
 				itemdata:{},
 				NewsList:[],
-				pageIn:0,
 			}
 		},
 		onLoad() {
@@ -261,18 +260,14 @@
 			this.isShowOperation=false;
 			this.isShowSelect=false;
 			this.playIDtype=this.$store.state.isplayingmusic;
-			this.pageIn++;
-			console.log(this.pageIn,"yyyy")
-			// if(this.pageIn>1){
-				 // if(this.tabIndex==0){
-					//  // if (this.page === 1) {
-					// 	//  this.hasData=false;
-					//  // 	 this.findlist=[];
-					//  // }
-				 //     this.FindList()
-				 // }else{
-				 //    this.workeslist();
-				 // }
+			// if(this.tabIndex==0){
+			//  // if (this.page === 1) {
+			// 	//  this.hasData=false;
+			//  // 	 this.findlist=[];
+			//  // }
+			//     this.FindList()
+			// }else{
+			//    this.workeslist();
 			// }
 		},
 		computed: {
