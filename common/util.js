@@ -7,7 +7,7 @@ const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地�
 const wssHost = 'wss://api.dance-one.com';  //wss接口地址
 
 const dowmappURL='http://m.dance-one.com/down/android112.apk';//app下载地址安卓
-const dowmappURLios='http://m.dance-one.com/down/android112.apk';//app下载地址ios
+const dowmappURLios='http://d.firim.pro/m6xl';//app下载地址ios
 
 function formatNumber(n) {
     const str = n.toString()
