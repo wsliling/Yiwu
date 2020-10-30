@@ -6,6 +6,8 @@ const webUrl = 'http://m.dance-one.com';
 const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'wss://api.dance-one.com';  //wss接口地址
 
+const dowmappURL='http://m.dance-one.com/down/android112.apk';//app下载地址安卓
+const dowmappURLios='http://m.dance-one.com/down/android112.apk';//app下载地址ios
 
 function formatNumber(n) {
     const str = n.toString()
@@ -370,7 +372,37 @@ function strLength(str) {
          }    
      }    
     return len;    
-}    
+}   
+ //下载视频
+ var candown=true;
+ function downVideo(src) {
+     uni.showLoading({
+	  title: '下载中'//数据请求前loading
+	})
+	if(candown){
+		candown=false;
+		uni.downloadFile({
+			url: src, 
+			success: (res) => {
+				if (res.statusCode === 200) {
+					uni.saveVideoToPhotosAlbum({
+						filePath: res.tempFilePath,
+						success: function(red) {
+							uni.showToast({
+							 title:"下载成功！",
+							 icon:'none'
+							});
+							candown=true;
+							uni.hideLoading();
+						}
+					});
+				}
+			}
+		});		
+	} 
+ }   
+ 
+ 
 import {toast,debounce,throttle,navigateBack,navigate,switchTab,redirect,call,previewImage} from './ans-utils'
 import {get,post,requestHideLoading} from './request.js'
 import sj_show_modal from '@/components/G_show_modal/index.js'
@@ -380,6 +412,8 @@ export {
 	formatLocation,
 	dateUtils,
 	host,
+	dowmappURL,
+	dowmappURLios,
 	wssHost,
 	webUrl,
 	get,
@@ -406,5 +440,6 @@ export {
 	previewImage,
 	strLength,
 	GetOpen,
-	toLogin2
+	toLogin2,
+	downVideo
 }

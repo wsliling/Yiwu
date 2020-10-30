@@ -138,7 +138,7 @@
 							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type,index)">{{item.CommentNum}}</view>
 							
 							<!-- #ifdef APP-PLUS -->
-							<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
+							<view @click.stop="popShare(xqUrl[item.Type].url+item.Id,item.Type,item.VideoUrl)">
 								<view class="txt_info share"></view>
 							</view>
 							<!-- #endif -->
@@ -338,7 +338,7 @@
 							<view @click.stop="likeBtn(item.Id,index)" :class="['txt_info like',item.IsLike?'active':'']">{{item.LikeNum}}</view>
 							<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,index)">{{item.CommentNum}}</view>
 							<!-- #ifdef APP-PLUS -->
-							<view @click.stop="popShare(xqUrl[1].url+item.Id)">
+							<view @click.stop="popShare(xqUrl[1].url+item.Id,item.Type,item.VideoUrl)">
 								<view class="txt_info share"></view>
 							</view>
 							<!-- #endif -->
@@ -411,6 +411,10 @@
 							<image class="imgico" src="http://m.dance-one.com/static/share_link.png" mode="aspectFit"></image>
 							<text class="txt">复制链接</text>
 						</view>
+						<view class="share-item" @click.stop="appdown()">
+							<image class="imgico" src="http://m.dance-one.com/static/appdown.png" mode="aspectFit"></image>
+							<text class="txt">下载</text>
+						</view>
 					</view>
 					<view style="height: 100upx;"></view>
 					<view class="uni-close-bottom" @click.stop="hidePopup">关闭</view>
@@ -420,7 +424,7 @@
 </template>
 
 <script>
-	import {post,get,toLogin,navigate,dateUtils,webUrl} from '@/common/util.js';
+	import {post,get,toLogin,navigate,dateUtils,webUrl,downVideo} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -562,6 +566,7 @@
 				IsShowShare:false,
 				shareUrl:"",
 				isClick:false,
+				durl:"",//下载路径
 			}
 		},
 		onLoad() {
@@ -1323,9 +1328,12 @@
 				    }
 				});
 			},
-			popShare(url){
+			popShare(url,type,vsrc){
 				this.isClick=true;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
+				if(type==1){
+					this.durl=vsrc;
+				}
 				setTimeout(()=>{
 					if(this.onplayId>-1){
 						this.videoContext.pause();
@@ -1363,6 +1371,11 @@
 					  }
 					})
 				}
+			},
+			//下载视频
+			appdown(){
+				let _this = this;
+				downVideo(_this.durl)
 			},
 			showReply(id,name,type,index){
 				let _this=this;
@@ -1550,60 +1563,63 @@
 				let _this=this;
 				this.IsEdit=true;
 				if(uni.getStorageSync('userId')&& uni.getStorageSync('token')){
-					let urlstr="";
-					uni.showActionSheet({
-						//itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
-						itemList: ['拍视频', '上传课程'],
-						success: (e) => {
-							console.log(e.tapIndex);
-							if(e.tapIndex==0){
-								urlstr="/pages/video/videoUpload/videoUpload?type=0";
-							}else if(e.tapIndex==1){
-								urlstr="/pages/video/videoUpload/videoUpload?type=1";
-							}else if(e.tapIndex==2){
-								// #ifndef APP-PLUS
-								uni.showToast({
-									title:'APP端才能开启直播哦~',
-									icon:'none'
-								})
-								// #endif
-								
-								// #ifdef APP-PLUS
-								if(!uni.getStorageSync('attestation').IsDancer){
-									uni.showToast({
-										title:'需要先认证舞者哦~',
-										icon:'none'
-									})
-									return;
-								}
-								urlstr="/pages/livepush/livepush?type=0";
-								// #endif
-							}else if(e.tapIndex==3){
-								// #ifndef APP-PLUS
-								uni.showToast({
-									title:'APP端才能开启直播哦~',
-									icon:'none'
-								})
-								// #endif
-								// #ifdef APP-PLUS
-								if(!uni.getStorageSync('attestation').IsShop){
-									uni.showToast({
-										title:'需要先认证店铺哦~',
-										icon:'none'
-									})
-									return;
-								}
-								urlstr="/pages/livepush/livepush?type=1";
-								// #endif
-							}
-							uni.navigateTo({
-								url: urlstr
-							})
-						},
-						complete:(e)=>{
-							_this.IsEdit=false;
-						}
+					uni.navigateTo({
+						url: '/pages/video/videoUpload/videoUpload?type=0'
 					})
+					//let urlstr="";
+					// uni.showActionSheet({
+					// 	//itemList: ['拍视频', '上传课程','舞者直播','店铺直播'],
+					// 	itemList: ['拍视频', '上传课程'],
+					// 	success: (e) => {
+					// 		console.log(e.tapIndex);
+					// 		if(e.tapIndex==0){
+					// 			urlstr="/pages/video/videoUpload/videoUpload?type=0";
+					// 		}else if(e.tapIndex==1){
+					// 			urlstr="/pages/video/videoUpload/videoUpload?type=1";
+					// 		}else if(e.tapIndex==2){
+					// 			// #ifndef APP-PLUS
+					// 			uni.showToast({
+					// 				title:'APP端才能开启直播哦~',
+					// 				icon:'none'
+					// 			})
+					// 			// #endif
+								
+					// 			// #ifdef APP-PLUS
+					// 			if(!uni.getStorageSync('attestation').IsDancer){
+					// 				uni.showToast({
+					// 					title:'需要先认证舞者哦~',
+					// 					icon:'none'
+					// 				})
+					// 				return;
+					// 			}
+					// 			urlstr="/pages/livepush/livepush?type=0";
+					// 			// #endif
+					// 		}else if(e.tapIndex==3){
+					// 			// #ifndef APP-PLUS
+					// 			uni.showToast({
+					// 				title:'APP端才能开启直播哦~',
+					// 				icon:'none'
+					// 			})
+					// 			// #endif
+					// 			// #ifdef APP-PLUS
+					// 			if(!uni.getStorageSync('attestation').IsShop){
+					// 				uni.showToast({
+					// 					title:'需要先认证店铺哦~',
+					// 					icon:'none'
+					// 				})
+					// 				return;
+					// 			}
+					// 			urlstr="/pages/livepush/livepush?type=1";
+					// 			// #endif
+					// 		}
+					// 		uni.navigateTo({
+					// 			url: urlstr
+					// 		})
+					// 	},
+					// 	complete:(e)=>{
+					// 		_this.IsEdit=false;
+					// 	}
+					// })
 					
 				}else{
 					//#ifndef APP-PLUS

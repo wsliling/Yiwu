@@ -42,7 +42,7 @@
 				<view class="media-ft flex-between">
 					<view class="ft_l flex-start">
 						<view @click="likeBtn(NewsInfo.Id)" :class="['txt_info like',NewsInfo.IsLike==1?'active':'']">{{NewsInfo.LikeNum>0?NewsInfo.LikeNum:'点赞'}}</view>
-						<share :url="'/pages/replylist/replylist?id='+Findid">
+						<share :url="'/pages/replylist/replylist?id='+Findid" :type="NewsInfo.Type" :durl="NewsInfo.VideoUrl">
 							<view class="txt_info share"></view>
 						</share>
 						<view class="txt_info inwith" v-if="NewsInfo.Source">来源{{NewsInfo.Source}}</view>

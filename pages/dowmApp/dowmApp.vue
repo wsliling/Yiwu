@@ -15,6 +15,7 @@
 </template>
 
 <script>
+	import {dowmappURL,dowmappURLios} from '@/common/util.js';
 	export default {
 		data() {
 			return {
@@ -24,9 +25,9 @@
 		methods: {
 			dowmapp(type){
 				if(type==0){
-					window.location.href='http://m.dance-one.com/down/android112.apk'
+					window.location.href=dowmappURL
 				}else{
-					window.location.href='https://www.gscapp.cn/app/danceone'
+					window.location.href=dowmappURLios
 				}
 			}
 		}

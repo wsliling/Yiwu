@@ -22,6 +22,10 @@
 					<image class="imgico" src="http://m.dance-one.com/static/share_link.png" mode="aspectFit"></image>
 					<text class="txt">复制链接</text>
 				</view>
+				<view class="share-item" v-if="type==1" @click.stop="appdown()">
+					<image class="imgico" src="http://m.dance-one.com/static/appdown.png" mode="aspectFit"></image>
+					<text class="txt">下载</text>
+				</view>
 			</view>
 			<view style="height: 100upx;"></view>
 			<view class="uni-close-bottom" @click.stop="hide">关闭</view>
@@ -31,7 +35,7 @@
 </view>
 </template>
 <script>
-import {webUrl} from '@/common/util'
+import {webUrl,downVideo} from '@/common/util'
 import h5Copy from '@/common/junyi-h5-copy'
 import uniPopup from '@/components/uni-popup.vue';
 export default {
@@ -59,7 +63,15 @@ export default {
         param:{
             type:String,
             default:''
-        }
+        },
+		type:{
+		    type:Number,
+		    default:0
+		},
+		durl:{
+		    type:String,
+		    default:''
+		},
     },
     data(){
         return {
@@ -84,6 +96,11 @@ export default {
 			}
 			console.log(this.data[params],params,'111')
 			this.data[params] += `inviteCode=${uni.getStorageSync('myInviteCode')}`
+		},
+		//下载视频
+		appdown(){
+			let _this = this;
+			downVideo(_this.durl)
 		},
         // h5复制链接，app调用分享api
         share(e){

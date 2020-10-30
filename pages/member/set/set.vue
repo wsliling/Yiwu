@@ -42,7 +42,7 @@
 				</view>
 			</view>
 			<!-- #ifdef APP-PLUS -->
-			<view class="line-item line-arrow-r">
+			<view class="line-item line-arrow-r" @click="update">
 				<view class="line-item-l">
 					<text class="txt">软件版本</text>
 				</view>
@@ -64,16 +64,18 @@
 </template>
 
 <script>
-	import {host,post,get,toLogin} from '@/common/util.js';
+	import {host,post,get,toLogin,dowmappURL,dowmappURLios} from '@/common/util.js';
 	export default{
 		data(){
 			return{
-				version:''
+				version:'',
+				newversion:'',
 			}
 		},
 		onShow(){
 			// #ifdef APP-PLUS
 			this.version = plus.runtime.version
+			this.newversion=uni.getStorageSync("Copyright");
 			// #endif
 		},
 		methods:{
@@ -81,6 +83,29 @@
 				uni.navigateTo({
 					url:url
 				})
+			},
+			update(){
+				if(this.newversion!=this.version){
+					//检测系统
+					let system = uni.getSystemInfoSync().platform;
+					// 提醒用户更新
+					this.$showModal({
+						title:'更新提示',
+						content: "检测到有新的版本是否选择更新？",
+					}).then(res=>{
+						//确认
+						plus.runtime.openURL(system=="ios"?dowmappURLios:dowmappURL);
+											
+					  }).catch(res=>{
+						//取消
+					}) 
+				}else{
+					uni.showToast({
+					  title: "已是最新版本!",
+					  icon: "none",
+					  duration: 2000
+					});
+				}
 			},
 			// 退出登录
 			logOut() {

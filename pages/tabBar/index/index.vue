@@ -113,7 +113,7 @@
 								<view @click.stop="likeBtn(item.Id,index,item.Type)" :class="['txt_info like',item.IsLike==1?'active':'']">{{item.LikeNum>0?item.LikeNum:'点赞'}}</view>
 								<view class="txt_info reply" @click.stop="showReply(item.Id,item.NickName,item.Type,index)">{{item.CommentNum}}</view>
 								<!-- #ifdef APP-PLUS -->
-								<view @click.stop="popShare(xqUrl[item.Type].url+item.Id)">
+								<view @click.stop="popShare(xqUrl[item.Type].url+item.Id,item.Type,item.VideoUrl)">
 									<view class="txt_info share"></view>
 								</view>
 								<!-- #endif -->
@@ -320,6 +320,10 @@
 							<image class="imgico" src="http://m.dance-one.com/static/share_link.png" mode="aspectFit"></image>
 							<text class="txt">复制链接</text>
 						</view>
+						<view class="share-item" @click.stop="appdown()">
+							<image class="imgico" src="http://m.dance-one.com/static/appdown.png" mode="aspectFit"></image>
+							<text class="txt">下载</text>
+						</view>
 					</view>
 					<view style="height: 100upx;"></view>
 					<view class="uni-close-bottom" @click.stop="hidePopup">关闭</view>
@@ -347,8 +351,7 @@
 	</view>
 </template>
 <script>
-	import {post,get,toLogin,navigate,dateUtils,webUrl} from '@/common/util.js';
-	import {debounce} from '@/common/ans-utils';
+	import {post,get,toLogin,navigate,dateUtils,webUrl,downVideo} from '@/common/util.js';
 	import noData from '@/components/notData.vue'; //暂无数据
 	import ansInput from '@/components/ans-input/ans-input.vue'; //暂无数据
 	import uniLoadMore from '@/components/uni-load-more.vue'; //加载更多
@@ -439,6 +442,7 @@
 				IsShowShare:false,
 				shareUrl:"",
 				isClick:false,
+				durl:"",//下载路径
 			}
 		},
 		onLoad() {
@@ -948,9 +952,13 @@
 				    }
 				});
 			},
-			popShare(url){
+			popShare(url,type,vsrc){
+				console.log({url,type,vsrc})
 				this.isClick=true;
 				this.shareUrl=url+'&inviteCode='+uni.getStorageSync('myInviteCode');
+				if(type==1){
+					this.durl=vsrc;
+				}
 				setTimeout(()=>{
 					if(this.onplayId>-1){
 						this.videoContext.pause();
@@ -988,6 +996,11 @@
 					  }
 					})
 				}
+			},
+			//下载视频
+			appdown(){
+				let _this = this;
+				downVideo(_this.durl)
 			},
 			showReply(id,name,type,index){
 				let _this=this;

@@ -17,10 +17,19 @@
 				<radio class="radio" :color="hascheck?'#de1b6e':'#999'" checked="true"></radio><text>免费</text>
 			</label>
 		</view>
-		<view class="listbox" @click="isShowSource = true">
+		<view class="listbox border_bottom" @click="isShowSource = true">
 			<view class="">视频/课程的来源</view>
 			<view class="listdis">
 				<input type="text" disabled placeholder="请选择" class="flex1" v-model="sourcetype" />
+				<image src="http://m.dance-one.com/static/my/icon-right.png" mode=""></image>
+			</view>
+		</view>
+		<view class="listbox" @click="isShowTags=true">
+			<view class="">添加标签</view>
+			<view class="listdis flex-end flex1">
+				<view class="uni-ellipsis c_theme">
+					<text class="mr1" v-for="(i,e) in tagsarr" :key="e">#{{i}}#</text>
+				</view>
 				<image src="http://m.dance-one.com/static/my/icon-right.png" mode=""></image>
 			</view>
 		</view>
@@ -37,6 +46,24 @@
 						</view>
 					</view>
 					<view class="btns flex-between"><view class="btn c_theme" @click="hidePopup">关闭</view></view>
+				</view>
+			</view>
+		</uni-popup>
+		<!-- 添加标签 -->
+		<uni-popup mode="fixed" :show="isShowTags" :h5Top="true" position="bottom" @hidePopup="hidePopup">
+			<view class="uni-modal-music taglist__modal">
+				<view class="close uni-icon uni-icon-closeempty" @click="hidePopup"></view>
+				<view class="uni-modal__hd pd15">添加标签<text class="font26">({{tagscount}}/{{tagsMaxnum}})</text></view>
+				<view class="uni-modal__bd">
+					<view class="tag-list flex flexWrap">
+						<block v-for="(item, index) in TagList" :key="index">
+						<view :class="['item',item.select?'active':'']" @click="SelectTag(index)">
+							{{ item.Name }}
+						</view>
+						</block>
+						<view v-if="!TagList.length" class="center pd15 c_999" style="width: 100%;">暂无标签</view>
+					</view>
+					<view class="btn" @click="comfirmTags">确定</view>
 				</view>
 			</view>
 		</uni-popup>
@@ -102,6 +129,12 @@
 				sourcetype: '', //选中来源
 				videoInfo:{},//上传视频的信息
 				percent:0,//上传进度
+				isShowTags:false,
+				TagList:[],
+				tags:"",
+				tagsarr:[],
+				tagsMaxnum:3,
+				tagscount:0,
 			};
 		},
 		components: { uniPopup },
@@ -116,6 +149,7 @@
 				});
 			}
 			this.getSource()
+			this.getTagList();
 		},
 		onShow() {
 			this.showmsk=uni.getStorageSync("showmsk")||1;
@@ -204,6 +238,21 @@
 				})
 				
 			},
+			//获取标签
+			async getTagList(){
+				let res = await post("Find/TagList",{})
+				if(res.code==0){
+					if(res.data.length){
+					let _this=this;
+					// res.data=[{Name:"拉丁舞"},{Name:"美食"},{Name:"现代风"},{Name:"双人舞"}];
+					res.data.forEach(function(item){
+						_this.$set(item,"select",false)
+					})
+					this.TagList=res.data
+					}
+				}
+			},
+			
 			//发布视频
 			async pushVideo(){
 				if(this.hascheck){
@@ -223,6 +272,7 @@
 					Source:this.sourcetype,
 					VideoH:this.videoInfo.height,
 					VideoW:this.videoInfo.width,
+					Keywords:this.tags
 				});
 				if(res.code==0){
 					uni.showToast({
@@ -273,12 +323,45 @@
 			//取消（统一关闭弹窗）
 			hidePopup() {
 				this.isShowSource = false;
+				this.isShowTags=false;
 			},
 			// 来源选中
 			SelectSource(id, name) {
 				this.sourcetype = name;
 				this.ClassId = id;
 				this.isShowSource = false;
+			},
+			//选择标签
+			SelectTag(index){
+				let _this=this;
+				let ck=_this.TagList[index].select;
+				let num=0;
+				_this.$set(_this.TagList[index],"select",!ck)
+				 _this.TagList.forEach(function(item){
+					 if(item.select){
+						 num++
+					 }
+				 })
+				 _this.tagscount=num;
+				if(_this.tagscount>_this.tagsMaxnum){
+					uni.showToast({
+						title:"最多可选"+_this.tagsMaxnum+"个哦~",
+					})
+					_this.$set(_this.TagList[index],"select",false)
+					_this.tagscount--;
+					return false
+				}
+			},
+			comfirmTags(){
+				let arr=[];
+				this.TagList.forEach(function(item){
+					if(item.select){
+						arr.push(item.Name);
+					}
+				})
+				this.tagsarr=arr;
+				this.tags=arr.join(",");
+				this.isShowTags=false;
 			},
 			//视频课程获取来源
 			getSource() {
@@ -368,7 +451,6 @@
 	justify-content: space-between;
 	padding: 0 30upx;
 	height: 90upx;
-	border-bottom: 1px #ececec solid;
 	background-color: #fff;
 	.listdis{
 		display: flex;
@@ -382,6 +464,41 @@
 			height: 20upx;
 			margin-top: 10upx;
 		}
+	}
+}
+.taglist__modal{
+	.close{
+		position: absolute;
+		right: 10rpx;
+		top: 10rpx;
+		font-size: 48rpx;
+	}
+	.tag-list{
+		padding: 0 20rpx;
+		min-height: 30vh;
+		max-height: 70vh;
+		overflow-y: auto;
+		.item{
+			color: $primary;
+			margin: 0 20rpx 30rpx;
+			background: #fbeef3;
+			border-radius: 100px;
+			height: 56rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 20rpx;
+			&.active{
+				background-color: $primary;
+				color: #fff;
+			}
+		}
+	}
+	.btn{
+		height: 90rpx;
+		background: $primary;
+		color: #fff;
+		font-size: 30rpx;
 	}
 }
 </style>

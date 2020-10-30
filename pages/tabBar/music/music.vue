@@ -236,7 +236,6 @@
 		},
 		onLoad() {
 			this.pageCon=uni.getStorageSync("pageCon");
-			this.pageIn=0;
 			//#ifdef APP-PLUS
 			this.barHeight=plus.navigator.getStatusbarHeight();
 			//#endif
