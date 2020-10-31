@@ -123,6 +123,18 @@
 		.desc{ line-height: 1.5;font-size: 30upx; 
 			// font-weight: 600;
 		}
+		.tag_btns{
+			font-size: 24upx;
+			text{
+				background: #fbeef3;
+				border-radius: 100px;
+				display: inline-block;
+				padding: 2upx 10upx;
+				color: $primary;
+				margin-right: 20upx;
+				margin-top: 10upx;
+			}
+		}
 		.maxpic{
 			margin-top: 20upx;
 			//border-radius: 12upx;

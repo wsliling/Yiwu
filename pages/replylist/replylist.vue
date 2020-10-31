@@ -13,6 +13,11 @@
 				<view class="desc">
 					{{NewsInfo.Title}}
 				</view>
+				<view class="tag_btns" v-if="NewsInfo.Keywords.length">
+					<block v-for="(i,e) in NewsInfo.Keywords" :key="e">
+						<text>#{{i}}#</text>
+					</block>
+				</view>
 				<view :class="['maxpic mv',NewsInfo.fixed?'dis':'']" v-if="NewsInfo.Type==1" id="boxVideo">
 					<view v-if="!NewsInfo.play||NewsInfo.fixed" class="isplay" @click="playBtn"></view>
 					<video v-if="NewsInfo.play" :src="NewsInfo.VideoUrl" :controls="isControls" autoplay @play="playVideo" @pause="pauseVideo" @fullscreenchange="screenchange" id="video" :show-mute-btn="true" object-fit="contain" @tap="ControlsFn"></video>

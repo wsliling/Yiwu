@@ -6,12 +6,12 @@
 				<!-- #ifndef MP-WEIXIN -->
 				<view class="head_l" @click="toback"><text class="uni-icon uni-icon-arrowleft"></text></view>
 				<view class="mine">我的作品</view>
-				<view class="redact" @click="ShowDel"><block v-if="tabIndex>0">{{isShowDel?'完成':'管理'}}</block></view>
+				<view class="redact" @click="ShowDel"><block v-if="tabIndex>-1">{{isShowDel?'完成':'管理'}}</block></view>
 				<!-- #endif -->
 				<!-- #ifdef MP-WEIXIN -->
 				<view></view>
 				<view></view>
-				<view :class="['redact',tabIndex>0?'':'dis']" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
+				<view :class="['redact',tabIndex>-1?'':'dis']" @click="ShowDel">{{isShowDel?'完成':'管理'}}</view>
 				<!-- #endif --> 
 			</view>
 			<scroll-view id="tab-bar" class="index-swiper-tab" scroll-x>
@@ -155,15 +155,15 @@ export default {
 		},
 		//点击编辑 完成
 		ShowDel() {
-			if(this.tabIndex>0){
+			//if(this.tabIndex>0){
 				this.isShowDel = !this.isShowDel;
-			}else{
-				uni.showToast({
-					title: '审核通过的作品无法删除哦！',
-					icon: 'none',
-					duration: 1500
-				});
-			}
+			// }else{
+			// 	uni.showToast({
+			// 		title: '审核通过的作品无法删除哦！',
+			// 		icon: 'none',
+			// 		duration: 1500
+			// 	});
+			// }
 		},
 		//点击tab-bar
 		tapTab(index,id) {

@@ -219,6 +219,7 @@
 								console.log(_this.videoShowImg)
 							},
 							fail(err) {
+								console.log(err)
 								uni.showToast({
 									title:"视频上传失败，请重试",
 									icon:'none'
