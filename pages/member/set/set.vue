@@ -64,7 +64,7 @@
 </template>
 
 <script>
-	import {host,post,get,toLogin,dowmappURL,dowmappURLios} from '@/common/util.js';
+	import {host,post,get,toLogin,dowmappURLios} from '@/common/util.js';
 	export default{
 		data(){
 			return{
@@ -94,6 +94,8 @@
 						content: "检测到有新的版本是否选择更新？",
 					}).then(res=>{
 						//确认
+						let version=this.newversion.split('.').join('');
+						const dowmappURL='http://m.dance-one.com/down/android'+version+'.apk';//app下载地址安卓
 						plus.runtime.openURL(system=="ios"?dowmappURLios:dowmappURL);
 											
 					  }).catch(res=>{
