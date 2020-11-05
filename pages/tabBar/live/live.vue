@@ -112,6 +112,11 @@
 						<view class="desc uni-ellipsis2">
 							{{item.Title}}
 						</view>
+						<view class="tag_btns" v-if="item.Keywords">
+							<block v-for="(i,e) in item.Keywords" :key="e">
+								<text>#{{i}}#</text>
+							</block>
+						</view>
 						<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.Type==1" :id="'box'+item.Id" @click.stop="">
 							<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>
 							<video v-if="item.play&&!onHidePage" :src="item.VideoUrl" :controls="isControls" style="width: 100%;height: 100%;" :muted="ismuted" @play="playVideo(item.Id,index)" @pause="pauseVideo(item.Id,index)" @fullscreenchange="screenchange" :id="'video'+item.Id" :show-mute-btn="true" object-fit="contain" :show-center-play-btn="false" @ended="endedFn(item.Id,index)" @click.stop="">
@@ -324,6 +329,11 @@
 				<view class="media-bd" @click="tolink('/pages/replylist/replylist?id='+item.Id)">
 					<view class="desc uni-ellipsis2">
 						{{item.Title}}
+					</view>
+					<view class="tag_btns" v-if="item.Keywords">
+						<block v-for="(i,e) in item.Keywords" :key="e">
+							<text>#{{i}}#</text>
+						</block>
 					</view>
 					<view :class="['maxpic mv',IsEdit||item.fixed?'dis':'']" v-if="item.VideoUrl" :id="'box'+item.Id" @click.stop="">
 						<view v-if="!item.play||item.fixed" class="isplay" @click.stop="playBtn(index,item.Id)"></view>

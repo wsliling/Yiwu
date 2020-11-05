@@ -55,9 +55,9 @@
 				<view class="close uni-icon uni-icon-closeempty" @click="hidePopup"></view>
 				<view class="uni-modal__hd pd15">添加标签<text class="font26">({{tagscount}}/{{tagsMaxnum}})</text></view>
 				<view class="uni-modal__bd">
-					<view class="tag-list flex flexWrap">
+					<view class="tag-list clear">
 						<block v-for="(item, index) in TagList" :key="index">
-						<view :class="['item',item.select?'active':'']" @click="SelectTag(index)">
+						<view :class="['item fl',item.select?'active':'']" @click="SelectTag(index)">
 							{{ item.Name }}
 						</view>
 						</block>
@@ -219,6 +219,7 @@
 								console.log(_this.videoShowImg)
 							},
 							fail(err) {
+								console.log(err)
 								uni.showToast({
 									title:"视频上传失败，请重试",
 									icon:'none'
