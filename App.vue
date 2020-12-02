@@ -1,5 +1,5 @@
 <script>
-	import {MemberPaly,toLogin2,host,dowmappURL,dowmappURLios} from '@/common/util.js';
+	import {MemberPaly,toLogin2,host,dowmappURLios} from '@/common/util.js';
 	import Vue from 'vue'
 	import {
 		mapMutations
@@ -27,6 +27,8 @@
 									content: "检测到有新的版本是否选择更新？",
 								}).then(res=>{
 									//确认
+									let version=_res.data.Copyright.split('.').join('');
+									const dowmappURL='http://m.dance-one.com/down/android'+version+'.apk';//app下载地址安卓
 									plus.runtime.openURL(system=="ios"?dowmappURLios:dowmappURL);
 						
 								  }).catch(res=>{
