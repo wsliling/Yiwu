@@ -105,6 +105,7 @@
 			return {
 				userId: "",
 				token: "",
+				pageType:0,//1我收藏的舞曲
 				loadingType: 0, //0加载前，1加载中，2没有更多了
 				isLoad: false,
 				hasData: false,
@@ -123,11 +124,22 @@
 				DancePlayList:[],//曲单列表
 			}
 		},
+		onLoad(e) {
+			// #ifdef APP-PLUS
+			this.pageType=e.type||0;
+			// #endif
+		},
 		onShow() {
 			this.userId = uni.getStorageSync('userId');
 			this.token = uni.getStorageSync('token');
 			this.playID=uni.getStorageSync("playID");
 			this.playIDtype=this.$store.state.isplayingmusic;
+			// #ifndef APP-PLUS
+			this.pageType=this.$mp.query.type||0;
+			// #endif
+			uni.setNavigationBarTitle({
+				title: this.pageType?'我的收藏':'最近播放'
+			})
 			this.workeslist();
 		},
 		computed: {
@@ -150,12 +162,26 @@
 			},
 			/*获取列表*/
 			async workeslist() {
-				let result = await post('DanceMusic/MemberPalyVideoList', {
-					UserId: this.userId,
-					Token: this.token,
-					page: this.page,
-					pageSize: this.pageSize
-				});
+				let url='',json={};
+				if(this.pageType){
+					url='User/MemberCollections';
+					json={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize,
+						Type:5
+					}
+				}else{
+					url='DanceMusic/MemberPalyVideoList';
+					json={
+						UserId: this.userId,
+						Token: this.token,
+						page: this.page,
+						pageSize: this.pageSize
+					}
+				}
+				let result = await post(url,json);
 				if (result.code === 0) {
 					let _this=this;
 					if (result.data.length > 0) {

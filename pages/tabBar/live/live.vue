@@ -1333,6 +1333,12 @@
 			scanCode(){
 				uni.scanCode({
 				    success: function (res) {
+				    	 let url=res.result.split('#')[1];
+				    	 if(res.scanType=="QR_CODE"){
+				    		 uni.navigateTo({
+				    		 	url:url
+				    		 })
+				    	 }
 				        console.log('条码类型：' + res.scanType);
 				        console.log('条码内容：' + res.result);
 				    }

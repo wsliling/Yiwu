@@ -48,6 +48,10 @@
 					 <image class="icon" src="http://m.dance-one.com/static/music/icon18.png"></image>
 					 <text class="txt">最近播放</text>
 				 </view>
+				 <view class="item" @click="tolink('/pages/music/recently/recently?type=1')">
+					 <image class="icon" src="http://m.dance-one.com/static/mylove.png"></image>
+					 <text class="txt">我的收藏</text>
+				 </view>
 			 </view>
 			<view class="classifytab">
 			 	<scroll-view id="tab-bar" v-if="!isshowAll" class="index-swiper-tab" scroll-x :scroll-left="scrollLeft">
