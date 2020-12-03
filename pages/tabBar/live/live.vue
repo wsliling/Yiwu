@@ -942,6 +942,9 @@
 					let _this=this;
 					if(result.data.length>0){
 						this.noDataIsShow5= false;
+						result.data.forEach(function(item){
+							item.Title=decodeURIComponent(item.Title)
+						})
 					}
 					if (result.data.length == 0 && this.Page5 == 1) {
 						this.noDataIsShow5 = true;
@@ -1022,6 +1025,7 @@
 									_this.$set(item,'ispause',false);
 								}
 							}
+							item.Title=decodeURIComponent(item.Title)
 						})
 					}
 					if (result.data.length == 0 && this.Page6 == 1) {
@@ -1470,6 +1474,7 @@
 				this.PCommentname="";
 			},
 			async CommnetList(){
+				console.log("获取评论")
 				let result = await post("Find/CommnetList", {
 					"UserId": this.userId,
 					"Token": this.token,
@@ -1488,8 +1493,10 @@
 							item.AddTime=dateUtils.format(item.AddTime);
 							_this.$set(item, "imgArr",item.ImgList.split(","));
 							_this.$set(item, "isSHOW",false);
+							item.Comment=decodeURIComponent(item.Comment);
 							item.MyCommnetList.forEach(function(item2) {
 								item2.AddTime=dateUtils.format(item2.AddTime);
+								item2.Comment=decodeURIComponent(item2.Comment);
 								let txt =item2.Comment.split("#$#");
 								if(txt.length==2){
 									_this.$set(item2, "Comment",txt[1]);
@@ -1542,7 +1549,7 @@
 					"FkId":this.FkId,
 					"TypeInt":this.Commenttype,
 					"ParentCommentId":this.PCommentId,
-					"Comment":this.Comment
+					"Comment":encodeURIComponent(this.Comment)
 				});
 				if(result.code===0){
 					uni.showToast({

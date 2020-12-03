@@ -223,6 +223,7 @@ export default {
 					result.data.forEach(function(item) {
 						_this.$set(item, 'txt', '');
 						_this.$set(item, 'checked', false);
+						item.Name=decodeURIComponent(item.Name)
 					});
 				}
 				if (result.data.length == 0 && this.page == 1) {

@@ -267,7 +267,7 @@
 					Type: this.type,
 					Video:this.videofile,
 					Logo: this.videoShowImg,
-					Title:this.Title,
+					Title:encodeURIComponent(this.Title),
 					IsCharge:IsCharge,
 					Price:this.Price,
 					Source:this.sourcetype,

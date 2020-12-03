@@ -60,6 +60,9 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
+						result.data.forEach(function(item) {
+							item.Title=decodeURIComponent(item.Title);
+						})
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;

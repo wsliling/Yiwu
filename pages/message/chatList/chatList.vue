@@ -44,7 +44,7 @@
 								<span class="flex1 font32">{{item.NickName}}</span>
 								<span class="font_four">{{item.PubTime}}</span>
 							</div>
-							<div class="fontColor msgListContent">{{item.Memo}}</div>
+							<div class="fontColor msgListContent">{{decodeURIComponent(item.Memo)}}</div>
 						</div>
 					</div>
 				</block>

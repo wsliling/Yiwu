@@ -158,7 +158,7 @@
 						</view>
 						<view class="arrowr uni-icon uni-icon-arrowright"></view>
 					</view>
-					<view class="item" @click="tolink('/pages/member/myfind/myfind')">
+					<view class="item" v-if="false" @click="tolink('/pages/member/myfind/myfind')">
 						<view class="item-left">
 							<image  src="http://m.dance-one.com/static/my/myfind.png" mode="aspectFit"></image>
 							<view>我的动态</view>

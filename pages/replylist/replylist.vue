@@ -13,7 +13,7 @@
 				<view class="desc">
 					{{NewsInfo.Title}}
 				</view>
-				<view class="tag_btns" v-if="NewsInfo.Keywords.length">
+				<view class="tag_btns" v-if="NewsInfo.Keywords&&NewsInfo.Keywords.length">
 					<block v-for="(i,e) in NewsInfo.Keywords" :key="e">
 						<text>#{{i}}#</text>
 					</block>
@@ -216,8 +216,10 @@
 							item.AddTime=dateUtils.format(item.AddTime);
 							_this.$set(item, "imgArr",item.ImgList.split(","));
 							_this.$set(item, "isSHOW",false);
+							item.Comment=decodeURIComponent(item.Comment);
 							item.MyCommnetList.forEach(function(item2) {
 								item2.AddTime=dateUtils.format(item2.AddTime);
+								item2.Comment=decodeURIComponent(item2.Comment);
 								let txt =item2.Comment.split("#$#");
 								if(txt.length==2){
 									_this.$set(item2, "Comment",txt[1]);
@@ -258,7 +260,7 @@
 					"FkId":this.Findid,
 					"TypeInt":0,
 					"ParentCommentId":this.PCommentId,
-					"Comment":this.Comment,
+					"Comment":encodeURIComponent(this.Comment),
 					"PicList":'',
 					"PicNo":''
 				});
@@ -332,6 +334,7 @@
 					this.$set(result.data,'play',false);
 					this.$set(result.data,'fixed',false);
 					this.imgArr=result.data.ImgList.split(",");
+					result.data.Title=decodeURIComponent(result.data.Title);
 					this.NewsInfo = result.data;
 				}
 			},

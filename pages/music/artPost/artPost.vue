@@ -292,7 +292,7 @@ export default {
 				UserId: this.userId,
 				Token: this.token,
 				ShowRole: this.role,
-				Title: this.title,
+				Title: encodeURIComponent(this.title),
 				Location: this.locationAddress,
 				ContentAbstract: this.ContentAbstract,
 				ContentDetails: this.ContentDetails,

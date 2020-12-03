@@ -39,7 +39,7 @@
 								<text class="txt">添加到歌单</text>
 							</view>
 						</view>
-						<view class="line-item" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
+						<view class="line-item" v-if="false" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
 							<view class="line-item-l flex-start">
 								<image class="iconimg" src="http://m.dance-one.com/static/fabu.png" mode="widthFix"></image>
 								<text class="txt">分享到动态</text>
@@ -187,6 +187,11 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
+						if(this.pageType){
+							result.data.forEach(function(item){
+								_this.$set(item,'Id',item.AssociationId)
+							})
+						}
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;

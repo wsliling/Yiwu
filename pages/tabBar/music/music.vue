@@ -31,8 +31,8 @@
 				</view>
 			</view>
 			<!-- 快捷导航 -->
-			 <view class="icon-menu">
-				 <view class="item" @click="tolink('/pages/music/list/list?type=0')">
+			 <view class="icon-menu" style="justify-content: flex-start;">
+				<!-- <view class="item" @click="tolink('/pages/music/list/list?type=0')">
 					 <image class="icon" src="http://m.dance-one.com/static/music/icon15.png"></image>
 					 <text class="txt">每日推荐</text>
 				 </view>
@@ -43,13 +43,13 @@
 				 <view class="item" @click="tolink('/pages/music/list/list?type=2')">
 					 <image class="icon" src="http://m.dance-one.com/static/music/icon17.png"></image>
 					 <text class="txt">最热</text>
-				 </view>
-				 <view class="item" @click="tolink('/pages/music/recently/recently')">
+				 </view> -->
+				 <view class="item" style="margin: 0 30upx;" @click="tolink('/pages/music/recently/recently')">
 					 <image class="icon" src="http://m.dance-one.com/static/music/icon18.png"></image>
 					 <text class="txt">最近播放</text>
 				 </view>
-				 <view class="item" @click="tolink('/pages/music/recently/recently?type=1')">
-					 <image class="icon" src="http://m.dance-one.com/static/mylove.png"></image>
+				 <view class="item" style="margin: 0 30upx;" @click="tolink('/pages/music/recently/recently?type=1')">
+					 <image class="icon" src="http://m.dance-one.com/static/music/icon17.png"></image>
 					 <text class="txt">我的收藏</text>
 				 </view>
 			 </view>
@@ -70,14 +70,14 @@
 					<view v-for="(tab,index) in classifylist" :key="index" :class="['btn',tabIndex==index ? 'active' : '']"  @click="tapTab(index,tab.Id)">{{tab.Name}}</view>
 				</view>
 			 </view>
-			 <block v-if="tabIndex==0">
+			<!-- <block v-if="tabIndex==0">
 			 	<view class="list" v-if="hasData">
 			 		<block v-for="(item,index) in findlist" :key="index">
 			 			<media-list :datajson="item" Grid="2" @click="goDetail" @previewImg="previewImg"></media-list>
 			 		</block>
 			 	</view>
-			 </block>
-			<view class="musiclist pd15" v-if="tabIndex>0&&hasData">
+			 </block> -->
+			<view class="musiclist pd15" v-if="hasData">
 				<view class="item flex-between" v-for="(item,index) in datalist" :key="index" @click="toplaylist(item.Id,index)">
 					<view class="imgbox">
 						<image :src="item.PicImg||'http://m.dance-one.com/static/default_music.png'" mode="aspectFill"></image>
@@ -120,7 +120,7 @@
 									<text class="txt">添加到歌单</text>
 								</view>
 							</view>
-							<view class="line-item" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
+							<view class="line-item" v-if="false" @click="tolink('/pages/music/artPost/artPost?MusicId='+itemdata.Id+'&keystr='+itemdata.Name)">
 								<view class="line-item-l flex-start">
 									<image class="iconimg" src="http://m.dance-one.com/static/fabu.png" mode="widthFix"></image>
 									<text class="txt">分享到动态</text>
@@ -246,11 +246,11 @@
 			if(this.pageCon==1){
 				this.getclassifyList();
 				this.getBanner();
-				if(this.tabIndex==0){
-					this.FindList()
-				}else{
+				// if(this.tabIndex==0){
+				// 	this.FindList()
+				// }else{
 					this.workeslist();
-				}
+				// }
 			}else{
 				this.YWNewsList()
 			}
@@ -263,15 +263,6 @@
 			this.isShowOperation=false;
 			this.isShowSelect=false;
 			this.playIDtype=this.$store.state.isplayingmusic;
-			// if(this.tabIndex==0){
-			//  // if (this.page === 1) {
-			// 	//  this.hasData=false;
-			//  // 	 this.findlist=[];
-			//  // }
-			//     this.FindList()
-			// }else{
-			//    this.workeslist();
-			// }
 		},
 		computed: {
 		   ...mapGetters(['isplayingmusic'])
@@ -300,42 +291,45 @@
 					this.setScrollLeft(index);
 					this.ClassId=id;
 					this.page=1;
-					if(this.tabIndex==0){
-						this.FindList();
-					}else{
+					// if(this.tabIndex==0){
+					// 	this.FindList();
+					// }else{
 						this.workeslist();
-					}
+					// }
 				}
 			},
 			getclassifyList(){
 				post('DanceMusic/DanceMusicClassList',{}).then(res=>{
 					if(res.code===0){
-						let json={
-							Id:-1,
-							Name:"动态"
-						};
+						// let json={
+						// 	Id:-1,
+						// 	Name:"动态"
+						// };
 						this.classifylist=res.data;
-						this.classifylist.unshift(json)
+						// this.classifylist.unshift(json)
 					}
 				})
 			},
 			openAttestation(){
 				if(toLogin()){
-					let urlstr="";
-					uni.showActionSheet({
-						itemList: ['发布动态','上传舞曲'],
-						success: (e) => {
-							if(e.tapIndex==0){
-								urlstr="/pages/music/artPost/artPost";
-							}else if(e.tapIndex==1){
-								urlstr="/pages/music/uploadMusic/uploadMusic";
-							}
-							uni.navigateTo({
-								url: urlstr
-							})
-						},
-						complete:(e)=>{}
+					uni.navigateTo({
+						url: "/pages/music/uploadMusic/uploadMusic"
 					})
+					// let urlstr="";
+					// uni.showActionSheet({
+					// 	itemList: ['发布动态','上传舞曲'],
+					// 	success: (e) => {
+					// 		if(e.tapIndex==0){
+					// 			urlstr="/pages/music/artPost/artPost";
+					// 		}else if(e.tapIndex==1){
+					// 			urlstr="/pages/music/uploadMusic/uploadMusic";
+					// 		}
+					// 		uni.navigateTo({
+					// 			url: urlstr
+					// 		})
+					// 	},
+					// 	complete:(e)=>{}
+					// })
 				}
 			},
 			async getBanner(){
@@ -359,6 +353,9 @@
 					if (result.data.length > 0) {
 						this.hasData = true;
 						this.noDataIsShow = false;
+						result.data.forEach(function(item) {
+							item.Title=decodeURIComponent(item.Title);
+						})
 					}
 					if (result.data.length == 0 && this.page == 1) {
 						this.noDataIsShow = true;

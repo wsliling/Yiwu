@@ -7,7 +7,7 @@
 					<view class="cu-item self">
 						<view class="main">
 							<view class="content bg-green">
-								<text>{{item.Info}}</text>
+								<text>{{decodeURIComponent(item.Info)}}</text>
 							</view>
 						</view>
 						<view class="cu-avatar" :style="'background-image:url('+item.Avatar+');'"></view>
@@ -19,7 +19,7 @@
 						<view class="cu-avatar" :style="'background-image:url('+item.Avatar+');'"></view>
 						<view class="main">
 							<view class="content">
-								<text>{{item.Info}}</text>
+								<text>{{decodeURIComponent(item.Info)}}</text>
 							</view>
 						</view>
 					</view>
@@ -144,12 +144,12 @@
 					UserId: this.userId,
 					Token: this.token,
 					ToMemberId:this.id,
-					Info:this.Comment
+					Info:encodeURIComponent(this.Comment)
 				})
 				this.sendSocketMsg({
 					MsgType:3,
 					Id:res.data.Id,
-					Info:this.Comment
+					Info:encodeURIComponent(this.Comment)
 				})
 				this.Comment='';
 			},

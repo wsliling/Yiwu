@@ -138,7 +138,7 @@
 								<view class="comment-item" v-if="e<4">
 									<text class="name">{{i.MemberName||'匿名用户'}}：</text>
 									<text class="con">
-										{{i.Comment}}
+										{{decodeURIComponent(i.Comment)}}
 									</text>
 								</view>
 							</block>
@@ -664,6 +664,7 @@
 								_this.$set(item,'fixed',false);
 								_this.$set(item,'ispause',false);
 							}
+							item.Title=decodeURIComponent(item.Title)
 						})
 					}
 					if (result.data.length == 0 && this.Page0 == 1) {
@@ -1101,8 +1102,10 @@
 							item.AddTime=dateUtils.format(item.AddTime);
 							_this.$set(item, "imgArr",item.ImgList.split(","));
 							_this.$set(item, "isSHOW",false);
+							item.Comment=decodeURIComponent(item.Comment);
 							item.MyCommnetList.forEach(function(item2) {
 								item2.AddTime=dateUtils.format(item2.AddTime);
+								item2.Comment=decodeURIComponent(item2.Comment);
 								let txt =item2.Comment.split("#$#");
 								if(txt.length==2){
 									_this.$set(item2, "Comment",txt[1]);
@@ -1155,7 +1158,7 @@
 					"FkId":this.FkId,
 					"TypeInt":this.Commenttype,
 					"ParentCommentId":this.PCommentId,
-					"Comment":this.Comment
+					"Comment":encodeURIComponent(this.Comment)
 				});
 				if(result.code===0){
 					uni.showToast({

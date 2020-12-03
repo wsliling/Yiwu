@@ -10,7 +10,7 @@
 						<view  class="uni-media-list-body">
 							<view class="uni-media-list-text-top uni-ellipsis">{{item.MsgName}}</view>
 							<view  class="uni-media-list-text-bottom uni-ellipsis">
-								{{item.NoticeTitle}}
+								{{decodeURIComponent(item.NoticeTitle)}}
 							</view>
 						</view>
 						<view class="uni-media-list-r">
