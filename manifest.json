@@ -2,13 +2,13 @@
     "name" : "壹舞",
     "appid" : "__UNI__EAB64DC",
     "description" : "壹舞",
-    "versionName" : "1.1.2",
-    "versionCode" : 112,
+    "versionName" : "1.1.4",
+    "versionCode" : 114,
     "transformPx" : false,
-	"networkTimeout":{
-		"uploadFile":600000,
-		"downloadFile":600000
-	},
+    "networkTimeout" : {
+        "uploadFile" : 600000,
+        "downloadFile" : 600000
+    },
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
