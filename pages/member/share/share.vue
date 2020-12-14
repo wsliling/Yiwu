@@ -5,6 +5,7 @@
 		<view class="topdownbox flex" @click="todown">
 			<image class="logoimg" src="http://m.dance-one.com/static/logo.png" mode="widthFix"></image>
 			<text>下载壹舞APP体验更多功能 !</text>
+			<text class="btn">下载</text>
 		</view>
 		<!-- #endif -->
 		<div class="content">
@@ -196,6 +197,15 @@
 		text{ 
 			font-size: 36upx;
 			color: $primary;
+		}
+		.btn{
+			display: block;
+			background: $primary;
+			color: #fff;
+			border-radius: 4px;
+			padding: 4upx 20upx;
+			margin-left: 30upx;
+			font-size: 28upx;
 		}
 	}
 </style>
