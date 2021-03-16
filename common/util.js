@@ -6,7 +6,7 @@ const webUrl = 'http://m.dance-one.com';
 const wssPath = 'wss://api.dance-one.com/WebSocketServer.ashx';  //wss接口地址
 const wssHost = 'wss://api.dance-one.com';  //wss接口地址
 
-const dowmappURL='http://m.dance-one.com/down/android112.apk';//app下载地址安卓
+const dowmappURL='http://m.dance-one.com/down/android114.apk';//app下载地址安卓
 const dowmappURLios='http://d.firim.pro/m6xl';//app下载地址ios
 
 function formatNumber(n) {

@@ -175,37 +175,37 @@
             	"navigationBarTitleText": "上传文件"
             }
         }
-		,{
-		    "path" : "pages/liveplay/live",
-		    "style": {
-		    	"navigationBarTitleText": "直播",
-		    	"enablePullDownRefresh" : false,
-				"navigationBarTextStyle": "white", //系统时间颜色，仅支持 black/white
-				"navigationBarBackgroundColor":"#000000", 
-				"backgroundColorTop":"#000000",
-				"backgroundColor": "#000",
-		    	"app-plus": {
-		    		"titleNView": false, //首页去除原生导航
-		    		"bounce": "none",
-		    		"scrollIndicator": "none" ,//不显示滚动条
-					"background": "#000000"
-		    	},
-				"h5": {
-					"backgroundColor": "#000000"
-				}
-		    }
-		}
-		,{
-		    "path" : "pages/livepush/livepush",
-		    "style": {
-		    	"navigationBarTitleText": "直播",
-		    	"navigationBarBackgroundColor":"#f5f5f5",
-		    	"navigationBarTextStyle": "white",
-		    	"app-plus": {
-		    		"titleNView": false //首页去除原生导航
-		    	}
-		    }
-		}
+		// ,{
+		//     "path" : "pages/liveplay/live",
+		//     "style": {
+		//     	"navigationBarTitleText": "直播",
+		//     	"enablePullDownRefresh" : false,
+		// 		"navigationBarTextStyle": "white", //系统时间颜色，仅支持 black/white
+		// 		"navigationBarBackgroundColor":"#000000", 
+		// 		"backgroundColorTop":"#000000",
+		// 		"backgroundColor": "#000",
+		//     	"app-plus": {
+		//     		"titleNView": false, //首页去除原生导航
+		//     		"bounce": "none",
+		//     		"scrollIndicator": "none" ,//不显示滚动条
+		// 			"background": "#000000"
+		//     	},
+		// 		"h5": {
+		// 			"backgroundColor": "#000000"
+		// 		}
+		//     }
+		// }
+		// ,{
+		//     "path" : "pages/livepush/livepush",
+		//     "style": {
+		//     	"navigationBarTitleText": "直播",
+		//     	"navigationBarBackgroundColor":"#f5f5f5",
+		//     	"navigationBarTextStyle": "white",
+		//     	"app-plus": {
+		//     		"titleNView": false //首页去除原生导航
+		//     	}
+		//     }
+		// }
         ,{
             "path" : "pages/dowmApp/dowmApp",
             "style" : {
